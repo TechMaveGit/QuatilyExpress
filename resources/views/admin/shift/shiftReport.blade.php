@@ -380,9 +380,6 @@
                                                     <select class="form-control select2 form-select" name="costCenter[]"
                                                         id="appendCostCenter" data-placeholder="Choose one"
                                                         multiple="multiple">
-
-
-
                                                     </select>
                                                 </div>
                                             </div>
@@ -405,9 +402,9 @@
                                             <div class="mb-4">
                                                 <label class="form-label">Start Date</label>
 
-                                                <input type="text" name="start" min="1000-01-01"
-                                                    max="9999-12-31" class="form-control onlydatenew"
-                                                    aria-describedby="emailHelp" placeholder="" value="{{ request('start') }}"/>
+                                                <input type="text" name="start" min="1000-01-01" max="9999-12-31"
+                                                    class="form-control onlydatenew" aria-describedby="emailHelp"
+                                                    placeholder="" value="{{ request('start') }}" />
 
                                                 {{-- <input type="date" name="start" class="form-control" min="1000-01-01" max="9999-12-31" value="{{ $start }}" aria-describedby="emailHelp" placeholder=""> --}}
 
@@ -420,9 +417,9 @@
                                             <div class="mb-4">
                                                 <label class="form-label" for="exampleInputEmail1">End Date</label>
 
-                                                <input type="text" name="finish" min="1000-01-01"
-                                                    max="9999-12-31" class="form-control onlydatenew"
-                                                    aria-describedby="emailHelp" placeholder="" value="{{ request('finish') }}" />
+                                                <input type="text" name="finish" min="1000-01-01" max="9999-12-31"
+                                                    class="form-control onlydatenew" aria-describedby="emailHelp"
+                                                    placeholder="" value="{{ request('finish') }}" />
 
                                                 {{-- <input type="date" name="finish" class="form-control" min="1000-01-01" max="9999-12-31" value="{{ $finish }}" aria-describedby="emailHelp" placeholder=""> --}}
 
@@ -430,19 +427,14 @@
                                                     Date</p>
                                             </div>
                                         </div>
-
-
                                         <div class="col-lg-12">
                                             <div class="filter_flex">
                                                 <div class="search_btn btnsflexflt_group">
                                                     <button type="submit" class="btn btn-primary "><i
                                                             class="fe fe-search"></i> Search</button>
-                                                    <a href="{{ route('admin.shift.report') }}"
-                                                        class="btn btn-info "><i class="fe fe-refresh-ccw"></i> Clear
+                                                    <a href="{{ route('admin.shift.report') }}" class="btn btn-info "><i
+                                                            class="fe fe-refresh-ccw"></i> Clear
                                                         Filter</a>
-                                                    {{-- <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a> --}}
-
-
                                                     @if (in_array('54', $arr))
                                                         <a onclick="showImportForm()" class="btn btn-green "><i
                                                                 class="fa fa-file-excel-o"></i> Import Excel</a>
@@ -814,7 +806,8 @@
                                             @foreach ($shift as $key => $allshift)
                                                 <tr class="border-bottom">
                                                     <td hidden>{{ $key + 1 }}</td>
-                                                    <td hidden class="td sorting_1">{{ $allshift->getClientName->id ?? 0 }}
+                                                    <td hidden class="td sorting_1">
+                                                        {{ $allshift->getClientName->id ?? 0 }}
                                                     </td>
 
                                                     <td class="td sorting_1 column-id">QE{{ $allshift->shiftRandId }}</td>
@@ -850,7 +843,8 @@
                                                     <td class="td column-vehicleType">
                                                         {{ $allshift->getVehicleType->name ?? 'N/A' }}</td>
 
-                                                    <td class="td column-state">{{ $allshift->getStateName->name ?? 'N/A' }}
+                                                    <td class="td column-state">
+                                                        {{ $allshift->getStateName->name ?? 'N/A' }}
                                                     </td>
 
                                                     @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
@@ -1091,7 +1085,6 @@
                                                                     ) *
                                                                     floatval($allshift->getFinishShifts->sundayHours);
                                                             }
-
                                                         @endphp
                                                         <td hidden class="td sorting_1">{{ $saturday + $sunday }}</td>
                                                     @endif
@@ -1157,12 +1150,63 @@
                                                         {{ $allshift->getFinishShift->odometerStartReading ?? '0' }}</td>
                                                     <td hidden class="td sorting_1">
                                                         {{ $allshift->getFinishShift->odometerEndReading ?? '0' }}</td>
+                                                        @if ($allshift->finishStatus == '2')
+                                                            @php
+                                                                $extra_rate_per_hour = $allshift->getDriverName->extra_rate_per_hour ??'0';
+                                                            @endphp
+                                                        @else
+                                                            @php
+                                                                    $extra_rate_per_hour = 0;
+                                                                @endphp
+                                                            @endif
+                                                        @php
+                                                                $dayammmm='0';
+                                                            @endphp
+                                                            @if($allshift->getFinishShift->dayHours ?? 0 !='0')
+                                                                @php
+                                                                    $dayammmm = ($allshift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->dayHours ?? 0);
+                                                                @endphp
+                                                            @endif
+                                                            @if($allshift->getFinishShift->nightHours ?? 0 !='0')
+                                                                @php
+                                                                    $nightamm = ($allshift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->nightHours ?? 0);
+                                                                @endphp
+                                                            @else
+                                                                @php
+                                                                    $nightamm = 0
+                                                                @endphp
+                                                           @endif
+
+                                                           @php
+                                                            $saturday = 0;
+                                                            $sunday = 0;
+
+                                                                if ($allshift->getFinishShift && $allshift->getFinishShift->saturdayHours != '0') {
+                                                                    $saturday = ($allshift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->saturdayHours ?? 0);
+                                                                }
+
+                                                                if ($allshift->getFinishShift && $allshift->getFinishShift->sundayHours != '0') {
+                                                                    $sunday = ($allshift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->sundayHours ?? 0);
+                                                                }
+                                                            $finalAmount=$saturday +  $sunday;
+                                                            @endphp
+
                                                     @php
-                                                        $payAmount = $allshift->payAmount;
+                                                        $payAmount = round($dayammmm,2) + round($nightamm,2) + round($finalAmount,2) ;
+                                                        $updatedAmnt =  round($allshift->payAmount?? 0 , 2);
                                                     @endphp
+                                                    @if ($payAmount < $updatedAmnt)
+                                                        @php
+                                                            $finalpayamnnt = $updatedAmnt;
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $finalpayamnnt = $payAmount;
+                                                        @endphp
+                                                    @endif
                                                     @if ($allshift->finishStatus == '5' || $allshift->finishStatus == '2' || $allshift->finishStatus == '3')
                                                         {{-- <td class="td">{{ $allshift->getShiftMonetizeInformation->totalPayable??'0' + $payAmount??'0'}} </td> --}}
-                                                        <td class="td column-totalPayable">{{ round($payAmount, 2) }}
+                                                        <td class="td column-totalPayable">{{ round($finalpayamnnt, 2) }}
                                                         </td>
                                                     @else
                                                         <td class="td column-totalPayable">0</td>
@@ -1192,15 +1236,16 @@
                                                         <td class="column-action">
                                                             <div class="d-flex">
                                                                 @if (in_array('50', $arr))
-                                                                    @if ($allshift->finishStatus=='2')
-                                                                    <a onclick="approveAndReject(`{{ $allshift->id }}`)"
-                                                                        class="btn text-green btn-sm btncls"
-                                                                        data-bs-toggle="modal"><span
-                                                                            class="ti-check-box fs-14"></span></a>
+                                                                    @if ($allshift->finishStatus == '2')
+                                                                        <a onclick="approveAndReject(`{{ $allshift->id }}`)"
+                                                                            class="btn text-green btn-sm btncls"
+                                                                            data-bs-toggle="modal"><span
+                                                                                class="ti-check-box fs-14"></span></a>
                                                                     @else
-                                                                    <a class="btn text-green btn-sm btncls" style="color:grey !important"
-                                                                        data-bs-toggle="modal"><span
-                                                                            class="ti-check-box fs-14"></span></a>
+                                                                        <a class="btn text-green btn-sm btncls"
+                                                                            style="color:grey !important"
+                                                                            data-bs-toggle="modal"><span
+                                                                                class="ti-check-box fs-14"></span></a>
                                                                     @endif
                                                                 @endif
 
@@ -1311,16 +1356,16 @@
     </script>
 
     <!--
-    <script>
-        $(document).ready(function() {
-            $('#example').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'colvis'
-                ]
-            });
-        });
-    </script> -->
+            <script>
+                $(document).ready(function() {
+                    $('#example').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'colvis'
+                        ]
+                    });
+                });
+            </script> -->
 
 
 

@@ -161,7 +161,7 @@
 
                                         <div class="dropdown d-flex profile-1">
                                             <a href="{{ route('admin.profile') }}" data-bs-toggle="dropdown" class="nav-link leading-none d-flex">
-                                                <img src="https://techmavesoftwaredev.com/webclinic/public/assets/doctor_profile/3305b813dfed14d5855588d82841bc82.png" alt="profile-user"
+                                                <img src="{{ asset('public/assets/images/newimages/dummyuser.png')}}" alt="profile-user"
                                                     class="avatar  profile-user brround cover-image">
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

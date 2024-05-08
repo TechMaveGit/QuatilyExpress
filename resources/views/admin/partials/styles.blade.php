@@ -39,6 +39,8 @@
 	<!-- Plugins CSS -->
     <link href="{{ asset('public/assets/css/plugins.css')}}" rel="stylesheet">
 
+    <link href="{{ asset('public/assets/Common/css/CountrySelect.css')}}" rel="stylesheet">
+
     <!--- FONT-ICONS CSS -->
     <link href="{{ asset('public/assets/css/icons.css')}}" rel="stylesheet">
     <!-- flat picker -->
@@ -67,7 +69,7 @@
 
  <script src="{{ asset('public/assets/plugins/chart/Chart.bundle.js')}}"></script>
 
- 
+
 
  <script src="{{ asset('public/assets/js/chart.js')}}"></script>
  <script src="{{ asset('public/assets/js/charts.js')}}"></script>

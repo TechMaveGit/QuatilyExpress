@@ -503,8 +503,8 @@
                                                                     Date <span class="red">*</span></label>
 
                                                                 <input type="text" name="start_date"
-                                                                    min="1000-01-01T00:00" max="9999-12-31T23:59"
-                                                                    class="form-control datetime_picker"
+                                                                    min="1000-01-01" max="9999-12-31"
+                                                                    class="form-control onlydatenew"
                                                                     aria-describedby="emailHelp" placeholder="" />
 
                                                                 <input type="hidden" name="firstSection"
@@ -520,8 +520,8 @@
                                                                     Date <span class="red">*</span></label>
 
                                                                 <input type="text" name="end_date"
-                                                                    min="1000-01-01T00:00" max="9999-12-31T23:59"
-                                                                    class="form-control datetime_picker"
+                                                                    min="1000-01-01" max="9999-12-31"
+                                                                    class="form-control onlydatenew"
                                                                     aria-describedby="emailHelp" placeholder="" />
 
 

@@ -96,6 +96,14 @@
                                                                 </li>
                                                                 <li>
                                                                     <div class="detail_title">
+                                                                        <h6>Mobile No.</h6>
+                                                                    </div>
+                                                                    <div class="detail_ans">
+                                                                        <h6>+{{ $personDetail->dialCode }}{{ $personDetail->mobileNo }}</h6>
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div class="detail_title">
                                                                         <h6>Date Of Birth</h6>
                                                                     </div>
                                                                     <div class="detail_ans">

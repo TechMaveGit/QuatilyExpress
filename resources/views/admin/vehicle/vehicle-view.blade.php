@@ -9,7 +9,7 @@
     <div>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('vehicle') }}">Vehicles/</li>
+            <li class="breadcrumb-item"><a href="{{ route('vehicle') }}">Vehicles</a></li>
             <li class="breadcrumb-item active" aria-current="page">Vehicles View</li>
 
         </ol>

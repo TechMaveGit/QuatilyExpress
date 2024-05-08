@@ -86,7 +86,7 @@ Route::group( ['middleware' => ['auth:driver'] ],function(){
 
     Route::post('deliverParcel', [ParcelController::class, 'deliverParcel']);
 
-    Route::post('updateParcel', [ParcelController::class, 'updateParcel']);
+    Route::post('parcelDetail', [ParcelController::class, 'parcelDetail']);
 
     Route::post('updateParcel', [ParcelController::class, 'updateParcel']);
 

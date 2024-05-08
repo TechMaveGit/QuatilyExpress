@@ -837,10 +837,23 @@ foreach($D as $v)
                                                 </div>
 
                                                </div>
+                                               @php
+                                                   $payAmount = round($day,2)+ round($night,2) + round($finalAmount,2);
+                                                   $updatedAmnt =  round($shiftView->payAmount?? 0 , 2);
+                                               @endphp
+                                               @if ($payAmount < $updatedAmnt)
+                                                    @php
+                                                        $finalpayamnnt = round($shiftView->payAmount?? 0 , 2);
+                                                    @endphp
+                                                @else
+                                                    @php
+                                                        $finalpayamnnt = round($day,2)+ round($night,2) + round($finalAmount,2);
+                                                    @endphp
+                                               @endif
                                                <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Total Payable </label>
-                                                    <input type="text" step="0.1" value="{{ round($shiftView->payAmount?? 0 ,2) }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="">
+                                                    <input type="text" step="0.1" value="{{ $finalpayamnnt }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="">
                                                 </div>
 
                                                </div>

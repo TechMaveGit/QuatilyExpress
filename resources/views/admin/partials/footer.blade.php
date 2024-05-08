@@ -1349,6 +1349,8 @@
 
 <script src="{{ asset('public/assets/plugins/bootstrap/js/bootstrap.min.js')}}"></script>
 
+<script src="{{ asset('public/assets/Common/js/CountrySelect.js')}}"></script>
+
 <!-- SPARKLINE JS-->
 
 <script src="{{ asset('public/assets/js/jquery.sparkline.min.js')}}"></script>
@@ -1709,20 +1711,24 @@
 <script>
 $(".datetime_picker").flatpickr({
     enableTime: true,
-    altFormat: "Y-m-d H:i:S",
-    dateFormat: "Y-m-d H:i:S",
+    altFormat: "Y-m-d H:i",
+    dateFormat: "Y-m-d H:i",
     time_24hr: true,
     appendTo: document.body,
     onReady: function(selectedDates, dateStr, instance) {
         var setButton = document.createElement('button');
         setButton.className = 'flatpickr-set-button'; // Assigning the class 'flatpickr-set-button'
-        setButton.innerHTML = 'Set';
+        setButton.innerHTML = 'Ok';
         setButton.onclick = function() {
             instance.close();
         };
         instance.calendarContainer.querySelector('.flatpickr-time').appendChild(setButton);
     }
+
 });
+
+
+
 
 
 

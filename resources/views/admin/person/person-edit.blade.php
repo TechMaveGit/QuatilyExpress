@@ -274,7 +274,32 @@
                                                             </div>
 
                                                         </div>
-                                                        <div class="col-lg-3">
+                                                        <div class="col-lg-4">
+                                                            <label for="simpleinput" class="form-label">Mobile No. <span class="red">*</span></label>
+                                                            <div class="input-group ">
+                                                                <div class="input-group-prepend">
+                                                                    <select id="country" class="form-control select2"
+                                                                        name="country_code"
+                                                                        data-placeholder="Select a country"
+                                                                        data-dynamic-select required>
+                                                                        @foreach ($countryCode as $countryCodes)
+                                                                            <option value={{ $countryCodes->dial_code }}     {{ $countryCodes->dial_code == $editPerson->dialCode ? 'selected' : '' }}                                                                             data-img="{{ $countryCodes->flag }}">
+                                                                                {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <input type="text"
+                                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                                                    value="{{ old('mobile_number') ?? $editPerson->mobileNo }}"
+                                                                    name="mobile_number" minlength="8" maxlength="13"
+                                                                    class="form-control " required>
+                                                                @error('mobile_number')
+                                                                    <span class="text-danger">{{ $message }}</span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Phone
                                                                     Principal <span class="red">*</span></label>
@@ -285,7 +310,7 @@
                                                                     placeholder="" required>
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-3">
+                                                        <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Phone
                                                                     Aux</label>
@@ -296,7 +321,7 @@
                                                                     placeholder="">
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-3">
+                                                        <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label"
                                                                     for="exampleInputEmail1">TFN</label>
@@ -308,7 +333,7 @@
                                                         </div>
 
 
-                                                        <div class="col-lg-3">
+                                                        <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label"
                                                                     for="exampleInputEmail1">ABN</label>
@@ -722,7 +747,7 @@
                                                             <thead class="border-top">
                                                                 <tr>
                                                                     <th class="bg-transparent border-bottom-0">S.No</th>
-                                                                    <th class="bg-transparent border-bottom-0">Person</th>
+                                                                    <th class="bg-transparent border-bottom-0">Name</th>
                                                                     <th class="bg-transparent border-bottom-0">Doc</th>
                                                                     <th class="bg-transparent border-bottom-0">Status</th>
                                                                     <th class="bg-transparent border-bottom-0"
@@ -1177,6 +1202,7 @@
                             text: 'Person Document Added Successfully',
                             timer: 1000
                         });
+                        window.location.reload();
                         $('#basic-datatable tbody').empty();
                         if (Array.isArray(data.documents) && data.documents.length > 0) {
                             var tableHtml = '<tbody>';
@@ -1277,7 +1303,7 @@
                                                                 <td>
                                                                     <div class="g-2">
                                                                         <a onclick="removePerson(this,${data.data.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
-                                                                        // <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+
                                                                     </div>
                                                                 </td>
                                                         </tr>`;

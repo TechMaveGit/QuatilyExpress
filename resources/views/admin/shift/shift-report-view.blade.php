@@ -615,10 +615,23 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 </div>
 
                                                </div>
+                                               @php
+                                               $payAmount = round($day,2)+ round($night,2) + round($finalAmount,2);
+                                               $updatedAmnt =  round($shiftView->payAmount?? 0 , 2);
+                                                @endphp
+                                                @if ($payAmount < $updatedAmnt)
+                                                        @php
+                                                            $finalpayamnnt = round($shiftView->payAmount?? 0 , 2);
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $finalpayamnnt = round($day,2)+ round($night,2) + round($finalAmount,2);
+                                                        @endphp
+                                                @endif
                                                <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Total Payable</label>
-                                                    <input type="text" class="form-control" name="totalPayable" value="{{ round($shiftView->payAmount?? 0 , 2) }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" name="totalPayable" value="{{ $finalpayamnnt}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
 
                                                </div>
