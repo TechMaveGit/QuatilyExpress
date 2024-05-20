@@ -303,7 +303,7 @@
                                                                         <tr class="border-bottom">
                                                                             <td> {{ $kk + 1 }}</td>
                                                                             <td> {{ $document->name }}</td>
-                                                                            <td><img src="{{ asset('public/assets/person-document/' . $document->document) }}"
+                                                                            <td><img src="{{ asset('assets/person-document/' . $document->document) }}"
                                                                                     alt="Document Image" width="100px"></td>
                                                                             <td> {{ $document->status == '1' ? 'Active' : 'Inactive' }}
                                                                             </td>

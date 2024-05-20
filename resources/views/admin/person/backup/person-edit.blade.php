@@ -645,7 +645,7 @@
                                                     <tr class="border-bottom">
                                                     <td> {{$i}}</td>
                                                     <td> {{$document->name}}</td>
-                                                    <td><img src="{{ asset('public/assets/person-document/' . $document->document) }}" alt="Document Image" width="100px"></td>
+                                                    <td><img src="{{ asset('assets/person-document/' . $document->document) }}" alt="Document Image" width="100px"></td>
                                                     <td> {{$document->status == "1" ? "Active" : "Inactive"}}</td>
 
                                                     <td><a onclick="removePersonDoc(this,{{$document->id}})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
@@ -1021,7 +1021,7 @@ function getCurrentDate() {
                                                             var rowHtml2 = `<tr>
                                                                 <td>${sno}</td>
                                                                 <td>${doc.name}</td>
-                                                                <td><img src="{{ asset('public/assets/person-document/') }}/${doc.document}" alt="Document Image" width="100px"></td>
+                                                                <td><img src="{{ asset('assets/person-document/') }}/${doc.document}" alt="Document Image" width="100px"></td>
                                                                 <td>${doc.status == '1' ? 'Active':'Inactive' }</td>
                                                                 <td><a onclick="removePersonDoc(this, ${doc.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
                                                             </tr>`;

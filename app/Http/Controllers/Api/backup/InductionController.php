@@ -45,7 +45,7 @@ class InductionController extends Controller
             $url = url('assets/Induction/image/');
             $signatureImage = url('assets/Induction/signatureImage');
             $inductions=Induction::select('id','title','description','uploadFile','status')->where('id',$id)->first();
-            $InductionSignature= DB::table('inductiondrivers')->select('id','induction_id','driverId','signature')->where('induction_id',$id)->where('driverId',$this->driverId)->first();
+            $InductionSignature= DB::table('inductiondrivers')->select('id','induction_id','driverId','signature')->where('induction_id',$id)->first();
             return response()->json([
                 "status" => 200,
                 "message" => "Success",

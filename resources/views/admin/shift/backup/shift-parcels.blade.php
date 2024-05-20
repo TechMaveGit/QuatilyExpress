@@ -95,8 +95,8 @@
                                                    <td>
                                                     <div class="magnific-img">
                                                         @if(!empty($allparcelsDetail['ParcelImage']->parcelImage))
-                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
-                                                                <img src="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
+                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
+                                                                <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
                                                             </a>
                                                         @endif
                                                     </div>
@@ -122,8 +122,8 @@
                                                    <td>
                                                    <div class="magnific-img">
                                                     @if(!empty($allparcelsDetail->parcelphoto))
-                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}">
-                                                        <img src="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
+                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}">
+                                                        <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
                                                     }" alt="9.jpg" />
                                                         <!-- <i class="fa fa-search-plus" aria-hidden="true"></i> -->
                                                     </a>

@@ -13,6 +13,8 @@ use DB;
 
 class LiveTrackingController extends Controller
 {
+
+
     public function liveTracking(Request $request)
     {
         $locations='';
@@ -27,6 +29,7 @@ class LiveTrackingController extends Controller
 
         if(request()->isMethod("post"))
                {
+                     $request->all();
                     $driverName=$request->input('driverName');
                     $shiftName=$request->input('shiftName');
                     $shiftId=Shift::select('id','base')->where('id',$shiftName)->pluck('id')->toArray();
@@ -44,7 +47,9 @@ class LiveTrackingController extends Controller
                     {
                         $locations->whereIn('shiftid',$shiftId);
                     }
+
                     $locations= $locations->get()->toArray();
+
                     $lastLocations=$lastLocations->first()->shiftid??'';
                     $deliver_address=Parcels::where('shiftId',$lastLocations)->first()->deliver_address ?? '';
 
@@ -69,8 +74,6 @@ class LiveTrackingController extends Controller
 
                     }
 
-
-
                     if($shiftId)
                     {
                         $firstLocation = DB::table('track_location')
@@ -88,6 +91,10 @@ class LiveTrackingController extends Controller
         return view('admin.liveTracking.live',compact('locations','shift','driver','driverName','shiftName','firstLocation','deliver_address','parcelLocation','doMarkLocation'));
 
     }
+
+
+
+
 
 
     public function getDriverLocation(Request $request)

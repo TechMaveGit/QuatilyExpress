@@ -6,11 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quality Express</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/login-assets/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/login-assets/css/fontawesome-all.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/login-assets/css/iofrm-style.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/login-assets/css/iofrm-theme4.css')}}">
-        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('public/assets/images/newimages/imgpsh_fullsize_anim (1).png')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/login-assets/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/login-assets/css/fontawesome-all.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/login-assets/css/iofrm-style.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/login-assets/css/iofrm-theme4.css')}}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/newimages/imgpsh_fullsize_anim (1).png')}}">
 
 </head>
 <body>
@@ -63,10 +63,10 @@
         </div>
         <div class="row">
             <div class="form-holder">
-                <div class="form-content" style="background-image:url({{ asset('public/assets/login-assets/images/55595f1018.jpeg')}})">
+                <div class="form-content" style="background-image:url({{ asset('assets/login-assets/images/55595f1018.jpeg')}})">
                     <div class="form-items">
                         <div class="logo">
-                            <img class="logo-size" src="{{ asset('public/assets/login-assets/images/logo-qe.png')}}" style="width: 183px;" alt="">
+                            <img class="logo-size" src="{{ asset('assets/login-assets/images/logo-qe.png')}}" style="width: 183px;" alt="">
                         </div>
 
                         <h3>Welcome back!</h3>
@@ -101,10 +101,10 @@
             </div>
         </div>
     </div>
-<script src="{{ asset('public/assets/login-assets/js/jquery.min.js')}}"></script>
-<script src="{{ asset('public/assets/login-assets/js/popper.min.js')}}"></script>
-<script src="{{ asset('public/assets/login-assets/js/bootstrap.min.js')}}"></script>
-<script src="{{ asset('public/assets/login-assets/js/main.js')}}"></script>
+<script src="{{ asset('assets/login-assets/js/jquery.min.js')}}"></script>
+<script src="{{ asset('assets/login-assets/js/popper.min.js')}}"></script>
+<script src="{{ asset('assets/login-assets/js/bootstrap.min.js')}}"></script>
+<script src="{{ asset('assets/login-assets/js/main.js')}}"></script>
 </body>
 
 </html>

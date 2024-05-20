@@ -282,6 +282,7 @@
                                                                         name="country_code"
                                                                         data-placeholder="Select a country"
                                                                         data-dynamic-select required>
+
                                                                         @foreach ($countryCode as $countryCodes)
                                                                             <option value={{ $countryCodes->dial_code }}     {{ $countryCodes->dial_code == $editPerson->dialCode ? 'selected' : '' }}                                                                             data-img="{{ $countryCodes->flag }}">
                                                                                 {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
@@ -764,9 +765,9 @@
                                                                         <tr class="border-bottom">
                                                                             <td> {{ $i }}</td>
                                                                             <td> {{ $document->name }}</td>
-                                                                            {{-- <td><img src="{{ asset('public/assets/person-document/' . $document->document) }}"
+                                                                            {{-- <td><img src="{{ asset('assets/person-document/' . $document->document) }}"
                                                                                     alt="Document Image" width="100px"></td> --}}
-                                                                            <td><a href="{{ asset('public/assets/person-document/' . $document->document) }}" target="_blank">View Doc</a></td>
+                                                                            <td><a href="{{ asset('assets/person-document/' . $document->document) }}" target="_blank">View Doc</a></td>
                                                                             <td> {{ $document->status == '1' ? 'Active' : 'Inactive' }}
                                                                             </td>
 
@@ -1211,7 +1212,7 @@
                                 var rowHtml2 = `<tr>
                                                                 <td>${sno}</td>
                                                                 <td>${doc.name}</td>
-                                                                <td><img src="{{ asset('public/assets/person-document/') }}/${doc.document}" alt="Document Image" width="100px"></td>
+                                                                <td><img src="{{ asset('assets/person-document/') }}/${doc.document}" alt="Document Image" width="100px"></td>
                                                                 <td>${doc.status == '1' ? 'Active':'Inactive' }</td>
                                                                 <td><a onclick="removePersonDoc(this, ${doc.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
                                                             </tr>`;

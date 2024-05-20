@@ -190,7 +190,7 @@ class InspectionController extends Controller
             Inspection::insert($data);
             return response()->json([
                 "status" => $this->successStatus,
-                "message" => "Inspection added successfully",
+                "message" => "Inspection already successfully",
             ]);
         //   }
         //   else{

@@ -4,9 +4,9 @@
 
 
 
-<script src="{{ asset('public/assets/plugins/charts-c3/d3.v5.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/charts-c3/d3.v5.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/charts-c3/c3-chart.js')}}"></script>
+<script src="{{ asset('assets/plugins/charts-c3/c3-chart.js')}}"></script>
 
 
 

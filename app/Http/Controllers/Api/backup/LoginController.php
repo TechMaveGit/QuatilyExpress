@@ -86,13 +86,13 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             "userName" => "required",
             "mobileno" =>
-                "required|string|min:8|max:12|unique:drivers,mobileNo",
+                "required|string|min:10|max:13|unique:drivers,mobileNo",
                 "dialCode" =>"required",
             "email" => "required|email|unique:drivers",
             "enterPassword" => "required",
-            // "selectDocument" => "required",
-            // "documentType" =>
-            //     "required|max:10000|mimes:doc,docx,pdf,jpeg,jpg,png,gif",
+            "selectDocument" => "required",
+            "documentType" =>
+                "required|max:10000|mimes:doc,docx,pdf,jpeg,jpg,png,gif",
         ]);
 
         if ($validator->fails()) {
@@ -150,7 +150,7 @@ class LoginController extends Controller
                               //  'profile_image' =>'required',
                                  'firstName'    =>'required',
                                  'email' => 'required|email|unique:users,id,'.$driver,
-                                 'mobileNo'     => 'required|string|min:8|max:12",'
+                                 'mobileNo'     => 'required|string|min:10|max:13",'
                             ]);
 
     if ($validator->fails()) {

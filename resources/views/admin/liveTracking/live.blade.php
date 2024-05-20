@@ -42,12 +42,12 @@
  <div class="main-content app-content mt-0">
 <!-- PAGE-HEADER -->
 <div class="page-header">
-    <h1 class="page-title">Delivery Tracking</h1>
+    <h1 class="page-title">Live Tracking</h1>
     <div>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
             <!-- <li class="breadcrumb-item" aria-current="page">Administration</li> -->
-            <li class="breadcrumb-item active" aria-current="page">Delivery Tracking</li>
+            <li class="breadcrumb-item active" aria-current="page">Live Tracking</li>
 
         </ol>
     </div>
@@ -181,49 +181,6 @@
 
 
 
-<script>
-    function initMapCustom() {
-      // Check if the browser supports Geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function(position) {
-            var mapOptions = {
-              center: { lat: position.coords.latitude, lng: position.coords.longitude },
-              zoom: 15
-            };
-
-            var map = new google.maps.Map(document.getElementById('customMap'), mapOptions);
-
-            var marker = new google.maps.Marker({
-              position: { lat: position.coords.latitude, lng: position.coords.longitude },
-              map: map,
-              title: 'Your Location'
-            });
-          },
-          function(error) {
-            console.error('Error getting current location:', error);
-          }
-        );
-      } else {
-        console.error('Geolocation is not supported by this browser.');
-      }
-    }
-
-    // Explicitly load the Google Maps API with your API key
-    function loadGoogleMapsScript() {
-      var script = document.createElement('script');
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMapCustom';
-      script.onerror = function() {
-        console.error('Error loading Google Maps API.');
-      };
-      document.head.appendChild(script);
-    }
-
-    // Check if the Google Maps API has been loaded
-    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-      loadGoogleMapsScript();
-    }
-  </script>
 
                              </div>
                          </div>
@@ -275,9 +232,9 @@
                             $.each(data.vehicleData,function(index,items)
                             {
                                 if (shiftData == items.id) {
-                                    html4 += '<option value="' + items.id + '" selected>' + 'QE' + items.id + '</option>';
+                                    html4 += '<option value="' + items.id + '" selected>' + 'QE' + items.shiftRandId + '</option>';
                                 } else {
-                                    html4 += '<option value="' + items.id + '">' + 'QE' + items.id + '</option>';
+                                    html4 += '<option value="' + items.id + '">' + 'QE' + items.shiftRandId + '</option>';
                                 }                            });
                           $('#shiftId').append(html4);
 
@@ -302,148 +259,107 @@
 
 
 <script>
-    function initMap()
-{
-
-        var locations = <?php echo json_encode($locations); ?>;
-        var deliver_ltn = $('#driverName').val();
-        var lastLocation = locations[locations.length - 1];
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-                lat: parseFloat(lastLocation.lat),
-                lng: parseFloat(lastLocation.lng)
-            },
-            zoom: 13
-        });
-
-
-
-       var redlocations = <?php echo json_encode($parcelLocation); ?>;
-        var lastLocationred = locations[redlocations.length - 1];
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-                lat: parseFloat(lastLocationred.lat),
-                lng: parseFloat(lastLocationred.lng)
-            },
-            zoom: 13
-        });
-
-        // Create an InfoWindow for displaying titles
-        var infoWindow = new google.maps.InfoWindow();
-
-        // Add markers for the "do mark" location (in green)
-        for (var i = 0; i < redlocations.length; i++) {
-            var marker1 = new google.maps.Marker({
-                position: {
-                    lat: parseFloat(redlocations[i].lat),
-                    lng: parseFloat(redlocations[i].lng)
-                },
-                map: map,
-                title: 'Parcel In - ' + redlocations[i].receiverName,
-                location: 'Location - ' + redlocations[i].location,
-                icon: {
-                    url: 'https://techmavesoftwaredev.com/express/public/assets/flag/placeholder.png',
-                    scaledSize: new google.maps.Size(25, 35)  // Set the width and height for resizing
-                }
-            });
-
-        // Add a click event listener to each marker
-        marker1.addListener('click', function ()
-          {
-            // Set the content of the InfoWindow to the marker's title with black color
-            infoWindow.setContent('<div><p class="black">' + this.title + '</p><br><p class="black">' + this.location + '</p></div>');
-            // Open the InfoWindow at the clicked marker
-            infoWindow.open(map, this);
-
-            // Set a specific zoom level when a marker is clicked (e.g., zoom to level 16)
-            map.setZoom(16);
-
-            // Optionally, you can also set the center to the clicked marker's position
-            map.setCenter(this.getPosition());
+    function initMap() {
+      var locations = <?php echo json_encode($locations); ?>;
+      var deliver_ltn = $('#driverName').val();
+      var lastLocation = locations[locations.length - 1];
+  
+      var map = new google.maps.Map(document.getElementById('map'), {
+          center: {
+              lat: parseFloat(lastLocation.lat),
+              lng: parseFloat(lastLocation.lng)
+          },
+          zoom: 13
+      });
+  
+      var redlocations = <?php echo json_encode($parcelLocation); ?>;
+      var infoWindow = new google.maps.InfoWindow();
+  
+      for (var i = 0; i < redlocations.length; i++) {
+          var marker1 = new google.maps.Marker({
+              position: {
+                  lat: parseFloat(redlocations[i].lat),
+                  lng: parseFloat(redlocations[i].lng)
+              },
+              map: map,
+              title: 'Parcel In - ' + redlocations[i].receiverName,
+              location: 'Location - ' + redlocations[i].location,
+              icon: {
+                  url: 'https://www.techmavedesigns.com/development/express/assets/flag/placeholder.png',
+                  scaledSize: new google.maps.Size(25, 35)
+              }
           });
-
-        }
-/*  End */
-
-
-
-var markers = [];
-for (var i = 0; i < locations.length; i++) {
-    markers.push(new google.maps.LatLng(parseFloat(locations[i].lat), parseFloat(locations[i].lng)));
-}
-
-var line = new google.maps.Polyline({
-    path: markers,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 4  // Increase this value to make the line bolder
-});
-line.setMap(map);
-
-var lastMarker = new google.maps.Marker({
-    position: markers[markers.length - 1],
-    map: map,
-    title: 'Driver Last Location',
-    location:deliver_ltn,
-    icon: {
-        url: 'https://techmavesoftwaredev.com/express/public/Blue.png',
-        scaledSize: new google.maps.Size(25, 35)  // Set the width and height for resizing
+  
+          marker1.addListener('click', function() {
+              infoWindow.setContent('<div><p class="black">' + this.title + '</p><br><p class="black">' + this.location + '</p></div>');
+              infoWindow.open(map, this);
+              map.setZoom(16);
+              map.setCenter(this.getPosition());
+          });
+      }
+  
+      var markers = [];
+      for (var i = 0; i < locations.length; i++) {
+          markers.push(new google.maps.LatLng(parseFloat(locations[i].lat), parseFloat(locations[i].lng)));
+      }
+  
+      var line = new google.maps.Polyline({
+          path: markers,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 4
+      });
+      line.setMap(map);
+  
+      var lastMarker = new google.maps.Marker({
+          position: markers[markers.length - 1],
+          map: map,
+          title: 'Driver Last Location',
+          location: deliver_ltn,
+          icon: {
+              url: 'https://www.techmavedesigns.com/development/express/Blue.png',
+              scaledSize: new google.maps.Size(25, 35)
+          }
+      });
+  
+      google.maps.event.addListener(lastMarker, 'click', function() {
+          infoWindow.setContent('<div><p class="black">' + lastMarker.title + '</p><br><p class="black">' + lastMarker.location + '</p></div>');
+          infoWindow.open(map, lastMarker);
+          map.setCenter(lastMarker.getPosition());
+          map.setZoom(16);
+      });
+  
+      var doMarkLocation = <?php echo json_encode($doMarkLocation); ?>;
+      for (var i = 0; i < doMarkLocation.length; i++) {
+          var marker = new google.maps.Marker({
+              position: {
+                  lat: parseFloat(doMarkLocation[i].lat),
+                  lng: parseFloat(doMarkLocation[i].lng)
+              },
+              map: map,
+              title: 'Parcel Out - ' + doMarkLocation[i].deliveredTo,
+              icon: {
+                  url: 'https://www.techmavedesigns.com/development/express/Green.png',
+                  scaledSize: new google.maps.Size(25, 35)
+              }
+          });
+  
+          var infoWindow2 = new google.maps.InfoWindow({
+              content: '<span class="parcelTtl">Parcel Out - ' + doMarkLocation[i].deliveredTo + '</span><br><span class="parcelTtl">Location - ' + doMarkLocation[i].deliver_address + '</span><br>'
+          });
+  
+          google.maps.event.addListener(marker, 'click', (function(marker, infoWindow2) {
+              return function() {
+                  infoWindow2.open(map, marker);
+                  map.setCenter(marker.getPosition());
+                  map.setZoom(16);
+              };
+          })(marker, infoWindow2));
+      }
     }
-});
-
-// Create an InfoWindow for displaying titles
-var infoWindow = new google.maps.InfoWindow();
-
-google.maps.event.addListener(lastMarker, 'click', function () {
-    // Set the content of the InfoWindow to the marker's title with black color
-    infoWindow.setContent('<div><p class="black">' + lastMarker.title + '</p><br><p class="black">' + lastMarker.location + '</p></div>');
-    // Open the InfoWindow at the clicked marker
-    infoWindow.open(map, lastMarker);
-
-    // Zoom to the clicked marker's position
-    map.setCenter(lastMarker.getPosition());
-    map.setZoom(16); // Adjust the zoom level as needed
-});
-
-
-    var doMarkLocation = <?php echo json_encode($doMarkLocation); ?>;
-    var markers = [];
-
-    for (var i = 0; i < doMarkLocation.length; i++) {
-        var marker = new google.maps.Marker({
-            position: {
-                lat: parseFloat(doMarkLocation[i].lat),
-                lng: parseFloat(doMarkLocation[i].lng)
-            },
-            map: map,
-            title: 'Parcel Out - ' + doMarkLocation[i].deliveredTo,
-            icon: {
-                url: 'https://techmavesoftwaredev.com/express/public/Green.png',
-                scaledSize: new google.maps.Size(25, 35)
-            }
-        });
-
-        var infoWindow2 = new google.maps.InfoWindow({
-            content: '<span class="parcelTtl">Parcel Out - ' + doMarkLocation[i].deliveredTo + '</span><br><span class="parcelTtl">Location - ' + doMarkLocation[i].deliver_address + '</span><br>'
-        });
-
-        google.maps.event.addListener(marker, 'click', (function(marker, infoWindow2) {
-            return function() {
-                // Open the info window when clicked
-                infoWindow2.open(map, marker);
-
-                // Zoom to the clicked marker's position
-                map.setCenter(marker.getPosition());
-                map.setZoom(16); // Adjust the zoom level as needed
-            };
-        })(marker, infoWindow2));
-
-        markers.push(marker); // Store markers in the array
-    }
-}
-</script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMap"></script>
-
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMap"></script>
+  
 
 @endsection

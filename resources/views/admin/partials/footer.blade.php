@@ -382,7 +382,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/2.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/2.jpg')}}"></span>
 
                      </div>
 
@@ -406,7 +406,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/11.jpg')}}"><span
+                           data-bs-image-src="{{ asset('assets/images/users/11.jpg')}}"><span
                               class="avatar-status bg-success"></span></span>
 
                      </div>
@@ -431,7 +431,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/10.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/10.jpg')}}"></span>
 
                      </div>
 
@@ -457,7 +457,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/13.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/13.jpg')}}"></span>
 
                      </div>
 
@@ -481,7 +481,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/12.jpg')}}"><span
+                           data-bs-image-src="{{ asset('assets/images/users/12.jpg')}}"><span
                               class="avatar-status bg-success"></span></span>
 
                      </div>
@@ -506,7 +506,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/15.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/15.jpg')}}"></span>
 
                      </div>
 
@@ -532,7 +532,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/4.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/4.jpg')}}"></span>
 
                      </div>
 
@@ -558,7 +558,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/7.jpg')}}"><span
+                           data-bs-image-src="{{ asset('assets/images/users/7.jpg')}}"><span
                               class="avatar-status bg-success"></span></span>
 
                      </div>
@@ -583,7 +583,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/9.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/9.jpg')}}"></span>
 
                      </div>
 
@@ -609,7 +609,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/2.jpg')}}"><span
+                           data-bs-image-src="{{ asset('assets/images/users/2.jpg')}}"><span
                               class="avatar-status bg-success"></span></span>
 
                      </div>
@@ -634,7 +634,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/9.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/9.jpg')}}"></span>
 
                      </div>
 
@@ -660,7 +660,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/14.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/14.jpg')}}"></span>
 
                      </div>
 
@@ -684,7 +684,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/11.jpg')}}"></span>
+                           data-bs-image-src="{{ asset('assets/images/users/11.jpg')}}"></span>
 
                      </div>
 
@@ -708,7 +708,7 @@
                      <div class="me-2">
 
                         <span class="avatar avatar-md brround cover-image"
-                           data-bs-image-src="{{ asset('public/assets/images/users/4.jpg')}}"><span
+                           data-bs-image-src="{{ asset('assets/images/users/4.jpg')}}"><span
                               class="avatar-status bg-success"></span></span>
 
                      </div>
@@ -920,7 +920,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block active">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/us_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/us_flag.jpg')}}"
                            class="me-3 language"></span>USA
 
                   </a>
@@ -932,7 +932,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/italy_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/italy_flag.jpg')}}"
                            class="me-3 language"></span>Italy
 
                   </a>
@@ -944,7 +944,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/spain_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/spain_flag.jpg')}}"
                            class="me-3 language"></span>Spain
 
                   </a>
@@ -956,7 +956,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/india_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/india_flag.jpg')}}"
                            class="me-3 language"></span>India
 
                   </a>
@@ -968,7 +968,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/french_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/french_flag.jpg')}}"
                            class="me-3 language"></span>French
 
                   </a>
@@ -980,7 +980,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/russia_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/russia_flag.jpg')}}"
                            class="me-3 language"></span>Russia
 
                   </a>
@@ -992,7 +992,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/germany_flag.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/germany_flag.jpg')}}"
                            class="me-3 language"></span>Germany
 
                   </a>
@@ -1004,7 +1004,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/argentina.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/argentina.jpg')}}"
                            class="me-3 language"></span>Argentina
 
                   </a>
@@ -1016,7 +1016,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/malaysia.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/malaysia.jpg')}}"
                            class="me-3 language"></span>Malaysia
 
                   </a>
@@ -1028,7 +1028,7 @@
                   <a href="javascript:void(0)" class="btn btn-country btn-lg btn-block">
 
                      <span class="country-selector"><img alt=""
-                           src="{{ asset('public/assets/images/flags-img/turkey.jpg')}}"
+                           src="{{ asset('assets/images/flags-img/turkey.jpg')}}"
                            class="me-3 language"></span>Turkey
 
                   </a>
@@ -1217,7 +1217,7 @@
 
                         <div class="scan_icon">
 
-                           <img src="{{ asset('public/assets/images/newimages/scan-icon.png')}}" alt="">
+                           <img src="{{ asset('assets/images/newimages/scan-icon.png')}}" alt="">
 
                         </div>
 
@@ -1341,206 +1341,206 @@
 
 <!-- JQUERY JS -->
 
-<script src="{{ asset('public/assets/js/jquery.min.js')}}"></script>
+<script src="{{ asset('assets/js/jquery.min.js')}}"></script>
 
 <!-- BOOTSTRAP JS -->
 
-<script src="{{ asset('public/assets/plugins/bootstrap/js/popper.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/bootstrap/js/popper.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/bootstrap/js/bootstrap.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/Common/js/CountrySelect.js')}}"></script>
+<script src="{{ asset('assets/Common/js/CountrySelect.js')}}"></script>
 
 <!-- SPARKLINE JS-->
 
-<script src="{{ asset('public/assets/js/jquery.sparkline.min.js')}}"></script>
+<script src="{{ asset('assets/js/jquery.sparkline.min.js')}}"></script>
 
 <!-- Sticky js -->
 
-<script src="{{ asset('public/assets/js/sticky.js')}}"></script>
+<script src="{{ asset('assets/js/sticky.js')}}"></script>
 
 <!-- CHART-CIRCLE JS-->
 
-<script src="{{ asset('public/assets/js/circle-progress.min.js')}}"></script>
+<script src="{{ asset('assets/js/circle-progress.min.js')}}"></script>
 
 <!-- PIETY CHART JS-->
 
-<script src="{{ asset('public/assets/plugins/peitychart/jquery.peity.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/peitychart/jquery.peity.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/peitychart/peitychart.init.js')}}"></script>
+<script src="{{ asset('assets/plugins/peitychart/peitychart.init.js')}}"></script>
 
 <!-- SIDEBAR JS -->
 
-<script src="{{ asset('public/assets/plugins/sidebar/sidebar.js')}}"></script>
+<script src="{{ asset('assets/plugins/sidebar/sidebar.js')}}"></script>
 
 <!-- INTERNAL SUMMERNOTE Editor JS -->
 
-<script src="{{ asset('public/assets/plugins/summernote/summernote1.js')}}"></script>
+<script src="{{ asset('assets/plugins/summernote/summernote1.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/summernote.js')}}"></script>
+<script src="{{ asset('assets/js/summernote.js')}}"></script>
 
 <!-- INTERNAL FORMEDITOR JS -->
 
-<script src="{{ asset('public/assets/plugins/quill/quill.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/quill/quill.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/form-editor2.js')}}"></script>
+<script src="{{ asset('assets/js/form-editor2.js')}}"></script>
 
 <!-- Froala Editor JS-->
 
 <script src='https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js'></script>
 
-<script src="{{ asset('public/assets/js/froala.js')}}"></script>
+<script src="{{ asset('assets/js/froala.js')}}"></script>
 
 <!-- Perfect SCROLLBAR JS-->
 
-<script src="{{ asset('public/assets/plugins/p-scroll/perfect-scrollbar.js')}}"></script>
+<script src="{{ asset('assets/plugins/p-scroll/perfect-scrollbar.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/p-scroll/pscroll.js')}}"></script>
+<script src="{{ asset('assets/plugins/p-scroll/pscroll.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/p-scroll/pscroll-1.js')}}"></script>
+<script src="{{ asset('assets/plugins/p-scroll/pscroll-1.js')}}"></script>
 
 <!-- INTERNAL CHARTJS CHART JS-->
 
-<script src="{{ asset('public/assets/plugins/chart/Chart.bundle.js')}}"></script>
+<script src="{{ asset('assets/plugins/chart/Chart.bundle.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/chart/utils.js')}}"></script>
+<script src="{{ asset('assets/plugins/chart/utils.js')}}"></script>
 
 <!-- INTERNAL SELECT2 JS -->
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&libraries=places"
    defer></script>
 
-<script src="{{ asset('public/assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 
 <!-- DATA TABLE JS-->x`
 
-<script src="{{ asset('public/assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/dataTables.bootstrap5.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/buttons.bootstrap5.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/buttons.bootstrap5.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/jszip.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/jszip.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/pdfmake/pdfmake.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/pdfmake/pdfmake.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/pdfmake/vfs_fonts.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/pdfmake/vfs_fonts.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/buttons.html5.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/buttons.print.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/buttons.colVis.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/dataTables.responsive.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/datatable/responsive.bootstrap5.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/datatable/responsive.bootstrap5.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/table-data.js')}}"></script>
+<script src="{{ asset('assets/js/table-data.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/datatable.js')}}"></script>
+<script src="{{ asset('assets/js/datatable.js')}}"></script>
 
 <!-- SELECT2 JS -->
 
-<script src="{{ asset('public/assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/select2.js')}}"></script>
+<script src="{{ asset('assets/js/select2.js')}}"></script>
 
 <!-- INTERNAL APEXCHART JS -->
 
-<script src="{{ asset('public/assets/js/apexcharts.js')}}"></script>
+<script src="{{ asset('assets/js/apexcharts.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/apexchart/irregular-data-series.js')}}"></script>
+<script src="{{ asset('assets/plugins/apexchart/irregular-data-series.js')}}"></script>
 
 <!-- INTERNAL Flot JS -->
 
-<script src="{{ asset('public/assets/plugins/flot/jquery.flot.js')}}"></script>
+<script src="{{ asset('assets/plugins/flot/jquery.flot.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/flot/jquery.flot.fillbetween.js')}}"></script>
+<script src="{{ asset('assets/plugins/flot/jquery.flot.fillbetween.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/flot/chart.flot.sampledata.js')}}"></script>
+<script src="{{ asset('assets/plugins/flot/chart.flot.sampledata.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/flot/dashboard.sampledata.js')}}"></script>
+<script src="{{ asset('assets/plugins/flot/dashboard.sampledata.js')}}"></script>
 
 <!-- INTERNAL Vector js -->
 {{--
- <script src="{{ asset('public/assets/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js')}}"></script>
+ <script src="{{ asset('assets/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script> --}}
+<script src="{{ asset('assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script> --}}
 
-<script src="{{ asset('/public/assets/sweet-alert/sweetalert.min.js')}}"></script>
+<script src="{{ asset('/assets/sweet-alert/sweetalert.min.js')}}"></script>
 
-<script src="{{ asset('/public/assets/sweet-alert/jquery.sweet-alert.js')}}"></script>
+<script src="{{ asset('/assets/sweet-alert/jquery.sweet-alert.js')}}"></script>
 
 <!-- SIDE-MENU JS-->
 
-<script src="{{ asset('public/assets/plugins/sidemenu/sidemenu.js')}}"></script>
+<script src="{{ asset('assets/plugins/sidemenu/sidemenu.js')}}"></script>
 
 <!-- CHARTJS JS -->
 
-<script src="{{ asset('public/assets/plugins/chart/Chart.bundle.js')}}"></script>
+<script src="{{ asset('assets/plugins/chart/Chart.bundle.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/chart.js')}}"></script>
+<script src="{{ asset('assets/js/chart.js')}}"></script>
 
 <!-- TypeHead js -->
 
-<script src="{{ asset('public/assets/plugins/bootstrap5-typehead/autocomplete.js')}}"></script>
+<script src="{{ asset('assets/plugins/bootstrap5-typehead/autocomplete.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/typehead.js')}}"></script>
+<script src="{{ asset('assets/js/typehead.js')}}"></script>
 
 <!-- FORM WIZARD JS-->
 
-<script src="{{ asset('public/assets/plugins/formwizard/jquery.smartWizard.js')}}"></script>
+<script src="{{ asset('assets/plugins/formwizard/jquery.smartWizard.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/formwizard/fromwizard.js')}}"></script>
+<script src="{{ asset('assets/plugins/formwizard/fromwizard.js')}}"></script>
 
 <!-- INTERNAl Jquery.steps js -->
 
-<script src="{{ asset('public/assets/plugins/jquery-steps/jquery.steps.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/jquery-steps/jquery.steps.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/parsleyjs/parsley.min.js')}}"></script>
 
 <!-- INTERNAL Accordion-Wizard-Form js-->
 
-<script src="{{ asset('public/assets/plugins/accordion-Wizard-Form/jquery.accordion-wizard.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/accordion-Wizard-Form/jquery.accordion-wizard.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/form-wizard.js')}}"></script>
+<script src="{{ asset('assets/js/form-wizard.js')}}"></script>
 
 <!-- C3 CHART JS -->
 
-<script src="{{ asset('public/assets/plugins/charts-c3/d3.v5.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/charts-c3/d3.v5.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/charts-c3/c3-chart.js')}}"></script>
+<script src="{{ asset('assets/plugins/charts-c3/c3-chart.js')}}"></script>
 
 <!-- MORRIS-CHART JS -->
 
-<script src="{{ asset('public/assets/plugins/morris/raphael-min.js')}}"></script>
+<script src="{{ asset('assets/plugins/morris/raphael-min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/morris/morris.js')}}"></script>
+<script src="{{ asset('assets/plugins/morris/morris.js')}}"></script>
 
-<script src="{{ asset('public/assets/js/morris.js')}}"></script>
+<script src="{{ asset('assets/js/morris.js')}}"></script>
 
 <!-- INTERNAL INDEX JS -->
 
-<script src="{{ asset('public/assets/js/index1.js')}}"></script>
+<script src="{{ asset('assets/js/index1.js')}}"></script>
 
 <!-- Color Theme js -->
 
-<script src="{{ asset('public/assets/js/themeColors.js')}}"></script>
+<script src="{{ asset('assets/js/themeColors.js')}}"></script>
 
 <!-- CUSTOM JS -->
 
-<script src="{{ asset('public/assets/js/custom.js')}}"></script>
+<script src="{{ asset('assets/js/custom.js')}}"></script>
 
 <!-- Custom-switcher -->
 
-<script src="{{ asset('public/assets/js/custom-swicher.js')}}"></script>
+<script src="{{ asset('assets/js/custom-swicher.js')}}"></script>
 
 <!-- Switcher js -->
 
-<script src="{{ asset('public/assets/switcher/js/switcher.js')}}"></script>
+<script src="{{ asset('assets/switcher/js/switcher.js')}}"></script>
 
 <!--  Flatpickr  Code Start -->
 

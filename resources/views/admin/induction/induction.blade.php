@@ -199,10 +199,10 @@
                                         $whole = $whole1[1];
                                     @endphp
                                     @if($whole=='pdf')
-                                    <a href="{{ asset('public/assets/Induction/image/'.$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open PDF</a>
+                                    <a href="{{ asset('assets/Induction/image/'.$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open PDF</a>
 
                                     @else
-                                    <a href="{{ asset('public/assets/Induction/image/'.$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open Image</a>
+                                    <a href="{{ asset('assets/Induction/image/'.$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open Image</a>
 
                                     @endif
                                </td>

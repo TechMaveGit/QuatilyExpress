@@ -181,7 +181,7 @@
                     <div class="row">
                        <div class="col-lg-12">
                           <div class="approve_cnt">
-                             {{-- <img src="{{ asset('public/assets/images/newimages/question-mark.png')}}" alt=""> --}}
+                             {{-- <img src="{{ asset('assets/images/newimages/question-mark.png')}}" alt=""> --}}
                              <h3>Do you want to approve ?</h3>
                              <input type="hidden" name="shiftId" id="shiftId" />
                              {{-- <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto, delectus?</p> --}}
@@ -212,7 +212,7 @@
              <div class="row">
                 <div class="col-lg-12">
                    <div class="approve_cnt">
-                      <img src="{{ asset('public/assets/images/newimages/question-mark.png')}}" alt="">
+                      <img src="{{ asset('assets/images/newimages/question-mark.png')}}" alt="">
                       <h3>Do you want to approve ?</h3>
                       <input type="hidden" name="shiftId" id="shiftId" />
                       <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto, delectus?</p>

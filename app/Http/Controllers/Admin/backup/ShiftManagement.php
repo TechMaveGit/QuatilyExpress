@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\ShiftReportsExport;
-
 use App\Helpers\DataTableHelper;
 
 use App\Helpers\DataTableShiftHelper;
 
+use DB;
+
+use Auth;
+
 use DateTime;
+
+use Redirect;
 
 use ZipArchive;
 
@@ -56,9 +60,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 use App\Models\shiftMonetizeInformation;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
+
 use Illuminate\Support\Facades\Validator;
 
 class ShiftManagement extends Controller
@@ -82,133 +84,150 @@ class ShiftManagement extends Controller
     public function importClient(Request $request)
     {
         $file = $request->file('excel_file');
-        $filePath = $file->getRealPath();
-        $spreadsheet = IOFactory::load($filePath);
-        $worksheet = $spreadsheet->getActiveSheet();
+                $filePath = $file->getRealPath();
+                $spreadsheet = IOFactory::load($filePath);
+                $worksheet = $spreadsheet->getActiveSheet();
 
-        $data = [];
-        $clientIds = [];
-        foreach ($worksheet->getRowIterator() as $row) {
-            $rowData = [];
-            foreach ($row->getCellIterator() as $kk => $cell) {
-                $rowData[] = $cell->getValue();
-            }
-            $data[] = $rowData;
-        }
+                $data = [];
+                $clientIds = [];
+                foreach ($worksheet->getRowIterator() as $row) {
+                    $rowData = [];
+                    foreach ($row->getCellIterator() as $kk=>$cell) {
+                        $rowData[] = $cell->getValue();
+                    }
+                    $data[] = $rowData;
+                }
 
-        unset($data[0]);
-        foreach ($data as $kk => $rd) {
-            $clientIds[$kk] =
-                [
-                    'id' => $rd[0],
-                    'clientName' => $rd[1],
-                    'cost' => $rd[2],
-                    'driver' => $rd['3'],
-                    'base' => $rd['5'],
-                    'parcelTaken' => $rd['6'],
-                ];
-        }
+                unset($data[0]);
+                foreach($data as $kk=>$rd)
+                {
+                    $clientIds[$kk] =
+                    [
+                                    'id' => $rd[0],
+                                    'clientName' => $rd[1],
+                                    'cost' => $rd[2],
+                                    'driver' =>$rd['3'],
+                                    'base' =>$rd['5'],
+                                    'parcelTaken' =>$rd['6'],
+                    ];
+               }
 
-        foreach ($clientIds as $datas) {
-            if ($datas['status'] == "TO_APPROVE") {
-                $status = '2';
-            }
+            foreach($clientIds as $datas)
+            {
+                if($datas['status']=="TO_APPROVE")
+                {
+                    $status='2';
+                }
 
-            $shift =  DB::table('clients')->insertGetId([
-                'clientName' => $rd[1],
-                'cost' => $rd[2],
-                'driver' => $rd['3'],
-                'base' => $rd['5'],
-            ]);
-        }
+               $shift =  DB::table('clients')->insertGetId([
+                                                    'clientName' => $rd[1],
+                                                    'cost' => $rd[2],
+                                                    'driver' =>$rd['3'],
+                                                    'base' =>$rd['5'],
+                                                ]);
+           }
     }
 
-    public function importClientRate(Request $request)
-    {
-        $file = $request->file('excel_file');
-        $filePath = $file->getRealPath();
-        $spreadsheet = IOFactory::load($filePath);
-        $worksheet = $spreadsheet->getActiveSheet();
 
-        $data = [];
-        $clientIds = [];
-        foreach ($worksheet->getRowIterator() as $row) {
-            $rowData = [];
-            foreach ($row->getCellIterator() as $kk => $cell) {
-                $rowData[] = $cell->getValue();
+
+        public function importClientRate(Request $request)
+        {
+            $file = $request->file('excel_file');
+                    $filePath = $file->getRealPath();
+                    $spreadsheet = IOFactory::load($filePath);
+                    $worksheet = $spreadsheet->getActiveSheet();
+
+                    $data = [];
+                    $clientIds = [];
+                    foreach ($worksheet->getRowIterator() as $row) {
+                        $rowData = [];
+                        foreach ($row->getCellIterator() as $kk=>$cell) {
+                            $rowData[] = $cell->getValue();
+                        }
+                        $data[] = $rowData;
+                    }
+
+                    unset($data[0]);
+                    foreach($data as $kk=>$rd)
+                    {
+                        $clientIds[$kk] =
+                        [
+                                        'id' => $rd[0],
+                                        'clientName' => $rd[1],
+                                        'cost' => $rd[2],
+                                        'driver' =>$rd['3'],
+                                        'base' =>$rd['5'],
+                                        'parcelTaken' =>$rd['6'],
+                        ];
+                }
+
+                foreach($clientIds as $datas)
+                {
+                    if($datas['status']=="TO_APPROVE")
+                    {
+                        $status='2';
+                    }
+
+                  $shift =  DB::table('clientrates')->insertGetId([
+                                                        'clientName' => $rd[1],
+                                                        'cost' => $rd[2],
+                                                        'driver' =>$rd['3'],
+                                                        'base' =>$rd['5'],
+                                                    ]);
             }
-            $data[] = $rowData;
         }
 
-        unset($data[0]);
-        foreach ($data as $kk => $rd) {
-            $clientIds[$kk] =
-                [
-                    'id' => $rd[0],
-                    'clientName' => $rd[1],
-                    'cost' => $rd[2],
-                    'driver' => $rd['3'],
-                    'base' => $rd['5'],
-                    'parcelTaken' => $rd['6'],
-                ];
-        }
 
-        foreach ($clientIds as $datas) {
-            if ($datas['status'] == "TO_APPROVE") {
-                $status = '2';
+        public function importClientBase(Request $request)
+        {
+            $file = $request->file('excel_file');
+                    $filePath = $file->getRealPath();
+                    $spreadsheet = IOFactory::load($filePath);
+                    $worksheet = $spreadsheet->getActiveSheet();
+
+                    $data = [];
+                    $clientIds = [];
+                    foreach ($worksheet->getRowIterator() as $row) {
+                        $rowData = [];
+                        foreach ($row->getCellIterator() as $kk=>$cell) {
+                            $rowData[] = $cell->getValue();
+                        }
+                        $data[] = $rowData;
+                    }
+
+                    unset($data[0]);
+                    foreach($data as $kk=>$rd)
+                    {
+                        $clientIds[$kk] =
+                        [
+                                        'id' => $rd[0],
+                                        'clientName' => $rd[1],
+                                        'cost' => $rd[2],
+                                        'driver' =>$rd['3'],
+                                        'base' =>$rd['5'],
+                                        'parcelTaken' =>$rd['6'],
+                        ];
+                }
+
+                foreach($clientIds as $datas)
+                {
+                    if($datas['status']=="TO_APPROVE")
+                    {
+                        $status='2';
+                    }
+
+                  $shift =  DB::table('clientbases')->insertGetId([
+                                                        'clientName' => $rd[1],
+                                                        'cost' => $rd[2],
+                                                        'driver' =>$rd['3'],
+                                                        'base' =>$rd['5'],
+                                                    ]);
             }
-
-            $shift =  DB::table('clientrates')->insertGetId([
-                'clientName' => $rd[1],
-                'cost' => $rd[2],
-                'driver' => $rd['3'],
-                'base' => $rd['5'],
-            ]);
-        }
-    }
-    public function importClientBase(Request $request)
-    {
-        $file = $request->file('excel_file');
-        $filePath = $file->getRealPath();
-        $spreadsheet = IOFactory::load($filePath);
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $data = [];
-        $clientIds = [];
-        foreach ($worksheet->getRowIterator() as $row) {
-            $rowData = [];
-            foreach ($row->getCellIterator() as $kk => $cell) {
-                $rowData[] = $cell->getValue();
-            }
-            $data[] = $rowData;
         }
 
-        unset($data[0]);
-        foreach ($data as $kk => $rd) {
-            $clientIds[$kk] =
-                [
-                    'id' => $rd[0],
-                    'clientName' => $rd[1],
-                    'cost' => $rd[2],
-                    'driver' => $rd['3'],
-                    'base' => $rd['5'],
-                    'parcelTaken' => $rd['6'],
-                ];
-        }
 
-        foreach ($clientIds as $datas) {
-            if ($datas['status'] == "TO_APPROVE") {
-                $status = '2';
-            }
 
-            $shift =  DB::table('clientbases')->insertGetId([
-                'clientName' => $rd[1],
-                'cost' => $rd[2],
-                'driver' => $rd['3'],
-                'base' => $rd['5'],
-            ]);
-        }
-    }
+
 
 
     //  public function importShift(Request $request)
@@ -439,55 +458,57 @@ class ShiftManagement extends Controller
         $clientIds = [];
         foreach ($worksheet->getRowIterator() as $row) {
             $rowData = [];
-            foreach ($row->getCellIterator() as $kk => $cell) {
+            foreach ($row->getCellIterator() as $kk=>$cell) {
                 $rowData[] = $cell->getValue();
             }
             $data[] = $rowData;
         }
 
         unset($data[0]);
-        // unset($data[1]);
+        unset($data[1]);
 
-        foreach ($data as $kk => $rd) {
+        foreach($data as $kk=>$rd)
+        {
             $clientIds[$kk] = [
-                'shiftId'         => $rd[0],
-                'parcel_taken'    => $rd[4],
-                'parcel_delivery' => $rd[5],
-                'state'           =>  $rd[8],
-                'created_at'      => $rd[9],
-                'date_start' => $rd[10],
-                'time_start' => $rd[11],
-                'date_finish' => $rd[12],
-                'time_finish' => $rd[13],
-                'total_hours'  => $rd['15'],
+                                      'shiftId'         => $rd[0],
+                                      'parcel_taken'    => $rd[4],
+                                      'parcel_delivery' => $rd[5],
+                                      'state'           =>  $rd[8],
+                                      'created_at'      =>$rd[9],
+                                      'date_start' =>$rd[10],
+                                      'time_start' =>$rd[11],
+                                      'date_finish' =>$rd[12],
+                                      'time_finish' =>$rd[13],
+                                      'total_hours'  =>$rd['15'],
 
-                'amount_chargeable_day_shift' => $rd['16'],
+                                      'amount_chargeable_day_shift'=>$rd['16'],
 
-                'amount_payable_day_shift'  => $rd['17'],
-                'amount_payable_night_shift'  => $rd['18'],
-                'amount_chargeable_night_shift' => $rd['19'],
-                'amount_payable_weekend_shift' => $rd['20'],
-                'amount_chargeable_weekend_shift' => $rd['21'],
+                                      'amount_payable_day_shift'  =>$rd['17'],
+                                      'amount_payable_night_shift'  => $rd['18'],
+                                      'amount_chargeable_night_shift'=>$rd['19'],
+                                      'amount_payable_weekend_shift'=>$rd['20'],
+                                      'amount_chargeable_weekend_shift'=>$rd['21'],
 
-                'fuel_levy_pay' => $rd['22'],
-                'fuel_levy_charge' => $rd['23'],
-                'fuel_levy_chargeable' => $rd['24'],
-                'fuel_levy_chargeable400' => $rd['25'],
-                'extra_payable' => $rd['26'],
-                'extra_chargeable' => $rd['27'],
-                'total_chargeable' => $rd['28'],
-                'odometer_start' => $rd['29'],
-                'odometer_end' => $rd['30'],
-                'total_payable' => $rd['31'],
-                'traveled_km' => $rd['32'],
-                'comment' => $rd['33']
-            ];
+                                        'fuel_levy_pay'=>$rd['22'],
+                                        'fuel_levy_charge'=>$rd['23'],
+                                        'fuel_levy_chargeable'=>$rd['24'],
+                                        'fuel_levy_chargeable400'=>$rd['25'],
+                                        'extra_payable'=>$rd['26'],
+                                        'extra_chargeable'=>$rd['27'],
+                                        'total_chargeable' =>$rd['28'],
+                                        'odometer_start' =>$rd['29'],
+                                        'odometer_end' =>$rd['30'],
+                                        'total_payable' =>$rd['31'],
+                                        'traveled_km' =>$rd['32'],
+                                        'comment' =>$rd['33']
+                                ];
         }
 
 
-        // dd($clientIds);
+   // dd($clientIds);
 
-        foreach ($clientIds as $datas) {
+        foreach($clientIds as $datas)
+        {
 
             // if ($datas['odometer_start'] && $datas['odometer_end'])
             // {
@@ -495,48 +516,175 @@ class ShiftManagement extends Controller
             //  }
 
 
-            $phpDateTime = Date::excelToDateTimeObject($datas['date_finish']);
-            $created_at = $phpDateTime->format('Y/m/d H:s:i');
+             $phpDateTime = Date::excelToDateTimeObject($datas['date_finish']);
+             $created_at = $phpDateTime->format('Y/m/d H:s:i');
 
-            $shift = preg_replace("/[^0-9]/", "", $datas['shiftId']);
-            dd($datas['total_payable'],);
+              $shift = preg_replace("/[^0-9]/", "", $datas['shiftId']);
+              Shift::where('shiftRandId',$shift)->update([
+                                                            'payAmount' =>$datas['total_payable'],
+                                                            'created_at'=>$created_at,
+                                                        ]);
 
-            Shift::where('shiftRandId', $shift)->update([
-                'payAmount' => $datas['total_payable'],
-                'created_at' => $created_at,
-            ]);
+              Finishshift::where('shiftId',$shift)->update([
 
-            Finishshift::where('shiftId', $shift)->update([
-
-                //  'startTime' =>$datas['time_start'],
-                'totalHours' => $datas['total_hours'],
-                // 'endDate' =>$datas['date_finish'],
-                //  'dayHours' =>$datas['total_morning'],
-                //  'nightHours' =>$datas['total_night'],
-                // 'weekendHours' =>$datas['hours_weekend_shift'],
+                                                          //  'startTime' =>$datas['time_start'],
+                                                            'totalHours' =>$datas['total_hours'],
+                                                            // 'endDate' =>$datas['date_finish'],
+                                                          //  'dayHours' =>$datas['total_morning'],
+                                                          //  'nightHours' =>$datas['total_night'],
+                                                            // 'weekendHours' =>$datas['hours_weekend_shift'],
 
 
-                'amount_payable_day_shift' => $datas['amount_payable_day_shift'],
-                'amount_chargeable_day_shift' => $datas['amount_chargeable_day_shift'],
-                'amount_payable_night_shift' => $datas['amount_payable_night_shift'],
-                'amount_chargeable_night_shift' => $datas['amount_chargeable_night_shift'],
-                'amount_payable_weekend_shift' => $datas['amount_payable_weekend_shift'],
-                'amount_chargeable_weekend_shift' => $datas['amount_chargeable_weekend_shift'],
-                'odometerStartReading' => $datas['odometer_start'] ?? 0,
-                'odometerEndReading' => $datas['odometer_end'] ?? 0,
-            ]);
+                                                            'amount_payable_day_shift' =>$datas['amount_payable_day_shift'],
+                                                            'amount_chargeable_day_shift'=>$datas['amount_chargeable_day_shift'],
+                                                            'amount_payable_night_shift'=>$datas['amount_payable_night_shift'],
+                                                            'amount_chargeable_night_shift'=>$datas['amount_chargeable_night_shift'],
+                                                            'amount_payable_weekend_shift'=>$datas['amount_payable_weekend_shift'],
+                                                            'amount_chargeable_weekend_shift'=>$datas['amount_chargeable_weekend_shift'],
+                                                            'odometerStartReading' =>$datas['odometer_start']?? 0,
+                                                            'odometerEndReading' =>$datas['odometer_end']?? 0,
+                                                        ]);
 
-            DB::table('y')->where('shiftId', $shift)->update([
-                'fuelLevyPayable' => $datas['fuel_levy_pay'],
-                'fuelLevyChargeable' => $datas['fuel_levy_charge'],
-                'fuelLevyChargeable250' => $datas['fuel_levy_chargeable'],
-                'fuelLevyChargeable400' => $datas['fuel_levy_chargeable400'],
-                'extraPayable' => $datas['extra_payable'],
-                'extraChargeable' => $datas['extra_chargeable'],
-                'totalChargeable' => $datas['total_chargeable'],
-            ]);
-        }
-        return redirect()->back()->with('message', 'Shift Import Updated Successfully!!');
+         DB::table('shiftMonetizeInformation')->where('shiftId',$shift)->update([
+                                                                'fuelLevyPayable' =>$datas['fuel_levy_pay'],
+                                                                'fuelLevyChargeable' =>$datas['fuel_levy_charge'],
+                                                                'fuelLevyChargeable250' =>$datas['fuel_levy_chargeable'],
+                                                                'fuelLevyChargeable400' =>$datas['fuel_levy_chargeable400'],
+                                                                'extraPayable' =>$datas['extra_payable'],
+                                                                'extraChargeable' =>$datas['extra_chargeable'],
+                                                                'totalChargeable' =>$datas['total_chargeable'],
+                                                            ]);
+
+         }
+
+
+        // foreach($data as $kk=>$rd)
+        // {
+        //     $clientIds[$kk] = [
+        //                             'id' => $rd[0],
+        //                             'clientName' => $rd[1],
+        //                             'cost' => $rd[2],
+        //                             'driver' =>$rd['3'],
+        //                             'base' =>$rd['5'],
+        //                             'parcelTaken' =>$rd['6'],
+        //                             'parcelDelivery' =>$rd['7'],
+        //                             'outstandingParcel'  =>$rd['8'],
+        //                             'rego'  =>$rd['9'],
+        //                             'vehicleType'  =>$rd['10'],
+        //                             'state'  =>$rd['11'],
+        //                             'DateStart'  =>$rd['12'],
+        //                             'timeStart'  =>$rd['13'],
+        //                             'dateFinish'  =>$rd['14'],
+        //                             'finishTime'  =>$rd['15'],
+        //                             'status'  =>$rd['16'],
+        //                             'totalPayable'  =>$rd['33'],
+        //                             'totalHr'  =>$rd['17'],
+        //                             'dayhr'  =>$rd['18'],
+        //                             'nighthr'  =>$rd['19'],
+        //                             'weekendhr'  =>$rd['20'],
+        //                             'amountPayableDayShift'  =>$rd['21'],
+        //                             'amountChargeableDayShift'  =>$rd['22'],
+        //                             'amountPayableNightShift' =>$rd['23'],
+        //                             'amountChargeableNightShift'  =>$rd['24'],
+        //                             'amountPayableWeekendShift'  =>$rd['25'],
+        //                             'amountChargeableWeekendShift'  =>$rd['26'],
+        //                             'odometerStart'   =>$rd['35'],
+        //                             'odometerEnd'   =>$rd['36'],
+
+        //                             'fuelLevyPayable'=>$rd['27'],
+        //                             'fuelLevyChargeableFixed'=>$rd['28'],
+        //                             'fuelLevyChargeable250'=>$rd['29'],
+        //                             'FuelLevyChargeable400'=>$rd['30'],
+        //                             'ExtraPayable' =>$rd['31'],
+        //                             'ExtraChargeAble' =>$rd['32'],
+        //                             'TotalChargeable'=>$rd['34'],
+        //                             'traveledKm'=>$rd['37'],
+        //                             'comment'=>$rd['38'],
+        //                         ];
+        // }
+
+        // foreach($clientIds as $datas)
+        // {
+        //     if($datas['status']=="TO_APPROVE")
+        //     {
+        //         $status='2';
+        //     }
+        //     if($datas['status']=="APPROVED")
+        //     {
+        //         $status='3';
+        //     }
+
+
+        //     // Start Date
+        //      $phpDateTime = Date::excelToDateTimeObject($datas['DateStart']);
+        //      $startDate = $phpDateTime->format('Y/m/d');
+        //      // End Date
+
+        //       // End Date
+        //       $phpDateTime = Date::excelToDateTimeObject($datas['dateFinish']);
+        //       $endDate = $phpDateTime->format('Y/m/d');
+        //       // End Date
+
+        //      $clientName=Client::where('name',$datas['clientName'])->first()->id?? 0;
+        //      $state=States::where('name',$datas['state'])->first()->id?? 0;
+        //      $driver=Driver::where('fullName',$datas['driver'])->first()->id?? 0;
+        //      $clientcenters=DB::table('clientcenters')->where('name',$datas['cost'])->first()->id?? 0;
+        //      $vehicleRego=DB::table('vehicals')->where('rego',$datas['rego'])->first()->id?? 0;
+        //      $type=DB::table('types')->where('name',$datas['vehicleType'])->first()->id?? 0;
+
+        //     $shift =  DB::table('shifts')->insertGetId([
+        //                             'shiftRandId' => $datas['id'],
+        //                             'client'      => $clientName,
+        //                             'state'       => $state,
+        //                             'driverId'    => $driver,
+        //                             'costCenter'  => $clientcenters,
+        //                             'base'        => $datas['base'],  /////
+        //                             'rego'        => $vehicleRego,
+        //                             'vehicleType' => $type,
+        //                             'parcelsToken'=> $datas['parcelTaken'],
+        //                             'shiftStartDate'=>$startDate.' '.$datas['timeStart'],
+        //                             'finishStatus' => $status,
+        //                             'payAmount' => $datas['totalPayable'],
+        //                             'chageAmount' => $datas['TotalChargeable'],
+        //                         ]);
+
+        //       Finishshift::insert([
+        //                            'startDate' =>$startDate,
+        //                            'endDate' =>$endDate,
+        //                            'startTime'=>$datas['timeStart'],
+        //                            'endTime'=>$datas['finishTime'],
+        //                             'shiftId'=> $shift,
+        //                             'driverId'=> $driver,
+        //                             'totalHours' =>$datas['totalHr'],
+        //                             'dayHours' =>$datas['dayhr'],
+        //                             'nightHours' =>$datas['nighthr'],
+        //                             'weekendHours' =>$datas['weekendhr'],
+        //                             'amount_payable_day_shift' =>$datas['amountPayableDayShift'],
+        //                             'amount_chargeable_day_shift'=>$datas['amountChargeableDayShift'],
+        //                             'amount_payable_night_shift'=>$datas['amountPayableNightShift'],
+        //                             'amount_chargeable_night_shift'=>$datas['amountChargeableNightShift'],
+        //                             'amount_payable_weekend_shift'=>$datas['amountPayableWeekendShift'],
+        //                             'amount_chargeable_weekend_shift'=>$datas['amountChargeableWeekendShift'],
+        //                             'odometerStartReading' =>$datas['odometerStart'],
+        //                             'odometerEndReading' =>$datas['odometerEnd'],
+        //                         ]);
+
+        //      DB::table('shiftMonetizeInformation')->insert([
+        //                                                         'shiftId'=>$shift,
+        //                                                         'fuelLevyPayable' =>$datas['fuelLevyPayable'],
+        //                                                         'fuelLevyChargeable' =>$datas['fuelLevyChargeableFixed'],
+        //                                                         'fuelLevyChargeable250' =>$datas['fuelLevyChargeable250'],
+        //                                                         'fuelLevyChargeable400' =>$datas['FuelLevyChargeable400'],
+        //                                                         'extraPayable' =>$datas['ExtraPayable'],
+        //                                                         'extraChargeable' =>$datas['ExtraChargeAble'],
+        //                                                         'totalChargeable' =>$datas['TotalChargeable'],
+        //                                                     ]);
+
+
+       //  }
+
+         return redirect()->back()->with('message', 'Shift Import Updated Successfully!!');
+
     }
 
 
@@ -731,48 +879,30 @@ class ShiftManagement extends Controller
 
     public function shiftAdd(Request $request)
     {
-        try {
-            if (request()->isMethod("post")) {
-                $driverId  = $request->driverId;
-                $shift = Shift::where('driverId', $driverId)->first()->id;
-                $checkExisted = FinishShift::where('shiftId', $shift)->first();
-                if ($checkExisted !="") {
-                    return redirect()->back()->with('error','Shift has started already, please finish your current shift');
-                }
-                else{
-                    
-                    $inputtypeRego1 = $request->input('inputtypeRego1');
-                    $inputtypeRego2 = $request->input('inputtypeRego2');
+        if (request()->isMethod("post")) {
+            $inputtypeRego1 = $request->input('inputtypeRego1');
+            $inputtypeRego2 = $request->input('inputtypeRego2');
 
-                    if ($inputtypeRego2) {
-                        $regoId = Vehical::where('rego', $inputtypeRego2)->first();
-                        $regoId = $regoId->id;
-                    } else {
-                        $vehicleType = $request->input('vehicleType');
-                        $vehicle = new Vehical();
-                        $vehicle->vehicalType = $vehicleType;
-                        $vehicle->rego = $inputtypeRego1;
-                        $vehicle->save();
-                        $regoId = $vehicle->id;
-                    }
-
-
-                    $shiftAdd = $request->except(['_token', 'submit']);
-                    $shiftAdd['shiftRandId'] = rand('9999', '0000');
-                    $shiftAdd['finishStatus'] = '1';
-                    $shiftAdd['shiftStartDate'] = date('Y-m-d H:i');
-                    $shiftAdd['rego'] = $regoId;
-                    $shift = Shift::create($shiftAdd);
-
-                    return Redirect::route('admin.shift.report')->with('message', 'Shift Added Successfully!!');
-                }
-
-
+             if ($inputtypeRego2) {
+                $regoId = Vehical::where('rego', $inputtypeRego2)->first();
+                $regoId = $regoId->id;
+            } else {
+                    $vehicleType = $request->input('vehicleType');
+                    $vehicle = new Vehical();
+                    $vehicle->vehicalType = $vehicleType;
+                    $vehicle->rego = $inputtypeRego1;
+                    $vehicle->save();
+                    $regoId = $vehicle->id;
             }
-        } catch (\Exception $e) {
-            return redirect()->back()->with('Something went wrong');
-        }
 
+
+            $shiftAdd = $request->except(['_token', 'submit']);
+            $shiftAdd['shiftRandId'] = rand('9999', '0000');
+            $shiftAdd['rego'] = $regoId;
+            $shift = Shift::create($shiftAdd);
+
+            return Redirect::route('admin.shift.report')->with('message', 'Shift Added Successfully!!');
+        }
 
         $data['common'] = DB::table('alldropdowns')->get();
         $data['driverAdd'] = Driver::where('status', '1')->get();
@@ -790,6 +920,60 @@ class ShiftManagement extends Controller
         $nightMinutes = 0;
         $saturdayMinutes = 0;
         $sundayMinutes = 0;
+
+        // while ($startDate < $endDate) {
+        //     $currentHour = date('H', $startDate);
+        //     $currentMinute = date('i', $startDate);
+
+        //     if (date('N', $startDate) < 6 && ($currentHour >= 4 && $currentHour <= 17)) {
+        //         if($currentHour == 17)
+        //         {
+        //           if($currentMinute < 59){
+        //               $dayMinutes++;
+        //           }
+        //         } else {
+        //             $dayMinutes++;
+        //         }
+        //     } elseif (date('N', $startDate) < 6 && ($currentHour >= 18 || $currentHour <= 3)) {
+        //         if ($currentHour == 3) {
+        //             if ($currentMinute < 59) {
+        //                 $nightMinutes++;
+        //             }
+        //         }
+
+        //         else if($currentHour == 23){
+        //             $nextDay = strtotime('+1 minute', $startDate);
+        //             if (date('N', $nextDay) == 6 &&  $currentMinute < 59) {
+        //                 $nightMinutes++;
+        //             } else if (date('N', $nextDay) <= 5) {
+        //                 $nightMinutes++;
+        //             }
+        //         }
+
+        //          else {
+        //             $nightMinutes++;
+        //         }
+        //     } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 6) { // Saturday
+        //         if ($currentHour == 23) {
+        //             if ($currentMinute < 59) {
+        //                 $saturdayMinutes++;
+        //             }
+        //         }  else {
+        //             $saturdayMinutes++;
+        //         }
+        //     } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 7) { // Sunday
+        //         if ($currentHour == 23) {
+        //             if ($currentMinute < 59) {
+        //                 $sundayMinutes++;
+        //             }
+        //         }  else {
+        //             $sundayMinutes++;
+        //         }
+        //     }
+
+        //     $startDate = strtotime('+1 minute', $startDate);
+        // }
+
         while ($startDate < $endDate) {
             $currentHour = date('H', $startDate);
             $currentMinute = date('i', $startDate);
@@ -810,25 +994,25 @@ class ShiftManagement extends Controller
         return  [
             'dayHours' => floor($dayMinutes / 60),
             'dayMinutes' => $dayMinutes % 60 < 10 ? "0" . ($dayMinutes % 60) : $dayMinutes % 60,
-            'dayMinutesNew' => round(floor($dayMinutes % 60) / 60, 2),
-            'dayTotal' => number_format(floor($dayMinutes / 60) + round(floor($dayMinutes % 60) / 60, 2), 2),
+            'dayMinutesNew' => round(floor($dayMinutes % 60) / 60 , 2),
+             'dayTotal' => number_format(floor($dayMinutes / 60) + round(floor($dayMinutes % 60) / 60 , 2), 2),
 
             'nightHours' => floor($nightMinutes / 60),
             'nightMinutes' => $nightMinutes % 60 < 10 ? "0" . ($nightMinutes % 60) : $nightMinutes % 60,
-            'nightMinutesNew' => round(floor($nightMinutes % 60) / 60, 2),
-            'nightTotal' => number_format(floor($nightMinutes / 60) + round(floor($nightMinutes % 60) / 60, 2), 2),
+            'nightMinutesNew' => round(floor($nightMinutes % 60) / 60 , 2),
+            'nightTotal' => number_format(floor($nightMinutes / 60) + round(floor($nightMinutes % 60) / 60 , 2), 2),
 
 
             'saturdayHours' => floor($saturdayMinutes / 60),
             'saturdaMinutes' => $saturdayMinutes % 60,
-            'saturdayMinutesNew' => round(floor($saturdayMinutes % 60) / 60, 2),
-            'totalSaturdayHours' => number_format(floor($saturdayMinutes / 60) + round(floor($saturdayMinutes % 60) / 60, 2), 2),
+            'saturdayMinutesNew' => round(floor($saturdayMinutes % 60) / 60,2),
+            'totalSaturdayHours' => number_format(floor($saturdayMinutes / 60) + round(floor($saturdayMinutes % 60) / 60 , 2), 2),
 
 
             'sundayHours' => floor($sundayMinutes / 60),
             'sundayMinutes' => $sundayMinutes % 60,
-            'sundayMinutesNew' => round(floor($sundayMinutes % 60) / 60, 2),
-            'totalSundayHours' => number_format(floor($sundayMinutes / 60) + round(floor($sundayMinutes % 60) / 60, 2), 2),
+             'sundayMinutesNew' => round(floor($sundayMinutes % 60) / 60 , 2),
+             'totalSundayHours' => number_format(floor($sundayMinutes / 60) + round(floor($sundayMinutes % 60) / 60 , 2), 2),
 
         ];
     }
@@ -847,7 +1031,7 @@ class ShiftManagement extends Controller
 
         if (request()->isMethod("post")) {
 
-            //   return $request->start_date;
+         //   return $request->start_date;
 
             $parcelsTaken           = $request->parcelsToken;
             $parcel_delivered       = $request->parcel_delivered;
@@ -865,12 +1049,12 @@ class ShiftManagement extends Controller
                 $regoId = Vehical::where('rego', $inputtypeRego2)->first();
                 $regoId = $regoId->id;
             } else {
-                $vehicleType = $request->input('vehicleType');
-                $vehicle = new Vehical();
-                $vehicle->vehicalType = $vehicleType;
-                $vehicle->rego = $inputtypeRego1;
-                $vehicle->save();
-                $regoId = $vehicle->id;
+                    $vehicleType = $request->input('vehicleType');
+                    $vehicle = new Vehical();
+                    $vehicle->vehicalType = $vehicleType;
+                    $vehicle->rego = $inputtypeRego1;
+                    $vehicle->save();
+                    $regoId = $vehicle->id;
             }
 
             $shiftAdd = $request->except(['_token', 'submit']);
@@ -902,7 +1086,7 @@ class ShiftManagement extends Controller
             $priceCompare = DB::table('personrates')->where('type', $data['shiftView']->vehicleType)->where('personId', $data['shiftView']->driverId)->first();
 
 
-            $startDate    = strtotime($request->start_date);
+             $startDate    = strtotime($request->start_date);
 
             $endDate      = strtotime($request->end_date);
             $dayStartTime = Carbon::parse($startDate);
@@ -1018,7 +1202,7 @@ class ShiftManagement extends Controller
 
                 $driverResponsible = $request->input('driverId');
 
-                $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
+                 $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
 
                 $totalChargeDay   = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
                 Shift::where('id', $shify->id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
@@ -1090,7 +1274,7 @@ class ShiftManagement extends Controller
 
         $data['clientbases'] = DB::table('clientbases')->select('id', 'base')->get();
 
-        $data['shiftstatus'] = DB::table('shiftstatus')->where('status', '1')->get();
+        $data['shiftstatus'] = DB::table('shiftstatus')->get();
 
         $data['statusData'] = $request->input('status');
 
@@ -1108,78 +1292,131 @@ class ShiftManagement extends Controller
     public function myAjaxshift(Request $request)
     {
 
-        $query = Shift::orderBy('id', 'DESC');
+        $query=Shift::orderBy('id','DESC');
 
-        $data['state'] =  $request->input('form.state');
-        $data['client'] = $request->input('form.client');
-        $data['status'] = $request->input('status');
-        $data['costCenter'] = $request->input('costCenter');
-        $data['base'] = $request->input('base');
-        $data['start'] = $request->input('start');
-        $data['finish'] = $request->input('finish');
-
-
-        if ($data['state']) {
-            return  $data['state'];
-            $query = $query->whereIn('state', $data['state']);
-        }
+            $data['state'] =  $request->input('form.state');
+            $data['client'] = $request->input('form.client');
+            $data['status'] = $request->input('status');
+            $data['costCenter'] = $request->input('costCenter');
+            $data['base'] = $request->input('base');
+            $data['start'] = $request->input('start');
+            $data['finish'] = $request->input('finish');
 
 
-        if ($data['client']) {
-            $query = $query->whereIn('client', $data['client']);
-        }
+            if ($data['state']) {
+                return  $data['state'];
+                $query = $query->whereIn('state', $data['state']);
+            }
+
+
+            if ($data['client']) {
+                $query = $query->whereIn('client', $data['client']);
+            }
+
+            // if ($request->input('status'))
+            // {
+            //     if ($data['status']) {
+            //         $query = $query->WhereIn('finishStatus', $data['status']);
+            //     }
+            // }
+            // else{
+            //     $query = $query->WhereIn('finishStatus', $data['status']);
+            // }
+
+            // if ($request->input('costCenter'))
+            // {
+            //     if ($data['costCenter']) {
+            //         $query = $query->WhereIn('costCenter', $data['costCenter']);
+            //     }
+            // }
+
+            // if ($request->input('base'))
+            // {
+            //     if ($data['base']) {
+            //         $query = $query->WhereIn('base', $data['base']);
+            //     }
+            // }
+
+            // if ($request->input('start'))
+            // {
+            //     if ($data['start']) {
+            //         $sdate = $data['start'];
+            //         $query = $query->whereHas('getFinishShifts', function (Builder $query) use ($sdate) {
+            //             $query->where('startDate', '<=', $sdate);
+            //         });
+            //     }
+            // }
+
+            // if ($request->input('finish'))
+            // {
+            //     if ($data['finish']) {
+            //         $enddate = $data['finish'];
+            //         $query = $query->whereHas('getFinishShifts', function (Builder $query) use ($enddate) {
+            //             $query->where('endDate', '>=', $enddate);
+            //         });
+            //     }
+            // }
+
 
         $driverRole =  Auth::guard('adminLogin')->user()->role_id;
 
         $columnMapping = [
-            'Shift Id'   => 'shiftRandId',
-            'Client'   => 'getClientName.name',
-            'Cost'   => 'getCostCenter.name',
-            'Driver'   => 'getDriverName.userName',
-            'Parcels Taken'   => 'id',
-            'Parcels Delivered'   => 'getFinishShift.parcelsDelivered',
-            'REGO'   => 'getVehicalsRego.rego',
-            'Vehicle Type'   => 'getVehicleType.name',
-            'State'   => 'getStateName.name',
-            'Created Date'   => 'createdDate',
-            'Date Start'   => 'shiftStartDate',
-            'Time Start'   => 'getFinishShift.startTime',
-            'Date Finish'   => 'getFinishShift.endDate',
-            'Time Finish'   => 'getFinishShift.endTime',
-            'Status'   => 'finishStatus',
-            'Total Hours'   => 'id'
-        ];
+                            'Shift Id'   => 'shiftRandId',
+                            'Client'   => 'getClientName.name',
+                            'Cost'   =>'getCostCenter.name',
+                            'Driver'   =>'getDriverName.userName',
+                            'Parcels Taken'   =>'id',
+                            'Parcels Delivered'   =>'getFinishShift.parcelsDelivered',
+                            'REGO'   =>'getVehicalsRego.rego',
+                            'Vehicle Type'   => 'getVehicleType.name',
+                            'State'   => 'getStateName.name',
+                            'Created Date'   => 'createdDate',
+                            'Date Start'   => 'shiftStartDate',
+                            'Time Start'   =>'getFinishShift.startTime',
+                            'Date Finish'   =>'getFinishShift.endDate',
+                            'Time Finish'   => 'getFinishShift.endTime',
+                            'Status'   => 'finishStatus',
+                            'Total Hours'   => 'id'
+                        ];
 
-        if ($driverRole == 33) {
-            $columnMapping['Total Hours Day Shift'] = ($driverRole == 33) ? 'getFinishShift.dayHours' : null;
-            $columnMapping['Total Hours Night Shift'] = ($driverRole == 33) ? 'getFinishShift.nightHours' : null;
-            $columnMapping['Total Hours Weekend Shift'] = ($driverRole == 33) ? 'getFinishShift.weekendHours' : null;
-        }
+            if($driverRole == 33){
+             $columnMapping['Total Hours Day Shift'] = ($driverRole == 33) ? 'getFinishShift.dayHours' : null;
+             $columnMapping['Total Hours Night Shift'] = ($driverRole == 33) ? 'getFinishShift.nightHours' : null;
+             $columnMapping['Total Hours Weekend Shift'] = ($driverRole == 33) ? 'getFinishShift.weekendHours' : null;
+            }
 
-        $columnMapping['Amount Chargeable Day Shift']   = 'id';
-        $columnMapping['Amount Payable Day Shift']   = 'id';
-        $columnMapping['Amount Payable Night Shift']   = 'id';
-        $columnMapping['Amount Chargeable Night Shift']   = 'id';
-        $columnMapping['Amount Payable Weekend Shift']   = 'id';
-        $columnMapping['Amount Chargeable Weekend Shift']   = 'id';
+            $columnMapping['Amount Chargeable Day Shift']   = 'id';
+            $columnMapping['Amount Payable Day Shift']   = 'id';
+            $columnMapping['Amount Payable Night Shift']   = 'id';
+            $columnMapping['Amount Chargeable Night Shift']   = 'id';
+            $columnMapping['Amount Payable Weekend Shift']   = 'id';
+            $columnMapping['Amount Chargeable Weekend Shift']   = 'id';
 
-        $columnMapping['Fuel Levy Payable']   = 'getShiftMonetizeInformation.fuelLevyPayable';
-        $columnMapping['Fuel Levy Chargeable Fixed']   = 'getShiftMonetizeInformation.fuelLevyChargeable';
-        $columnMapping['Fuel Levy Chargeable 250+']   = 'getShiftMonetizeInformation.fuelLevyChargeable250';
-        $columnMapping['Fuel Levy Chargeable 400+']   = 'getShiftMonetizeInformation.fuelLevyChargeable400';
-        $columnMapping['Extra Payable']   = 'getShiftMonetizeInformation.extraPayable';
-        $columnMapping['Extra Chargeable']   = 'getShiftMonetizeInformation.extraChargeable';
-        $columnMapping['Total Chargeable']   = 'getShiftMonetizeInformation.totalChargeable';
-        $columnMapping['Odometer Start']   = 'getFinishShift.odometerStartReading';
-        $columnMapping['Odometer End']   = 'getFinishShift.odometerEndReading';
-        $columnMapping['Total Payable']   = 'payAmount';
-        $columnMapping['Traveled KM']   = 'id';
-        $columnMapping['Comment']   = 'comment';
-        $columnMapping['Action']   = 'id';
-        $pageStr = "shift_table";
+            $columnMapping['Fuel Levy Payable']   = 'getShiftMonetizeInformation.fuelLevyPayable';
+            $columnMapping['Fuel Levy Chargeable Fixed']   = 'getShiftMonetizeInformation.fuelLevyChargeable';
+            $columnMapping['Fuel Levy Chargeable 250+']   = 'getShiftMonetizeInformation.fuelLevyChargeable250';
+            $columnMapping['Fuel Levy Chargeable 400+']   = 'getShiftMonetizeInformation.fuelLevyChargeable400';
+            $columnMapping['Extra Payable']   = 'getShiftMonetizeInformation.extraPayable';
+            $columnMapping['Extra Chargeable']   = 'getShiftMonetizeInformation.extraChargeable';
+            $columnMapping['Total Chargeable']   = 'getShiftMonetizeInformation.totalChargeable';
+            $columnMapping['Odometer Start']   = 'getFinishShift.odometerStartReading';
+            $columnMapping['Odometer End']   = 'getFinishShift.odometerEndReading';
+            $columnMapping['Total Payable']   = 'payAmount';
+            $columnMapping['Traveled KM']   = 'id';
+            $columnMapping['Comment']   = 'comment';
+            $columnMapping['Action']   = 'id';
+            $pageStr = "shift_table";
 
-        return DataTableShiftHelper::getData($request, $query, $columnMapping, $pageStr);
+          return DataTableShiftHelper::getData($request, $query, $columnMapping, $pageStr);
+
     }
+
+
+
+
+
+
+
 
     public function shiftreport(Request $request)
     {
@@ -1275,55 +1512,59 @@ class ShiftManagement extends Controller
         if (isset($_GET['search'])) {
             $search = $_GET['search'];
             $clientsSearch = DB::table('clients')
-                ->where('name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
+                                            ->where('name', 'like', "%$search%")
+                                            ->pluck('id')
+                                            ->toArray();
             $drivers = DB::table('drivers')
-                ->where('userName', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
+                                            ->where('userName', 'like', "%$search%")
+                                            ->pluck('id')
+                                            ->toArray();
 
-            $clientbases = DB::table('clientbases')
-                ->where('cost_center_name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
+           $clientbases = DB::table('clientbases')
+                                            ->where('cost_center_name', 'like', "%$search%")
+                                            ->pluck('id')
+                                            ->toArray();
 
-            $rego = DB::table('vehicals')
-                ->where('rego', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
+           $rego = DB::table('vehicals')
+                                    ->where('rego', 'like', "%$search%")
+                                    ->pluck('id')
+                                    ->toArray();
 
             $types = DB::table('types')
-                ->where('name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
+                                    ->where('name', 'like', "%$search%")
+                                    ->pluck('id')
+                                    ->toArray();
 
             $states = DB::table('states')
-                ->where('name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-        } else {
-            $clientsSearch[] = '';
-            $drivers[] = '';
-            $clientbases[] = '';
-            $rego[] = '';
-            $types[] = '';
-            $states[] = '';
+                                    ->where('name', 'like', "%$search%")
+                                    ->pluck('id')
+                                    ->toArray();
+
+        } else{
+            $clientsSearch[]='';
+            $drivers[]='';
+            $clientbases[]='';
+            $rego[]='';
+            $types[]='';
+            $states[]='';
         }
 
 
-        $query = $query->orderBy('id', 'DESC')->with('getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge','getDriverName');
+          $query = $query->orderBy('id', 'DESC')->with('getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge');
 
-        if (substr($search, 0, 2) === 'QE' && is_numeric(substr($search, 2))) {
+          if (substr($search, 0, 2) === 'QE' && is_numeric(substr($search, 2)))
+          {
             $search = substr($search, 2);
-        } else {
-            $search = $search;
-        }
+          }
+          else
+          {
+             $search = $search;
+          }
 
 
 
-        if ($search) {
-            $query->where(function ($q) use ($search, $clientsSearch, $drivers, $clientbases, $rego, $types, $states) {
+          if ($search) {
+            $query->where(function ($q) use ($search, $clientsSearch, $drivers,$clientbases,$rego,$types,$states) {
                 $q->where('shiftRandId', $search)
                     ->orWhereIn('client', $clientsSearch)
                     ->orWhereIn('driverId', $drivers)
@@ -1349,175 +1590,18 @@ class ShiftManagement extends Controller
 
         $data['client'] = Client::where('status', '1')->get();
 
-        $data['shiftstatus'] = DB::table('shiftstatus')->where('status', '2')->get();
+        $data['shiftstatus'] = DB::table('shiftstatus')->get();
 
         $data['clientcenter'] = Clientcenter::select('id', 'name')->get();
 
         $data['clientbases'] = DB::table('clientbases')->select('id', 'base')->get();
 
+        $data['shiftstatus'] = DB::table('shiftstatus')->get();
+
         return view('admin.shift.shiftReport', $data, compact('itemsPerPage'));
     }
 
-
-    public function exportShift(Request $request)
-    {
-        $query = Shift::orderBy('id', 'DESC');
-
-        $data['state'] = '';
-
-        $data['clients'] = '';
-
-        $data['statusData'] = $request->input('status');
-
-        if (empty($data['statusData'])) {
-            $data['statusData'][] = '2';
-        } else {
-            $data['statusData'] = $request->input('status');
-        }
-
-
-        $data['costCenter'] = '';
-
-        $data['clients'] = [];
-
-        $data['start'] = '';
-
-        $data['finish'] = '';
-
-        $data['statefilter'][] = '';
-
-        $query = $query->WhereIn('finishStatus', $data['statusData']);
-
-
-        $data['statefilter'] = $request->input('state');
-
-        $data['clients'] = $request->input('client');
-
-        // echo "<pre>";
-        // print_r(  $data['clients']);
-
-
-
-        $data['costCenter'] = $request->input('costCenter');
-
-        $data['base'] = $request->input('base');
-
-        $data['start'] = $request->input('start');
-
-        $data['finish'] = $request->input('finish');
-
-        if ($data['statefilter']) {
-            $query = $query->WhereIn('state', $data['statefilter']);
-        }
-
-        if ($data['clients']) {
-            //  return $data['clients'];
-            $query = $query->WhereIn('client', $data['clients']);
-        }
-
-        if ($data['costCenter']) {
-            $query = $query->WhereIn('costCenter', $data['costCenter']);
-        }
-
-        if ($data['base']) {
-            $query = $query->WhereIn('base', $data['base']);
-        }
-
-        //   }
-
-        if ($data['start']) {
-            $sdate = $data['start'];
-            $query = $query->whereHas('getFinishShifts', function (Builder $query) use ($sdate) {
-                $query->where('startDate', '<=', $sdate);
-            });
-        }
-
-        if ($data['finish']) {
-            $enddate = $data['finish'];
-            $query = $query->whereHas('getFinishShifts', function (Builder $query) use ($enddate) {
-                $query->where('endDate', '>=', $enddate);
-            });
-        }
-
-
-        if ($userId->role_id == '33') {
-            $driverId = Driver::where('email', $userId->email)->first()->id;
-            $query = $query->where('driverId', $driverId);
-            $query = $query->whereNotIn('finishStatus', [0, 1]);
-        }
-
-        $search = '';
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-            $clientsSearch = DB::table('clients')
-                ->where('name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-            $drivers = DB::table('drivers')
-                ->where('userName', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-
-            $clientbases = DB::table('clientbases')
-                ->where('cost_center_name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-
-            $rego = DB::table('vehicals')
-                ->where('rego', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-
-            $types = DB::table('types')
-                ->where('name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-
-            $states = DB::table('states')
-                ->where('name', 'like', "%$search%")
-                ->pluck('id')
-                ->toArray();
-        } else {
-            $clientsSearch[] = '';
-            $drivers[] = '';
-            $clientbases[] = '';
-            $rego[] = '';
-            $types[] = '';
-            $states[] = '';
-        }
-
-
-        $query = $query->orderBy('id', 'DESC')->with('getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge');
-
-        if (substr($search, 0, 2) === 'QE' && is_numeric(substr($search, 2))) {
-            $search = substr($search, 2);
-        } else {
-            $search = $search;
-        }
-
-
-
-        if ($search) {
-            $query->where(function ($q) use ($search, $clientsSearch, $drivers, $clientbases, $rego, $types, $states) {
-                $q->where('shiftRandId', $search)
-                    ->orWhereIn('client', $clientsSearch)
-                    ->orWhereIn('driverId', $drivers)
-                    ->orWhereIn('base', $clientbases)
-                    ->orWhereIn('rego', $rego)
-                    ->orWhereIn('vehicleType', $types)
-                    ->orWhereIn('state', $states);
-            });
-        }
-
-        dd($query);
-
-        return Excel::download(new ShiftReportsExport($query), 'shifts.xlsx');
-    }
-
-
-
-    public function ajaxIndex(Request $request)
-    {
+    public function ajaxIndex(Request $request){
         $filters = [
             'base' => $request->input('base'),
             'vehicleType' => $request->input('vehicleType')
@@ -1533,8 +1617,9 @@ class ShiftManagement extends Controller
         $columns = ['base', 'vehicleType', 'getStateName.name', 'chageAmount'];
         $relations = [];
         $query = Shift::with(['getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])->has('getStateName');
-        return DataTableHelper::getData($request, $query, $columns, $columnMapping, $filters);
+        return DataTableHelper::getData($request, $query, $columns,$columnMapping,$filters);
     }
+
 
 
     public function shiftReportView(Request $request, $id)
@@ -1544,19 +1629,13 @@ class ShiftManagement extends Controller
         $getClientID = Shift::whereId($id)->first()->client;
 
         $data['shiftView'] = $query->orderBy('id', 'DESC')->with([
-            'getPersonRates', 'getDriverName', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates',
+            'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates',
             'getClientCharge' => function ($query) use ($getClientID) {
 
                 $query->where('clientId', $getClientID);
             }
         ])->first();
-        if ($data['shiftView']->finishStatus == '2') {
-            $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
-        } else {
-            $data['extra_rate_per_hour'] = 0;
-        }
 
-        // dd($data['extra_rate_per_hour']);
         // dd($data['shiftView']->getClientCharge);
 
         $data['weekendHour'] = '';
@@ -1692,13 +1771,17 @@ class ShiftManagement extends Controller
         return view('admin.shift.shift-report-view', $data, compact('finalAmount'));
     }
 
+
+
+
+
     public function shiftReportEdit(Request $request, $id)
     {
         $query = Shift::where('id', $id);
         $getClientID = Shift::whereId($id)->first()->client;
 
         $data['shiftView'] = $query->orderBy('id', 'DESC')->with([
-            'getPersonRates', 'getDriverName', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getShiftMonetizeInformation', 'getClientVehicleRates',
+            'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getShiftMonetizeInformation', 'getClientVehicleRates',
 
             'getClientCharge' => function ($query) use ($getClientID) {
 
@@ -1707,8 +1790,6 @@ class ShiftManagement extends Controller
         ])->first();
 
         //    dd( $data['shiftView']);
-
-
 
         $data['allstate'] = States::where('status', '1')->get();
 
@@ -1755,6 +1836,11 @@ class ShiftManagement extends Controller
 
                 $result       = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
 
+                //    $dayHr      =  $result['dayHours'].'.'.$result['dayMinutes'];
+                //    $nightHr    = $result['nightHours'].'.'.$result['nightMinutes'];
+                //    $saturdayHrs = $result['saturdayHours'].'.'. $result['saturdayMinutes'];
+                //    $sundayHrs   = $result['sundayHours'].'.'.$result['sundayMinutes'];
+                //    $weekend    = $saturdayHrs + $sundayHrs;
 
                 $dayHr       =   $result['dayTotal'];
                 $nightHr     =   $result['nightTotal'];
@@ -1882,9 +1968,10 @@ class ShiftManagement extends Controller
                 Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
 
                 $existingFinishshiftId = $id;
-                if ($existingFinishshiftId) {
+                if ($existingFinishshiftId)
+                {
 
-                    // return Carbon::parse($endDate)->format('Y-m-d');
+                   // return Carbon::parse($endDate)->format('Y-m-d');
 
                     $Parcel = Finishshift::where('shiftId', $existingFinishshiftId)->first();
                     if ($Parcel) {
@@ -1900,7 +1987,9 @@ class ShiftManagement extends Controller
                         $Parcel->endTime = Carbon::parse($endDate)->format('H:i');
                         $Parcel->save();
                     }
-                } else {
+                }
+                else
+                {
                     return Redirect::back()->with('error', ' Shift Id Not Exist!');
                 }
 
@@ -1927,13 +2016,12 @@ class ShiftManagement extends Controller
         }
 
         $data['driverAdd'] = Driver::get();
-        // dd($data);
-        // $data['extra_rate_per_hour'] = + $shiftView->getDriverName->extra_rate_per_hour
 
         return view('admin.shift.shift-report-edit', $data);
     }
 
     public function routeMap(Request $request, $id)
+
     {
 
         $data['id'] = $id;
@@ -2043,7 +2131,7 @@ class ShiftManagement extends Controller
 
             return response()->json([
 
-                "status" => 200,
+                "status" => $this->successStatus,
 
                 "message" => "Shift Finished Successfully",
 
@@ -2081,7 +2169,7 @@ class ShiftManagement extends Controller
     public function getCostCenter(Request $request)
     {
 
-        $getCostCenter = DB::table('clientcenters')->select('id', 'name', 'base')->where('status', '1')->whereIn('clientId', $request->input('clientId'))->get();
+        $getCostCenter = DB::table('clientcenters')->select('id', 'name', 'base')->where('status','1')->whereIn('clientId', $request->input('clientId'))->get();
 
         $getType = Clientrate::select('id', 'clientId', 'type')->with(['getClientType'])->whereIn('clientId', $request->input('clientId'))->get();
 
@@ -2190,6 +2278,8 @@ class ShiftManagement extends Controller
         }
     }
 
+
+
     public function getClientA(Request $request)
     {
 
@@ -2217,7 +2307,7 @@ class ShiftManagement extends Controller
 
     {
 
-        $getCostCenter = DB::table('clientcenters')->select('id', 'name', 'base')->where('status', '1')->where('clientId', $request->input('clientId'))->get();
+        $getCostCenter = DB::table('clientcenters')->select('id', 'name', 'base')->where('status','1')->where('clientId', $request->input('clientId'))->get();
 
         $getType = Clientrate::select('id', 'clientId', 'type')->with(['getClientType'])->where('clientId', $request->input('clientId'))->get();
 
@@ -2255,68 +2345,5 @@ class ShiftManagement extends Controller
                 ]
             );
         }
-    }
-
-
-
-
-
-    public function exportShiftReport(Request $request)
-    {
-
-        // dd($request->input('status'));
-        $query = Shift::orderBy('id', 'DESC');
-
-        // Apply default status filter if no filter input is found
-        if ($request->status == '') {
-            $query->whereIn('finishStatus', [3]); // Default status filter for "Active"
-        }
-        // dd($request->input('status'));
-
-        // Apply filters
-        if ($request->status) {
-            $query->whereIn('finishStatus', $request->input('status'));
-        }
-
-        if ($request->state) {
-            $query->whereIn('state', $request->input('state'));
-        }
-
-        if ($request->client) {
-            $query->whereIn('client', $request->input('client'));
-        }
-
-        if ($request->costCenter) {
-            $query->whereIn('costCenter', $request->input('costCenter'));
-        }
-
-        if ($request->base) {
-            $query->whereIn('base', $request->input('base'));
-        }
-
-        if ($request->start) {
-            $query->whereHas('getFinishShifts', function ($query) use ($request) {
-                $query->where('startDate', '<=', $request->input('start'));
-            });
-        }
-
-        if ($request->finish) {
-            $query->whereHas('getFinishShifts', function ($query) use ($request) {
-                $query->where('endDate', '>=', $request->input('finish'));
-            });
-        }
-
-
-        // Fetch data
-        $shifts = $query->orderBy('id', 'DESC')
-            ->with(['getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
-            ->get();
-
-        // dd($shifts->getClientReportCharge);
-        // Pass filters to the export class
-        // $filters = $request->only(['status', 'state', 'client', 'costCenter', 'base', 'start', 'finish', 'search']);
-
-        // Export data with headings and filters
-        return Excel::download(new ShiftReportsExport($shifts), 'shift_report.xlsx');
     }
 }

@@ -64,7 +64,7 @@
                                                                 class="red">*</span></label>
                                                         <div class="form-group front">
                                                             <input type="file" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->front }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->front }}"
                                                                 name="frontImage" data-height="100" />
                                                         </div>
                                                     </div>
@@ -78,7 +78,7 @@
                                                                 class="red">*</span></label>
                                                         <div class="form-group front-left">
                                                             <input type="file" name="frontLeft" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->frontleft }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->frontleft }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -91,7 +91,7 @@
                                                                 class="red">*</span></label>
                                                         <div class="form-group front-right">
                                                             <input type="file" name="frontRight" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->frontRight }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->frontRight }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -105,7 +105,7 @@
 
                                                         <div class="form-group left-side">
                                                             <input type="file" name="leftSide" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->leftSide }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->leftSide }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -118,7 +118,7 @@
                                                                 class="red">*</span></label>
                                                         <div class="form-group right-side">
                                                             <input type="file" name="rightSide" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->rightSide }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->rightSide }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -131,7 +131,7 @@
                                                                 class="red">*</span></label>
                                                         <div class="form-group back">
                                                             <input type="file" name="back" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->backSide ?? 'N/A' }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->backSide ?? 'N/A' }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -144,7 +144,7 @@
                                                             <span class="red">*</span></label>
                                                         <div class="form-group back-left">
                                                             <input type="file" name="backLeftSide" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->backLeftSide ?? 'N/A' }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->backLeftSide ?? 'N/A' }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -157,7 +157,7 @@
                                                             <span class="red">*</span></label>
                                                         <div class="form-group front-right">
                                                             <input type="file" name="backRightSide" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->backRightSide ?? 'N/A' }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->backRightSide ?? 'N/A' }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -170,7 +170,7 @@
                                                                 class="red">*</span></label>
                                                         <div class="form-group cockpit">
                                                             <input type="file" name="cockpit" class="dropify"
-                                                                data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->cockpit ?? 'N/A' }}"
+                                                                data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->cockpit ?? 'N/A' }}"
                                                                 data-height="100" />
                                                         </div>
                                                     </div>
@@ -207,7 +207,7 @@
                                                             class="red">*</span></label>
                                                     <div class="form-group front">
                                                         <input type="file" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->front ?? '' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->front ?? '' }}"
                                                             name="frontImage" data-height="100" />
                                                     </div>
                                                 </div>
@@ -221,7 +221,7 @@
                                                             class="red">*</span></label>
                                                     <div class="form-group front-left">
                                                         <input type="file" name="frontLeft" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->frontleft ?? '' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->frontleft ?? '' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -234,7 +234,7 @@
                                                             class="red">*</span></label>
                                                     <div class="form-group front-right">
                                                         <input type="file" name="frontRight" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->frontRight ?? '' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->frontRight ?? '' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -248,7 +248,7 @@
 
                                                     <div class="form-group left-side">
                                                         <input type="file" name="leftSide" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->leftSide ?? '' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->leftSide ?? '' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -261,7 +261,7 @@
                                                             class="red">*</span></label>
                                                     <div class="form-group right-side">
                                                         <input type="file" name="rightSide" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->rightSide ?? '' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->rightSide ?? '' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -274,7 +274,7 @@
                                                             class="red">*</span></label>
                                                     <div class="form-group back">
                                                         <input type="file" name="back" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->backSide ?? 'N/A' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->backSide ?? 'N/A' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -287,7 +287,7 @@
                                                         <span class="red">*</span></label>
                                                     <div class="form-group back-left">
                                                         <input type="file" name="backLeftSide" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->backLeftSide ?? 'N/A' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->backLeftSide ?? 'N/A' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -300,7 +300,7 @@
                                                         <span class="red">*</span></label>
                                                     <div class="form-group front-right">
                                                         <input type="file" name="backRightSide" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->backRightSide ?? 'N/A' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->backRightSide ?? 'N/A' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>
@@ -313,7 +313,7 @@
                                                             class="red">*</span></label>
                                                     <div class="form-group cockpit">
                                                         <input type="file" name="cockpit" class="dropify"
-                                                            data-default-file="{{ asset('public/assets/inspection/carimage') }}/{{ $inspection->cockpit ?? 'N/A' }}"
+                                                            data-default-file="{{ asset('assets/inspection/carimage') }}/{{ $inspection->cockpit ?? 'N/A' }}"
                                                             data-height="100" />
                                                     </div>
                                                 </div>

@@ -15,7 +15,7 @@
 
      <!-- GLOBAL-LOADER -->
      <div id="global-loader">
-        <!-- <img src="{{ asset('public/assets/images/loader.svg')}}" class="loader-img" alt="Loader"> -->
+        <!-- <img src="{{ asset('assets/images/loader.svg')}}" class="loader-img" alt="Loader"> -->
         <div class="dot-spinner">
             <div class="dot-spinner__dot"></div>
             <div class="dot-spinner__dot"></div>
@@ -133,8 +133,8 @@
                         <a aria-label="Hide Sidebar" class="app-sidebar__toggle" data-bs-toggle="sidebar" href="javascript:void(0)"></a>
                         <!-- sidebar-toggle-->
                         <a class="logo-horizontal" href="{{route('admin.dashboard')}}">
-                            <img src="{{ asset('public/assets/images/newimages/logo-qe.png')}}" class="header-brand-img desktop-logo" alt="logo">
-                            <img src="{{ asset('public/assets/images/newimages/logo-qe.png')}}" class="header-brand-img light-logo1"
+                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" class="header-brand-img desktop-logo" alt="logo">
+                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" class="header-brand-img light-logo1"
                                 alt="logo">
                         </a>
                         <!-- LOGO -->
@@ -161,7 +161,7 @@
 
                                         <div class="dropdown d-flex profile-1">
                                             <a href="{{ route('admin.profile') }}" data-bs-toggle="dropdown" class="nav-link leading-none d-flex">
-                                                <img src="{{ asset('public/assets/images/newimages/dummyuser.png')}}" alt="profile-user"
+                                                <img src="{{ asset('assets/images/newimages/dummyuser.png')}}" alt="profile-user"
                                                     class="avatar  profile-user brround cover-image">
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -206,11 +206,11 @@
                 <div class="app-sidebar">
                     <div class="side-header">
                         <a class="header-brand1" href="{{route('admin.dashboard')}}">
-                            <img src="{{ asset('public/assets/images/newimages/logo-qe.png')}}" class="header-brand-img desktop-logo" alt="logo">
-                            <img src="{{ asset('public/assets/images/newimages/imgpsh_fullsize_anim (1).png')}}" class="header-brand-img toggle-logo"
+                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" class="header-brand-img desktop-logo" alt="logo">
+                            <img src="{{ asset('assets/images/newimages/imgpsh_fullsize_anim (1).png')}}" class="header-brand-img toggle-logo"
                                 alt="logo">
-                            <img src="{{ asset('public/assets/images/newimages/logo-qe.png')}}" class="header-brand-img light-logo" alt="logo">
-                            <img src="{{ asset('public/assets/images/newimages/logo-qe.png')}}" class="header-brand-img light-logo1"
+                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" class="header-brand-img light-logo" alt="logo">
+                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" class="header-brand-img light-logo1"
                                 alt="logo">
                         </a>
                         <!-- LOGO -->
