@@ -11,6 +11,6 @@ class Reminders extends Model
 
     public function getReminderName()
     {
-        return $this->hasOne(Client::class, 'id', 'client')->select('id','name');
+        return $this->hasOne(Client::class, 'id', 'client')->select('id', 'name');
     }
 }

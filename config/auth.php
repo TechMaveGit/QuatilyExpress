@@ -51,7 +51,6 @@ return [
             'provider' => 'drivers',
          ],
 
-
          'adminLogin' => [
             'driver' => 'session',
             'provider' => 'admins',
@@ -81,7 +80,6 @@ return [
             'model' => App\Models\User::class,
         ],
 
-
         'drivers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Driver::class,
@@ -91,9 +89,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
          ],
-
-
-
 
         // 'users' => [
         //     'driver' => 'database',

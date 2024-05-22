@@ -9,19 +9,18 @@ class Inspection extends Model
 {
     use HasFactory;
 
-     public function getIndectionDriver()
+    public function getIndectionDriver()
     {
         return $this->hasMany(Inductiondriver::class, 'induction_id', 'id');
     }
 
     public function getAppDriver()
     {
-        return $this->hasOne(Driver::class,  'id','driverId');
+        return $this->hasOne(Driver::class, 'id', 'driverId');
     }
 
     public function getVehicleRego()
     {
         return $this->belongsTo(Vehical::class, 'regoNumber', 'id');
     }
-
 }

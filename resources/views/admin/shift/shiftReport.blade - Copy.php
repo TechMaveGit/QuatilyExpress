@@ -2,13 +2,12 @@
 @section('content')
 
 <?php
-   $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
-   $arr = [];
-   foreach($D as $v)
-   {
-     $arr[] = $v['permission_id'];
-   }
-   ?>
+   $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()), true);
+$arr = [];
+foreach ($D as $v) {
+    $arr[] = $v['permission_id'];
+}
+?>
 
 <style>
     .dt-button.dropdown-item.buttons-columnVisibility.active {
@@ -524,19 +523,19 @@
                                 <td hidden class="td">{{ $allshift->getFinishShift->endTime??'N/A' }}</td>
                                 <td>
                                     <?php
-                                    $driverRole =  Auth::guard('adminLogin')->user();
-                                    $driverRole = $driverRole->role_id;
-                                    if ($allshift->finishStatus=='0') { ?>
+                                 $driverRole = Auth::guard('adminLogin')->user();
+$driverRole = $driverRole->role_id;
+if ($allshift->finishStatus == '0') { ?>
                                     <span class="light status-Created">Created</span>
-                                    <?php } elseif($allshift->finishStatus=='1'){ ?>
+                                    <?php } elseif ($allshift->finishStatus == '1') { ?>
                                     <span class="danger status-InProgress">In Progress</span>
-                                    <?php  } elseif($allshift->finishStatus=='2') { ?>
-                                    <span class="light status-ToBeApproved" <?php if($driverRole!==33){ ?> onclick="approveAndReject(`{{ $allshift->id }}`)" <?php } ?>>To Be Approved</span>
-                                    <?php } elseif ($allshift->finishStatus=='3') { ?>
-                                        <span class="light status-ToBeApr" <?php if($driverRole!==33){ ?> onclick="shiftPaid(`{{ $allshift->id }}`)" <?php } ?>>Approved</span>
-                                    <?php  } elseif ($allshift->finishStatus=='4') { ?>
+                                    <?php } elseif ($allshift->finishStatus == '2') { ?>
+                                    <span class="light status-ToBeApproved" <?php if ($driverRole !== 33) { ?> onclick="approveAndReject(`{{ $allshift->id }}`)" <?php } ?>>To Be Approved</span>
+                                    <?php } elseif ($allshift->finishStatus == '3') { ?>
+                                        <span class="light status-ToBeApr" <?php if ($driverRole !== 33) { ?> onclick="shiftPaid(`{{ $allshift->id }}`)" <?php } ?>>Approved</span>
+                                    <?php } elseif ($allshift->finishStatus == '4') { ?>
                                         <span class="light status-ToBeApr">Rejected</span>
-                                    <?php } elseif ($allshift->finishStatus=='5' || $allshift->finishStatus=='6')  { ?>
+                                    <?php } elseif ($allshift->finishStatus == '5' || $allshift->finishStatus == '6') { ?>
                                         <span class="light status-Paid" >Paid</span>
                                     <?php } else { ?>
                                         <?php } ?>
@@ -710,9 +709,9 @@
                                         <div class="d-flex">
                                             @if(in_array("50", $arr))
                                                 <?php
-                                                  if ($allshift->finishStatus=='2') { ?>
+              if ($allshift->finishStatus == '2') { ?>
                                                    <a onclick="approveAndReject(`{{ $allshift->id }}`)" class="btn text-green btn-sm btncls" data-bs-toggle="modal"><span class="ti-check-box fs-14"></span></a>
-                                                    <?php }  else { ?>
+                                                    <?php } else { ?>
                                                      <a class="btn text-green btn-sm btncls"  data-bs-toggle="modal"><span class="ti-check-box fs-14"></span></a>
                                                     <?php } ?>
 

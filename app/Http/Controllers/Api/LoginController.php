@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Driver;
 use App\Models\Admin;
-use Validator;
+use App\Models\Driver;
 use Auth;
-use DB;
 use Hash;
+use Illuminate\Http\Request;
+use Validator;
 
 class LoginController extends Controller
 {
+    public $successStatus = 200;
+    public $notfound = 404;
+    public $unauthorisedStatus = 400;
+    public $internalServererror = 500;
+    protected $driverId;
 
     public function __construct(Request $request)
     {
@@ -20,58 +24,56 @@ class LoginController extends Controller
         $this->notfound = 404;
         $this->unauthorisedStatus = 400;
         $this->internalServererror = 500;
-        $this->driverId  = auth('driver')->user()->id ?? '';
+        $this->driverId = auth('driver')->user()->id ?? '';
     }
-
-
 
     public function login(Request $req)
     {
         $url = env('APP_URL') . '/assets/images/profile/';
         $validator = Validator::make($req->all(), [
-            "email" => "required",
-            "password" => "required",
+            'email' => 'required',
+            'password' => 'required',
         ]);
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
-
-        $checkDriver =  Driver::where('email', $req->input('email'))->where('role_id', '33')->first();
+        $checkDriver = Driver::where('email', $req->input('email'))->where('role_id', '33')->first();
         if ($checkDriver) {
             if ($checkDriver->status == '1') {
-                if ($token = Auth::guard("driver")->attempt($req->only("email", "password"))) {
-                    $agent = Driver::Where("email", $req->input("email"))->first();
+                if ($token = Auth::guard('driver')->attempt($req->only('email', 'password'))) {
+                    $agent = Driver::Where('email', $req->input('email'))->first();
                     $destinationPath = url('assets/driver/profileImage/');
+
                     return response()->json([
-                        "status" => $this->successStatus,
-                        "access_token" => $token,
-                        "token_type" => "bearer",
-                        "expires_in" =>
-                        Auth::guard("driver")
+                        'status' => $this->successStatus,
+                        'access_token' => $token,
+                        'token_type' => 'bearer',
+                        'expires_in' => Auth::guard('driver')
                             ->factory()
                             ->getTTL() * 60,
                         'profileImage' => $destinationPath,
-                        "driverDetail" => $agent,
+                        'driverDetail' => $agent,
                     ]);
                 } else {
                     return response()->json([
-                        "status" => 400,
-                        "message" => "Not Found"
+                        'status' => 400,
+                        'message' => 'Not Found',
                     ]);
                 }
             } else {
                 return response()->json([
-                    "status" => 400,
-                    "message" => "User account is not active"
+                    'status' => 400,
+                    'message' => 'User account is not active',
                 ]);
             }
         } else {
             return response()->json([
-                "status" => 400,
-                "message" => "User not found"
+                'status' => 400,
+                'message' => 'User not found',
             ]);
         }
     }
@@ -79,30 +81,26 @@ class LoginController extends Controller
     public function signUp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "userName" => "required",
-            "mobileno" =>
-            "required|string|min:8|max:12|unique:drivers,mobileNo",
-            "dialCode" => "required",
-            "email" => "required|email|unique:drivers",
-            "enterPassword" => "required",
-            // "selectDocument" => "required",
-            // "documentType" =>
-            //     "required|max:10000|mimes:doc,docx,pdf,jpeg,jpg,png,gif",
+            'userName' => 'required',
+            'mobileno' => 'required|string|min:8|max:12|unique:drivers,mobileNo',
+            'dialCode' => 'required',
+            'email' => 'required|email|unique:drivers',
+            'enterPassword' => 'required',
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
-            // return $response;
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return response()->json($response, 500);
         }
 
-        $documentType = "";
-        if ($request->hasFile("documentType")) {
-            $files = $request->file("documentType");
-            $destinationPath = "assets/driver/document";
+        $documentType = '';
+        if ($request->hasFile('documentType')) {
+            $files = $request->file('documentType');
+            $destinationPath = 'assets/driver/document';
             $file_name =
-                md5(uniqid()) . "." . $files->getClientOriginalExtension();
+                md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $documentType = $file_name;
         }
@@ -120,23 +118,19 @@ class LoginController extends Controller
         $driver->status = '2';
         $driver->save();
 
-
-        $input['name']        = $request->userName;;
-        $input['email']       = $request->email;;
-        $input['role_id']     = '33';
-        $input['password']    = Hash::make($request->enterPassword);
-        $input['added_date']  = date("j F, Y");
-        $input['status']      = '2';
+        $input['name'] = $request->userName;
+        $input['email'] = $request->email;
+        $input['role_id'] = '33';
+        $input['password'] = Hash::make($request->enterPassword);
+        $input['added_date'] = date('j F, Y');
+        $input['status'] = '2';
         $user = Admin::create($input);
 
-
-
         return response()->json([
-            "status" => $this->successStatus,
-            "message" => "Driver Register Successfully",
+            'status' => $this->successStatus,
+            'message' => 'Driver Register Successfully',
         ]);
     }
-
 
     public function updateProfile(Request $request)
     {
@@ -144,21 +138,21 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             'firstName'    => 'required',
             'email' => 'required|email|unique:users,id,' . $driver,
-            'mobileNo'     => 'required|string|min:8|max:12",'
+            'mobileNo'     => 'required|string|min:8|max:12",',
         ]);
 
         if ($validator->fails()) {
             $response['status'] = 400;
             $response['response'] = $validator->messages();
+
             return $response;
         }
-
 
         $imageUrl = url('assets/driver/profileImage');
         $files = $request->file('profile_iamge');
         if ($files) {
             $destinationPath = 'assets/driver/profileImage';
-            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $p_image = $file_name;
         } else {
@@ -166,25 +160,24 @@ class LoginController extends Controller
             $p_image = $agent->profile_image;
         }
 
-
-        $data = array(
+        $data = [
             'profile_image'  => $p_image,
             'dialCode'       => $request->input('dialCode'),
             'fullName'       => $request->firstName,
             'userName'       => $request->firstName,
             'email'          => $request->email,
-            'mobileNo'       => $request->mobileNo
-        );
+            'mobileNo'       => $request->mobileNo,
+        ];
 
         Driver::whereId($driver)->update($data);
 
-
         $driverDetail = Driver::whereId($driver)->first();
+
         return response()->json(
             [
                 'status' => $this->successStatus,
                 'message' => 'success',
-                'data' => "User profile updated successfully",
+                'data' => 'User profile updated successfully',
                 'ProfileImageUrl' => $imageUrl,
                 'agentDetail' => $driverDetail,
             ]
@@ -199,18 +192,17 @@ class LoginController extends Controller
         if ($req->hasFile('driving_license')) {
             $files = $req->file('driving_license');
             $destinationPath = 'assets/driver/document';
-            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $driving_license = $file_name;
         } else {
             $driving_license = $allImage->driving_license;
         }
 
-
         if ($req->hasFile('visa')) {
             $files = $req->file('visa');
             $destinationPath = 'assets/driver/document';
-            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $visa = $file_name;
         } else {
@@ -220,7 +212,7 @@ class LoginController extends Controller
         if ($req->hasFile('trafficHistory')) {
             $files = $req->file('trafficHistory');
             $destinationPath = 'assets/driver/trafficHistory';
-            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $trafficHistory = $file_name;
         } else {
@@ -230,7 +222,7 @@ class LoginController extends Controller
         if ($req->hasFile('policeChceck')) {
             $files = $req->file('policeChceck');
             $destinationPath = 'assets/driver/driving_license';
-            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $policeChceck = $file_name;
         } else {
@@ -238,7 +230,6 @@ class LoginController extends Controller
         }
 
         $allDate = Driver::whereId($this->driverId)->first();
-
 
         if ($req->input('driving_license_issue_date')) {
             $driving_license_issue_date = $req->input('driving_license_issue_date');
@@ -288,7 +279,7 @@ class LoginController extends Controller
             $police_chceck_expiry_date = $allDate->police_chceck_expiry_date;
         }
 
-        $data = array(
+        $data = [
             'driving_license' => $driving_license,
             'visa'            => $visa,
             'traffic_history' => $trafficHistory,
@@ -305,16 +296,15 @@ class LoginController extends Controller
 
             'police_chceck_issue_date' => $police_chceck_issue_date,
             'police_chceck_expiry_date' => $police_chceck_expiry_date,
-        );
+        ];
 
         Driver::whereId($this->driverId)->update($data);
 
         return response()->json([
-            "status" => $this->successStatus,
-            "message" => "Document Added Successfully",
+            'status' => $this->successStatus,
+            'message' => 'Document Added Successfully',
         ]);
     }
-
 
     public function getDriverDocs(Request $request)
     {
@@ -324,33 +314,32 @@ class LoginController extends Controller
         $trafficHistory = env('APP_URL') . 'assets/driver/trafficHistory';
         $policeChceck = env('APP_URL') . 'assets/driver/driving_license';
 
-
         if ($Parcels) {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Success",
-                "driving_license_and_visa_url" => $driving_license_and_visa_url,
-                "trafficHistory" => $trafficHistory,
-                "police_check" => $policeChceck,
-                "data" => $Parcels
+                'status' => $this->successStatus,
+                'message' => 'Success',
+                'driving_license_and_visa_url' => $driving_license_and_visa_url,
+                'trafficHistory' => $trafficHistory,
+                'police_check' => $policeChceck,
+                'data' => $Parcels,
             ]);
         } else {
             return response()->json([
-                "status" => $this->notfound,
-                "message" => "not found",
+                'status' => $this->notfound,
+                'message' => 'not found',
             ]);
         }
     }
 
-
     public function forgotPassword(Request $req)
     {
         $validator = Validator::make($req->all(), [
-            'email'     => 'required'
+            'email'     => 'required',
         ]);
         if ($validator->fails()) {
             $response['status'] = 400;
             $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -385,16 +374,16 @@ class LoginController extends Controller
         }
     }
 
-
     public function verifyOtp(Request $req)
     {
         $validator = Validator::make($req->all(), [
             'email'     => 'required',
-            'otp'     => 'required'
+            'otp'     => 'required',
         ]);
         if ($validator->fails()) {
             $response['status'] = 400;
             $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -426,16 +415,16 @@ class LoginController extends Controller
         }
     }
 
-
     public function changePassword(Request $req)
     {
         $validator = Validator::make($req->all(), [
             'email'     => 'required',
-            'password'  => 'required'
+            'password'  => 'required',
         ]);
         if ($validator->fails()) {
             $response['status'] = 400;
             $response['response'] = $validator->messages();
+
             return $response;
         }
 

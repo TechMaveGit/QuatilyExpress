@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Shift extends Model
 {
     use HasFactory;
-    protected $fillable = ['driverId','shiftRandId','shiftStartDate','state','client','weekendHours','costCenter','base','vehicleType','rego','scanner_id','odometer','parcelsToken','finishStatus'];
+    protected $fillable = ['driverId', 'shiftRandId', 'shiftStartDate', 'state', 'client', 'weekendHours', 'costCenter', 'base', 'vehicleType', 'rego', 'scanner_id', 'odometer', 'parcelsToken', 'finishStatus'];
 
     public function getClientName()
     {
@@ -22,8 +24,6 @@ class Shift extends Model
     {
         return $this->hasOne(Vehical::class, 'id', 'rego');
     }
-
-
 
     public function getStateName()
     {
@@ -70,14 +70,12 @@ class Shift extends Model
     //     return $this->hasOne(Driver::class, 'personId', 'driverId');
     // }
 
-
     public function getFinishShifts()
     {
         return $this->hasOne(Finishshift::class, 'shiftId', 'id');
     }
 
-
-     public function getParcel()
+    public function getParcel()
     {
         return $this->hasMany(Parcels::class, 'shiftId', 'id');
     }
@@ -87,12 +85,10 @@ class Shift extends Model
         return $this->hasMany(ClientBase::class, 'clientId', 'id');
     }
 
-
     public function getClientNm()
     {
-        return $this->hasOne(Client::class, 'id', 'client')->select('id','name','adminCharge','driverPay');
+        return $this->hasOne(Client::class, 'id', 'client')->select('id', 'name', 'adminCharge', 'driverPay');
     }
-
 
     public function getShiftMonetizeInformation()
     {
@@ -103,16 +99,9 @@ class Shift extends Model
     {
         return $this->hasOne(Finishshift::class, 'shiftId', 'id');
     }
+
     public function getRego()
     {
         return $this->hasOne(Vehical::class, 'id', 'rego');
     }
-
-
-
-
-
-
-
 }
-

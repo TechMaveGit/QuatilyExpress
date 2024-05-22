@@ -11,11 +11,11 @@ class Clientcenter extends Model
 
     public function getCenterName()
     {
-        return $this->hasOne(Client::class, 'id', 'clientId')->select('id','name');
-    }
-    public function getCenterState()
-    {
-        return $this->hasOne(States::class, 'id', 'state')->select('id','name');
+        return $this->hasOne(Client::class, 'id', 'clientId')->select('id', 'name');
     }
 
+    public function getCenterState()
+    {
+        return $this->hasOne(States::class, 'id', 'state')->select('id', 'name');
+    }
 }

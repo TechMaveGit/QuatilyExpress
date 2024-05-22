@@ -2,15 +2,14 @@
 
 namespace App\Imports;
 
-use App\Models\Shift;
 use App\Models\FinishShift;
+use App\Models\Shift;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-
 
 class ShiftsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
@@ -23,7 +22,7 @@ class ShiftsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
     public function model(array $row)
     {
         $created_at = Date::excelToDateTimeObject($row['date_finish'])->format('Y/m/d H:i:s');
-        $shiftRandId = preg_replace("/[^0-9]/", "", $row['id']);
+        $shiftRandId = preg_replace('/[^0-9]/', '', $row['id']);
 
         // Assuming Shift::where updates an existing model. If not, you'll need to adjust this.
         $shift = Shift::where('shiftRandId', $shiftRandId)->first();
@@ -91,4 +90,3 @@ class ShiftsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChu
         return 1000;
     }
 }
-

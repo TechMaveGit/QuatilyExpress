@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Shift;
-use App\Models\Parcels;
-use App\Models\State;
-use App\Models\Driver;
-use App\Models\TrackLocation;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Redirect;
+use App\Models\Driver;
+use App\Models\Parcels;
+use App\Models\Shift;
+use App\Models\State;
+use App\Models\TrackLocation;
 use DB;
+use Illuminate\Http\Request;
 
 class LiveTrackingController extends Controller
 {
@@ -25,7 +24,7 @@ class LiveTrackingController extends Controller
         $parcelLocation = '';
         $doMarkLocation = '';
         $deliver_address = '';
-        if (request()->isMethod("post")) {
+        if (request()->isMethod('post')) {
             $request->all();
             $driverName = $request->input('driverName');
             $shiftName = $request->input('shiftName');
@@ -74,6 +73,7 @@ class LiveTrackingController extends Controller
 
         return view('admin.liveTracking.live', compact('locations', 'shift', 'driver', 'driverName', 'shiftName', 'firstLocation', 'deliver_address', 'parcelLocation', 'doMarkLocation'));
     }
+
     public function getDriverLocation(Request $request)
     {
         $driver = Driver::where('status', '1')->get();
@@ -93,8 +93,10 @@ class LiveTrackingController extends Controller
                 // For example, you can add a default location or skip adding to $locations
             }
         }
+
         return view('admin.liveTracking.driverLocation', compact('locations'));
     }
+
     public function getShift(Request $request)
     {
         $typeId = $request->input('typeId');
@@ -103,95 +105,101 @@ class LiveTrackingController extends Controller
             return response()->json([
                 'success' => '200',
                 'message' => 'get Shift',
-                'vehicleData' => $getdriverResponsible
+                'vehicleData' => $getdriverResponsible,
             ]);
         }
     }
+
     public function state(Request $request)
     {
-        if (request()->isMethod("post")) {
+        if (request()->isMethod('post')) {
             $data = State::where('name', $request->input('stateName'))->first();
             if ($data) {
-                return Redirect::back()->with('error', 'State Already Exist!');
+                return redirect()->back()->with('error', 'State Already Exist!');
             } else {
                 $stateName = $request->input('stateName');
                 $data = [
-                    "name" => $stateName
+                    'name' => $stateName,
                 ];
                 State::create($data);
-                return Redirect::back()->with('message', 'State Added Successfully!');
+
+                return redirect()->back()->with('message', 'State Added Successfully!');
             }
         }
         $state = State::get();
+
         return view('admin.state.state', compact('state'));
     }
+
     public function stateEdit(Request $request)
     {
         $stateName = $request->input('stateName');
         $stateId = $request->input('stateId');
         $state = $request->input('state');
         $data = [
-            "name" => $stateName,
-            'status' => $state
+            'name' => $stateName,
+            'status' => $state,
         ];
         State::whereId($stateId)->update($data);
-        return Redirect::back()->with('message', 'State Edit Successfully!');
+
+        return redirect()->back()->with('message', 'State Edit Successfully!');
     }
+
     public function stateDelete(Request $request)
     {
         $stateId = $request->input('stateId');
         State::whereId($stateId)->update(['status' => '0']);
+
         return redirect()->back()->with('message', 'State Delete Successfully!');
     }
 
-
-
-    protected function getOptimizedRoute($apiKey, $origin, $destination, $waypoints) {
+    protected function getOptimizedRoute($apiKey, $origin, $destination, $waypoints)
+    {
         // Base URL for the Google Directions API
-        $baseUrl = "https://maps.googleapis.com/maps/api/directions/json?";
-        
+        $baseUrl = 'https://maps.googleapis.com/maps/api/directions/json?';
+
         // Parameters for the request
         $params = [
             'origin' => $origin,
             'destination' => $destination,
             'waypoints' => 'optimize:true|' . implode('|', $waypoints),
-            'key' => $apiKey
+            'key' => $apiKey,
         ];
-    
+
         // Construct the full URL with parameters
         $url = $baseUrl . http_build_query($params);
-    
+
         // Send the request using file_get_contents (you can also use cURL)
         $response = file_get_contents($url);
-    
+
         // Parse the JSON response
         $data = json_decode($response, true);
-    
+
         // Handle the response
         if ($data['status'] == 'OK') {
             return $data['routes'][0]; // Return the first (and usually only) route
         } else {
-            throw new \Exception("Error: " . $data['status']);
+            throw new \Exception('Error: ' . $data['status']);
         }
     }
 
-    public function  liveTrack()
+    public function liveTrack()
     {
-                
+
         // Example usage
         $apiKey = 'AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s';
         $origin = '37.7749,-122.4194';
         $destination = '34.0522,-118.2437'; // Example: Los Angeles, CA
         $waypoints = [
             '36.7783,-119.4179', // Example: Fresno, CA
-            '35.3733,-119.0187'  // Example: Bakersfield, CA
+            '35.3733,-119.0187',  // Example: Bakersfield, CA
         ];
 
         try {
             $optimizedRoute = $this->getOptimizedRoute($apiKey, $origin, $destination, $waypoints);
-            echo "<pre>";
+            echo '<pre>';
             print_r($optimizedRoute);
-            echo "</pre>";
+            echo '</pre>';
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

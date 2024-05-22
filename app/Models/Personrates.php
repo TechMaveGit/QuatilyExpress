@@ -9,9 +9,8 @@ class Personrates extends Model
 {
     use HasFactory;
 
-        public function getRates()
-        {
-            return $this->hasOne(Personrates::class, 'id', 'reminderType');
-        }
-
+    public function getRates()
+    {
+        return $this->hasOne(self::class, 'id', 'reminderType');
+    }
 }
