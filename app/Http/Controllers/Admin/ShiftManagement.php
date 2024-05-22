@@ -853,8 +853,16 @@ class ShiftManagement extends Controller
                     ->orWhereIn('state', $states);
             });
         }
+        $shiftsExport = new ShiftReportsExport($query);
+        
+        // Define the filename
+        $filename = 'shift_report.csv';
+        
+        // Export to CSV file
+        $shiftsExport->exportToCsv($filename);
 
-        return Excel::download(new ShiftReportsExport($query), 'shifts.xlsx');
+        // Serve the file as a download response
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
 
     public function ajaxIndex(Request $request)
@@ -1426,7 +1434,17 @@ class ShiftManagement extends Controller
         $shifts = $query->orderBy('id', 'DESC')
             ->with(['getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
             ->get();
+            
 
-        return Excel::download(new ShiftReportsExport($shifts), 'shift_report.xlsx');
+        $shiftsExport = new ShiftReportsExport($shifts);
+    
+        // Define the filename
+        $filename = 'shift_report.csv';
+        
+        // Export to CSV file
+        $shiftsExport->exportToCsv($filename);
+
+        // Serve the file as a download response
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
 }
