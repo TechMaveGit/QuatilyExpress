@@ -1,0 +1,2 @@
+"id","first_name","last_name","email","mailstop","phone_no","company","addressLine1","addressLine2","city","postZip","freightType","stateCountry","created_at","updated_at"
+"1","user","Kumar","user@gmail.com","user@gmail.com","07248702312","It21 company","muzaffarnagar","noida","noida","251201",NULL,NULL,"2023-06-12 17:50:26","2024-05-14 19:14:00"

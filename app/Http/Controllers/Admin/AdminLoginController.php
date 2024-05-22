@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Driver;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -31,37 +31,38 @@ class AdminLoginController extends Controller
         return "Result from second controller method: $result";
     }
 
-
     public function redirect(Request $request)
     {
-        $data['pageTitle'] = "Dashboard";
+        $data['pageTitle'] = 'Dashboard';
+
         return view('admin.login', $data);
     }
 
     public function index(Request $request)
     {
-        $data['pageTitle'] = "Dashboard";
+        $data['pageTitle'] = 'Dashboard';
+
         return view('admin.login', $data);
     }
 
     public function profile(Request $request)
     {
-        $data['pageTitle'] = "Profile";
-        if (request()->isMethod("post")) {
+        $data['pageTitle'] = 'Profile';
+        if (request()->isMethod('post')) {
             $name = $request->input('name');
             $email = $request->input('email');
             $userId = $request->input('userId');
 
             Admin::whereId($userId)->update([
-                "name" => $name,
-                "email" => $email
+                'name' => $name,
+                'email' => $email,
             ]);
 
             return redirect()->back()->with('message', 'Profile Updated Successfully!');
         }
+
         return view('admin.dashboard.profile', $data);
     }
-
 
     public function updatePassword(Request $request)
     {
@@ -72,21 +73,21 @@ class AdminLoginController extends Controller
         ]);
 
         Admin::whereId(Auth::guard('adminLogin')->user()->id)->update([
-            'password' => Hash::make($request->new_password)
+            'password' => Hash::make($request->new_password),
         ]);
 
         Driver::where('email', Auth::guard('adminLogin')->user()->email)->update([
-            'password' => Hash::make($request->new_password)
+            'password' => Hash::make($request->new_password),
         ]);
 
-        return back()->with("message", "Password changed successfully!");
+        return back()->with('message', 'Password changed successfully!');
     }
 
     public function login(Request $request)
     {
         $request->validate([
             'email' => 'required:rfc',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if (DB::table('admins')->where('status', '1')->where('email', $request->input('email'))->first()) {
@@ -102,8 +103,9 @@ class AdminLoginController extends Controller
 
     public function logout()
     {
-        $data['pageTitle'] = "logout";
+        $data['pageTitle'] = 'logout';
         Auth::guard('adminLogin')->logout();
+
         return redirect('/admin/');
     }
 }

@@ -3,66 +3,62 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Parcels;
-use App\Models\allParcel;
-use App\Models\Finishshift;
-use App\Models\Shift;
 use App\Models\Client;
+use App\Models\Finishshift;
+use App\Models\Parcels;
+use App\Models\Shift;
 use Carbon\Carbon;
 use DB;
-use DateTime;
-
-
+use Illuminate\Http\Request;
 use Validator;
 
 class ParcelController extends Controller
 {
-
     protected $notfound = 404;
     protected $successStatus = 200;
     protected $unauthorisedStatus = 400;
     protected $internalServererror = 500;
     protected $driverId;
+
     public function __construct(Request $request)
     {
-        $this->driverId  = auth('driver')->user()->id ?? '';
+        $this->driverId = auth('driver')->user()->id ?? '';
     }
 
     public function addParcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "shiftId"      => "required|integer",
-            "receiverName"  => "required",
-            "scanParcel"    => "required",
-            "location"      => "required",
-            "latitude"      => "required",
-            "longitude"     => "required",
+            'shiftId'      => 'required|integer',
+            'receiverName'  => 'required',
+            'scanParcel'    => 'required',
+            'location'      => 'required',
+            'latitude'      => 'required',
+            'longitude'     => 'required',
             // "parcelIamge"   => "required",
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
-        $Parcel               = new Parcels();
-        $Parcel->driverId      = $this->driverId;
-        $Parcel->shiftId      = $request->shiftId;
+        $Parcel = new Parcels();
+        $Parcel->driverId = $this->driverId;
+        $Parcel->shiftId = $request->shiftId;
         $Parcel->receiverName = $request->receiverName;
-        $Parcel->scanParcel      = $request->scanParcel;
-        $Parcel->location      = $request->location;
-        $Parcel->latitude      = $request->latitude;
-        $Parcel->longitude      = $request->longitude;
+        $Parcel->scanParcel = $request->scanParcel;
+        $Parcel->location = $request->location;
+        $Parcel->latitude = $request->latitude;
+        $Parcel->longitude = $request->longitude;
         $Parcel->save();
 
         $parcelIamge = $request->file('parcelIamge');
         $packageImage = json_decode(json_encode($parcelIamge));
         if ($packageImage) {
             $hgcount = count($packageImage);
-        }
-        else{
+        } else {
             $hgcount = 0;
         }
         for ($i = 0; $i < $hgcount; $i++) {
@@ -70,21 +66,21 @@ class ParcelController extends Controller
             if ($request->hasFile('parcelIamge')) {
                 $files = $request->file('parcelIamge')[$i];
                 $destinationPath = 'assets/driver/parcel/';
-                $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
             }
             $packageItem = [
-                "parcelId"    => $Parcel->id,
-                "parcelImage" => $items,
+                'parcelId'    => $Parcel->id,
+                'parcelImage' => $items,
             ];
             DB::table('addparcelimages')->insert($packageItem);
         }
 
         if ($Parcel) {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Parcel Added Successfully",
+                'status' => $this->successStatus,
+                'message' => 'Parcel Added Successfully',
             ]);
         }
     }
@@ -92,13 +88,14 @@ class ParcelController extends Controller
     public function deleteParcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "parcelId"      => "required|integer",
-            "shiftId"      => "required|integer",
+            'parcelId'      => 'required|integer',
+            'shiftId'      => 'required|integer',
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -110,56 +107,52 @@ class ParcelController extends Controller
             $parcel = Parcels::whereId($parcelId)->delete();
             if ($parcel) {
                 return response()->json([
-                    "status" => $this->successStatus,
-                    "message" => "Parcel Deleted Successfully",
+                    'status' => $this->successStatus,
+                    'message' => 'Parcel Deleted Successfully',
                 ]);
             }
         } else {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Parcel id not found",
+                'status' => $this->successStatus,
+                'message' => 'Parcel id not found',
             ]);
         }
-
 
         if ($parcel) {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Parcel Deleted Successfully",
+                'status' => $this->successStatus,
+                'message' => 'Parcel Deleted Successfully',
             ]);
         }
     }
-
-
 
     public function parcelDetail(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            "parcel_id"     => "required|numeric",
+            'parcel_id'     => 'required|numeric',
         ]);
 
-
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
-
-        $parcelId  =  $request->input('parcel_id');
+        $parcelId = $request->input('parcel_id');
         $Parcels = Parcels::where(['id' => $parcelId, 'driverId' => $this->driverId])->first();
         if ($Parcels) {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Success",
-                "parcelImage" => env('PAREL_IMAGE'),
-                "data" => $Parcels
+                'status' => $this->successStatus,
+                'message' => 'Success',
+                'parcelImage' => env('PAREL_IMAGE'),
+                'data' => $Parcels,
             ]);
         } else {
             return response()->json([
-                "status" => $this->notfound,
-                "message" => "not found",
+                'status' => $this->notfound,
+                'message' => 'not found',
             ]);
         }
     }
@@ -168,101 +161,100 @@ class ParcelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             // "parcelIamge"     => "required",
-            "deliveredTo" => "required",
-            "deliver_lat" => "required",
-            "deliver_lng" => "required",
-            "deliver_address" => "required",
-            "parcelId" => "required",
+            'deliveredTo' => 'required',
+            'deliver_lat' => 'required',
+            'deliver_lng' => 'required',
+            'deliver_address' => 'required',
+            'parcelId' => 'required',
         ]);
 
-
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
-        $parcelId  =  $request->input('parcelId');
-        $deliveredTo  =  $request->input('deliveredTo');
-        $delivered_latitude  =  $request->input('deliver_lat');
-        $delivered_longitude  =  $request->input('deliver_lng');
-        if($request->file('parcelIamge')!=''){
+        $parcelId = $request->input('parcelId');
+        $deliveredTo = $request->input('deliveredTo');
+        $delivered_latitude = $request->input('deliver_lat');
+        $delivered_longitude = $request->input('deliver_lng');
+        if ($request->file('parcelIamge') != '') {
             $files = $request->file('parcelIamge');
             $destinationPath = 'assets/driver/parcel/';
-            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $photo = $file_name;
-        }
-        else{
+        } else {
             $photo = '';
         }
 
-
         $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, "parcelDeliverdDate" => date('Y-m-d'), 'status' => '2']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d'), 'status' => '2']);
             if ($Parcels) {
                 return response()->json([
-                    "status" => $this->successStatus,
-                    "message" => "Parcel Deliverd Successfully",
+                    'status' => $this->successStatus,
+                    'message' => 'Parcel Deliverd Successfully',
                 ]);
             } else {
                 return response()->json([
-                    "status" => $this->notfound,
-                    "message" => "Parcel not found",
+                    'status' => $this->notfound,
+                    'message' => 'Parcel not found',
                 ]);
             }
         } else {
             return response()->json([
-                "status" => $this->notfound,
-                "message" => "Parcel already Updated",
+                'status' => $this->notfound,
+                'message' => 'Parcel already Updated',
             ]);
         }
     }
 
-
-    public function undeliverParcel(Request $request){
+    public function undeliverParcel(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            "parcelId" => "required",
+            'parcelId' => 'required',
         ]);
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
-        $parcelId  =  $request->input('parcelId');
-        $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
+        $parcelId = $request->input('parcelId');
+        $checkParcel = Parcels::whereId($parcelId)->where('status', '1')->first();
         if (empty($checkParcel)) {
             $Parcels = Parcels::where(['id' => $parcelId])->update(['status' => '1']);
             if ($Parcels) {
                 return response()->json([
-                    "status" => $this->successStatus,
-                    "message" => "Parcel Deliverd Successfully",
+                    'status' => $this->successStatus,
+                    'message' => 'Parcel Deliverd Successfully',
                 ]);
             } else {
                 return response()->json([
-                    "status" => $this->notfound,
-                    "message" => "Parcel not found",
+                    'status' => $this->notfound,
+                    'message' => 'Parcel not found',
                 ]);
             }
-        }else{
+        } else {
             return response()->json([
-                "status" => 404,
-                "message" => "Parcel already Updated",
+                'status' => 404,
+                'message' => 'Parcel already Updated',
             ]);
         }
     }
 
-
     public function allParcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "shift_id"      => "required",
+            'shift_id'      => 'required',
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -271,16 +263,16 @@ class ParcelController extends Controller
         $shipDetail = Shift::select('id', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress')->whereId($shipId)->first();
         if ($Parcels) {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Success",
-                "parcelImage" => env('PAREL_IMAGE'),
-                "data" => $Parcels,
-                "location" => $shipDetail
+                'status' => $this->successStatus,
+                'message' => 'Success',
+                'parcelImage' => env('PAREL_IMAGE'),
+                'data' => $Parcels,
+                'location' => $shipDetail,
             ]);
         } else {
             return response()->json([
-                "status" => $this->notfound,
-                "message" => "not found",
+                'status' => $this->notfound,
+                'message' => 'not found',
             ]);
         }
     }
@@ -288,19 +280,19 @@ class ParcelController extends Controller
     public function updateParcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "parcelId"      => "required|integer",
-            "scanParcel"    => "required",
-            "location"      => "required",
-            "latitude"      => "required",
-            "longitude"     => "required",
+            'parcelId'      => 'required|integer',
+            'scanParcel'    => 'required',
+            'location'      => 'required',
+            'latitude'      => 'required',
+            'longitude'     => 'required',
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
-
 
         $parcelId = $request->input('parcelId');
         $parcelData = [
@@ -308,7 +300,7 @@ class ParcelController extends Controller
             'location'   => $request->location,
             'latitude'   => $request->latitude,
             'longitude'  => $request->longitude,
-            'receiverName' => $request->receiverName
+            'receiverName' => $request->receiverName,
         ];
         Parcels::whereId($parcelId)->update($parcelData);
         $parcelIamge = $request->file('parcelIamge');
@@ -316,8 +308,7 @@ class ParcelController extends Controller
             $packageImage = json_decode(json_encode($parcelIamge));
             if ($packageImage) {
                 $hgcount = count($packageImage);
-            }
-            else {
+            } else {
                 $hgcount = 0;
             }
             DB::table('addparcelimages')->where('parcelId', $parcelId)->delete();
@@ -327,20 +318,21 @@ class ParcelController extends Controller
                 if ($request->hasFile('parcelIamge')) {
                     $files = $request->file('parcelIamge')[$i];
                     $destinationPath = 'assets/driver/parcel/';
-                    $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+                    $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                     $files->move($destinationPath, $file_name);
                     $items = $file_name;
                 }
                 $packageItem = [
-                    "parcelId"    => $parcelId,
-                    "parcelImage" => $items,
+                    'parcelId'    => $parcelId,
+                    'parcelImage' => $items,
                 ];
                 DB::table('addparcelimages')->insert($packageItem);
             }
         }
+
         return response()->json([
-            "status" => $this->successStatus,
-            "message" => "Parcel Updated Successfully",
+            'status' => $this->successStatus,
+            'message' => 'Parcel Updated Successfully',
         ]);
     }
 
@@ -348,13 +340,14 @@ class ParcelController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            "location"      => "required",
-            "shipId"  => "required"
+            'location'      => 'required',
+            'shipId'  => 'required',
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -364,30 +357,29 @@ class ParcelController extends Controller
 
         if ($Parcels) {
             return response()->json([
-                "status" => $this->successStatus,
-                "message" => "Success",
-                "data" => $Parcels
+                'status' => $this->successStatus,
+                'message' => 'Success',
+                'data' => $Parcels,
             ]);
         } else {
             return response()->json([
-                "status" => $this->notfound,
-                "message" => "not found",
+                'status' => $this->notfound,
+                'message' => 'not found',
             ]);
         }
     }
 
-
-
     public function routeOptimization(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "sort"  => "required",
-            "shift_id"  => "required"
+            'sort'  => 'required',
+            'shift_id'  => 'required',
         ]);
 
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -398,21 +390,18 @@ class ParcelController extends Controller
             $menu->sorting = $sortOrder + 1;
             $menu->save();
         }
-        $driverId  = auth('driver')->user()->id;
+        $driverId = auth('driver')->user()->id;
         $Parcels = Parcels::select('id', 'receiverName', 'location', 'latitude', 'longitude', 'sorting')->orderBy('sorting', 'asc')->get();
         $shift = Shift::whereId($request->shift_id)->where('driverId', $driverId)->update(['optShift' => '1']);
 
         return response()->json([
-            "status" => $this->successStatus,
-            "message" => "Success",
-            "data" => $Parcels
+            'status' => $this->successStatus,
+            'message' => 'Success',
+            'data' => $Parcels,
         ]);
     }
 
-
-
-
-    function calculateShiftHoursWithMinutes($startDate, $endDate)
+    public function calculateShiftHoursWithMinutes($startDate, $endDate)
     {
 
         $dayMinutes = 0;
@@ -490,23 +479,21 @@ class ParcelController extends Controller
             $startDate = strtotime('+1 minute', $startDate);
         }
 
-        return  [
+        return [
             'dayHours' => floor($dayMinutes / 60),
-            'dayMinutes' => $dayMinutes % 60 < 10 ? "0" . ($dayMinutes % 60) : $dayMinutes % 60,
+            'dayMinutes' => $dayMinutes % 60 < 10 ? '0' . ($dayMinutes % 60) : $dayMinutes % 60,
             'dayMinutesNew' => round(floor($dayMinutes % 60) / 60, 2),
             'dayTotal' => number_format(floor($dayMinutes / 60) + round(floor($dayMinutes % 60) / 60, 2), 2),
 
             'nightHours' => floor($nightMinutes / 60),
-            'nightMinutes' => $nightMinutes % 60 < 10 ? "0" . ($nightMinutes % 60) : $nightMinutes % 60,
+            'nightMinutes' => $nightMinutes % 60 < 10 ? '0' . ($nightMinutes % 60) : $nightMinutes % 60,
             'nightMinutesNew' => round(floor($nightMinutes % 60) / 60, 2),
             'nightTotal' => number_format(floor($nightMinutes / 60) + round(floor($nightMinutes % 60) / 60, 2), 2),
-
 
             'saturdayHours' => floor($saturdayMinutes / 60),
             'saturdaMinutes' => $saturdayMinutes % 60,
             'saturdayMinutesNew' => round(floor($saturdayMinutes % 60) / 60, 2),
             'totalSaturdayHours' => number_format(floor($saturdayMinutes / 60) + round(floor($saturdayMinutes % 60) / 60, 2), 2),
-
 
             'sundayHours' => floor($sundayMinutes / 60),
             'sundayMinutes' => $sundayMinutes % 60,
@@ -516,27 +503,25 @@ class ParcelController extends Controller
         ];
     }
 
-
-
     public function finishShift(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "shiftId" => "required",
-            "odometerStartReading" => "required",
-            "odometerEndReading" => "required",
-            "startDate" => "required",
-            "endDate" => "required",
-            "startTime" => "required",
-            "endTime" => "required",
-            "parcelsTaken" => "required",
-            "parcelsDelivered" => "required",
+            'shiftId' => 'required',
+            'odometerStartReading' => 'required',
+            'odometerEndReading' => 'required',
+            'startDate' => 'required',
+            'endDate' => 'required',
+            'startTime' => 'required',
+            'endTime' => 'required',
+            'parcelsTaken' => 'required',
+            'parcelsDelivered' => 'required',
             // "addPhoto" => "required"
         ]);
 
-
         if ($validator->fails()) {
-            $response["status"] = 400;
-            $response["response"] = $validator->messages();
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+
             return $response;
         }
 
@@ -550,21 +535,20 @@ class ParcelController extends Controller
         $priceCompare = DB::table('personrates')->where('type', $data['shiftView']->vehicleType)->where('personId', $data['shiftView']->driverId)->first();
 
         $startDate = $request->startDate . ' ' . $request->startTime;
-        $endDate   = $request->endDate . ' ' . $request->input('endTime');
+        $endDate = $request->endDate . ' ' . $request->input('endTime');
         $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
         $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
-        $startDate    = strtotime($start_date);
-        $endDate      = strtotime($end_date);
+        $startDate = strtotime($start_date);
+        $endDate = strtotime($end_date);
         $dayStartTime = Carbon::parse($start_date);
         $nightEndTime = Carbon::parse($end_date);
         $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
 
-
-        $dayHr        =   $result['dayTotal'];
-        $nightHr      =   $result['nightTotal'];
-        $saturdayHrs  =   $result['totalSaturdayHours'];
-        $sundayHrs    =   $result['totalSundayHours'];
-        $weekendHours =   $saturdayHrs + $sundayHrs;
+        $dayHr = $result['dayTotal'];
+        $nightHr = $result['nightTotal'];
+        $saturdayHrs = $result['totalSaturdayHours'];
+        $sundayHrs = $result['totalSundayHours'];
+        $weekendHours = $saturdayHrs + $sundayHrs;
 
         $extra_per_hour_rate = $data['shiftView']->getDriverName->extra_per_hour_rate;
 
@@ -572,33 +556,29 @@ class ParcelController extends Controller
             $finishshift = Finishshift::where('shiftId', $request->shiftId)->first();
             if ($finishshift) {
                 return response()->json([
-                    "status" => $this->successStatus,
-                    "message" => "This Shift is already finished",
+                    'status' => $this->successStatus,
+                    'message' => 'This Shift is already finished',
                 ]);
             } else {
 
-
                 $dayShift = $nightShift = $sundayHr = $saturdayHr = $dayShiftCharge = $nightShiftCharge = $saturdayShiftCharge = $sundayShiftCharge = $priceOverRideStatus = '0';
 
-                if (!empty($dayHr) || !empty($nightHr)   || !empty($saturdayHrs)   || !empty($sundayHrs)) {
+                if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
                     if (!empty($dayHr)) {
                         $dayShiftwithExtra = $data['shiftView']->getClientCharge->hourlyRatePayableDay + $extra_per_hour_rate;
-                        $dayShift =  $dayShiftwithExtra * $dayHr;
+                        $dayShift = $dayShiftwithExtra * $dayHr;
                         $priceOverRideStatus = '0';
                         $dayShiftChargewithExtra = $data['shiftView']->getClientCharge->hourlyRateChargeableDays + $extra_per_hour_rate;
                         $dayShiftCharge = $dayShiftChargewithExtra * $dayHr ?? 0;
                     }
-
-
 
                     if (!empty($nightHr)) {
                         $nightShiftwithExtra = $data['shiftView']->getClientCharge->hourlyRatePayableNight + $extra_per_hour_rate;
                         $nightShift = $nightShiftwithExtra * $nightHr ?? 0;
                         $priceOverRideStatus = '0';
                         $nightShiftChargewithExtra = $data['shiftView']->getClientCharge->ourlyRateChargeableNight + $extra_per_hour_rate;
-                        $nightShiftCharge =  $nightShiftChargewithExtra  * $nightHr;
+                        $nightShiftCharge = $nightShiftChargewithExtra * $nightHr;
                     }
-
 
                     if (!empty($saturdayHrs)) {
                         $saturdayHrwithExtra = $data['shiftView']->getClientCharge->hourlyRatePayableSaturday + $extra_per_hour_rate;
@@ -608,19 +588,17 @@ class ParcelController extends Controller
                         $saturdayShiftCharge = $saturdayShiftChargewithExtra * $saturdayHrs;
                     }
 
-
                     if (!empty($sundayHrs)) {
                         $sundayHrwithExtra = $data['shiftView']->getClientCharge->hourlyRatePayableSunday + $extra_per_hour_rate;
                         $sundayHr = $sundayHrwithExtra * $sundayHrs ?? 0;
                         $priceOverRideStatus = '0';
-                        $sundayShiftChargewithExtra = $data['shiftView']->getClientCharge->hourlyRateChargeableSunday  + $extra_per_hour_rate;
+                        $sundayShiftChargewithExtra = $data['shiftView']->getClientCharge->hourlyRateChargeableSunday + $extra_per_hour_rate;
                         $sundayShiftCharge = $sundayShiftChargewithExtra * $sundayHrs;
                     }
 
                     $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
 
-
-                    $totalChargeDay   = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
+                    $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
                     Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalPayShiftAmount, 'status' => '0']);  // O is pay to Driver
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalChargeDay, 'status' => '1']); // 1 is charge to admin
@@ -639,58 +617,55 @@ class ParcelController extends Controller
                 $driverIncome = $totalPayShiftAmount ?? '0' + $driverPay->driverPay ?? '0';
                 Client::where('id', $data['shiftView']->client)->update(['driverPay' => $driverIncome]);
 
-                $adminCharge = Client::where('id',  $data['shiftView']->client)->first();
+                $adminCharge = Client::where('id', $data['shiftView']->client)->first();
                 $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
-                Client::where('id',  $data['shiftView']->client)->update(['adminCharge' => $chargeAdmin]);
+                Client::where('id', $data['shiftView']->client)->update(['adminCharge' => $chargeAdmin]);
 
-                Shift::whereId($request->shiftId)->update(['finishStatus' => '2','parcelsToken'=>$request->parcelsTaken]);
+                Shift::whereId($request->shiftId)->update(['finishStatus' => '2', 'parcelsToken' => $request->parcelsTaken]);
 
-
-                if($request->file('addPhoto')!=''){
+                if ($request->file('addPhoto') != '') {
                     $files = $request->file('addPhoto');
                     $destinationPath = 'assets/driver/parcel/finishParcel';
-                    $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+                    $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                     $files->move($destinationPath, $file_name);
                     $items = $file_name;
-                }
-                else{
+                } else {
                     $items = '';
                 }
 
+                Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
 
-                shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
-
-                $Parcel                             = new Finishshift();
-                $Parcel->driverId                   = $this->driverId;
-                $Parcel->shiftId                    = $request->shiftId;
-                $Parcel->odometerStartReading       = $request->odometerStartReading;
-                $Parcel->odometerEndReading         = $request->odometerEndReading;
-                $Parcel->dayHours                   = $dayHr;
-                $Parcel->nightHours                 = $nightHr;
-                $Parcel->saturdayHours              = $saturdayHrs;
-                $Parcel->sundayHours                = $sundayHrs;
-                $Parcel->weekendHours               = $weekendHours ?? 0;
-                $Parcel->totalHours                 = $totalHr ?? 0;
-                $Parcel->startDate                  = $request->startDate;
-                $Parcel->endDate                    = $request->endDate;
-                $Parcel->startTime                  = $dayStartTime->format('H:i');
-                $Parcel->endTime                    = $nightEndTime->format('H:i');
-                $Parcel->parcelsTaken               = $request->parcelsTaken;
-                $Parcel->parcelsDelivered           = $request->parcelsDelivered;
-                $Parcel->addPhoto                   = $items;
+                $Parcel = new Finishshift();
+                $Parcel->driverId = $this->driverId;
+                $Parcel->shiftId = $request->shiftId;
+                $Parcel->odometerStartReading = $request->odometerStartReading;
+                $Parcel->odometerEndReading = $request->odometerEndReading;
+                $Parcel->dayHours = $dayHr;
+                $Parcel->nightHours = $nightHr;
+                $Parcel->saturdayHours = $saturdayHrs;
+                $Parcel->sundayHours = $sundayHrs;
+                $Parcel->weekendHours = $weekendHours ?? 0;
+                $Parcel->totalHours = $totalHr ?? 0;
+                $Parcel->startDate = $request->startDate;
+                $Parcel->endDate = $request->endDate;
+                $Parcel->startTime = $dayStartTime->format('H:i');
+                $Parcel->endTime = $nightEndTime->format('H:i');
+                $Parcel->parcelsTaken = $request->parcelsTaken;
+                $Parcel->parcelsDelivered = $request->parcelsDelivered;
+                $Parcel->addPhoto = $items;
                 $Parcel->save();
 
                 if ($Parcel) {
                     return response()->json([
-                        "status" => $this->successStatus,
-                        "message" => "Shift Finished Successfully",
+                        'status' => $this->successStatus,
+                        'message' => 'Shift Finished Successfully',
                     ]);
                 }
             }
         } else {
             return response()->json([
-                "status" => $this->notfound,
-                "message" => "Shift Id Not exist",
+                'status' => $this->notfound,
+                'message' => 'Shift Id Not exist',
             ]);
         }
     }

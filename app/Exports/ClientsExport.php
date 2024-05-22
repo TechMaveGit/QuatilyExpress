@@ -42,4 +42,3 @@ class ClientsExport implements FromCollection, WithHeadings
         ];
     }
 }
-

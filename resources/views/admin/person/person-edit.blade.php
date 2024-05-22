@@ -757,7 +757,6 @@
                                                             </thead>
                                                             <tbody id="basic-datatable_body">
                                                                 @php
-                                                                    $documents = App\Models\Persondocument::OrderBy('id','desc',)->where('personId', $person)->get();
                                                                     $i = 1;
                                                                 @endphp
                                                                 @if (isset($documents))

@@ -2,9 +2,9 @@
 
 namespace App\Helpers;
 
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class DataTableHelper
 {
@@ -59,8 +59,6 @@ class DataTableHelper
 
         $totalFiltered = $query->count();
 
-
-
         // Order by column
         $orderColumn = $columns[$orderColumnIndex];
         $query->orderBy('id', 'DESC');
@@ -70,29 +68,25 @@ class DataTableHelper
             ->limit($limit)
             ->get();
 
-
         $formattedData = [];
-        if ($pageStr == "user_table") {
+        if ($pageStr == 'user_table') {
             $formattedData = self::userData($data, $columns, $columnMapping);
-        }elseif($pageStr == "client_table"){
+        } elseif ($pageStr == 'client_table') {
             $formattedData = self::clientData($data, $columns, $columnMapping);
-        }elseif($pageStr == "shift_table"){
+        } elseif ($pageStr == 'shift_table') {
             $formattedData = self::clientData($data, $columns, $columnMapping);
         }
 
-
-
         // Prepare JSON response
         $json_data = [
-            "draw" => intval($request->input('draw')),
-            "recordsTotal" => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data" => $formattedData
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => intval($totalData),
+            'recordsFiltered' => intval($totalFiltered),
+            'data' => $formattedData,
         ];
 
         return response()->json($json_data);
     }
-
 
     // Helper function to get nested property
     private static function getNestedProperty($item, $property)
@@ -108,16 +102,15 @@ class DataTableHelper
                 return '';
             }
         }
+
         return $value;
     }
 
-
     private static function clientData($items, $columns, $columnMapping)
     {
-        $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
+        $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()), true);
         $arr = [];
-        foreach($D as $v)
-        {
+        foreach ($D as $v) {
             $arr[] = $v['permission_id'];
         }
 
@@ -131,7 +124,7 @@ class DataTableHelper
                 $nestedData[$column] = $newNColumn;
 
                 $tdHtml = '';
-                if($column == "Status"){
+                if ($column == 'Status') {
                     $tableId = $nestedData['id'];
                     $tdHtml = '<div class="form-group">
                         <select class="form-control select2 form-select" onchange="changeStatus(\'' . $tableId . '\',this)" data-placeholder="Choose one" style="padding: 8px 15px;">
@@ -148,22 +141,22 @@ class DataTableHelper
                         </select>
                         <p id="message' . $tableId . '" class="message"></p>
                     </div>';
-                    $nestedData[$column] =$tdHtml;
+                    $nestedData[$column] = $tdHtml;
                 }
 
-                if($column == "Action"){
+                if ($column == 'Action') {
                     $tableId = $nestedData['id'];
                     $actionHtml = '<div class="g-2">';
 
-                    if (in_array("22", $arr)) {
+                    if (in_array('22', $arr)) {
                         $actionHtml .= '<a class="btn text-info btn-sm" href="' . route('client.view', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="View"><span class="fe fe-eye fs-14"></span></a>';
                     }
 
-                    if (in_array("23", $arr)) {
+                    if (in_array('23', $arr)) {
                         $actionHtml .= '<a class="btn text-primary btn-sm" href="' . route('client.edit', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>';
                     }
 
-                    if (in_array("24", $arr)) {
+                    if (in_array('24', $arr)) {
                         // $actionHtml .= '<a class="btn text-danger btn-sm" href="' . route('clientDelete', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>';
                         $actionHtml .= '<a class="btn text-danger btn-sm" href="javascript:void(0)" onclick="deleteClient(\'' . $tableId . '\')" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>';
                     }
@@ -174,11 +167,9 @@ class DataTableHelper
             }
             $formattedData[] = $nestedData;
         }
+
         return $formattedData;
     }
-
-
-
 
     private static function userData($items, $columns, $columnMapping)
     {
@@ -191,19 +182,18 @@ class DataTableHelper
 
                 $nestedData[$column] = $newNColumn;
 
-                if ($column == "Status" && $newNColumn == 1) {
-                    $nestedData[$column] = "Active";
-                } elseif ($column == "Status" && $newNColumn == 0) {
-                    $nestedData[$column] = "Inactive";
+                if ($column == 'Status' && $newNColumn == 1) {
+                    $nestedData[$column] = 'Active';
+                } elseif ($column == 'Status' && $newNColumn == 0) {
+                    $nestedData[$column] = 'Inactive';
                 }
             }
-
-
 
             // Add an empty 'options' column
             $nestedData['Action'] = '<a href="#">Hello</a><br/><a href="#">adsasd</a>';
             $formattedData[] = $nestedData;
         }
+
         return $formattedData;
     }
 }

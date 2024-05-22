@@ -84,7 +84,6 @@
         }, 1000);
     });
     </script>
-@livewireStyles
 
 <style>
     .dataTables_empty{

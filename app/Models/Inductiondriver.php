@@ -9,11 +9,9 @@ class Inductiondriver extends Model
 {
     use HasFactory;
 
-      public function getDriver()
+    public function getDriver()
     {
         return $this->hasOne(Driver::class, 'id', 'driverId');
 
     }
-
-
 }

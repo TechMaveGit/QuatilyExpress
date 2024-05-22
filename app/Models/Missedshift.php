@@ -34,35 +34,27 @@ class Missedshift extends Model
         return $this->hasOne(Clientrate::class, 'id', 'client');
     }
 
-
-
     public function getClientVehicleRates()
     {
         return $this->hasOne(Clientrate::class, 'type', 'vehicleType');
     }
-
-
 
     public function getDriverName()
     {
         return $this->hasOne(Driver::class, 'id', 'driverId');
     }
 
-
-
     public function getClientCharge()
     {
         return $this->hasOne(Clientrate::class, 'type', 'vehicleType');
     }
-
 
     public function getFinishShifts()
     {
         return $this->hasOne(Finishshift::class, 'shiftId', 'id');
     }
 
-
-     public function getParcel()
+    public function getParcel()
     {
         return $this->hasMany(Parcels::class, 'shiftId', 'id');
     }
@@ -71,11 +63,4 @@ class Missedshift extends Model
     {
         return $this->hasMany(ClientBase::class, 'clientId', 'id');
     }
-
-
-
-
-
-
-
 }

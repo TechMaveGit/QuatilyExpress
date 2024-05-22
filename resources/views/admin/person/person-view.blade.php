@@ -368,12 +368,6 @@
                                                                     </tr>
                                                                 </thead>
                                                                 @php
-                                                                    $personrates = App\Models\Personrates::where(
-                                                                        'personId',
-                                                                        $personDetail->id,
-                                                                    )
-                                                                        ->OrderBy('id', 'desc')
-                                                                        ->get();
                                                                     $i = 1;
                                                                 @endphp
                                                                 <tbody>
@@ -381,10 +375,6 @@
                                                                         <tr class="border-bottom">
                                                                             <td>{{ App\Models\Type::OrderBy('id', 'desc')->where('id', $allpersonrates->type)->first()->name ?? 'N/A' }}
                                                                             </td>
-                                                                            <!-- <td></td>
-                                                           <td></td>
-                                                           <td></td>
-                                                           <td></td> -->
                                                                             <td>{{ $allpersonrates->hourlyRatePayableDays }}
                                                                             </td>
                                                                             <td>{{ $allpersonrates->hourlyRatePayableNight }}
