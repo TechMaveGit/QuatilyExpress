@@ -553,20 +553,7 @@
                                                             </div>
                                                         </div>
 
-                                                        {{-- <div class="col-lg-3">
-                                            <div class="check_box">
-                                                <label class="form-label" for="exampleInputEmail1">Status</label>
-                                                <div class="form-group">
-                                                <select class="form-control select2 form-select" name="status" id="first14" data-placeholder="Choose one">
-                                                    @foreach ($shiftstatus as $allshiftstatus)
-                                                    <option value="{{ $allshiftstatus->id }}">{{ $allshiftstatus->name }}</option>
-                                                      @endforeach
-                                                    </select>
-                                                    <p class="first" id="firstcls14" style="display: none">Please Select Any Status</p>
-
-                                              </div>
-                                            </div>
-                                         </div> --}}
+                                                       
 
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">

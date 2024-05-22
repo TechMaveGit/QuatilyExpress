@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Personreminder extends Model
 {
     use HasFactory;
+
     public function getReminder()
     {
         return $this->hasOne(Reminders::class, 'id', 'reminderType');
     }
 
-    protected $fillable = ['personId','reminderType','status'] ;
+    protected $fillable = ['personId', 'reminderType', 'status'];
 }

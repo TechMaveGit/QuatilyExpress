@@ -1,19 +1,20 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
+
+use App\Exports\ClientsExport;
 use App\Helpers\DataTableHelper;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Clientaddress;
 use App\Models\Clientbase;
-use App\Models\Clientrate;
-use App\Models\Type;
 use App\Models\Clientcenter;
+use App\Models\Clientrate;
 use App\Models\States;
-use App\Exports\ClientsExport;
+use App\Models\Type;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-
 
 class ClientController extends Controller
 {
@@ -23,12 +24,13 @@ class ClientController extends Controller
         $data['name'] = $request->input('name');
         $data['mobileNo'] = $request->input('mobileNo');
         $data['state'] = $request->input('state');
+
         return view('admin.client.client', $data);
     }
 
     public function clientsAjax(Request $request)
     {
-        $query = Client::orderBy('id','DESC');
+        $query = Client::orderBy('id', 'DESC');
         if (isset($request->form) && !empty($request->form)) {
             $data['status'] = $request->input('form.clientStatus') ?? '1';
             $data['name'] = $request->input('form.name');
@@ -56,28 +58,10 @@ class ClientController extends Controller
             'Status' => 'status',
             'Action' => 'id',
         ];
-        $pageStr = "client_table";
+        $pageStr = 'client_table';
+
         return DataTableHelper::getData($request, $query, $columnMapping, $pageStr);
     }
-
-    //   public function exportClients(Request $request)
-    //     {
-    //         $query = Client::query();
-    //         if ($request->filled('clientStatus')) {
-    //             $query->where('status', $request->input('clientStatus'));
-    //         }
-    //         if ($request->filled('name')) {
-    //             $query->where('name', 'like', '%' . $request->input('name') . '%');
-    //         }
-    //         if ($request->filled('mobileNo')) {
-    //             $query->where('mobilePhone', 'like', '%' . $request->input('mobileNo') . '%');
-    //         }
-    //         if ($request->filled('state')) {
-    //             $query->where('state', $request->input('state'));
-    //         }
-    //         $clients = $query->get();
-    //         return Excel::download(new ClientsExport($clients), 'clients.xlsx');
-    //     }
 
     public function exportClients(Request $request)
     {
@@ -98,12 +82,12 @@ class ClientController extends Controller
                 $query->where('state', $request->input('state'));
             }
         } else {
-            // No filter input found, export active clients by default
-            $query->where('status', '1'); // Adjust this condition based on your data
+            $query->where('status', '1');
         }
         // Fetch clients based on applied filters or default condition
         $clients = $query->get();
-        return Excel::download(new ClientSExport($clients), 'clients.xlsx');
+
+        return Excel::download(new ClientsExport($clients), 'clients.xlsx');
     }
 
     public function clientAddfirst(Request $request)
@@ -112,23 +96,24 @@ class ClientController extends Controller
         $data['types'] = Type::get();
         $data['selectClient'] = Client::get();
         $data['types'] = Type::get();
+
         return view('admin.client.client-add', $data);
     }
 
     public function addClient(Request $request)
     {
         //    dd($request->all());
-        $name       = $request->input('name');
-        $shortName  = $request->input('shortName');
-        $acn        = $request->input('acn');
-        $abn        = $request->input('abn');
-        $state      = $request->input('state');
+        $name = $request->input('name');
+        $shortName = $request->input('shortName');
+        $acn = $request->input('acn');
+        $abn = $request->input('abn');
+        $state = $request->input('state');
         $phonePrinciple = $request->input('phonePrinciple');
         $mobilePhone = $request->input('mobilePhone');
-        $phomneAux   = $request->input('phomneAux');
-        $website     = $request->input('website');
-        $notes       = $request->input('notes');
-        $clientId   = Client::insertGetId([
+        $phomneAux = $request->input('phomneAux');
+        $website = $request->input('website');
+        $notes = $request->input('notes');
+        $clientId = Client::insertGetId([
             'name'         => $name,
             'shortName'    => $shortName,
             'acn'          => $acn,
@@ -154,7 +139,7 @@ class ClientController extends Controller
                 'streetAddress' => $request->input('streetAddress')[$i],
                 'suburb'        => $request->input('suburb')[$i],
                 'city'          => $request->input('city')[$i],
-                'state'         => $request->input('stateId')[$i]
+                'state'         => $request->input('stateId')[$i],
             ]);
         }
         $type = $request->input('hourlyRate');
@@ -174,7 +159,7 @@ class ClientController extends Controller
                 'hourlyRatePayableDay'         => $request->input('HourlyRatePayableDay')[$i],
                 'hourlyRatePayableNight'       => $request->input('HourlyRatePayableNight')[$i],
                 'hourlyRatePayableSaturday'    => $request->input('HourlyRatePayableSaturday')[$i],
-                'hourlyRatePayableSunday'    => $request->input('HourlyRatePayableSunday')[$i]
+                'hourlyRatePayableSunday'    => $request->input('HourlyRatePayableSunday')[$i],
             ]);
         }
         $CostCenterName = $request->input('CostCenterName1');
@@ -205,6 +190,7 @@ class ClientController extends Controller
                 'location'             =>  $request->input('CostCenterLocation')[$i],
             ]);
         }
+
         return redirect()->route('clients')->with('message', 'Client Basic Information Added Successfully!!');
     }
 
@@ -226,16 +212,17 @@ class ClientController extends Controller
         $data['client'] = Client::with('getaddress', 'getrates', 'getCenter', 'getState')->where('id', $id)->first();
         $data['clientbase'] = Clientbase::orderBy('id', 'DESC')->where('clientId', $id)->get();
         $data['ClientcenterName'] = Clientcenter::select('id', 'name')->orderBy('id', 'DESC')->where('status', 1)->where('clientId', $id)->get();
+
         return view('admin.client.client-view', $data);
     }
 
     public function clientEdit(Request $request, $id)
     {
-        if (request()->isMethod("post")) {
+        if (request()->isMethod('post')) {
             $clientId = $id;
             $addressValue = $request->input('addressValue');
             if ($addressValue == '1') {
-                $data = array(
+                $data = [
                     'name'     => $request->input('name'),
                     'shortName' => $request->input('shortName'),
                     'acn'       =>   $request->input('acn'),
@@ -247,8 +234,9 @@ class ClientController extends Controller
                     'faxPhone'        =>      $request->input('faqPhone'),
                     'website'         =>     $request->input('webSite'),
                     'notes'           => $request->input('Notes'),
-                );
+                ];
                 Client::whereId($id)->update($data);
+
                 return redirect()->back()->with('message', 'Client Basic Information Updated Successfully!');
             }
             if ($addressValue == '2') {
@@ -261,13 +249,14 @@ class ClientController extends Controller
                     'streetAddress' => $request->input('street') ?? '',
                     'suburb'        => $request->input('suburd') ?? '',
                     'city'          => $request->input('city') ?? '',
-                    'state'         => $request->input('state') ?? ''
+                    'state'         => $request->input('state') ?? '',
                 ]);
                 $clientData = Clientaddress::orderBy('id', 'DESC')->where('id', $clientId)->first();
+
                 return response()->json([
                     'success' => '200',
                     'message' => 'Product saved successfully.',
-                    'data'   => $clientData
+                    'data'   => $clientData,
                 ]);
             }
             if ($addressValue == '6') {
@@ -290,6 +279,7 @@ class ClientController extends Controller
                     ]);
                     $ClientBase = Clientbase::orderBy('id', 'DESC')->where('id', $Clientrate)->first();
                     $Clientcenter = Clientcenter::orderBy('id', 'DESC')->get();
+
                     return response()->json([
                         'success' => '200',
                         'message' => 'Clien Base saved successfully',
@@ -315,10 +305,11 @@ class ClientController extends Controller
                     $clientrate = $clientrate->id;
                     $clientRate = Clientrate::orderBy('id', 'DESC')->where('type', $request->input('type'))->where('id', $clientrate)->first();
                     $clientRate->typeName = Type::whereId($clientRate->type)->first()->name;
+
                     return response()->json([
                         'success' => '300',
                         'message' => 'Client rate updated successfully.',
-                        'data'   => $clientRate
+                        'data'   => $clientRate,
                     ]);
                 } else {
                     //     return $request->all();
@@ -336,10 +327,11 @@ class ClientController extends Controller
                     ]);
                     $clientRate = Clientrate::orderBy('id', 'DESC')->where('id', $clientrate)->first();
                     $clientRate->typeName = Type::whereId($clientRate->type)->first()->name;
+
                     return response()->json([
                         'success' => '200',
                         'message' => 'Client rate saved successfully.',
-                        'data'   => $clientRate
+                        'data'   => $clientRate,
                     ]);
                 }
             }
@@ -356,6 +348,7 @@ class ClientController extends Controller
                         'client'               => $request->input('selectClient'),
                     ]);
                     $Clientrate = Clientcenter::orderBy('id', 'DESC')->with('getCenterName', 'getCenterState')->where('id', $Clientrate)->first();
+
                     return response()->json([
                         'success' => '200',
                         'message' => 'Clien center saved successfully.',
@@ -378,9 +371,9 @@ class ClientController extends Controller
         $data['types'] = Type::get();
         $data['selectClient'] = Client::get();
         $data['getStates'] = States::get();
+
         return view('admin.client.client-edit', $data);
     }
-
 
     public function clientRateEdit(Request $request)
     {
@@ -396,9 +389,9 @@ class ClientController extends Controller
             'hourlyRatePayableSaturday'    => $request->input('HourlyRatePayableSaturday') ?? '0',
             'hourlyRatePayableSunday'      => $request->input('HourlyRatePayableSunday') ?? '0',
         ]);
+
         return redirect()->back()->with('message', 'Client Rate Updated  Successfully!!');
     }
-
 
     public function clientdelete(Request $request)
     {
@@ -412,18 +405,18 @@ class ClientController extends Controller
         }
     }
 
-
     public function deleteClient(Request $request)
     {
-      $id = $request->input('id');
-      try {
-          //code...
-          Client::whereId($id)->update(['status' => '2']);
-          return true;
-      } catch (\Throwable $th) {
-          return false;
-          //throw $th;
-      }
+        $id = $request->input('id');
+        try {
+            //code...
+            Client::whereId($id)->update(['status' => '2']);
+
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+            //throw $th;
+        }
     }
 
     public function clientbase(Request $request)
@@ -462,7 +455,7 @@ class ClientController extends Controller
             ]);
         }
     }
-    
+
     public function clientcenters(Request $request)
     {
         $id = $request->input('clientId');
@@ -481,6 +474,7 @@ class ClientController extends Controller
             ]);
         }
     }
+
     public function clientStatus(Request $request)
     {
         $client = Client::whereId($request->input('clientId'))->update(['status' => $request->input('statusValue')]);

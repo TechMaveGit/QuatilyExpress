@@ -32,19 +32,19 @@
                            <div class="col-lg-4">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Driver Name</label>
-                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->userName }}" />
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->userName??'' }}" />
                                  </div>
                            </div>
                            <div class="col-lg-4">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Driver Surname</label>
-                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->surname }}" />
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->surname??'' }}" />
                                  </div>
                            </div>
                            <div class="col-lg-4">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Driver Email</label>
-                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->email }}" />
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->email??'' }}" />
                                  </div>
                            </div>
 

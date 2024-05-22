@@ -10,5 +10,4 @@ class TrackLocation extends Model
     use HasFactory;
     protected $table = 'track_location'; // Specify the table name
 
-
 }

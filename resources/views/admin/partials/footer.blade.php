@@ -680,7 +680,6 @@
    </div>
 </footer>
 <!-- FOOTER END -->
-@livewireScripts
 <script>
    $("#basicDate").flatpickr({
       maxDate: new Date()
@@ -882,13 +881,6 @@
 </script>
 <!--  Flatpickr  Code End -->
 <script type="text/javascript" src="https://jeremyfagis.github.io/dropify/dist/js/dropify.min.js"></script>
-<script>
-   // $(document).ready(function(){
-   //     window.livewire.on('alert_remove',()=>{
-   //          setTimeout(function(){ $("#toastrMsg").fadeOut('fast');
-   //          }, 1000); // 5 secs
-   // });
-</script>
 <script>
    $('.dropify').dropify();
 </script>

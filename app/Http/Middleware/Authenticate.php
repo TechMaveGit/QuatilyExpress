@@ -10,12 +10,12 @@ class Authenticate extends Middleware
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @return string|null
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             $guard = $this->getGuard($request);
             switch ($guard) {
                 case 'admin':
@@ -25,10 +25,10 @@ class Authenticate extends Middleware
                     return route('admin');
                     break;
             }
+
             return route('admin');
 
             // return route('login');
-
 
         }
     }
@@ -41,7 +41,7 @@ class Authenticate extends Middleware
         }
 
         if ($request->is('api/*')) {
-            abort(response()->json(['status'=>false,'error' => 'Unauthenticated.'], 401));
+            abort(response()->json(['status'=>false, 'error' => 'Unauthenticated.'], 401));
         }
 
         return 'admin';

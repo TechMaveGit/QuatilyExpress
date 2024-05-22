@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Driverresponsible extends Model
 {
     use HasFactory;
-    
-     public function getDriverResponsible()
+
+    public function getDriverResponsible()
     {
         return $this->hasOne(Driver::class, 'id', 'driverResponsible');
     }

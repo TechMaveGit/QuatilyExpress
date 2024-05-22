@@ -3,22 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Driver extends Authenticatable  implements JWTSubject
-    {
-        use HasFactory ,Notifiable;
+class Driver extends Authenticatable implements JWTSubject
+{
+    use HasFactory ,Notifiable;
 
     public function getJWTIdentifier()
     {
-    return $this->getKey();
+        return $this->getKey();
     }
+
     public function getJWTCustomClaims()
     {
-    return [];
+        return [];
     }
 
     public function getaddress()
@@ -29,7 +29,7 @@ class Driver extends Authenticatable  implements JWTSubject
     public function getreminder()
     {
         return $this->hasMany(Personreminder::class, 'personId', 'id');
-     }
+    }
 
     public function getRates()
     {
@@ -41,9 +41,8 @@ class Driver extends Authenticatable  implements JWTSubject
         return $this->hasOne(Clientcenter::class, 'clientId', 'id');
     }
 
-    public function roleName(){
-        return $this->hasOne(Roles::class, 'id', 'role_id')->select('id','name');
+    public function roleName()
+    {
+        return $this->hasOne(Roles::class, 'id', 'role_id')->select('id', 'name');
     }
-
-
 }

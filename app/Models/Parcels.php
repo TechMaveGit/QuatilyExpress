@@ -18,5 +18,4 @@ class Parcels extends Model
     {
         return $this->hasMany(Addparcelimage::class, 'parcelId', 'id');
     }
-
 }

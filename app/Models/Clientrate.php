@@ -16,13 +16,12 @@ class Clientrate extends Model
 
     public function getClientType()
     {
-        return $this->hasOne(Type::class, 'id', 'type')->select('id','name');
+        return $this->hasOne(Type::class, 'id', 'type')->select('id', 'name');
     }
 
     // public function getClientBase()
     // {
     //     return $this->hasMany(Type::class, 'id', 'type')->select('id','name');
     // }
-
 
 }
