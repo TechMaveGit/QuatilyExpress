@@ -13,19 +13,97 @@ class ShiftReportsExport
         $this->shifts = $shifts;
     }
 
-    public function exportToCsv($filename)
+    public function exportToCsv()
     {
-        $file = fopen($filename, 'w');
-
-        // Add the headers to the CSV file
-        fputcsv($file, $this->headings());
-
-        // Add the data rows to the CSV file
-        foreach ($this->collection() as $row) {
-            fputcsv($file, $row);
+        $content = $this->generateCsvHeaders() . "\r\n";
+        foreach ($this->collection() as $index => $row) {
+            $content .= $this->generateCsvRow($index + 1, $row) . "\r\n";
         }
+        return $content;
+    }
 
-        fclose($file);
+    protected function generateCsvHeaders()
+    {
+        return implode(',', [
+            'S.No',
+            'Client Id',
+            'Shift ID',
+            'Client Name',
+            'Cost',
+            'Driver',
+            'Parcels Taken',
+            'Parcels Delivered',
+            'REGO',
+            'Vehicle Type',
+            'State',
+            'Created Date',
+            'Date Start',
+            'Time Start',
+            'Date Finish',
+            'Time Finish',
+            'Status',
+            'Total Hours',
+            'Amount Chargeable Day Shift',
+            'Amount Payable Day Shift',
+            'Amount Payable Night Shift',
+            'Amount Chargeable Night Shift',
+            'Amount Payable Weekend Shift',
+            'Amount Chargeable Weekend Shift',
+            'Fuel Levy Payable',
+            'Fuel Levy Chargeable Fixed',
+            'Fuel Levy Chargeable 250+',
+            'Fuel Levy Chargeable 400+',
+            'Extra Payable',
+            'Extra Chargeable',
+            'Total Chargeable',
+            'Odometer Start',
+            'Odometer End',
+            'Total Payable',
+            'Traveled KM',
+            'Comment',
+        ]);
+    }
+
+    protected function generateCsvRow($index, $row)
+    {
+        return implode(',', [
+            $index,
+            $row['Client Id'],
+            $row['Shift ID'],
+            $row['Client Name'],
+            $row['Cost'],
+            $row['Driver'],
+            $row['Parcels Taken'],
+            $row['Parcels Delivered'],
+            $row['REGO'],
+            $row['Vehicle Type'],
+            $row['State'],
+            $row['Created Date'],
+            $row['Date Start'],
+            $row['Time Start'],
+            $row['Date Finish'],
+            $row['Time Finish'],
+            $row['Status'],
+            $row['Total Hours'],
+            $row['Amount Chargeable Day Shift'],
+            $row['Amount Payable Day Shift'],
+            $row['Amount Payable Night Shift'],
+            $row['Amount Chargeable Night Shift'],
+            $row['Amount Payable Weekend Shift'],
+            $row['Amount Chargeable Weekend Shift'],
+            $row['Fuel Levy Payable'],
+            $row['Fuel Levy Chargeable Fixed'],
+            $row['Fuel Levy Chargeable 250+'],
+            $row['Fuel Levy Chargeable 400+'],
+            $row['Extra Payable'],
+            $row['Extra Chargeable'],
+            $row['Total Chargeable'],
+            $row['Odometer Start'],
+            $row['Odometer End'],
+            $row['Total Payable'],
+            $row['Traveled KM'],
+            $row['Comment'],
+        ]);
     }
 
     public function collection()
@@ -82,7 +160,6 @@ class ShiftReportsExport
             $km = ((int) $shift?->getFinishShift?->odometerEndReading ?? 0) - ((int) $shift?->getFinishShift?->odometerStartReading ?? 0);
 
             return [
-                'S.No' => $shift->id ?? '',
                 'Client Id' => $shift->client ?? '',
                 'Shift ID' => 'QE' . $shift->shiftRandId,
                 'Client Name' => $shift->getClientName->name ?? 'N/A',
@@ -120,48 +197,6 @@ class ShiftReportsExport
                 'Comment' => $shift->getFinishShift->comments ?? 'N/A',
             ];
         })->toArray();
-    }
-
-    public function headings(): array
-    {
-        return [
-            'S.No',
-            'Client Id',
-            'Shift ID',
-            'Client Name',
-            'Cost',
-            'Driver',
-            'Parcels Taken',
-            'Parcels Delivered',
-            'REGO',
-            'Vehicle Type',
-            'State',
-            'Created Date',
-            'Date Start',
-            'Time Start',
-            'Date Finish',
-            'Time Finish',
-            'Status',
-            'Total Hours',
-            'Amount Chargeable Day Shift',
-            'Amount Payable Day Shift',
-            'Amount Payable Night Shift',
-            'Amount Chargeable Night Shift',
-            'Amount Payable Weekend Shift',
-            'Amount Chargeable Weekend Shift',
-            'Fuel Levy Payable',
-            'Fuel Levy Chargeable Fixed',
-            'Fuel Levy Chargeable 250+',
-            'Fuel Levy Chargeable 400+',
-            'Extra Payable',
-            'Extra Chargeable',
-            'Total Chargeable',
-            'Odometer Start',
-            'Odometer End',
-            'Total Payable',
-            'Traveled KM',
-            'Comment',
-        ];
     }
 
     public function getStatusText($status)

@@ -11,19 +11,39 @@ class ClientsExport
         $this->clients = $clients;
     }
 
-    public function exportToCsv($filename)
+    public function exportToCsv()
     {
-        $file = fopen($filename, 'w');
-
-        // Add the headers to the CSV file
-        fputcsv($file, $this->headings());
-
-        // Add the data rows to the CSV file
-        foreach ($this->collection() as $row) {
-            fputcsv($file, $row);
+        $content = $this->generateCsvHeaders() . "\r\n";
+        foreach ($this->collection() as $index => $row) {
+            $content .= $this->generateCsvRow($index + 1, $row) . "\r\n";
         }
+        return $content;
+    }
 
-        fclose($file);
+    protected function generateCsvHeaders()
+    {
+        return implode(',', [
+            'ID',
+            'Name',
+            'Short Name',
+            'Abn',
+            'Phone Principal',
+            'State',
+            'Status',
+        ]);
+    }
+
+    protected function generateCsvRow($index, $row)
+    {
+        return implode(',', [
+            $row['ID'],
+            $row['Name'],
+            $row['Short Name'],
+            $row['Abn'],
+            $row['Phone Principal'],
+            $row['State'],
+            $row['Status'],
+        ]);
     }
 
     public function collection()
@@ -39,18 +59,5 @@ class ClientsExport
                 'Status' => $client->status == 1 ? 'Active' : 'Inactive',
             ];
         })->toArray();
-    }
-
-    public function headings(): array
-    {
-        return [
-            'ID',
-            'Name',
-            'Short Name',
-            'Abn',
-            'Phone Principal',
-            'State',
-            'Status',
-        ];
     }
 }
