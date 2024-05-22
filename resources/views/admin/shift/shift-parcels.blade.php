@@ -23,6 +23,14 @@
   width: 100%;
 }
 
+.parcel_in{
+    background-color: #a69e0033 !important;
+}
+
+.parcel_out{
+    background-color: #67fa152b !important;
+}
+
 </style>
         </style>
 
@@ -41,7 +49,7 @@
                             <div class="row">
                                 <div class="col-lg-12 mt-2">
 
-                                    <table id="" class="table table-bordered text-nowrap mb-0">
+                                    <table id="" class="table table-bordered text-nowrap mb-4">
                                         <thead class="border-top">
 
                                             <tr>
@@ -52,35 +60,35 @@
                                         </thead>
                                           <tbody>
                                             <tr>
-                                                <td>{{ $shiftLocation['startaddress'] }}</td>
-                                                <td>{{ $shiftLocation['endaddress'] }}</td>
+                                                <td class="parcel_in">{{ $shiftLocation['startaddress'] }}</td>
+                                                <td class="parcel_out">{{ $shiftLocation['endaddress'] }}</td>
                                             </tr>
                                           </tbody>
 
                                     </table>
 
 
-
-                                    <div class="table_box">
+<hr>
+                                    <div class="table_box mt-5">
                                         <table id="custom_table" class="table table-bordered text-nowrap mb-0">
                                             <thead class="border-top">
 
                                                 <tr>
-                                                    <th class="th_highlight" colspan="4">Parcel In</th>
-                                                    <th class="th_highlight" colspan="5">Parcel Out / Delivered</th>
+                                                    <th class="th_highlight parcel_in" colspan="4">Parcel In</th>
+                                                    <th class="th_highlight parcel_out" colspan="5">Parcel Out / Delivered</th>
                                                 </tr>
 
                                                 <tr>
-                                                    <th>S. NO.</th>
-                                                    <th>Receiver Name</th>
-                                                    <th>Parcel Image</th>
-                                                    <th>Date</th>
+                                                    <th >S. NO.</th>
+                                                    <th class="parcel_in">Receiver Name</th>
+                                                    <th class="parcel_in">Parcel Image</th>
+                                                    <th class="parcel_in">Date</th>
 
-                                                    <th class="drop_location_lkj">Drop Location</th>
-                                                    <th>Receiver Name</th>
-                                                    <th>longitude/latitude</th>
-                                                    <th>Delivered Image</th>
-                                                    <th>Date</th>
+                                                    <th class="parcel_out drop_location_lkj">Drop Location</th>
+                                                    <th class="parcel_out">Receiver Name</th>
+                                                    <th class="parcel_out">longitude/latitude</th>
+                                                    <th class="parcel_out">Delivered Image</th>
+                                                    <th class="parcel_out">Date</th>
 
                                                 </tr>
                                             </thead>
@@ -90,40 +98,40 @@
                                                 @forelse ($parcelsDetail as $allparcelsDetail)
                                                 <tr>
                                                    <td>{{ $loop->index+1}}</td>
-                                                   <td>{{ $allparcelsDetail->receiverName}}</td>
+                                                   <td class="parcel_in">{{ $allparcelsDetail->receiverName}}</td>
 
-                                                   <td>
+                                                   <td class="parcel_in">
                                                     <div class="magnific-img">
                                                         @if(!empty($allparcelsDetail['ParcelImage']->parcelImage))
-                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
-                                                                <img src="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
+                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
+                                                                <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
                                                             </a>
                                                         @endif
                                                     </div>
                                                   </td>
 
 
-                                                   <td class="date">
+                                                   <td class="date parcel_in">
                                                     {{ $allparcelsDetail->created_at }}
                                                    </td>
-                                                   <td>
+                                                   <td class="parcel_out">
 
                                                     <p class="adress_ppmn">{{ $allparcelsDetail->location }}</p>
 
                                                    </td>
-                                                   <td>
+                                                   <td class="parcel_out">
                                                     {{ $allparcelsDetail->deliveredTo }}
                                                    </td>
-                                                   <td >
+                                                   <td class="parcel_out">
                                                     <p class="delivery_address"> {{ $allparcelsDetail->deliver_address }}</p>
 
                                                    </td>
 
-                                                   <td>
+                                                   <td class="parcel_out">
                                                    <div class="magnific-img">
                                                     @if(!empty($allparcelsDetail->parcelphoto))
-                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}">
-                                                        <img src="{{ url('/public/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
+                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}">
+                                                        <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
                                                     }" alt="9.jpg" />
                                                         <!-- <i class="fa fa-search-plus" aria-hidden="true"></i> -->
                                                     </a>
@@ -137,7 +145,7 @@
 
                                                     </div>
                                                    </td>
-                                                   <td class="date">
+                                                   <td class="date parcel_out">
                                                    {{ $allparcelsDetail->parcelDeliverdDate }}
                                                    </td>
                                                 </tr>

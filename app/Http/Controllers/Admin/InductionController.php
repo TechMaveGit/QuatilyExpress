@@ -56,7 +56,7 @@ class InductionController extends Controller
           if ($req->hasFile('uploadFile'))
           {
               $files = $req->file('uploadFile');
-              $destinationPath = 'public/assets/Induction/signatureImage';
+              $destinationPath = 'assets/Induction/signatureImage';
               $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
               $files->move($destinationPath, $file_name);
               $items = $file_name;
@@ -86,7 +86,7 @@ class InductionController extends Controller
           if ($req->hasFile('uploadFile'))
           {
               $files = $req->file('uploadFile');
-              $destinationPath = 'public/assets/Induction/signatureImage';
+              $destinationPath = 'assets/Induction/signatureImage';
               $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
               $files->move($destinationPath, $file_name);
               $items = $file_name;
@@ -123,7 +123,7 @@ class InductionController extends Controller
         if ($req->hasFile('uploadFile'))
         {
             $files = $req->file('uploadFile');
-            $destinationPath = 'public/assets/Induction/image';
+            $destinationPath = 'assets/Induction/image';
             $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $items = $file_name;
@@ -164,7 +164,7 @@ class InductionController extends Controller
               if ($req->hasFile('uploadFile'))
               {
                   $files = $req->file('uploadFile');
-                  $destinationPath = 'public/assets/Induction/image';
+                  $destinationPath = 'assets/Induction/image';
                   $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
                   $files->move($destinationPath, $file_name);
                   $items = $file_name;
@@ -201,7 +201,7 @@ class InductionController extends Controller
               if ($req->hasFile('uploadFile'))
               {
                   $files = $req->file('uploadFile');
-                  $destinationPath = 'public/assets/Induction/image';
+                  $destinationPath = 'assets/Induction/image';
                   $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
                   $files->move($destinationPath, $file_name);
                   $items = $file_name;

@@ -11,46 +11,9 @@
    ?>
 
 <style>
-.relative{
-    /* display: none; */
-}
-.select2-container--default .select2-results__option[aria-selected=true] {
-    background-color: #515151;
-    border-bottom: 1px solid #5d5c5c;
-}
-.light-mode .select2-container--default .select2-results__option[aria-selected=true] {
-    background-color: #f4f4f4;
-    border-bottom: 1px solid #e3e1e1;
-}
-.light-mode .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: var(--primary-bg-color);
-    color: #70748c;
-}
- .bottom_pagination nav {
-    display: flex;
-    /* align-items: center; */
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px;
-}
-.bottom_pagination .hidden {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: 15px;
-}
-.bottom_pagination .hidden div p {
- text-align: end;
-}
     .dt-button.dropdown-item.buttons-columnVisibility.active {
   background-color: #282618; /* Replace with your desired color code */
   /* You can also add other styles as needed */
-}
-.top{
-    display: none;
-}
-#custom_table_wrapper .bottom
-{
-    display: none;
 }
 
 .brdcls .select2-selection__rendered{
@@ -61,6 +24,7 @@
     padding: 0px 5px;''
     border-radius: 4px;
 }
+
 
     .status-ToBeApr{
     color: #2ecc71;
@@ -181,7 +145,7 @@
                     <div class="row">
                        <div class="col-lg-12">
                           <div class="approve_cnt">
-                             {{-- <img src="{{ asset('public/assets/images/newimages/question-mark.png')}}" alt=""> --}}
+                             {{-- <img src="{{ asset('assets/images/newimages/question-mark.png')}}" alt=""> --}}
                              <h3>Do you want to approve ?</h3>
                              <input type="hidden" name="shiftId" id="shiftId" />
                              {{-- <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto, delectus?</p> --}}
@@ -212,7 +176,7 @@
              <div class="row">
                 <div class="col-lg-12">
                    <div class="approve_cnt">
-                      <img src="{{ asset('public/assets/images/newimages/question-mark.png')}}" alt="">
+                      <img src="{{ asset('assets/images/newimages/question-mark.png')}}" alt="">
                       <h3>Do you want to approve ?</h3>
                       <input type="hidden" name="shiftId" id="shiftId" />
                       <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto, delectus?</p>
@@ -266,30 +230,16 @@
                                 @endif
 
 
-                            <form  method="GET">
+                            <form action="{{ route('admin.shift.report') }}" method="post"/> @csrf
                             <div class="row align-items-center">
-
-                                {{-- <div class="col-lg-3">
+                               <div class="col-lg-4">
                                     <div class="check_box">
-                                        <label class="form-label" for="exampleInputEmail1">Search</label>
+                                        <label class="form-label" for="exampleInputEmail1">State</label>
                                         <div class="form-group">
-
-                                            <input  type="text" name="search" value="{{ isset($_GET['search']) ? $_GET['search'] : '' }}"
-                                            class="form-control" aria-describedby="emailHelp" placeholder="shift Id" fdprocessedid="enssm">
-
-                                       </div>
-                                    </div>
-                                </div> --}}
-
-
-                               <div class="col-lg-3">
-                                    <div class="check_box">
-                                        <label class="form-label">State</label>
-                                        <div class="form-group">
-                                        <select  class="form-control select2 form-select" onchange="getdata(this)" id="stateId" name="state[]" data-placeholder="Choose one" multiple="multiple">
+                                        <select class="form-control select2 form-select" onchange="getdata(this)" id="stateId" name="state[]" data-placeholder="Choose one" multiple="multiple">
 
                                           @forelse ($state as $allstate)
-                                            <option value="{{ $allstate->id }}" {{ in_array($allstate->id, request('state', [])) ? 'selected="selected"' : '' }}>
+                                            <option value="{{ $allstate->id }}" {{ in_array($allstate->id, $statefilter??'') ? 'selected="selected"' : '' }}>
                                                 {{ $allstate->name }}
                                             </option>
                                             @empty
@@ -301,9 +251,9 @@
                                 </div>
 
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="check_box">
-                                        <label class="form-label"> Client</label>
+                                        <label class="form-label" for="exampleInputEmail1"> Client </label>
 
                                         <div class="form-group">
                                            <select class="form-control select2 form-select" name="client[]" id="appendClient" onchange="getCostCenter(this)" data-placeholder="Choose one" multiple="multiple">
@@ -315,6 +265,15 @@
                                             @empty
                                             @endforelse
 
+
+                                            {{-- <option value="">Select</option>
+                                                 @forelse ($client as $allclient)
+                                                 <option value="{{ $allclient->id }}" {{ $clients == $allclient->id ? "selected" : '' }}>{{ $allclient->name }}</option>
+
+                                            @empty
+
+                                            @endforelse --}}
+
                                                </select>
                                        </div>
                                     </div>
@@ -323,11 +282,11 @@
                                     $shiftstatus=DB::table('finalshiftstatus')->get();
                                 @endphp
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="check_box">
-                                        <label class="form-label"> Status</label>
+                                        <label class="form-label" for="exampleInputEmail1"> Status</label>
                                          <div class="form-group">
-                                              <select class="form-control select2 form-select" name="status[]"  multiple="multiple">
+                                              <select class="form-control select2 form-select" name="status[]" data-placeholder="Choose one" multiple="multiple">
                                                     <option value="0" {{ in_array("0", $statusData) ? 'selected="selected"' : '' }}>Created</option>
                                                     <option value="1" {{ in_array("1", $statusData) ? 'selected="selected"' : '' }}>In Progress</option>
                                                     <option value="2" {{ in_array("2", $statusData) ? 'selected="selected"' : '' }}>To Be Approved</option>
@@ -339,9 +298,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="check_box">
-                                        <label class="form-label">Cost Center</label>
+                                        <label class="form-label" for="exampleInputEmail1">Cost Center</label>
                                         <div class="form-group">
                                            <select class="form-control select2 form-select" name="costCenter[]" id="appendCostCenter" data-placeholder="Choose one" multiple="multiple">
 
@@ -352,38 +311,29 @@
                                     </div>
                                 </div>
 
-
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="check_box">
-                                        <label class="form-label">Base</label>
+                                        <label class="form-label" for="exampleInputEmail1">Base</label>
                                         <div class="form-group">
-                                            <select class="form-control select2 form-select" id="appendBase" name="base[]" multiple="multiple">
+                                           <select class="form-control select2 form-select" id="appendBase" name="base[]" data-placeholder="Choose one" multiple="multiple">
 
-                                            </select>
+                                               </select>
                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="mb-4">
-                                        <label class="form-label">Start Date</label>
-
-                                        <input type="text" name="start" min="1000-01-01T00:00" max="9999-12-31T23:59" class="form-control datetime_picker" aria-describedby="emailHelp" placeholder=""/>
-
-                                        {{-- <input type="date" name="start" class="form-control" min="1000-01-01" max="9999-12-31" value="{{ $start }}" aria-describedby="emailHelp" placeholder=""> --}}
-
+                                        <label class="form-label" for="exampleInputEmail1">Start Date</label>
+                                        <input type="date" name="start" class="form-control" id="end-date" value="{{ $start }}" aria-describedby="emailHelp" placeholder="">
                                         <p class="first" id="firstcls11" style="display: none">Please Add Start Date</p>
                                     </div>
                                   </div>
 
-                                  <div class="col-lg-3">
+                                  <div class="col-lg-4">
                                     <div class="mb-4">
                                         <label class="form-label" for="exampleInputEmail1">End Date</label>
-
-                                        <input type="text" name="finish" min="1000-01-01T00:00" max="9999-12-31T23:59" class="form-control datetime_picker" aria-describedby="emailHelp" placeholder=""/>
-
-                                        {{-- <input type="date" name="finish" class="form-control" min="1000-01-01" max="9999-12-31" value="{{ $finish }}" aria-describedby="emailHelp" placeholder=""> --}}
-
+                                        <input type="date" name="finish" class="form-control" id="end-date1" value="{{ $finish }}" aria-describedby="emailHelp" placeholder="">
                                         <p class="first" id="firstcls11" style="display: none">Please Add End Date</p>
                                     </div>
                                   </div>
@@ -392,16 +342,16 @@
                                 <div class="col-lg-12">
                                     <div class="filter_flex">
                                            <div class="search_btn btnsflexflt_group">
-                                                <button type="submit" class="btn btn-primary "><i class="fe fe-search"></i> Search</button>
-                                                <a href="{{ route('admin.shift.report',['id'=>'10']) }}" class="btn btn-info "><i class="fe fe-refresh-ccw"></i> Clear Filter</a>
-                                                <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                                 <button type="submit" class="btn btn-primary "><i class="fe fe-search"></i> Search</button>
+                                  <a href="{{ route('admin.shift.report',['id'=>'10']) }}" class="btn btn-info "><i class="fe fe-refresh-ccw"></i> Clear Filter</a>
+                                   <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
 
-                                                @if(in_array("54", $arr))
-                                                <a  onclick="showImportForm()" class="btn btn-green "><i class="fa fa-file-excel-o"></i> Import Excel</a>
-                                                @endif
+                                   @if(in_array("54", $arr))
+                                   <a  onclick="showImportForm()" class="btn btn-green "><i class="fa fa-file-excel-o"></i> Import Excel</a>
+                                   @endif
 
 
-                                                </div>
+                                 </div>
 
                                     </div>
 
@@ -430,10 +380,8 @@
                     <div class="card-header">
                     <div class="top_section_title">
                        <h5>All Driver Shift Report</h5>
-
-
+                       <!-- <a href="person-add.php" class="btn btn-primary">+ Add New Person</a> -->
                     </div>
-
 
                     <div class="search_btn m-0">
                         @if(in_array("48", $arr))
@@ -447,249 +395,46 @@
                         <a href="{{ route('admin.shift.missed.shift') }}" class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
                         @endif
                      </div>
-
-
                 </div>
 
+
                     <div class="card-body">
-                        <div class="top_tb_dt">
-                            <div class="dropdown testingcls">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Column Visiblity
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="id" id="Checkme1" checked />
-                                                <label class="form-check-label" for="Checkme1">Shift Id</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="client" id="Checkme2" checked />
-                                                <label class="form-check-label" for="Checkme2">Client</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="cost" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Cost</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="driver" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Driver</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="rego" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Rego</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="vehicleType" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Vehicle Type</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="state" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">State</label>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="created_at" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Created at</label>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="start_Date" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Start Date</label>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="date_finish" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Date Finish</label>
-                                            </div>
-                                        </a>
-                                    </li>
-
-
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="status" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Status</label>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="totalPayable" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Total Payable</label>
-                                            </div>
-                                        </a>
-                                    </li>
-
-
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="traveledKm" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Traveled Km</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <div class="form-check">
-                                                <input class="form-check-input column-toggle" type="checkbox" value="action" id="Checkme3" checked />
-                                                <label class="form-check-label" for="Checkme3">Action</label>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-
-                                <div class="data_count_">
-                                    <select name="itemsPerPage" onchange="getShiftData(this)" class="form-control">
-                                        <option value="10" {{ request('countData') == 10 ? 'selected' : '' }}>10</option>
-                                        <option value="50" {{ request('countData') == 50 ? 'selected' : '' }}>50</option>
-                                        <option value="100" {{ request('countData') == 100 ? 'selected' : '' }}>100</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                            <div class="search_box">
-                                <!-- <label class="form-label" for="exampleInputEmail1">Search</label> -->
-                                <div class="form-group">
-                                    <form id="searchForm"  method="GET">
-                                      <input type="text" name="search" value="{{ isset($_GET['search']) ? $_GET['search'] : '' }}" class="form-control" aria-describedby="emailHelp" placeholder="Search Here">
-                                    </form>
-                                </div>
-                                {{-- <div class="src-btn">
-                                    <button class="btn btn_search"><i class="ti-search"></i></button>
-                                </div> --}}
-                            </div>
-                        </div>
-
-                        <script>
-
-                function getShiftData(select)
-                    {
-                        if (!pagrLoaded) {
-
-                            var countData = select.value;
-                            // Get the current URL
-                            var currentUrl = window.location.href;
-
-                            // Check if the URL already contains a query string
-                            if (currentUrl.indexOf('?') !== -1) {
-                                // Append the countData parameter to the existing query string
-                                var updatedUrl = currentUrl + '&countData=' + encodeURIComponent(countData);
-                            } else {
-                                // If there is no existing query string, add the countData parameter
-                                var updatedUrl = currentUrl + '?countData=' + encodeURIComponent(countData);
-                            }
-                            // Redirect to the updated URL
-                            window.location.href = updatedUrl;
-
-                        }
-                    }
-
-                        </script>
-                        <style>
-                            .testingcls{
-                                   display: flex;
-                                    align-items: center;
-                                    gap: 5px;
-                                    flex-direction: row-reverse;
-                            }
-                            </style>
-
-
-
-                        <br>
-
-
-                        <div class="table_box" id="shiftTable_Container">
-
-                          <table id="custom_table_table1" class="table  table-hover nowrap mb-0" style="margin: 0px !important;width: 100%;">
-                            {{-- <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;"> --}}
+                        <div class="table_box" is="shiftTable_Container">
+                            <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;">
                             <thead class="border-top">
                                 <tr>
-                                    <th hidden>S.No</th>
+                                    <th hidden></th>
                                     <th hidden class="bg-transparent border-bottom-0">Client Id</th>
-                                    <th class="bg-transparent border-bottom-0 column-id">Shift Id</th>
-                                    <th class="bg-transparent border-bottom-0 column-client">Client</th>
-                                    <th class="bg-transparent border-bottom-0 column-cost">Cost</th>
-                                    <th class="bg-transparent border-bottom-0 column-driver">Driver</th>
+                                    <th class="bg-transparent border-bottom-0">Shift Id</th>
+                                    <th class="bg-transparent border-bottom-0">Client</th>
+                                    <th class="bg-transparent border-bottom-0">Cost</th>
+                                    <th class="bg-transparent border-bottom-0">Driver</th>
 
                                     <th hidden class="bg-transparent border-bottom-0">Parcels Taken</th>
                                     <th hidden class="bg-transparent border-bottom-0">Parcels Delivered</th>
-                                    <th class="bg-transparent border-bottom-0 column-rego">REGO</th>
-                                    <th class="bg-transparent border-bottom-0 column-vehicleType">Vehicle Type</th>
-                                    <th class="bg-transparent border-bottom-0 column-state">State</th>
-
-                                    @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
-                                        @if($driverRole!=33)
-                                        <th  class="bg-transparent border-bottom-0 column-created_at">Created Date</th>
-                                      @endif
-                                    @endif
-
-
-
-
-                                    <th class="bg-transparent border-bottom-0 column-start_Date">Date Start</th>
+                                    <th class="bg-transparent border-bottom-0">REGO</th>
+                                    <th class="bg-transparent border-bottom-0">Vehicle Type</th>
+                                    <th class="bg-transparent border-bottom-0">State</th>
+                                    <th  class="bg-transparent border-bottom-0">Created Date</th>
+                                    <th class="bg-transparent border-bottom-0">Date Start</th>
                                     <th hidden class="bg-transparent border-bottom-0">Time Start</th>
-                                    <th class="bg-transparent border-bottom-0 column-date_finish">Date Finish</th>
+                                    <th class="bg-transparent border-bottom-0">Date Finish</th>
                                     <th hidden class="bg-transparent border-bottom-0">Time Finish</th>
                                      {{-- <th class="bg-transparent border-bottom-0">Base</th> --}}
-                                    <th class="bg-transparent border-bottom-0 column-status">Status</th>
+                                    <th class="bg-transparent border-bottom-0">Status</th>
                                     <th hidden class="bg-transparent border-bottom-0">Total Hours</th>
-
-                                    @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
-                                      @if($driverRole==33)
-                                          <th  class="bg-transparent border-bottom-0">Total Hours Day Shift</th>
-                                          <th  class="bg-transparent border-bottom-0">Total Hours Night Shift</th>
-                                         <th  class="bg-transparent border-bottom-0">Total Hours Weekend Shift</th>
-                                        @endif
-                                    @endif
+                                    <th hidden class="bg-transparent border-bottom-0">Hours Morning Shift</th>
+                                    <th hidden class="bg-transparent border-bottom-0">Hours Night Shift</th>
+                                    <th hidden class="bg-transparent border-bottom-0">Hours Weekend Shift</th>
 
                                     <th hidden class="bg-transparent border-bottom-0">Amount Chargeable Day Shift</th>
+
                                     <th hidden class="bg-transparent border-bottom-0">Amount Payable Day Shift</th>
+
+
                                     <th hidden class="bg-transparent border-bottom-0">Amount Payable Night Shift</th>
                                     <th hidden class="bg-transparent border-bottom-0">Amount Chargeable Night Shift</th>
+
                                     <th hidden class="bg-transparent border-bottom-0">Amount Payable Weekend Shift</th>
                                     <th hidden class="bg-transparent border-bottom-0">Amount Chargeable Weekend Shift</th>
 
@@ -705,36 +450,37 @@
                                     <th hidden class="bg-transparent border-bottom-0">Odometer Start</th>
                                     <th hidden class="bg-transparent border-bottom-0">Odometer End</th>
 
-                                    <th class="bg-transparent border-bottom-0 column-totalPayable">Total Payable</th>
-                                    <th class="bg-transparent border-bottom-0 column-traveledKm">Traveled KM</th>
+                                    <th class="bg-transparent border-bottom-0">Total Payable</th>
+                                    <th class="bg-transparent border-bottom-0">Traveled KM</th>
                                      <th hidden class="bg-transparent border-bottom-0">Comment</th>
 
-                                     @if(in_array("50", $arr) || in_array("51", $arr) || in_array("52", $arr) || in_array("53", $arr))
 
-                                    <th class="bg-transparent border-bottom-0 column-action" style="width: 5%;">Action</th>
-                                    @endif
+                                    <th class="bg-transparent border-bottom-0" style="width: 5%;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
 
 
-                               @foreach ($shift as $key=>$allshift)
+                               @foreach ($shift as $allshift)
 
-                                <tr class="border-bottom">
-                                <td hidden>{{ $key+1 }}</td>
+
+
+
+                               <tr class="border-bottom">
+                                <td hidden></td>
                                 <td hidden class="td sorting_1">{{ $allshift->getClientName->id?? 0  }}</td>
 
-                                <td class="td sorting_1 column-id">QE{{ $allshift->shiftRandId  }}</td>
+                                <td class="td sorting_1">QE{{ $allshift->shiftRandId  }}</td>
 
-                                <td class="td column-client">{{ $allshift->getClientName->name??'N/A' }}</td>
+                                <td class="td">{{ $allshift->getClientName->name??'N/A' }}</td>
                                 @php
                                    $clientcenters=  DB::table('clientcenters')->where('id',$allshift->costCenter)->first()??'N/A';
                                    $clientbase=  DB::table('clientbases')->where('id',$allshift->base)->first();
                                    $rego=  DB::table('vehicals')->where('id',$allshift->rego)->first();
                                 @endphp
-                                <td class="td column-cost">{{ $clientcenters->name??'N/A'}}</td>
+                                <td class="td">{{ $clientcenters->name??'N/A'}}</td>
 
-                                <td class="td column-driver">{{ $allshift->getDriverName->userName??'N/A' }}</td>
+                                <td class="td">{{ $allshift->getDriverName->userName??'N/A' }} {{ $allshift->getDriverName->surname??'N/A' }}</td>
 
 
                                 <td hidden class="td">{{ $allshift->parcelsToken??'N/A' }}</td>
@@ -742,41 +488,44 @@
                                 <td hidden class="td">{{ $allshift->getFinishShift->parcelsDelivered??'N/A' }}</td>
 
 
-                                <td class="td column-rego">{{ $rego->rego??'N/A' }}</td>
+                                <td class="td">{{ $rego->rego??'N/A' }}</td>
 
-                                <td class="td column-vehicleType">{{ $allshift->getVehicleType->name??'N/A' }}</td>
+                                <td class="td">{{ $allshift->getVehicleType->name??'N/A' }}</td>
 
-                                <td class="td column-state">{{ $allshift->getStateName->name??'N/A' }}</td>
-
-                                @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
-                                        @if($driverRole!=33)
-                                        <td class="td column-created_at">{{ date("Y/m/d H:i:s", strtotime($allshift->created_at)) }}</td>
-                                    @endif
-                                @endif
+                                <td class="td">{{ $allshift->getStateName->name??'N/A' }}</td>
 
 
+
+
+
+
+
+
+                                <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift->created_at)) }}</td>
 
                                 @php
                                 $finishshifts=DB::table('finishshifts')->where('shiftId',$allshift->id)->first()??'0';
                                 @endphp
-
                                    @if ($allshift['shiftStartDate'])
-                                   <td class="td column-start_Date">{{ date("Y/m/d H:i:s", strtotime($allshift['shiftStartDate'])) }}</td>
+                                   <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift['shiftStartDate'])) }}</td>
                                    @else
-                                   <td class="td column-start_Date">N/A</td>
+                                   <td class="td">N/A</td>
                                    @endif
+
+
+
+                                   ............................................
 
 
                                 <td hidden class="td">{{ $allshift->getFinishShift->startTime??'N/A' }}</td>
 
                                 @if($finishshifts)
-                                <td class="td column-date_finish">{{ date("Y/m/d H:i:s", strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}</td>
+                                <td class="td">{{ date("Y/m/d H:i:s", strtotime($finishshifts->endDate)) }}</td>
                                 @else
-                                <td class="td column-date_finish">N/A</td>
+                                <td class="td">N/A</td>
                                 @endif
                                 <td hidden class="td">{{ $allshift->getFinishShift->endTime??'N/A' }}</td>
-
-                                <td class="column-status">
+                                <td>
                                     <?php
                                     $driverRole =  Auth::guard('adminLogin')->user();
                                     $driverRole = $driverRole->role_id;
@@ -812,28 +561,16 @@
                                         @endphp
                                     @endif
 
-
-                                      @php
+                                    @php
                                             $chargeDayShift = ($allshift->getClientReportCharge->hourlyRateChargeableDays ?? 0) * ($allshift->getFinishShifts->dayHours ?? 0);
                                             $chargeNight = ($allshift->getClientReportCharge->ourlyRateChargeableNight ?? 0) * ($allshift->getFinishShifts->nightHours ?? 0);
                                         @endphp
 
                                 <td hidden class="td sorting_1">{{ $daySum + $nightHours + $weekendHours }}</td>
-
-                                @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
-                                   @if($driverRole==33)
-                                    <td  class="td sorting_1">{{ optional($allshift->getFinishShift)->dayHours ?? 0 }}</td>
-                                    <td  class="td sorting_1">{{ optional($allshift->getFinishShift)->nightHours ?? 0 }}</td>
-                                    <td  class="td sorting_1">{{ optional($allshift->getFinishShift)->weekendHours ?? 0 }}</td>
-                                    {{-- For Driver --}}
-                                    @endif
-                                @endif
-
+                                <td hidden class="td sorting_1">{{ optional($allshift->getFinishShift)->dayHours ?? 0 }}</td>
+                                <td hidden class="td sorting_1">{{ optional($allshift->getFinishShift)->nightHours ?? 0 }}</td>
+                                <td hidden class="td sorting_1">{{ optional($allshift->getFinishShift)->weekendHours ?? 0 }}</td>
                                 <td hidden class="td sorting_1">{{ $chargeDayShift }}</td>
-
-
-
-
 
 
                             @if ($allshift->priceOverRideStatus == '1')
@@ -850,9 +587,7 @@
                                 <td hidden class="td sorting_1">{{ $day }}</td>
                             @endif
 
-
-
-                            @if ($allshift->priceOverRideStatus == '1')
+                                @if ($allshift->priceOverRideStatus == '1')
                                 @php
                                     $priceCompare = DB::table('personrates')->where('type', $allshift->vehicleType)->where('personId', $allshift->driverId)->first();
                                     $night = ($priceCompare ? $priceCompare->hourlyRatePayableNight : 0) * ($allshift->getFinishShifts ? $allshift->getFinishShifts->nightHours ?? 0 : 0);
@@ -861,7 +596,7 @@
                             @else
                                 @if($allshift->getFinishShifts && $allshift->getFinishShifts->nightHours ?? 0 != '0')
                                     @php
-                                        $night = $allshift->getClientReportCharge->hourlyRatePayableNight ?? 0 * $allshift->getFinishShifts->nightHours ?? 0;
+                                        $night = $allshift->getClientReportCharge->hourlyRatePayableNight * $allshift->getFinishShifts->nightHours;
                                     @endphp
                                 @else
                                     @php
@@ -872,49 +607,49 @@
                             @endif
 
 
-
-
-
                                 <td hidden class="td sorting_1 {{ $allshift->getClientReportCharge->ourlyRateChargeableNight ?? 0 }}">{{ $chargeNight }}</td>
 
 
                                 @if ($allshift->priceOverRideStatus == '1')
-                                    @php
-                                        $priceCompare = DB::table('personrates')
-                                            ->where('type', $allshift->vehicleType)
-                                            ->where('personId', $allshift->driverId)
-                                            ->first();
+                                @php
+                                    $priceCompare = DB::table('personrates')
+                                        ->where('type', $allshift->vehicleType)
+                                        ->where('personId', $allshift->driverId)
+                                        ->first();
 
-                                        $saturday = ($priceCompare ? ($priceCompare->hourlyRatePayableSaturday ?? 0) * ($allshift->getFinishShifts ? $allshift->getFinishShifts->saturdayHours : 0) : 0);
-                                        $sunday = ($priceCompare ? ($priceCompare->hourlyRatepayableSunday ?? 0) * ($allshift->getFinishShifts ? $allshift->getFinishShifts->sundayHours : 0) : 0);
-                                    @endphp
+                                    $saturday = ($priceCompare ? ($priceCompare->hourlyRatePayableSaturday ?? 0) * ($allshift->getFinishShifts ? $allshift->getFinishShifts->saturdayHours : 0) : 0);
+                                    $sunday = ($priceCompare ? ($priceCompare->hourlyRatepayableSunday ?? 0) * ($allshift->getFinishShifts ? $allshift->getFinishShifts->sundayHours : 0) : 0);
+                                @endphp
                                  <td hidden class="td sorting_1">{{ $saturday + $sunday }}</td>
-                                @else
-                                    @php
-                                        $saturday = 0;
-                                        $sunday = 0;
+                            @else
 
-                                        if ($allshift->getFinishShifts && $allshift->getFinishShifts->saturdayHours != '0')
-                                        {
-                                            $saturday = $allshift->getClientReportCharge->hourlyRatePayableSaturday ?? 0 * $allshift->getFinishShifts->saturdayHours ?? 0 ;
-                                        }
-                                        if ($allshift->getFinishShifts && $allshift->getFinishShifts->sundayHours !== null && $allshift->getFinishShifts->sundayHours != '0')
-                                        {
-                                            $sunday = floatval($allshift->getClientReportCharge->hourlyRatePayableSunday) * floatval($allshift->getFinishShifts->sundayHours);
-                                        }
 
-                                    @endphp
+
+                                @php
+                                    $saturday = 0;
+                                    $sunday = 0;
+
+                                    if ($allshift->getFinishShifts && $allshift->getFinishShifts->saturdayHours != '0')
+                                    {
+                                        $saturday = $allshift->getClientReportCharge->hourlyRatePayableSaturday  * $allshift->getFinishShifts->saturdayHours ;
+                                    }
+                                    if ($allshift->getFinishShifts && $allshift->getFinishShifts->sundayHours !== null && $allshift->getFinishShifts->sundayHours != '0')
+                                      {
+                                        $sunday = floatval($allshift->getClientReportCharge->hourlyRatePayableSunday) * floatval($allshift->getFinishShifts->sundayHours);
+                                      }
+
+                                @endphp
                                  <td hidden class="td sorting_1">{{ $saturday + $sunday }}</td>
+
+
+
+
+
+
                                  @endif
-
-
-
-
-
-
                                  @if(!empty($allshift->getFinishShifts->saturdayHours))
                                  @php
-                                     $saturday = $allshift->getClientReportCharge->hourlyRateChargeableSaturday  ?? 0 * $allshift->getFinishShifts->saturdayHours ?? 0 ;
+                                     $saturday = $allshift->getClientReportCharge->hourlyRateChargeableSaturday  * $allshift->getFinishShifts->saturdayHours ;
                                  @endphp
                                  @else
                                  @php
@@ -935,6 +670,7 @@
 
                                  <td hidden class="td sorting_1 saturday">{{ $saturday + $sunday }}</td>
 
+
                                 <td hidden class="td sorting_1">{{ $allshift->getShiftMonetizeInformation->fuelLevyPayable??'0'	 }}</td>
                                 <td hidden class="td sorting_1">{{ $allshift->getShiftMonetizeInformation->fuelLevyChargeable??'0'}}</td>
 
@@ -951,10 +687,10 @@
                                @if($allshift->finishStatus=='5' || $allshift->finishStatus=='2' || $allshift->finishStatus=='3')
 
                                 {{-- <td class="td">{{ $allshift->getShiftMonetizeInformation->totalPayable??'0' + $payAmount??'0'}} </td> --}}
-                                <td class="td column-totalPayable">{{ round($payAmount, 2)}} </td>
+                                <td class="td">{{ round($payAmount, 2)}} </td>
 
                                 @else
-                                <td class="td column-totalPayable">0</td>
+                                <td class="td">0</td>
 
                                 @endif
                                 {{-- // Add pay --}}
@@ -963,19 +699,17 @@
                                     $km = ($allshift->getFinishShift->odometerEndReading  ?? 0) - ($allshift->getFinishShift->odometerStartReading ?? 0);
                                     @endphp
 
-                                <td class="td column-traveledKm"><span id="span_status_31240">{{ $km }}</span>
+                                <td class="td"><span id="span_status_31240">{{ $km }}</span>
                                 </td>
 
-                                 <td hidden><span id="span_status_31240">{{ $allshift->getFinishShift->comments??'N/A' }}</span>
+                                 <td hidden class="td"><span id="span_status_31240">{{ $allshift->getFinishShift->comments??'N/A' }}</span>
                                 </td>
 
 
 
 
-
-
-                                 @if(in_array("50", $arr) || in_array("51", $arr) || in_array("52", $arr) || in_array("53", $arr))
-                                    <td class="column-action">
+                                 @if(in_array("53", $arr) || in_array("52", $arr) || in_array("54", $arr) || in_array("70", $arr))
+                                    <td>
                                         <div class="d-flex">
                                             @if(in_array("50", $arr))
                                                 <?php
@@ -1010,15 +744,12 @@
                                                                 class="fe fe-box"></span>
                                                         </a>
 
+
                                                         {{-- <a href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i></a> --}}
                                                         @endif
                                             </div>
                                 </td>
                                 @endif
-
-
-
-
                      </tr>
 
                                 @endforeach
@@ -1026,37 +757,14 @@
 
 
                             </tbody>
-
                         </table>
-
-
-
                          <!-- Custom div for lengthMenu, search bar, and buttons -->
 
                     </div>
-
-                            @if($itemsPerPage != 'all')
-                             <div class="row">
-                                <div class="col-lg-12">
-                                    <ul class="pagination pagination-rounded bottom_pagination mt-3 mb-4 pb-1">
-                                        {!! $shift->withQueryString()->links() !!}
-
-                                    </ul>
-                                </div>
-                            </div>
-                             @else
-
-                             @endif
-
-
                         </div>
 
                     </div>
-
                 </div>
-
-
-
         </div>
      </div>
 </div>
@@ -1064,36 +772,12 @@
 
 
 <style>
-
 .sweet-alert button.cancel {
     background-color: #c0a611 !important;
 }
 </style>
 
 
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
-
-
-
-    $(document).ready(function () {
-        $('.column-toggle').change(function () {
-            var column = $(this).val();
-            var isChecked = $(this).prop('checked');
-            var $columnCells = $('.column-' + column);
-
-            if (isChecked) {
-                $columnCells.show();
-            } else {
-                $columnCells.hide();
-            }
-
-            // Disable or enable the corresponding td elements
-            $columnCells.prop('disabled', !isChecked);
-        });
-    });
-</script>
 
 <!--
 <script>
@@ -1126,10 +810,6 @@
             "pageLength": 10 // Set default page length
         });
     });
-
-
-
-
 </script>
 
 
@@ -1138,7 +818,7 @@
 
 <script>
     document.getElementById('exportBtn').addEventListener('click', function () {
-        exportToExcel('custom_table_table1');
+        exportToExcel('custom_table');
     });
 
     function exportToExcel(tableId) {
@@ -1324,10 +1004,6 @@ function shiftPaid(shiftId) {
 
     {
 
-        var clientId = {!! json_encode($clients) !!};
-
-        // console.log(clientId);
-
         var stateId = $("#stateId :selected").map((_, e) => e.value).get();
 
      $.ajaxSetup({
@@ -1366,28 +1042,21 @@ function shiftPaid(shiftId) {
 
                     if (data.success==200) {
 
-
                            $('#appendClient').find('option:not(:first)').remove();
 
                             $('#appendClient')[0].options.length = 0;
 
-                            var html2='';
+                        var html2='';
 
-                            var selectedClients = {!! json_encode($clients) !!};
-                                selectedClients = Array.isArray(selectedClients) ? selectedClients : [selectedClients];
+                        $.each(data.items,function(index,items){
 
-                                $.each(data.items, function(index, items) {
-                                    var isSelected = selectedClients.includes((items.id).toString());
-                                    // console.log(isSelected,selectedClients,items.id);
-                                    html2 += '<option value="' + items.id + '" ' + (isSelected ? 'selected' : '') + '>' + items.name + '</option>';
-                                });
+                            html2 +='<option value="">Choose one</option><option value="'+items.id+'">'+items.name+'</option>';
 
-                                $('#appendClient').append(html2);
+                            });
 
+                            // console.log(html2);
 
-
-
-
+                          $('#appendClient').append(html2);
                     }
 
                     if (data.success==400) {
@@ -1405,15 +1074,9 @@ function shiftPaid(shiftId) {
 
 <script>
 
-
     function getCostCenter(select)
     {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-
         //
-        var costCenter = {!! json_encode($costCenter) !!};
-      //  console.log(costCenter);
-
         var clientId = $("#appendClient :selected").map((_, e) => e.value).get();
 
        $.ajaxSetup({
@@ -1429,23 +1092,23 @@ function shiftPaid(shiftId) {
                     if (data.success==200) {
 
                         $('#appendCostCenter').find('option:not(:first)').remove();
+
                         $('#appendCostCenter')[0].options.length = 0;
+
 
 
                         $('#appendVehicleType').find('option:not(:first)').remove();
 
                         var html2='';
 
-
-                        var costCenter = {!! json_encode($costCenter) !!};
-                        costCenter = Array.isArray(costCenter) ? costCenter : [costCenter];
                         $.each(data.items,function(index,items){
-                            var isSelected = costCenter.includes((items.id).toString());
-                            console.log(isSelected,costCenter,items.id);
 
-                            html2 += '<option value="' + items.id + '" ' + (isSelected ? 'selected' : '') + '>' + items.name + '</option>';
+                            html2 +='<option value="'+items.id+'">'+items.name+'</option>';
 
                             });
+
+
+
                           $('#appendCostCenter').append(html2);
 
 
@@ -1509,19 +1172,7 @@ function shiftPaid(shiftId) {
     {
            $("#showImportForm").modal('show');
     }
-
 </script>
 
-<script>
-    $(document).ready(function () {
-        // Set data-page-size to a large number to show all rows
-        $('#custom_table').data("page-size", 1000);
-
-        // Disable pagination
-        $('#custom_table').bootstrapTable('destroy').bootstrapTable({
-            pagination: false,
-        });
-    });
-</script>
 
 @endsection

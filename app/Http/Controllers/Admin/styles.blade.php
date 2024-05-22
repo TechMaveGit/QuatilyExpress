@@ -8,7 +8,7 @@
 
 
 <!-- App favicon -->
-<link rel="shortcut icon" href="{{ asset('public/assets/images/favicon.ico')}}">
+<link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico')}}">
 
 <link rel="stylesheet" type="text/css" href="https://jeremyfagis.github.io/dropify/dist/css/dropify.min.css">
 
@@ -33,27 +33,27 @@
 
 
 <!-- jsvectormap css -->
-<link href="{{ asset('public/assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!--Swiper slider css-->
-<link href="{{ asset('public/assets/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet" type="text/css" />
 
 
 <!-- Layout config Js -->
-<script src="{{ asset('public/assets/js/layout.js') }}"></script>
+<script src="{{ asset('assets/js/layout.js') }}"></script>
 <!-- Bootstrap Css -->
-<link href="{{ asset('public/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
 <!-- Icons Css -->
-<link href="{{ asset('public/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 <!-- App Css-->
-<link href="{{ asset('public/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
 <!-- custom Css-->
-<link href="{{ asset('public/assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
 
 <!-- custom css start -->
-<link rel="stylesheet" href="{{ asset('public/assets/css/custom-style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/custom-style.css') }}">
 
  <!-- custom data table style -->
 <!--datatable css-->
@@ -63,17 +63,17 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
 <!-- dropzone css -->
-<link rel="stylesheet" href="{{ asset('public/assets/libs/dropzone/dropzone.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ asset('assets/libs/dropzone/dropzone.css') }}" type="text/css" />
 
 <!-- Filepond css -->
-<link rel="stylesheet" href="{{ asset('public/assets/libs/filepond/filepond.min.css') }}" type="text/css" />
-<link rel="stylesheet" href="{{ asset('public/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/libs/filepond/filepond.min.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ asset('assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.css') }}">
 
 <!-- select2 #multi select css -->
-<link href="{{ asset('public/assets/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
 
 <!-- sumoselect with checkbox -->
-<link rel="stylesheet" href="{{ asset('public/assets/libs/sumoselect/sumoselect.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/libs/sumoselect/sumoselect.min.css') }}">
 
 <!-- dropify cdn one page milti use-->
 <link rel="stylesheet" type="text/css" href="https://jeremyfagis.github.io/dropify/dist/css/dropify.min.css">

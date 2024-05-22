@@ -1259,7 +1259,7 @@
                         var html2 = '';
                         $.each(data.driverRsps, function(index, driver) {
                             html2 += '<option value="">Choose one</option><option value="' + driver.id +
-                                '">' + driver.userName + '</option>';
+                                '">' + driver.userName + ' ' + driver.surname + ' (' + driver.email + ')</option>';
                         });
                         $('#appendDriverResponiable').append(html2);
 

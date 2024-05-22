@@ -40,34 +40,7 @@ foreach($D as $v)
           <div class="col-xl-12">
                 <div class="card show_portfolio_tab">
                     <div class="card-header">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a href="#home" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
-                                    <span><i class="ti-light-bulb"></i></span>
-                                    <span> Show Shift</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#profile" data-bs-toggle="tab" aria-expanded="true" class="nav-link ">
-                                    <span><i class="ti-agenda"></i></span>
-                                    <span> Shift Hr. Management</span>
-                                </a>
-                            </li>
-
-                            @if ($driverRole->role_id!='33')
-
-
-                            <li class="nav-item">
-                                <a href="#messages" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                                    <span><i class="ti-clipboard"></i></span>
-                                    <span>Monetize Information</span>
-                                </a>
-                            </li>
-
-                            @endif
-
-
-                        </ul>
+                        
                     </div>
                     <div class="card-body">
 
@@ -76,6 +49,10 @@ foreach($D as $v)
 
                             <div class="main_bx_dt__">
                                     <div class="top_dt_sec">
+                                    <h2>
+                                        <span><i class="ti-light-bulb"></i></span>
+                                        <span> Show Shift</span>
+                                    </h2>
                                      <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
                                      <input type="hidden" name="hrManagerment" value="1"/>
                                         <div class="row">
@@ -392,16 +369,24 @@ foreach($D as $v)
 
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Created Date</label>
+                                                    <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
                                                     <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate??'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Finish Date</label>
+                                                    <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
                                                     <input type="text" class="form-control "
                                                     value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i') }}"
+                                                    aria-describedby="emailHelp" placeholder="" readonly>
+                                                                                             </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="exampleInputEmail1">Driver Rate</label>
+                                                    <input type="text" class="form-control "
+                                                    value="{{ $extra_rate_per_hour }}"
                                                     aria-describedby="emailHelp" placeholder="" readonly>
                                                                                              </div>
                                             </div>
@@ -410,8 +395,8 @@ foreach($D as $v)
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <a href="{{ asset('public/assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" target="_blank">
-                                                        <img src="{{ asset('public/assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
+                                                    <a href="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" target="_blank">
+                                                        <img src="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
                                                                                                                 </div>
                                             </div>
@@ -432,326 +417,319 @@ foreach($D as $v)
                                         </div>
                                      </form>
 
+                                     <hr>
+                                     <hr>
 
-                                    </div>
-
-
-                                </div>
-                                <!-- main_bx_dt -->
-                            </div>
-
-
-                            <div class="tab-pane " id="profile">
-                              <div class="main_bx_dt__">
-                                    <div class="top_dt_sec">
-
-                                        <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
-                                         <input type="hidden" name="hrManagerment" value="2"/>
+                                     <h2>
+                                        <span><i class="ti-agenda"></i></span>
+                                        <span> Shift Hr. Management</span>
+                                    </h2>
+                                    <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
+                                        <input type="hidden" name="hrManagerment" value="2"/>
 
 
-                                         <div class="row">
+                                        <div class="row">
 
+
+                                              <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Total Hours Day Shift </label>
+                                                       <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->dayHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
+
+                                                  </div>
+
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Total Hours Night Shift</label>
+                                                       <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->nightHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
+
+                                                  </div>
+
+                                                  @if ($driverRole->role_id!='33')
+
+                                                   <div class="col-lg-3">
+                                                       <div class="mb-3">
+                                                           <label class="form-label" for="exampleInputEmail1">Total Saturday Hours</label>
+                                                           <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->saturdayHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       </div>
+
+                                                   </div>
+
+                                                   <div class="col-lg-3">
+                                                       <div class="mb-3">
+                                                           <label class="form-label" for="exampleInputEmail1">Total Sunday Hours</label>
+                                                           <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->sundayHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       </div>
+
+                                                   </div>
+                                                  @endif
+
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Total Hours Weekend Shift</label>
+                                                       <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->weekendHours?? 0 }} "  aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
+
+                                                  </div>
+
+                                                  @if ($driverRole->role_id!='33')
+
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Amount Payable Day Shift</label>
+                                                       @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
+                                                        @php
+                                                            $day = ($shiftView->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                        @endphp
+                                                        @else
+                                                        @php
+                                                        $day = 0
+                                                        @endphp
+                                                        @endif
+                                                       <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ round($day,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
+
+
+
+
+                                                   </div>
+
+                                                  </div>
+
+
+
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Amount Payable Night Shift</label>
+
+
+                                                       @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
+                                                        @php
+                                                             $night = ($shiftView->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour  ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                        @endphp
+                                                        @else
+                                                        @php
+                                                        $night = 0
+                                                        @endphp
+                                                        @endif
+
+                                                       <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ round($night,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
+
+
+
+
+                                                   </div>
+
+                                                  </div>
 
                                                <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Total Hours Day Shift </label>
-                                                        <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->dayHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Amount Payable Weekend Shift</label>
 
+                                                           @php
+                                                           $saturday = 0;
+                                                           $sunday = 0;
+
+                                                           if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
+                                                               $saturday = ($shiftView->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
+                                                           }
+
+                                                           if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
+                                                               $sunday = ($shiftView->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
+                                                           }
+                                                           $finalAmount=$saturday +  $sunday;
+                                                       @endphp
+                                                           <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $saturday + $sunday }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
+                                               </div>
+
+
+
+
+
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Amount Chargeable Day Shift</label>
+                                                       @php
+                                                       $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays??0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                       $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight??0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                   @endphp
+
+                                                       <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($chargeDayShift,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
+                                               </div>
+
+
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Amount Chargeable Night Shift</label>
+                                                       <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($chargeNight,2) }}"  aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
 
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Total Hours Night Shift</label>
-                                                        <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->nightHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
-
-                                                   </div>
-
-                                                   @if ($driverRole->role_id!='33')
-
-                                                    <div class="col-lg-3">
-                                                        <div class="mb-3">
-                                                            <label class="form-label" for="exampleInputEmail1">Total Saturday Hours</label>
-                                                            <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->saturdayHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                        </div>
-
-                                                    </div>
-
-                                                    <div class="col-lg-3">
-                                                        <div class="mb-3">
-                                                            <label class="form-label" for="exampleInputEmail1">Total Sunday Hours</label>
-                                                            <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->sundayHours ?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                        </div>
-
-                                                    </div>
-                                                   @endif
-
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Total Hours Weekend Shift</label>
-                                                        <input type="text" class="form-control firstcls" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->weekendHours?? 0 }} "  aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
-
-                                                   </div>
-
-                                                   @if ($driverRole->role_id!='33')
-
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Day Shift</label>
-                                                        @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
-                                                         @php
-                                                             $day = ($shiftView->getClientCharge->hourlyRatePayableDay + $shiftView->getDriverName->extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
-                                                         @endphp
-                                                         @else
-                                                         @php
-                                                         $day = 0
-                                                         @endphp
-                                                         @endif
-                                                        <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ round($day,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                  </div>
 
 
-
-
-                                                    </div>
-
-                                                   </div>
-
-
-
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Night Shift</label>
-
-
-                                                        @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
-                                                         @php
-                                                              $night = ($shiftView->getClientCharge->hourlyRatePayableNight + $shiftView->getDriverName->extra_rate_per_hour  ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
-                                                         @endphp
-                                                         @else
-                                                         @php
-                                                         $night = 0
-                                                         @endphp
-                                                         @endif
-
-                                                        <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ round($night,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
-
-
-
-
-                                                    </div>
-
-                                                   </div>
-
-                                                <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Weekend Shift</label>
-
-                                                            @php
-                                                            $saturday = 0;
-                                                            $sunday = 0;
-
-                                                            if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
-                                                                $saturday = ($shiftView->getClientCharge->hourlyRatePayableSaturday + $shiftView->getDriverName->extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
-                                                            }
-
-                                                            if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
-                                                                $sunday = ($shiftView->getClientCharge->hourlyRatePayableSunday + $shiftView->getDriverName->extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
-                                                            }
-                                                            $finalAmount=$saturday +  $sunday;
-                                                        @endphp
-                                                            <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $saturday + $sunday }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
-                                                </div>
-
-
-
-
-
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Amount Chargeable Day Shift</label>
-                                                        @php
-                                                        $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays) * ($shiftView->getFinishShifts->dayHours ?? 0);
-                                                        $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight) * ($shiftView->getFinishShifts->nightHours ?? 0);
-                                                    @endphp
-
-                                                        <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($chargeDayShift,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
-                                                </div>
-
-
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Amount Chargeable Night Shift</label>
-                                                        <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($chargeNight,2) }}"  aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
-
-                                                   </div>
-
-
-                                                   @if(!empty($shiftView->getFinishShifts->saturdayHours))
-                                                    @php
-                                                        $saturday = $shiftView->getClientCharge->hourlyRateChargeableSaturday * $shiftView->getFinishShifts->saturdayHours;
-                                                    @endphp
-                                                    @else
-                                                    @php
-                                                        $saturday=0;
-                                                        @endphp
-                                                    @endif
-
-
-
-                                                    @if(!empty($shiftView->getFinishShifts->sundayHours))
-                                                    @php
-                                                    $sunday = $shiftView->getClientCharge->hourlyRateChargeableSunday * $shiftView->getFinishShifts->sundayHours ;
-                                                    @endphp
-                                                    @else
-                                                    @php
-                                                    $sunday=0;
-                                                    @endphp
-                                                    @endif
-
-
-
-                                                   <div class="col-lg-3">
-
-                                                        <div class="mb-3">
-                                                            <label class="form-label" for="exampleInputEmail1">Amount Chargeable Saturday Hours</label>
-                                                            <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($saturday,2) }}"  aria-describedby="emailHelp" placeholder="" readonly>
-                                                        </div>
-
-                                                   </div>
-
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Amount Chargeable Sunday Hours</label>
-                                                        <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($sunday,2) }}"  aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
-
-                                                   </div>
-
+                                                  @if(!empty($shiftView->getFinishShifts->saturdayHours))
+                                                   @php
+                                                       $saturday = $shiftView->getClientCharge->hourlyRateChargeableSaturday * $shiftView->getFinishShifts->saturdayHours;
+                                                   @endphp
+                                                   @else
+                                                   @php
+                                                       $saturday=0;
+                                                       @endphp
                                                    @endif
 
 
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Parcel Taken</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
 
-                                                   </div>
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Parcel Delivered</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->parcelsDelivered?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
+                                                   @if(!empty($shiftView->getFinishShifts->sundayHours))
+                                                   @php
+                                                   $sunday = $shiftView->getClientCharge->hourlyRateChargeableSunday * $shiftView->getFinishShifts->sundayHours ;
+                                                   @endphp
+                                                   @else
+                                                   @php
+                                                   $sunday=0;
+                                                   @endphp
+                                                   @endif
 
-                                                   </div>
 
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Odometer Start</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerStartReading?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
 
-                                                   </div>
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Odometer Finish</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
+                                                  <div class="col-lg-3">
 
-                                                    @php
-                                                    $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
-                                                    @endphp
+                                                       <div class="mb-3">
+                                                           <label class="form-label" for="exampleInputEmail1">Amount Chargeable Saturday Hours</label>
+                                                           <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($saturday,2) }}"  aria-describedby="emailHelp" placeholder="" readonly>
+                                                       </div>
 
-                                                   </div>
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="exampleInputEmail1">Traveled KM</label>
-                                                        <input type="text" value="{{ $km }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    </div>
+                                                  </div>
 
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Amount Chargeable Sunday Hours</label>
+                                                       <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($sunday,2) }}"  aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
 
-                                                   <div class="col-lg-3">
-                                                    <div class="mb-3">
+                                                  </div>
 
-                                                        <label class="form-label" for="exampleInputEmail1">Date Start </label>
-
-                                                        @if ($shiftView->shiftStartDate)
-                                                        <input type="text" class="form-control datetime_picker" name="startDate"
-                                                        value="{{ $shiftView->shiftStartDate }}"
-                                                        aria-describedby="emailHelp" placeholder="">
-                                                        @else
-
-                                                        <input type="text"  class="form-control" name="startDate"
-                                                        value=""
-                                                        aria-describedby="emailHelp" placeholder="">
-
-                                                        @endif
+                                                  @endif
 
 
-                                                    </div>
-                                                </div>
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Parcel Taken</label>
+                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
 
-                                                <div class="col-lg-3">
-                                                    <div class="mb-3">
+                                                  </div>
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Parcel Delivered</label>
+                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->parcelsDelivered?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
 
-                                                        <label class="form-label" for="exampleInputEmail1">Date Finish</label>
-                                                        @if ($finishshifts)
-                                                        <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp">
-                                                        @else
-                                                        <input type="text"  class="form-control datetime_picker" id="#basicDate2" value="" aria-describedby="emailHelp">
-                                                        @endif
+                                                  </div>
 
-                                                    </div>
-                                                </div>
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Odometer Start</label>
+                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerStartReading?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
 
+                                                  </div>
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Odometer Finish</label>
+                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
 
+                                                   @php
+                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
+                                                   @endphp
 
+                                                  </div>
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="exampleInputEmail1">Traveled KM</label>
+                                                       <input type="text" value="{{ $km }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                   </div>
 
-                                            </div>
+                                                  </div>
 
-                                            <script>
-                                                // const currentDate = new Date().toISOString().slice(0, 16);
-                                                // document.getElementById('myDatetimeInput').value = currentDate;
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
 
-                                                const currentDate = new Date().toISOString().slice(0, 16);
-                                                document.getElementById('dateFinish').value = currentDate;
-                                            </script>
+                                                       <label class="form-label" for="exampleInputEmail1">Date Start </label>
 
+                                                       @if ($shiftView->shiftStartDate)
+                                                       <input type="text" class="form-control datetime_picker" name="startDate"
+                                                       value="{{ $shiftView->shiftStartDate }}"
+                                                       aria-describedby="emailHelp" placeholder="">
+                                                       @else
 
+                                                       <input type="text"  class="form-control" name="startDate"
+                                                       value=""
+                                                       aria-describedby="emailHelp" placeholder="">
 
-
-
-
-
-
-                                        <div class="bottom_footer_dt">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="action_btns text-end">
-                                                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
-                                                        <!-- <a href="client.php" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a> -->
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                     </form>
-
-                                    </div>
-                                </div>
-                                <!-- main_bx_dt -->
-                            </div>
+                                                       @endif
 
 
-                        @if ($driverRole->role_id!='33')
-                            <div class="tab-pane email_template" id="messages">
-                              <div class="main_bx_dt__">
+                                                   </div>
+                                               </div>
+
+                                               <div class="col-lg-3">
+                                                   <div class="mb-3">
+
+                                                       <label class="form-label" for="exampleInputEmail1">Date Finish</label>
+                                                       @if ($finishshifts)
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp">
+                                                       @else
+                                                       <input type="text"  class="form-control datetime_picker" id="#basicDate2" value="" aria-describedby="emailHelp">
+                                                       @endif
+
+                                                   </div>
+                                               </div>
+
+
+
+
+                                           </div>
+
+                                           <script>
+                                               // const currentDate = new Date().toISOString().slice(0, 16);
+                                               // document.getElementById('myDatetimeInput').value = currentDate;
+
+                                               const currentDate = new Date().toISOString().slice(0, 16);
+                                               document.getElementById('dateFinish').value = currentDate;
+                                           </script>
+
+
+
+
+
+
+
+
+                                       <div class="bottom_footer_dt">
+                                           <div class="row">
+                                               <div class="col-lg-12">
+                                                   <div class="action_btns text-end">
+                                                       <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
+                                                       <!-- <a href="client.php" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a> -->
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                    </form>
+                                    <hr>
+                                    <hr>
+
+                                    <h2>
+                                        <span><i class="ti-clipboard"></i></span>
+                                        <span>Monetize Information</span>
+                                    </h2>
+
+                                    @if ($driverRole->role_id!='33')
                                 <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
                                     <input type="hidden" name="hrManagerment" value="3"/>
 
@@ -759,111 +737,104 @@ foreach($D as $v)
                                         <div class="row">
 
 
+                                            @php
+                                            $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays ?? 0) * ($shiftView->getFinishShifts ? $shiftView->getFinishShifts->dayHours : 0);
+                                            $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight ?? 0) * ($shiftView->getFinishShifts ? $shiftView->getFinishShifts->nightHours : 0);
 
+                                            $saturday = $shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours
+                                                            ? ($shiftView->getClientCharge->hourlyRateChargeableSaturday ?? 0) * $shiftView->getFinishShifts->saturdayHours
+                                                            : 0;
 
+                                            $sunday = $shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours
+                                                            ? ($shiftView->getClientCharge->hourlyRateChargeableSunday ?? 0) * $shiftView->getFinishShifts->sundayHours
+                                                            : 0;
+                                                            @endphp
+                                            @php
+                                            $payAmount = round($day,2)+ round($night,2) + round($finalAmount,2);
+                                            $updatedAmnt =  round($shiftView->payAmount?? 0 , 2);
+                                            @endphp
+                                            @if ($payAmount < $updatedAmnt)
+                                            @php
+                                                $finalpayamnnt = round($shiftView->payAmount?? 0 , 2);
+                                            @endphp
+                                            @else
+                                            @php
+                                                $finalpayamnnt = round($day,2)+ round($night,2) + round($finalAmount,2);
+                                            @endphp
+                                            @endif
                                         <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Amount Payable Per Service</label>
-                                                    <input type="text"  step="0.1" class="form-control secondcls" id="first" onInput="edValueKeyPrs('a')" name="amountPayablePerService" @if($shiftView->finishStatus =='5') disabled @else @endif  value="{{ round($day,2) + round($night,2) + round($finalAmount,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                    <input type="hidden" id="hiddenPrice" value="{{ round($day,2)+ round($night,2) + round($finalAmount,2) }}"/>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Per Service</label>
+                                                        <input type="text"  step="0.1" class="form-control secondcls" id="first" onInput="edValueKeyPrs('a')" name="amountPayablePerService" @if($shiftView->finishStatus =='5') disabled @else @endif  value="{{ round($day,2) + round($night,2) + round($finalAmount,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="hidden" id="hiddenPrice" value="{{ round($day,2)+ round($night,2) + round($finalAmount,2) }}"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Fuel Levy Payable</label>
+                                                        <input type="text" step="0.1"  class="form-control" name="fuelLevyPayable" @if($shiftView->finishStatus =='5') disabled @else @endif id="second" onInput="edValueKeyPrs('a')" value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyPayable	??'' }}"  aria-describedby="emailHelp" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Extra Payable</label>
+                                                        <input type="text" step="0.1" class="form-control" name="extraPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="third" onInput="edValueKeyPrs('a')" value="{{ $shiftView->getShiftMonetizeInformation->extraPayable	??'' }}"  aria-describedby="emailHelp" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Total Payable </label>
+                                                        <input type="text" step="0.1" value="{{ $finalpayamnnt }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Amount Chargeable Per Service</label>
+                                                        <input type="text" step="0.1" id="charge1" class="form-control" onInput="edValueKeyChargePrs('a')" name="amountChargeablePerService" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($saturday ?? 0,2)+ round($sunday ?? 0,2) + round($chargeDayShift ?? 0,2) + round($chargeNight ?? 0,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="hidden" id="hiddenChargePrice" value="{{ round($saturday ?? 0,2)+ round($sunday ?? 0,2) + round($chargeDayShift ?? 0,2) + round($chargeNight ?? 0,2) }}"/>
+                                                     </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Fuel Levy Chargeable</label>
+                                                        <input type="text" step="0.1" id="charge2"   class="form-control" onInput="edValueKeyChargePrs('a')" name="fuelLevyChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyChargeable	??'' }}"   aria-describedby="emailHelp" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Fuel Levy Chargeable250</label>
+                                                        <input type="text" step="0.1" id="charge3"   class="form-control" onInput="edValueKeyChargePrs('a')" name="fuelLevyChargeable250" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyChargeable250	??'' }}"  aria-describedby="emailHelp" placeholder="">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Fuel Levy Chargeable400</label>
+                                                        <input type="text" step="0.1" id="charge4"   class="form-control" onInput="edValueKeyChargePrs('a')" name="fuelLevyChargeable400" @if($shiftView->finishStatus =='5') disabled @else @endif  value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyChargeable400	??'' }}"  aria-describedby="emailHelp" placeholder="">
+                                                    </div>
                                                 </div>
 
-                                               </div>
-
-                                               @php
-                                               $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays ?? 0) * ($shiftView->getFinishShifts ? $shiftView->getFinishShifts->dayHours : 0);
-                                               $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight ?? 0) * ($shiftView->getFinishShifts ? $shiftView->getFinishShifts->nightHours : 0);
-
-                                               $saturday = $shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours
-                                                               ? ($shiftView->getClientCharge->hourlyRateChargeableSaturday ?? 0) * $shiftView->getFinishShifts->saturdayHours
-                                                               : 0;
-
-                                               $sunday = $shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours
-                                                               ? ($shiftView->getClientCharge->hourlyRateChargeableSunday ?? 0) * $shiftView->getFinishShifts->sundayHours
-                                                               : 0;
-                                           @endphp
-
-
-
-                                            <div class="col-lg-6">
-                                               <div class="mb-3">
-                                                   <label class="form-label" for="exampleInputEmail1">Amount Chargeable Per Service</label>
-                                                   <input type="text" step="0.1" id="charge1" class="form-control" onInput="edValueKeyChargePrs('a')" name="amountChargeablePerService" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($saturday ?? 0,2)+ round($sunday ?? 0,2) + round($chargeDayShift ?? 0,2) + round($chargeNight ?? 0,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                   <input type="hidden" id="hiddenChargePrice" value="{{ round($saturday ?? 0,2)+ round($sunday ?? 0,2) + round($chargeDayShift ?? 0,2) + round($chargeNight ?? 0,2) }}"/>
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Extra Chargeable </label>
+                                                        <input type="text" step="0.1" id="charge5" onInput="edValueKeyChargePrs('a')"  class="form-control" name="extraChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ $shiftView->getShiftMonetizeInformation->extraChargeable	??'' }}" aria-describedby="emailHelp" placeholder="">
+                                                    </div>
                                                 </div>
-                                           </div>
-
-
-
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Fuel Levy Payable</label>
-                                                    <input type="text" step="0.1"  class="form-control" name="fuelLevyPayable" @if($shiftView->finishStatus =='5') disabled @else @endif id="second" onInput="edValueKeyPrs('a')" value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyPayable	??'' }}"  aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Fuel Levy Chargeable</label>
-                                                    <input type="text" step="0.1" id="charge2"   class="form-control" onInput="edValueKeyChargePrs('a')" name="fuelLevyChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyChargeable	??'' }}"   aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Fuel Levy Chargeable250</label>
-                                                    <input type="text" step="0.1" id="charge3"   class="form-control" onInput="edValueKeyChargePrs('a')" name="fuelLevyChargeable250" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyChargeable250	??'' }}"  aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Fuel Levy Chargeable400</label>
-                                                    <input type="text" step="0.1" id="charge4"   class="form-control" onInput="edValueKeyChargePrs('a')" name="fuelLevyChargeable400" @if($shiftView->finishStatus =='5') disabled @else @endif  value="{{ $shiftView->getShiftMonetizeInformation->fuelLevyChargeable400	??'' }}"  aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Extra Payable</label>
-                                                    <input type="text" step="0.1" class="form-control" name="extraPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="third" onInput="edValueKeyPrs('a')" value="{{ $shiftView->getShiftMonetizeInformation->extraPayable	??'' }}"  aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Extra Chargeable </label>
-                                                    <input type="text" step="0.1" id="charge5" onInput="edValueKeyChargePrs('a')"  class="form-control" name="extraChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ $shiftView->getShiftMonetizeInformation->extraChargeable	??'' }}" aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               @php
-                                                   $payAmount = round($day,2)+ round($night,2) + round($finalAmount,2);
-                                                   $updatedAmnt =  round($shiftView->payAmount?? 0 , 2);
-                                               @endphp
-                                               @if ($payAmount < $updatedAmnt)
-                                                    @php
-                                                        $finalpayamnnt = round($shiftView->payAmount?? 0 , 2);
-                                                    @endphp
-                                                @else
-                                                    @php
-                                                        $finalpayamnnt = round($day,2)+ round($night,2) + round($finalAmount,2);
-                                                    @endphp
-                                               @endif
-                                               <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Total Payable </label>
-                                                    <input type="text" step="0.1" value="{{ $finalpayamnnt }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="">
-                                                </div>
-
-                                               </div>
-                                               <div class="col-lg-6">
+                                                <div class="col-lg-12">
+                                                   
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Total Chargeable</label>
                                                     <input type="text" step="0.1"  id="charge6" onInput="edValueKeyChargePrs('a')"  class="form-control thirdcls" name="totalChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($shiftView->chageAmount??'',2 )}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
                                                 </div>
+                                                </div>
+                                        </div>
+                                        </div>
 
-                                               </div>
                                                <div class="col-lg-12">
                                                 <div class="row">
                                                 <div class="col-lg-6">
@@ -903,10 +874,19 @@ foreach($D as $v)
 
 
 
+                                @endif
+
+                                    </div>
+
+
+                                </div>
+                                <!-- main_bx_dt -->
                             </div>
 
+
+                            
+
                         </div>
-                        @endif
                     </div>
                 </div>
             </div>

@@ -47,7 +47,7 @@ class CommonApiController extends Controller
                     $costCenters = Clientcenter::select('id', 'clientId', 'name')->where('status', '1')->where('clientId', $client->id)->get();
                     $getType = Clientrate::select('id', 'clientId', 'type')->with(['getClientType'])->where('clientId', $client->id)->get();
                     foreach ($getType as $vehicals) {
-                        $vehicals->regoField = DB::table('vehicals')->select('id', 'rego')->where('status', '1')->where('vehicalType', $vehicals->id)->get();
+                        $vehicals->regoField = DB::table('vehicals')->select('id', 'rego')->where('status', '1')->where('vehicalType', $vehicals->getClientType->id)->get();
                     }
 
                     foreach ($costCenters as $base) {
@@ -64,24 +64,26 @@ class CommonApiController extends Controller
 
                 $main_array[] = $state_array;
             }
+            
             $vehicleRego = DB::table('vehicals')
-                ->select('id', 'rego')
-                ->where('controlVehicle', '1')
-                ->where('driverResponsible', $this->driverId)
-                ->get();
+                                                ->select('id', 'rego')
+                                                // ->where('controlVehicle', '1')
+                                                // ->where('driverResponsible', $this->driverId)
+                                                ->get();
 
-            if (count($vehicleRego) > 0) {
-                $insepctiopnRego = $vehicleRego;
-            } else {
-                $insepctiopnRego = DB::table('vehicals')
-                    ->select('id', 'rego')->where('status', '1')
-                    ->get();
-            }
+                                            // if (count($vehicleRego) > 0) {
+                                            //     $insepctiopnRego = $vehicleRego;
+                                            // } else {
+                                            //     $insepctiopnRego = DB::table('vehicals')
+                                            //         ->select('id', 'rego')->where('status', '1')
+                                            //         ->get();
+                                            // }
 
             return response()->json([
                 "status" => 200,
                 "message" => "Common Api",
                 "data" => $main_array,
+                "vehicleRego" =>$vehicleRego,
                 'insepctiopnRego' => $insepctiopnRego ?? [],
             ]);
         } catch (\Throwable $th) {
@@ -240,10 +242,13 @@ class CommonApiController extends Controller
 
             if($request->file('missedImage')!=''){
                 $files = $request->file('missedImage');
-                $destinationPath = 'public/assets/driver/parcel/finishParcel';
+                $destinationPath = 'assets/driver/parcel/finishParcel';
                 $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
+            }
+            else{
+                $items = '';
             }
 
             $Parcel                             = new Finishshift();
@@ -377,10 +382,13 @@ class CommonApiController extends Controller
                     Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
                     if($request->file('missedImage')!=''){
                         $files = $request->file('missedImage');
-                        $destinationPath = 'public/assets/driver/parcel/finishParcel';
+                        $destinationPath = 'assets/driver/parcel/finishParcel';
                         $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
                         $files->move($destinationPath, $file_name);
                         $items = $file_name;
+                    }
+                    else{
+                        $items = '';
                     }
 
 

@@ -77,10 +77,10 @@
                                                             $whole = $whole1[1];
                                                         @endphp
                                                         @if($whole=='pdf')
-                                                        <a href="{{ asset('public/assets/driver/document/'.@$driver->driving_license.'')}}" target="_blank" title="View Document" download="download">Open PDF</a>
+                                                        <a href="{{ asset('assets/driver/document/'.@$driver->driving_license.'')}}" target="_blank" title="View Document" download="download">Open PDF</a>
 
                                                         @else
-                                                        <a href="{{ asset('public/assets/driver/document/'.@$driver->driving_license.'')}}" target="_blank" title="View Document">Open Image</a>
+                                                        <a href="{{ asset('assets/driver/document/'.@$driver->driving_license.'')}}" target="_blank" title="View Document">Open Image</a>
 
                                                         @endif
                                                 </td>
@@ -100,10 +100,10 @@
                                                             $whole = $whole1[1];
                                                         @endphp
                                                         @if($whole=='pdf')
-                                                        <a href="{{ asset('public/assets/driver/document/'.@$driver->visa.'')}}" target="_blank" title="View Document">Open PDF</a>
+                                                        <a href="{{ asset('assets/driver/document/'.@$driver->visa.'')}}" target="_blank" title="View Document">Open PDF</a>
 
                                                         @else
-                                                        <a href="{{ asset('public/assets/driver/document/'.@$driver->visa.'')}}" target="_blank" title="View Document">Open Image</a>
+                                                        <a href="{{ asset('assets/driver/document/'.@$driver->visa.'')}}" target="_blank" title="View Document">Open Image</a>
 
                                                         @endif
                                                 </td>
@@ -124,10 +124,10 @@
                                                             $whole = $whole1[1];
                                                         @endphp
                                                         @if($whole=='pdf')
-                                                        <a href="{{ asset('public/assets/driver/trafficHistory/'.@$driver->traffic_history.'')}}" target="_blank" title="View Document">Open PDF</a>
+                                                        <a href="{{ asset('assets/driver/trafficHistory/'.@$driver->traffic_history.'')}}" target="_blank" title="View Document">Open PDF</a>
 
                                                         @else
-                                                        <a href="{{ asset('public/assets/driver/trafficHistory/'.@$driver->traffic_history.'')}}" target="_blank" title="View Document">Open Image</a>
+                                                        <a href="{{ asset('assets/driver/trafficHistory/'.@$driver->traffic_history.'')}}" target="_blank" title="View Document">Open Image</a>
 
                                                         @endif
                                                 </td>
@@ -147,10 +147,10 @@
                                                         $whole = $whole1[1];
                                                     @endphp
                                                     @if($whole=='pdf')
-                                                    <a href="{{ asset('public/assets/driver/driving_license/'.@$driver->police_chceck.'')}}" target="_blank" title="View Document">Open PDF</a>
+                                                    <a href="{{ asset('assets/driver/driving_license/'.@$driver->police_chceck.'')}}" target="_blank" title="View Document">Open PDF</a>
 
                                                     @else
-                                                    <a href="{{ asset('public/assets/driver/driving_license/'.@$driver->police_chceck.'')}}" target="_blank" title="View Document">Open Image</a>
+                                                    <a href="{{ asset('assets/driver/driving_license/'.@$driver->police_chceck.'')}}" target="_blank" title="View Document">Open Image</a>
 
                                                     @endif
                                             </td>

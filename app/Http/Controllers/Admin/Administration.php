@@ -154,9 +154,9 @@ class Administration extends Controller
 
                 $input = $request->all();
                 $role_data= Roles::whereIn('id',[$input['roles']])->first()->id;
-              $person=  Driver::select('id','userName')->where('id',$input['first_name'])->first();
+                $person=  Driver::select('id','fullName')->where('id',$input['first_name'])->first();
                 // $input['name']      = $input['first_name'] . $input['last_name'];
-                $input['name']      = $person->userName;
+                $input['name']      = $person->fullName;
                 $input['email']      = $input['email'];
                 $input['role_id']    = $role_data;
                 $input['status']    = $input['status'];

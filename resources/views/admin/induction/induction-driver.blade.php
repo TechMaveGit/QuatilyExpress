@@ -104,7 +104,7 @@
                                 @foreach($driver as $alldriver)
                                     <tr class="border-bottom">
                                         <td class="td sorting_1">{{ $loop->iteration  }}</td>
-                                        <td class="td sorting_1">{{ $alldriver->userName }}</td>
+                                        <td class="td sorting_1">{{ $alldriver->userName }} {{ $alldriver->surname }}</td>
                                         <td class="td">{{ $alldriver->email	 }}</td>
                                         {{-- <td class="td">{{ $alldriver->userName }}</td> --}}
                                         <td>

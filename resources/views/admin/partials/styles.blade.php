@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- FAVICON -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('public/assets/images/newimages/imgpsh_fullsize_anim (1).png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/newimages/imgpsh_fullsize_anim (1).png')}}">
 
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
@@ -27,52 +27,52 @@
     <title>Quality Express</title>
 
     <!-- BOOTSTRAP CSS -->
-    <link id="style" href="{{ asset('public/assets/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link id="style" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
 
 
-    <link id="style" href="{{ asset('/public/assets/sweet-alert/sweetalert.css')}}" rel="stylesheet">
+    <link id="style" href="{{ asset('/assets/sweet-alert/sweetalert.css')}}" rel="stylesheet">
 
     <!-- STYLE CSS -->
-     <link href="{{ asset('public/assets/css/style.css')}}" rel="stylesheet">
+     <link href="{{ asset('assets/css/style.css')}}" rel="stylesheet">
   <!-- Froala Editor Stylesheet-->
   <link href='https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css' rel='stylesheet' type='text/css'>
 	<!-- Plugins CSS -->
-    <link href="{{ asset('public/assets/css/plugins.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/css/plugins.css')}}" rel="stylesheet">
 
-    <link href="{{ asset('public/assets/Common/css/CountrySelect.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/Common/css/CountrySelect.css')}}" rel="stylesheet">
 
     <!--- FONT-ICONS CSS -->
-    <link href="{{ asset('public/assets/css/icons.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/css/icons.css')}}" rel="stylesheet">
     <!-- flat picker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/themes/dark.css">
   <link rel="stylesheet" type="text/css" href="https://jeremyfagis.github.io/dropify/dist/css/dropify.min.css">
     <!-- INTERNAL Switcher css -->
-    {{-- <link href="{{ asset('public/assets/switcher/css/switcher.css')}}" rel="stylesheet"> --}}
+    {{-- <link href="{{ asset('assets/switcher/css/switcher.css')}}" rel="stylesheet"> --}}
 
-    <link href="{{ asset('public/assets/switcher/demo.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/switcher/demo.css')}}" rel="stylesheet">
     <!--custom css-->
 
-    <link href="{{ asset('public/assets/css/custom.css?v=1.0')}}" rel="stylesheet">
+    <link href="{{ asset('assets/css/custom.css?v=1.0')}}" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-   <link href="{{ asset('public/assets/css/toastr.min.css')}}" rel="stylesheet">
+   <link href="{{ asset('assets/css/toastr.min.css')}}" rel="stylesheet">
  <!-- CHARTJS JS -->
 
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
 
 
- <script src="{{ asset('public/assets/plugins/chart/Chart.bundle.js')}}"></script>
+ <script src="{{ asset('assets/plugins/chart/Chart.bundle.js')}}"></script>
 
 
 
- <script src="{{ asset('public/assets/js/chart.js')}}"></script>
- <script src="{{ asset('public/assets/js/charts.js')}}"></script>
+ <script src="{{ asset('assets/js/chart.js')}}"></script>
+ <script src="{{ asset('assets/js/charts.js')}}"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
  <script>
 

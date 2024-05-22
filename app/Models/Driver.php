@@ -41,5 +41,9 @@ class Driver extends Authenticatable  implements JWTSubject
         return $this->hasOne(Clientcenter::class, 'clientId', 'id');
     }
 
+    public function roleName(){
+        return $this->hasOne(Roles::class, 'id', 'role_id')->select('id','name');
+    }
+
 
 }

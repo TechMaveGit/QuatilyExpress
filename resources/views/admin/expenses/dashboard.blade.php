@@ -4,9 +4,9 @@
 
 
 
-<script src="{{ asset('public/assets/plugins/charts-c3/d3.v5.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/charts-c3/d3.v5.min.js')}}"></script>
 
-<script src="{{ asset('public/assets/plugins/charts-c3/c3-chart.js')}}"></script>
+<script src="{{ asset('assets/plugins/charts-c3/c3-chart.js')}}"></script>
 
 
 
@@ -94,7 +94,7 @@
                                                 <option value=""></option>
                                                 @forelse ($person as $allperson)
                                                     <option value="{{ $allperson->id }}" {{ $personName == $allperson->id ? 'selected' : '' }}>
-                                                        {{ $allperson->userName }} ({{ $allperson->email }})
+                                                        {{ $allperson->userName }} {{ $allperson->surname }} ({{ $allperson->email }})
                                                     </option>
                                                 @empty
                                                     {{-- Handle the case where $person is empty --}}

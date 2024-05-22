@@ -46,11 +46,11 @@
                             @foreach ($inductiondriver as $allinductiondriver)
                                 <tr class="border-bottom">
                                     <td class="td sorting_1">{{ $loop->iteration }}</td>
-                                    <td class="td sorting_1">{{ $allinductiondriver['getDriver']->userName??'' }}</td>
+                                    <td class="td sorting_1">{{ $allinductiondriver['getDriver']->userName??'' }} {{ $allinductiondriver['getDriver']->surname??'' }}</td>
                                     <td class="td sorting_1">{{ $allinductiondriver['getDriver']->email??'' }}</td>
                                     <td class="td sorting_1">{{ $allinductiondriver['getDriver']->mobileNo??'' }}</td>
                                     <td class="td sorting_1">
-                                    <a href="{{ asset('public/assets/Induction/signatureImage/'.$allinductiondriver->signature.'')}}" target="_blank" title="Read PDF">View Signature</a>
+                                    <a href="{{ asset('assets/Induction/signatureImage/'.$allinductiondriver->signature.'')}}" target="_blank" title="Read PDF">View Signature</a>
                                     </td>
                                     <td class="td sorting_1">{{ date('Y-m-d', strtotime($allinductiondriver->created_at))}}</td>
                                 </tr>
