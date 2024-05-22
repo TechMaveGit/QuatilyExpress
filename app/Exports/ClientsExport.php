@@ -2,16 +2,28 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-
-class ClientsExport implements FromCollection, WithHeadings
+class ClientsExport
 {
     protected $clients;
 
     public function __construct($clients)
     {
         $this->clients = $clients;
+    }
+
+    public function exportToCsv($filename)
+    {
+        $file = fopen($filename, 'w');
+
+        // Add the headers to the CSV file
+        fputcsv($file, $this->headings());
+
+        // Add the data rows to the CSV file
+        foreach ($this->collection() as $row) {
+            fputcsv($file, $row);
+        }
+
+        fclose($file);
     }
 
     public function collection()
@@ -26,7 +38,7 @@ class ClientsExport implements FromCollection, WithHeadings
                 'State' => $client->getState->name,
                 'Status' => $client->status == 1 ? 'Active' : 'Inactive',
             ];
-        });
+        })->toArray();
     }
 
     public function headings(): array
