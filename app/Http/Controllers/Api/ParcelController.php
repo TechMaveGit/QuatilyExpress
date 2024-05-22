@@ -29,7 +29,7 @@ class ParcelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'shiftId'      => 'required|integer',
-            'receiverName'  => 'required',
+            'receiverName'  => 'nullable',
             'scanParcel'    => 'required',
             'location'      => 'required',
             'latitude'      => 'required',
@@ -47,7 +47,7 @@ class ParcelController extends Controller
         $Parcel = new Parcels();
         $Parcel->driverId = $this->driverId;
         $Parcel->shiftId = $request->shiftId;
-        $Parcel->receiverName = $request->receiverName;
+        $Parcel->receiverName = $request->receiverName??null;
         $Parcel->scanParcel = $request->scanParcel;
         $Parcel->location = $request->location;
         $Parcel->latitude = $request->latitude;
@@ -300,7 +300,7 @@ class ParcelController extends Controller
             'location'   => $request->location,
             'latitude'   => $request->latitude,
             'longitude'  => $request->longitude,
-            'receiverName' => $request->receiverName,
+            'receiverName' => $request->receiverName??null,
         ];
         Parcels::whereId($parcelId)->update($parcelData);
         $parcelIamge = $request->file('parcelIamge');
