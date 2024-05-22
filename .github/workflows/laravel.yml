@@ -1,0 +1,64 @@
+name: Laravel CI/CD
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        tools: composer, php-cs-fixer
+
+    - name: Install dependencies
+      run: composer install --no-dev --prefer-dist --optimize-autoloader
+
+    - name: Prepare environment
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+        
+    - name: Set permissions
+      run: |
+        sudo chown -R $USER:www-data storage bootstrap/cache
+        sudo chmod -R 775 storage bootstrap/cache
+        
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_PRIVATE_KEY }}
+        script: |
+          cd /var/www/html/express/
+          sudo chown -R $USER:www-data storage/ bootstrap/cache public/
+          sudo chmod -R 775 storage bootstrap/cache public/
+          git reset --hard
+          git clean -fd
+          git pull origin production
+          /usr/bin/php8.0 $(which composer) install --no-dev --prefer-dist --optimize-autoloader
+          /usr/bin/php8.0 artisan optimize
+          /usr/bin/php8.0 artisan optimize:clear
+          /usr/bin/php8.0 artisan storage:link
