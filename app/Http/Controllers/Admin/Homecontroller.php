@@ -162,10 +162,8 @@ class Homecontroller extends Controller
         $data['shift'] = $query->orderBy('id', 'DESC')->with('getClientName:id,name', 'getDriverName:id,userName', 'getVehicleType:id,name', 'getStateName:id,name', 'getFinishShift')->get();
         $data['state'] = DB::table('states')->get();
         $data['client'] = Client::where('status', '1')->get();
-        $data['shiftstatus'] = DB::table('shiftstatus')->get();
         $data['clientcenter'] = Clientcenter::select('id', 'name')->get();
         $data['clientbases'] = DB::table('clientbases')->select('id', 'base')->get();
-        $data['shiftstatus'] = DB::table('shiftstatus')->get();
         //   return $userData;
         return view('admin.dashboard.home', $data, compact('secondGraphOverAllExpense', 'clientCharge', 'secondClientrate', 'firstGraphClientCharge', 'firstGraphdriverPay3', 'yearName', 'driverResponsible', 'vehicleRego', 'expenseReport', 'Clientrate', 'tollexpense', 'operactionExp', 'totalsum', 'row', 'list', 'clientName1', 'adminCharge2', 'driverPay3'));
     }

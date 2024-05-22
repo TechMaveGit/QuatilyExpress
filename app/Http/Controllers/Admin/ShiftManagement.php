@@ -638,7 +638,6 @@ class ShiftManagement extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('Something went wrong');
         }
-        $data['common'] = DB::table('alldropdowns')->get();
         $data['driverAdd'] = Driver::where('status', '1')->get();
         $data['client'] = Client::get();
         $data['type'] = Type::get();
@@ -870,7 +869,6 @@ class ShiftManagement extends Controller
             $Parcel->save();
             return Redirect::route('admin.shift.report')->with('message', 'Missed Shift  Added Successfully!');
         }
-        $data['common'] = DB::table('alldropdowns')->get();
         $data['driver'] = Driver::get();
         $data['client'] = Client::get();
         $data['type'] = Type::get();
@@ -884,7 +882,6 @@ class ShiftManagement extends Controller
         $data['clients'] = Client::where('status', '1')->get();
         $data['costCenter'] = Clientcenter::select('id', 'name')->get();
         $data['clientbases'] = DB::table('clientbases')->select('id', 'base')->get();
-        $data['shiftstatus'] = DB::table('shiftstatus')->where('status', '1')->get();
         $data['statusData'] = $request->input('status');
         if (empty($data['statusData'])) {
             $data['statusData'][] = '2';
@@ -1284,7 +1281,6 @@ class ShiftManagement extends Controller
         }
         $data['allstate'] = States::where('status', '1')->get();
         $data['costCenter'] = DB::table('clientcenters')->select('id', 'name')->where(['status' => '1'])->get();
-        $data['staffstatus'] = DB::table('staffstatus')->where(['status' => '1'])->get();
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
         $data['driverAdd'] = Driver::get();
@@ -1303,7 +1299,6 @@ class ShiftManagement extends Controller
         //    dd( $data['shiftView']);
         $data['allstate'] = States::where('status', '1')->get();
         $data['costCenter'] = DB::table('clientcenters')->select('id', 'name')->where(['status' => '1', 'clientId' => $getClientID])->get();
-        $data['staffstatus'] = DB::table('staffstatus')->where(['status' => '1'])->get();
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
         if (request()->isMethod("post")) {

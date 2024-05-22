@@ -278,9 +278,6 @@
                                        </div>
                                     </div>
                                 </div>
-                                @php
-                                    $shiftstatus=DB::table('finalshiftstatus')->get();
-                                @endphp
 
                                 <div class="col-lg-4">
                                     <div class="check_box">

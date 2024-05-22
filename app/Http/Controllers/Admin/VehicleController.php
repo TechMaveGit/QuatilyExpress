@@ -202,9 +202,7 @@ class VehicleController extends Controller
 
        $vehicleId->types=Type::where('id',$vehicleId->vehicalType)->first()->name??'';
 
-       $driverresponsibles=Driverresponsible::where('id',$vehicleId->driverResponsible)->with(['getDriverResponsible'])->first()->name??'';
-
-       return view('admin.vehicle.vehicle-view',compact('vehicleId','driverresponsibles'));
+       return view('admin.vehicle.vehicle-view',compact('vehicleId'));
 
     }
 

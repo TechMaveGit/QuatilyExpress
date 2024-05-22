@@ -178,10 +178,8 @@ class Expenses extends Controller
        $data['tollexpense'] = Tollexpense::orderBy('id','DESC')->get();
        $data['operactionexp'] =OperactionExp::orderBy('id','DESC')->get();
        $data['states'] = State::orderBy('id','DESC')->get();
-       $data['shiftstatus'] = DB::table('shiftstatus')->orderBy('id','DESC')->get();
        $data['generalexpensestypes']=Generalexpensestype::get();
        $data['operatingexpensetype']=Operatingexpensetype::get();
-       $data['regos']=DB::table('regos')->get();
        $data['vehicals']=DB::table('vehicals')->where('status','1')->get();
        return view('admin.expenses.sheet',$data);
 

@@ -68,7 +68,7 @@
                         <div class="card-body">
 
 
-                            <form action="{{ route('admin.shift.report') }}" method="post"/> @csrf
+                            <form action="{{ route('admin.shift.report') }}" method="post"> @csrf
                             <div class="row align-items-center">
                                <div class="col-lg-4">
                                     <div class="check_box">

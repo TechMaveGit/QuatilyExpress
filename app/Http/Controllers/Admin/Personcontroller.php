@@ -98,6 +98,7 @@ class Personcontroller extends Controller
                 $query->select('id', 'reminderName');
             }
         ])->where('id', $id)->first();
+        $data['personrates'] = Personrates::where('personId',$data['personDetail']->id,)->OrderBy('id', 'desc')->get();
         $data['documents'] = Persondocument::orderBy('id', 'DESC')->where('personId', $id)->get();
         return view('admin.person.person-view', $data);
     }
@@ -185,19 +186,6 @@ class Personcontroller extends Controller
             ]);
         }
         $personValue3 = $request->input('personValue3');
-        // if ($personValue3 == '3') {
-        //     $Personaddress = Personreminder::insertGetId([
-        //         'personId'          => $request->input('personId'),
-        //         'reminderType'      => $request->input('reminderType'),
-        //     ]);
-        //     $Personaddress = Personreminder::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
-        //     $Personaddress->typeName = Reminders::select('reminderName')->whereId($Personaddress->reminderType)->first()->reminderName;
-        //     return response()->json([
-        //         'success' => '200',
-        //         'message' => 'Personaddress reminder successfully.',
-        //         'data'   => $Personaddress
-        //     ]);
-        // }
         if ($personValue3 == '3') {
             $Personaddress = Personreminder::updateOrCreate(
                 [
@@ -272,11 +260,11 @@ class Personcontroller extends Controller
                 'status' => $request->input('document_status'),
                 'document' => $new_name ?? null,
             ];
-            PersonDocument::insert($documentData);
+            Persondocument::insert($documentData);
             $documents = Persondocument::orderBy('id', 'DESC')->where('personId', $request->input('person_id'))->get();
             return response()->json([
                 'success' => '200',
-                'message' => 'Persondocument added successfully.',
+                'message' => 'Person document added successfully.',
                 'documents'   => $documents
             ]);
         }
@@ -286,6 +274,7 @@ class Personcontroller extends Controller
         $data['reminder'] = Reminders::orderBy('id', 'DESC')->where('status', '1')->get();
         $data['types'] = Type::orderBy('id', 'DESC')->where('status', '1')->get();
         $data['countryCode'] = DialCode::where('status', '1')->get();
+        $data['documents'] = Persondocument::OrderBy('id','desc',)->where('personId', $id)->get();
         return view('admin.person.person-edit', $data);
     }
     public function editPersonId(Request $request)

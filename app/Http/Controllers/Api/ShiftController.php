@@ -13,14 +13,11 @@ use App\Models\States;
 use App\Models\Parcels;
 use App\Models\Client;
 use App\Models\Clientcenter;
-use App\Models\Missedshift;
 use App\Models\Clientrate;
 use App\Models\Vehical;
 
 use App\Models\Finishshift;
 use Carbon\Carbon;
-
-use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -582,27 +579,6 @@ class ShiftController extends Controller
         }
     }
 
-    public function viewAllMissShift(Request $request)
-    {
-
-
-        $driverId  = auth('driver')->user()->id;
-        $shift = Missedshift::where('driverId', $driverId)->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name')->get();
-
-        if ($shift) {
-            return response()->json([
-                "status" => $this->successStatus,
-
-                "message" => "Success",
-                "data" => $shift
-            ]);
-        } else {
-            return response()->json([
-                "status" => $this->notfound,
-                "message" => "not found",
-            ]);
-        }
-    }
 
     public function addLocation(Request $request)
     {
