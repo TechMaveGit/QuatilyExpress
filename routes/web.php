@@ -32,7 +32,6 @@ Route::get('/', function () {
 
     return view('admin.login', $data);
 });
-// Auth::routes();
 Route::get('/testing', [AdminLoginController::class, 'testing'])->name('testing');
 Route::get('/admin', [AdminLoginController::class, 'index'])->name('admin');
 Route::post('login', [AdminLoginController::class, 'login'])->name('admin.login');
