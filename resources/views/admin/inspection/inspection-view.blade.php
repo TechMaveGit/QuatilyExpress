@@ -29,6 +29,25 @@
                     <div class="card-body">
                         <div class="row align-items-center">
 
+                           <div class="col-lg-4">
+                              <div class="mb-3">
+                                 <label class="form-label" for="exampleInputEmail1">Driver Name</label>
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->userName }}" />
+                                 </div>
+                           </div>
+                           <div class="col-lg-4">
+                              <div class="mb-3">
+                                 <label class="form-label" for="exampleInputEmail1">Driver Surname</label>
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->surname }}" />
+                                 </div>
+                           </div>
+                           <div class="col-lg-4">
+                              <div class="mb-3">
+                                 <label class="form-label" for="exampleInputEmail1">Driver Email</label>
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->email }}" />
+                                 </div>
+                           </div>
+
                             <div class="col-lg-12">
                                 <div class="check_box">
                                     <label class="form-label" for="exampleInputEmail1">REGO <span class="red">*</span></label>
@@ -58,7 +77,7 @@
                 <div class="check_box">
                     <label class="form-label" for="exampleInputEmail1">Front <span class="red">*</span></label>
                     <div class="form-group front">
-                            <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->front??'N/A'}}" alt="Mountains" width="220" height="150">
+                            <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->front??'N/A'}}" alt="Mountains" width="220" height="150">
                     </div>
                 </div>
              </div>
@@ -71,9 +90,9 @@
                 <div class="form-group front-left">
 
                 @if($inspection->frontleft)
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->frontleft??'N/A'}}" alt="Mountains" width="223" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->frontleft??'N/A'}}" alt="Mountains" width="223" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="223" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="223" height="150">
                 @endif
 
 
@@ -88,9 +107,9 @@
                 <div class="form-group front-right">
 
                 @if(($inspection->frontRight))
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->frontRight??'N/A'}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->frontRight??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -107,9 +126,9 @@
                 <div class="form-group left-side">
 
                 @if(($inspection->leftSide))
-                 <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->leftSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                 <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->leftSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
                 </div>
@@ -123,9 +142,9 @@
                 <div class="form-group right-side">
 
                 @if(($inspection->rightSide))
-                 <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->rightSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                 <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->rightSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
                 </div>
@@ -139,9 +158,9 @@
                 <div class="form-group back">
 
                 @if(($inspection->backSide))
-                   <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->backSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                   <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->backSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -157,9 +176,9 @@
                 <div class="form-group back-left">
 
                 @if(($inspection->backLeftSide))
-                   <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->backLeftSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                   <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->backLeftSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -174,9 +193,9 @@
                 <div class="form-group front-right">
 
                 @if(($inspection->backRightSide))
-                <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->backRightSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->backRightSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -192,9 +211,9 @@
                 <div class="form-group cockpit">
 
                 @if(($inspection->cockpit))
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->cockpit??'N/A'}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->cockpit??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -235,9 +254,9 @@
                 <div class="form-group front">
 
                 @if(isset($inspection->front))
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->front??'N/A'}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->front??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
                 </div>
@@ -252,9 +271,9 @@
                 <div class="form-group front-left">
 
                 @if(isset($inspection->frontleft))
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->frontleft??'N/A'}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->frontleft??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="222" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="222" height="150">
                 @endif
 
 
@@ -269,9 +288,9 @@
                 <div class="form-group front-right">
 
                 @if(isset($inspection->frontRight))
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->frontRight??'N/A'}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->frontRight??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -288,9 +307,9 @@
                 <div class="form-group left-side">
 
                 @if(isset($inspection->leftSide))
-                 <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->leftSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                 <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->leftSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
                 </div>
@@ -304,9 +323,9 @@
                 <div class="form-group right-side">
 
                 @if(isset($inspection->rightSide))
-                 <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->rightSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                 <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->rightSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
                 </div>
@@ -320,9 +339,9 @@
                 <div class="form-group back">
 
                 @if(isset($inspection->backSide))
-                   <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->backSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                   <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->backSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -338,9 +357,9 @@
                 <div class="form-group back-left">
 
                 @if(isset($inspection->backLeftSide))
-                   <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->backLeftSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                   <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->backLeftSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -355,9 +374,9 @@
                 <div class="form-group front-right">
 
                 @if(isset($inspection->backRightSide))
-                <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->backRightSide??'N/A'}}" alt="Mountains" width="220" height="150">
+                <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->backRightSide??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 
@@ -373,9 +392,9 @@
                 <div class="form-group cockpit">
 
                 @if(isset($inspection->cockpit))
-                  <img src="{{ asset('public/assets/inspection/carimage')}}/{{$inspection->cockpit??'N/A'}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/inspection/carimage')}}/{{$inspection->cockpit??'N/A'}}" alt="Mountains" width="220" height="150">
                 @else
-                  <img src="{{ asset('public/assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
+                  <img src="{{ asset('assets/images/newimages/logo-qe_1.png')}}" alt="Mountains" width="220" height="150">
                 @endif
 
 

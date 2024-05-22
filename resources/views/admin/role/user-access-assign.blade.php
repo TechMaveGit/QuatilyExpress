@@ -43,7 +43,7 @@
                                             <option value="">Select Any One</option>
 
                                             @foreach ($person as $allperson)
-                                            <option value="{{$allperson->userName}}">{{$allperson->userName}}</option>
+                                            <option value="{{$allperson->userName}}">{{$allperson->userName}} {{$allperson->surname}} ({{$allperson->email}})</option>
                                             @endforeach
 
                                                </select>

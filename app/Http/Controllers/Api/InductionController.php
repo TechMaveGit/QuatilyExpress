@@ -21,7 +21,7 @@ class InductionController extends Controller
       public function allInspection()
       {
         $all= Induction::where('status','1')->get();
-        $url = url('public/assets/Induction/image/');
+        $url = url('assets/Induction/image/');
         return response()->json([
             "status" => 200,
             "message" => "Success",
@@ -42,8 +42,8 @@ class InductionController extends Controller
                 return $response;
             }
             $id=$request->inspection_id;
-            $url = url('public/assets/Induction/image/');
-            $signatureImage = url('public/assets/Induction/signatureImage');
+            $url = url('assets/Induction/image/');
+            $signatureImage = url('assets/Induction/signatureImage');
             $inductions=Induction::select('id','title','description','uploadFile','status')->where('id',$id)->first();
             $InductionSignature= DB::table('inductiondrivers')->select('id','induction_id','driverId','signature')->where('induction_id',$id)->where('driverId',$this->driverId)->first();
             return response()->json([
@@ -62,7 +62,7 @@ class InductionController extends Controller
             $query->select('id','rego');
         }])
         ->get();
-        $destinationPath = url('public/assets/inspection/carimage');
+        $destinationPath = url('assets/inspection/carimage');
             return response()->json([
                 "status" => 200,
                 "message" => "Success",
@@ -88,7 +88,7 @@ class InductionController extends Controller
         $files = $request->file('signature');
         if($files)
         {
-            $destinationPath = 'public/assets/Induction/signatureImage';
+            $destinationPath = 'assets/Induction/signatureImage';
             $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $p_image = $file_name;

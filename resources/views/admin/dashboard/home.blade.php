@@ -1,9 +1,6 @@
 @extends('admin.layout')
 @section('content')
-
-
 <script src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
-
 <style>
     .removeGraph{
         display: none;
@@ -12,8 +9,6 @@
         font-size: 15px;
      }
 </style>
-
-
 <style>
     .dt-buttons{
         margin-left: -158px;
@@ -21,13 +16,11 @@
     .dark-mode .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #fff;
 }
-
 <style>
     .dt-button.dropdown-item.buttons-columnVisibility.active {
   background-color: #282618; /* Replace with your desired color code */
   /* You can also add other styles as needed */
 }
-
 .brdcls .select2-selection__rendered{
     border-color: red;
     height: 40px;
@@ -36,8 +29,6 @@
     padding: 0px 5px;
     border-radius: 4px;
 }
-
-
     .status-ToBeApr{
     color: #2ecc71;
     background-color: #2ecc7114;
@@ -69,9 +60,7 @@
     padding-right: 35px;
     margin-left: 10px;
 }
-
     </style>
-
 <style>
     .table td {
     padding: 4px 8px;
@@ -81,7 +70,6 @@
          margin-top: 20px;
     }
     /* data table customoization */
-
   .tabltoparea #export-button-container button{
     margin-right: 5px;
   }
@@ -101,10 +89,6 @@
   margin-bottom: 20px;
 }
 </style>
-
-
-
-
    <!-- delete Modal -->
    <div class="modal fade zoomIn" id="startShift" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -132,7 +116,6 @@
     </div>
 </div>
 <!--end modal -->
-
 <script>
 function yesstartShift()
 {
@@ -153,295 +136,175 @@ function yesstartShift()
                                     text: 'Shift Start Successfully',
                                     timer: 1000
                                 });
-
                                  window.setTimeout(function(){ } ,1000);
                                 location.reload();
-
                                 if(that){
                                     //delete specific row
                                     $(that).parent().parent().remove();
                                 }
-
                         },
                             error: function(data) {
                         }
                     });
     }
 </script>
-
-
-
-
    <!-- delete Modal -->
    <div class="modal fade zoomIn" id="finishShift" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-
                 <div class="card-body">
-
                     <div id="wizard1s">
-
                         <section>
-
                             <form action="{{ route('admin.finish.Shift') }}" method="post" enctype="multipart/form-data">@csrf
                                     <div class="row">
-
                                         <div class="col-lg-12">
-
                                             <div class="title_head">
                                                 <h4>Finish Shift</h4>
                                               </div>
-
                                             <label class="form-label" for="exampleInputEmail1">Odometer Start Reading  <span class="red">*</span></label>
-
                                             <input type="number" name="odometerStartReading" id="odometer_start_reading" min="0" class="form-control" aria-describedby="emailHelp" placeholder="" fdprocessedid="enssm" required="">
                                             <input type="hidden" name="shiftId" value="" id="appendFinishShiftiId" />
-
                                     </div>
                                     <div class="col-lg-12">
                                             <label class="form-label" for="exampleInputEmail1">Odometer End Reading  <span class="red">*</span></label>
-
-
                                             <input type="text" min="0" class="form-control" name="odometerEndReading" value="" id="odometer_finish_reading" aria-describedby="emailHelp" placeholder="" onkeypress="checkOdometerReading(event)" required="" fdprocessedid="kgw02c">
-
                                             <div id="message"></div>
-
-
                                     </div>
-
-
-
                                     <script>
                                         function checkOdometerReading(event) {
-
                                             var startReading = parseFloat(document.getElementById('odometer_start_reading').value) || 0;
                                             var finishReading = parseFloat(document.getElementById('odometer_finish_reading').value + event.key) || 0;
                                             var addButton = document.querySelector('.btn.btn-primary');
-
                                             const key = event.key;
                                             if (/^[a-zA-Z]$/.test(key))
                                             {
                                             event.preventDefault();
                                             }
-
                                             var messageElement = document.getElementById('message');
                                             if (finishReading <= startReading) {
                                                 messageElement.textContent = 'End Odometer End Reading must be greater than Start Reading.';
                                                 messageElement.style.color = 'red';
                                                 addButton.style.display = 'none';
-
                                             } else {
                                                 messageElement.textContent = '';
                                                 addButton.style.display = '';
-
                                             }
                                         }
-
-
                                     </script>
-
-
                                         <div class="col-lg-6">
                                             <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
                                             <input type="text" name="startDate" class="form-control"  id="start-date" aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" disabled>
                                         </div>
-
-
                                         <div class="col-lg-6">
                                             <label class="form-label" for="exampleInputEmail1">End date <span class="red">*</span></label>
-
-
                                             <input type="datetime-local" id="endTm" name="endDate" min="1000-01-01" max="9999-12-31" class="form-control flatpickr-input" required="">
-
-
-
                                         </div>
-
                             <div class="col-lg-6">
-
                                 <div class="mb-3">
-
                                     <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
-
                                     <input type="text" class="form-control" name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" readonly>
-
                                 </div>
-
                             </div>
-
-
-
                             <div class="col-lg-6">
-
                                 <div class="mb-3">
-
                                     <label class="form-label" for="exampleInputEmail1">Parcels Delivered <span class="red">*</span></label>
-
                                     <input type="text" class="form-control" value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
                                     <div id="message_"></div>
                                 </div>
-
                             </div>
-
                             <script>
                                 function parcelDelivered(event)
                                        {
                                            var ParcelsTaken = parseFloat(document.getElementById('ParcelsTaken').value) || 0;
                                            var parcelDelivered = parseFloat(document.getElementById('parcel_delivered').value + event.key) || 0;
                                            var addButton = document.querySelector('.btn.btn-primary');
-
                                            const key = event.key;
                                            if (/^[a-zA-Z]$/.test(key))
                                            {
                                            event.preventDefault();
                                            }
-
                                            var messageElement = document.getElementById('message_');
                                            if (parcelDelivered > ParcelsTaken) {
                                                messageElement.textContent = 'The parcel delivered must be less than or equal to parcels taken ';
                                                messageElement.style.color = 'red';
                                                addButton.style.display = 'none';
-
                                            } else {
                                                messageElement.textContent = '';
                                                addButton.style.display = '';
-
                                            }
                                        }
                                 </script>
-
-
                             <div class="col-lg-12">
-
                                 <div class="mb-6">
-
                                     <label class="form-label" for="exampleInputEmail1">Image <span class="red">*</span></label>
-
                                     <input type="file" class="form-control" name="addPhoto" aria-describedby="emailHelp" required>
-
                                 </div>
-
                             </div>
                                     </div>
-
-
                             <div class="bottom_footer_dt">
-
                                 <div class="row">
-
                                     <div class="col-lg-12">
-
                                         <div class="action_btns text-end">
-
                                             <button type="submit" value="Submit" class="btn btn-primary" fdprocessedid="cxhrte"><i class="bi bi-save"></i> Finish Shift</button>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </form>
-
-
-
                         </section>
-
-
-
-
-
-
-
-
-
                     </div>
-
                 </div>
-
-
-
-
-
-
-
-
-
-
             </div>
            </form>
         </div>
     </div>
 </div>
 <!--end modal -->
-
-
 <script>
     // Get the current date and time
     var now = new Date();
-
     // Format the current date and time to be compatible with the datetime-local input
     var formattedNow = now.toISOString().slice(0, 16);
-
     // Set the min attribute of the input to the formatted current date and time
     document.getElementById('endTm').min = formattedNow;
-
 </script>
-
-
 <script>
     var endDateInput = document.getElementById('endTm');
-
     // Add click event listener to the text
     endDateInput.addEventListener('click', function() {
       // Trigger a click event on the input field
       endDateInput.click();
     });
-
     // Prevent keypresses to disable manual input
     endDateInput.addEventListener('keydown', function(event) {
       event.preventDefault();
     });
   </script>
-
 <script>
     var endDateInput = document.getElementById('first11');
-
     // Add click event listener to the text
     endDateInput.addEventListener('click', function() {
       // Trigger a click event on the input field
       endDateInput.click();
     });
-
     // Prevent keypresses to disable manual input
     endDateInput.addEventListener('keydown', function(event) {
       event.preventDefault();
     });
   </script>
-
 <script>
     var endDateInput = document.getElementById('first12');
-
     // Add click event listener to the text
     endDateInput.addEventListener('click', function() {
       // Trigger a click event on the input field
       endDateInput.click();
     });
-
     // Prevent keypresses to disable manual input
     endDateInput.addEventListener('keydown', function(event) {
       event.preventDefault();
     });
   </script>
-
-
-
-
-
-
 <!--app-content open-->
 <div class="main-content app-content mt-0">
     <!-- PAGE-HEADER -->
@@ -452,11 +315,9 @@ function yesstartShift()
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                 <!-- <li class="breadcrumb-item" aria-current="page">Administration</li> -->
                 {{-- <li class="breadcrumb-item active" aria-current="page">Master Dashboard</li> --}}
-
             </ol>
         </div>
     </div>
-
     <?php
     $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
     $role_id=Auth::guard('adminLogin')->user()->role_id;
@@ -466,16 +327,11 @@ function yesstartShift()
     {
       $arr[] = $v['permission_id'];
     }
-
     // echo "<pre>";
     // print_r($arr);
-
     // die;
     ?>
-
-
  @if(!in_array("70", $arr))
-
     <!-- PAGE-HEADER END -->
     <div class="side-app">
       <!-- CONTAINER -->
@@ -487,12 +343,9 @@ function yesstartShift()
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                     <!-- <li class="breadcrumb-item" aria-current="page">Administration</li> -->
                     <li class="breadcrumb-item active" aria-current="page">{{ $roleName }} Dashboard</li>
-
                 </ol>
             </div>
         </div>
-
-
         @if(in_array("76", $arr))
               <section class="top_cards_jlpk">
                  <div class="row">
@@ -504,7 +357,6 @@ function yesstartShift()
                                     <h2 class="mb-0 number-font">{{ round($driverPay,2) }}</h2>
                                     <p class="text-white mb-0">Total Fleet Payable </p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -517,14 +369,10 @@ function yesstartShift()
                                     <h2 class="mb-0 number-font">{{ round($clientPay,2) }}</h2>
                                     <p class="text-white mb-0">Total Fleet Charge </p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard3">
                         <div class="card-body">
@@ -537,8 +385,6 @@ function yesstartShift()
                         </div>
                     </div>
                 </div>
-
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard4">
                         <div class="card-body">
@@ -547,12 +393,10 @@ function yesstartShift()
                                     <h2 class="mb-0 number-font">{{ round($expenseReport,2) }}</h2>
                                     <p class="text-white mb-0"> General Expenses</p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard5">
                         <div class="card-body">
@@ -561,12 +405,10 @@ function yesstartShift()
                                     <h2 class="mb-0 number-font">{{ round($tollexpense,2) }}</h2>
                                     <p class="text-white mb-0">Total Fleet Toll </p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard6">
                         <div class="card-body">
@@ -579,7 +421,6 @@ function yesstartShift()
                         </div>
                     </div>
                 </div>
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard7">
                         <div class="card-body">
@@ -592,8 +433,6 @@ function yesstartShift()
                         </div>
                     </div>
                 </div>
-
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard8">
                         <div class="card-body">
@@ -606,7 +445,6 @@ function yesstartShift()
                         </div>
                     </div>
                 </div>
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard9">
                         <div class="card-body">
@@ -619,8 +457,6 @@ function yesstartShift()
                         </div>
                     </div>
                 </div>
-
-
                 <div class="col-sm-6 col-md-6 col-lg-6 col-xl-2">
                     <div class="card bg-primary img-card box-primary-shadow dashcard10">
                         <div class="card-body">
@@ -633,17 +469,12 @@ function yesstartShift()
                         </div>
                     </div>
                 </div>
-
-
                 @endif
                     @if(in_array("78", $arr) || in_array("77", $arr))
-
                                 <div class="col-lg-12 text-end mb-3">
                                     <a href="#" class="btn bg_green_adfl advanced_filter_btn "><i class="bi-bar-chart"></i> Advance Filters</a>
                                 </div>
-
                      @endif
-
                 <div class="col-lg-12 mb-5 advanced_filters">
                         <div class="card">
                             <div class="card-header card_h">
@@ -652,14 +483,12 @@ function yesstartShift()
                                     </div>
                                 </div>
                             <div class="card-body pb-0">
-
                                 <form action="{{ route('admin.dashboard') }}" method="post"/> @csrf
                                 <div class="row align-items-center">
                                         <div class="col-lg-4">
                                         <div class="check_box">
                                             <label class="form-label" for="exampleInputEmail1">Year</label>
                                             <div class="form-group">
-
                                             <select class="form-control select2 form-select" name="getYear">
                                                     <option value="">Select Any One</option>
                                                     <option value="2020" {{ $yearName == 2020 ? 'selected="selected"' : '' }}>2020</option>
@@ -678,12 +507,9 @@ function yesstartShift()
                                                 <select class="form-control select2 form-select" name="driverResponsible">
                                                     <option value="">Select Any One</option>
                                                     @forelse ($driverFilter as $alldriverFilter)
-                                                       <option value="{{ $alldriverFilter->id }}" {{ $driverResponsible == $alldriverFilter->id ? 'selected="selected"' : '' }}>{{ $alldriverFilter->userName }} - {{ $alldriverFilter->email }}</option>
+                                                       <option value="{{ $alldriverFilter->id }}" {{ $driverResponsible == $alldriverFilter->id ? 'selected="selected"' : '' }}>{{ $alldriverFilter->userName }} {{ $alldriverFilter->surname }} ({{ $alldriverFilter->email }})</option>
                                                     @empty
-
                                                     @endforelse
-
-
                                                 </select>
                                         </div>
                                         </div>
@@ -693,15 +519,12 @@ function yesstartShift()
                                         <div class="check_box">
                                             <label class="form-label" for="exampleInputEmail1">REGO </label>
                                             <div class="form-group">
-
                                             <select class="form-control select2 form-select" name="vehicleRego">
                                                     <option value="">Select Any One</option>
                                                     @forelse ($totalRego as $alltotalRego)
                                                     <option value="{{ $alltotalRego->rego }}" {{ $alltotalRego->rego == $vehicleRego ? 'selected="selected"' : '' }}>{{ $alltotalRego->rego }}</option>
                                                     @empty
-
                                                     @endforelse
-
                                                 </select>
                                         </div>
                                         </div>
@@ -710,10 +533,8 @@ function yesstartShift()
                                      <div class="search_btn">
                                      <button type="submit" class="btn btn-primary srch_btn">Search</button>
                                      <a href="{{ route('admin.dashboard') }}" class="btn btn-danger srch_btn">Reset</a>
-
                                      </div>
                                     </div>
-
                                 </div>
                             </form>
                             </div>
@@ -721,13 +542,6 @@ function yesstartShift()
                     </div>
             </div>
         </section>
-
-
-
-
-
-
-
     <section class="big_number_data_lnkl">
         <div class="card show_portfolio_tab">
                     <div class="card-header">
@@ -740,7 +554,6 @@ function yesstartShift()
                                 </a>
                             </li>
                             @endif
-
                             @if(in_array("78", $arr))
                             <li class="nav-item">
                                 <a href="#profile" data-bs-toggle="tab" aria-expanded="true" class="nav-link ">
@@ -756,28 +569,18 @@ function yesstartShift()
                                     <span>Monetize Information</span>
                                 </a>
                             </li> -->
-
-
                         </ul>
                     </div>
                     <div class="card-body">
-
-
                         <div class="tab-content  text-muted">
                             @if(in_array("77", $arr))
-
                             <div class="tab-pane show active" id="home">
-
                             <div class="main_bx_dt__">
                                     <div class="top_dt_sec">
                                     <div class="table_main_kjp table_design_">
-
                                         <table id="custom_table" class="table   table-hover mb-0" style="margin: 0px !important;width: 100%;">
-
-
                                             <thead class="border-top">
                                     <tr>
-
                                         <th class="bg-transparent border-bottom-0">REGO</th>
                                         <th class="bg-transparent border-bottom-0">Total Fleet Charge</th>
                                         <th class="bg-transparent border-bottom-0">Total Fleet Payable</th>
@@ -785,17 +588,12 @@ function yesstartShift()
                                         <th class="bg-transparent border-bottom-0">General Expenses</th>
                                         <th class="bg-transparent border-bottom-0">Operation Expense</th>
                                         {{-- <th class="bg-transparent border-bottom-0">Total Rental Charge</th> --}}
-
                                     </tr>
                                 </thead>
                                 <tbody>
-
-
-
                                     @forelse ($allRego as $allRego)
                                     <tr class="border-bottom">
                                         <td class="td sorting_1">{{ $allRego->rego }}</td>
-
                                            @if(isset($allRego->getShiftRego))
                                                @if(isset($allRego->getShiftRego->getClientNm))
                                                 <td class="td">{{ round($allRego->getShiftRego->getClientNm->adminCharge?? 0 ,2)  }}</td>
@@ -805,7 +603,6 @@ function yesstartShift()
                                             @else
                                             <td class="td">0</td>
                                             @endif
-
                                                @if(isset($allRego->getShiftRego))
                                                    @if(isset($allRego->getShiftRego->getClientNm))
                                                     <td class="td">{{ round($allRego->getShiftRego->getClientNm->driverPay?? 0 ,2) }}</td>
@@ -815,27 +612,18 @@ function yesstartShift()
                                                 @else
                                                <td class="td">0</td>
                                                @endif
-
                                             @php
                                              $trip_cost = DB::table('tollexpenses')->where('rego',$allRego->id)->sum('trip_cost')??'0';
                                              $cost = DB::table('expenses')->where('rego',$allRego->id)->sum('cost')??'0';
                                              $operaction_exps = DB::table('operaction_exps')->where('rego',$allRego->id)->sum('cost')??'0';
                                             @endphp
                                             <td class="td">{{ round($trip_cost?? 0 ,2) }}</td>
-
                                             {{-- <td class="td">{{ $trip_cost??'0' }}</td> --}}
-
-
-
                                         <td class="td">{{ round($cost ?? 0 ,2) }}</td>
-
                                         <td class="td">{{ round($operaction_exps ?? 0 ,2) }}</td>
                                     </tr>
                                     @empty
-
                                     @endforelse
-
-
                                     {{-- <tr class="border-bottom">
                                         <td class="td sorting_1">122GL8</td>
                                         <td class="td">12310.13</td>
@@ -843,20 +631,15 @@ function yesstartShift()
                                         <td class="td">620</td>
                                         <td class="td">30569.60</td>
                                     </tr> --}}
-
-
                                 </tbody>
                             </table>
                         </div>
                                     </div>
-
-
                                 </div>
                                 <!-- main_bx_dt -->
                             </div>
                             @endif
                             @if(in_array("78", $arr))
-
                             <div class="tab-pane" id="profile">
                                <div class="main_bx_dt__">
                                     <div class="top_dt_sec">
@@ -872,15 +655,11 @@ function yesstartShift()
                                                         <div class="card-body">
                                                             <div class="chart-container">
                                                                 <canvas id="chartBar1" class="h-275"></canvas>
-
-
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-
                                             <div class="fourthGraph">
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="card">
@@ -892,14 +671,11 @@ function yesstartShift()
                                                         <div class="card-body">
                                                             <div class="chart-container">
                                                                 <canvas id="chartBar2" class="h-275"></canvas>
-
-
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
                                             {{-- <div class="firstGraph">
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="card">
@@ -917,7 +693,6 @@ function yesstartShift()
                                                 </div>
                                             </div> --}}
                                             <br>
-
                                             <div class="fourthGraph">
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="card">
@@ -929,31 +704,18 @@ function yesstartShift()
                                                         <div class="card-body">
                                                             <div class="chart-container">
                                                                 <canvas id="chartBar3" class="h-275"></canvas>
-
-
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-
-
-
-
-
                                         </div>
                                     </div>
                                 </div>
                                 <!-- main_bx_dt -->
-
-
                             </div>
                             @endif
-
                             <!-- <div class="tab-pane email_template" id="messages">
-
-
                         </div> -->
                     </div>
                 </div>
@@ -961,18 +723,13 @@ function yesstartShift()
         </section>
       </div>
     </div>
-
     <script>
         $(document).ready(function() {
                 $('.tab-pane:first').addClass('show active');
                 });
         </script>
-
     @else
-
-
     <div class="side-app">
-
         <!-- CONTAINER -->
         <div class="main-container container-fluid">
           <div class="page-header">
@@ -982,11 +739,9 @@ function yesstartShift()
                       <li class="breadcrumb-item"><a href="https://techmavesoftwaredev.com/express/admin/dashboard">Dashboard</a></li>
                       <!-- <li class="breadcrumb-item" aria-current="page">Administration</li> -->
                       <li class="breadcrumb-item active" aria-current="page">Master Dashboard</li>
-
                   </ol>
               </div>
           </div>
-
                 <section class="top_cards_jlpk">
                    <div class="row">
                      <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
@@ -997,7 +752,6 @@ function yesstartShift()
                                       <h2 class="mb-0 number-font">{{ $monthlyShift }}</h2>
                                       <p class="text-white mb-0">Monthly Shift</p>
                                   </div>
-
                               </div>
                           </div>
                       </div>
@@ -1010,12 +764,10 @@ function yesstartShift()
                                       <h2 class="mb-0 number-font">{{ $totalReceivedAmount }}</h2>
                                       <p class="text-white mb-0">Total Received Amount</p>
                                   </div>
-
                               </div>
                           </div>
                       </div>
                   </div>
-
                   <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
                       <div class="card bg-primary img-card box-primary-shadow">
                           <div class="card-body">
@@ -1028,8 +780,6 @@ function yesstartShift()
                           </div>
                       </div>
                   </div>
-
-
                   <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
                       <div class="card bg-primary img-card box-primary-shadow">
                           <div class="card-body">
@@ -1042,7 +792,6 @@ function yesstartShift()
                           </div>
                       </div>
                   </div>
-
                   <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3">
                     <div class="card bg-primary img-card box-primary-shadow">
                         <div class="card-body">
@@ -1051,17 +800,13 @@ function yesstartShift()
                                     <h2 class="mb-0 number-font" style="font-size: 18px;">{{ Auth::guard('adminLogin')->user()->created_at }}</h2>
                                     <p class="text-white mb-0">Onboard Date</p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
             </section>
         </div>
       </div>
-
-
       <div class="col-lg-12">
         <div class="card brdcls">
         <div class="card-header">
@@ -1069,23 +814,17 @@ function yesstartShift()
            <h5>All Driver Report</h5>
            <!-- <a href="person-add.php" class="btn btn-primary">+ Add New Person</a> -->
         </div>
-
         <div class="search_btn m-0">
             @if(in_array("48", $arr))
                <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add New Shift</a>
             @endif
          </div>
-
          <div class="search_btn m-2">
             @if(in_array("49", $arr))
             <a href="{{ route('admin.shift.missed.shift') }}" class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
             @endif
          </div>
     </div>
-
-
-
-
       <div class="card-body">
         <div class="table_box" is="shiftTable_Container">
           <table id="custom_table" class="table  table-hover mb-0" style="margin: 0px !important;width: 100%;">
@@ -1096,32 +835,23 @@ function yesstartShift()
                     <th class="bg-transparent border-bottom-0">Client</th>
                     <th class="bg-transparent border-bottom-0">Cost</th>
                     <th class="bg-transparent border-bottom-0">Driver</th>
-
                     <th hidden class="bg-transparent border-bottom-0">Parcels Taken</th>
                     <th hidden class="bg-transparent border-bottom-0">Parcels Delivered</th>
                     <th class="bg-transparent border-bottom-0">REGO</th>
                     <th class="bg-transparent border-bottom-0">Vehicle Type</th>
                     <th class="bg-transparent border-bottom-0">State</th>
-
-
                     @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
                       @if($driverRole!=33)
                        <th  class="bg-transparent border-bottom-0">Created Date</th>
                       @endif
                     @endif
-
                     <th class="bg-transparent border-bottom-0">Date Start</th>
                     <th hidden class="bg-transparent border-bottom-0">Time Start</th>
                     {{-- <th class="bg-transparent border-bottom-0">Date Finish</th> --}}
                      <th class="bg-transparent border-bottom-0">Base</th>
-
                     <th hidden class="bg-transparent border-bottom-0">Time Finish</th>
-
                     <th class="bg-transparent border-bottom-0">Status</th>
-
-
                     <th hidden class="bg-transparent border-bottom-0">Total Hours</th>
-
                     @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
                     @if($driverRole==33)
                         <th  class="bg-transparent border-bottom-0">Total Hours Day Shift</th>
@@ -1129,49 +859,32 @@ function yesstartShift()
                        <th  class="bg-transparent border-bottom-0">Total Hours Weekend Shift</th>
                       @endif
                   @endif
-
-
                     <th hidden class="bg-transparent border-bottom-0">Amount Payable Day Shift</th>
-
-
                     <th hidden class="bg-transparent border-bottom-0">Amount Chargeable Day Shift</th>
                     <th hidden class="bg-transparent border-bottom-0">Amount Payable Night Shift</th>
                     <th hidden class="bg-transparent border-bottom-0">Amount Chargeable Night Shift</th>
-
                     <th hidden class="bg-transparent border-bottom-0">Amount Payable Weekend Shift</th>
                     <th hidden class="bg-transparent border-bottom-0">Amount Chargeable Weekend Shift</th>
-
-
                     <th hidden class="bg-transparent border-bottom-0">Fuel Levy Payable</th>
                     <th hidden class="bg-transparent border-bottom-0">Fuel Levy Chargeable Fixed</th>
                     <th hidden class="bg-transparent border-bottom-0">Fuel Levy Chargeable 250+</th>
                     <th hidden class="bg-transparent border-bottom-0">Fuel Levy Chargeable 400+</th>
                     <th hidden class="bg-transparent border-bottom-0">Extra Payable</th>
                     <th hidden class="bg-transparent border-bottom-0">Extra Chargeable</th>
-
                     <th hidden class="bg-transparent border-bottom-0">Total Chargeable</th>
                     <th hidden class="bg-transparent border-bottom-0">Odometer Start</th>
                     <th hidden class="bg-transparent border-bottom-0">Odometer End</th>
-
                     <th class="bg-transparent border-bottom-0">Total Payable</th>
                     <th class="bg-transparent border-bottom-0">Traveled KM</th>
                      <th hidden class="bg-transparent border-bottom-0">Comment</th>
-
-
                     <th class="bg-transparent border-bottom-0" style="width: 5%;">Action</th>
                 </tr>
             </thead>
             <tbody>
-
-
                @foreach ($shift as $key=>$allshift)
-
                <tr class="border-bottom">
-
                 <td hidden>{{ $key+1 }}</td>
-
                 <td class="td sorting_1">QE{{ $allshift->shiftRandId  }}</td>
-
                 <td class="td">{{ $allshift->getClientName->name??'N/A' }}</td>
                 @php
                    $clientcenters=  DB::table('clientcenters')->where('id',$allshift->costCenter)->first()??'N/A';
@@ -1179,29 +892,17 @@ function yesstartShift()
                    $rego=  DB::table('vehicals')->where('id',$allshift->rego)->first();
                 @endphp
                 <td class="td">{{ $clientcenters->name??'N/A'}}</td>
-
                 <td class="td">{{ $allshift->getDriverName->userName??'N/A' }}</td>
-
-
                 <td hidden class="td">{{ $allshift->parcelsToken??'N/A' }}</td>
-
                 <td hidden class="td">{{ $allshift->getFinishShift->parcelsDelivered??'N/A' }}</td>
-
-
                 <td class="td">{{ $rego->rego??'N/A' }}</td>
-
                 <td class="td">{{ $allshift->getVehicleType->name??'N/A' }}</td>
-
                 <td class="td">{{ $allshift->getStateName->name??'N/A' }}</td>
-
                 @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
                 @if($driverRole!=33)
                 <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift['created_at'])) }} </td>
                 @endif
               @endif
-
-
-
                 @php
                 $finishshifts=DB::table('finishshifts')->where('shiftId',$allshift->id)->first()??'0';
                 @endphp
@@ -1210,18 +911,10 @@ function yesstartShift()
                 @else
                 <td class="td">N/A</td>
                 @endif
-
-
                   <td hidden class="td">{{ $allshift->getFinishShift->startTime??'N/A' }}</td>
-
-
                    <td hidden class="td">{{ $allshift->getFinishShift->endTime??'N/A' }}</td>
-
                   <td class="td">{{ $clientbase->base??'N/A' }}</td>
-
-
                 <td>
-
 <!--                                 <div class="dropdown">-->
 <!--  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
 <!--    Dropdown button-->
@@ -1232,7 +925,6 @@ function yesstartShift()
 <!--    <a class="dropdown-item" href="#">Something else here</a>-->
 <!--  </div>-->
 <!--</div>-->
-
                     <?php
                     $driverRole =  Auth::guard('adminLogin')->user();
                     $driverRole = $driverRole->role_id;
@@ -1250,25 +942,18 @@ function yesstartShift()
                         <span class="light status-Paid" >Paid</span>
                     <?php } else { ?>
                         <?php } ?>
-
                 </td>
-
-
                  @php
                     $daySum=0;
                     $nightHours=0;
                   @endphp
-
                 @if($allshift->getFinishShift)
                    @php
                       $daySum=$allshift->getFinishShift->dayHours;
                       $nightHours=$allshift->getFinishShift->nightHours;
                     @endphp
                 @endif
-
-
                 <td hidden class="td sorting_1">{{ $daySum??'0' + $nightHours??'0' }}</td>
-
                 @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
                     @if($driverRole==33)
                     <td  class="td sorting_1">{{ optional($allshift->getFinishShift)->dayHours ?? 0 }}</td>
@@ -1277,21 +962,16 @@ function yesstartShift()
                     {{-- For Driver --}}
                     @endif
                 @endif
-
                 <td hidden class="td sorting_1">{{ $allshift->payAmount??'0' }}</td>
-
                 <td hidden class="td sorting_1">{{ $allshift->getClientRate->hourlyRateChargeableDays??'0' }}</td>
                 <td hidden class="td sorting_1">{{ $allshift->getClientRate->hourlyRatePayableDay??'0' }}</td>
                 {{-- <td hidden class="td sorting_1">{{ $allshift->getClientRate->hourlyRateChargeableNight??'0' }}</td> --}}
-
-
             @php
                 $hourlyRatePayableSaturday=0;
                 $hourlyRatePayableSunday=0;
                 $hourlyRateChargeableSaturday=0;
                 $hourlyRateChargeableSunday=0;
               @endphp
-
             @if($allshift->getClientRate)
                @php
                   $hourlyRatePayableSaturday = $allshift->getClientRate->hourlyRatePayableSaturday;
@@ -1300,10 +980,8 @@ function yesstartShift()
                   $hourlyRateChargeableSunday = $allshift->getClientRate->hourlyRateChargeableSunday;
                 @endphp
             @endif
-
                 <td hidden class="td sorting_1">{{ $hourlyRatePayableSaturday??'0' + $hourlyRatePayableSunday??'0' }}</td>
                 <td hidden class="td sorting_1">{{ $hourlyRateChargeableSaturday??'0' + $hourlyRateChargeableSunday??'0' }}</td>
-
                 <td hidden class="td sorting_1">{{ $allshift->chageAmount??'0' }}</td>
                 <td hidden class="td sorting_1">{{ $allshift->getShiftMonetizeInformation->fuelLevyPayable??'0'	 }}</td>
                 <td hidden class="td sorting_1">{{ $allshift->getShiftMonetizeInformation->fuelLevyChargeable250??'0'}}</td>
@@ -1314,70 +992,48 @@ function yesstartShift()
                 <td hidden class="td sorting_1">{{ $allshift->getShiftMonetizeInformation->totalChargeable??'0'}}</td>
                 <td hidden class="td sorting_1">{{ $allshift->getFinishShift->odometerStartReading??'0'	 }}</td>
                 <td hidden class="td sorting_1">{{ $allshift->getFinishShift->odometerEndReading??'0'	 }}</td>
-
-
                 @php
                     $payAmount=$allshift->payAmount;
                 @endphp
                @if($allshift->finishStatus=='5' || $allshift->finishStatus=='2')
-
                 {{-- <td class="td">{{ $allshift->getShiftMonetizeInformation->totalPayable??'0' + $payAmount??'0'}} </td> --}}
                 <td class="td">{{ round($payAmount, 2)}} </td>
-
                 @else
                 <td class="td">0</td>
-
                 @endif
                 {{-- // Add pay --}}
-
                    @php
                       $km = ($allshift->getFinishShift->odometerEndReading  ?? 0) - ($allshift->getFinishShift->odometerStartReading ?? 0);
                     @endphp
-
                 <td class="td"><span id="span_status_31240">{{ $km }}</span>
                 </td>
-
                  <td hidden class="td"><span id="span_status_31240">{{ $allshift->getFinishShift->comments??'N/A' }}</span>
                 </td>
-
                 @php
                     $carbonDateTime = \Carbon\Carbon::parse($allshift->shiftStartDate);
                     $formattedDate = $carbonDateTime->format('d/m/Y');
                     $formattedTime = $carbonDateTime->format('h:i A');
                @endphp
-
-
                  @if(in_array("53", $arr) || in_array("52", $arr) || in_array("54", $arr) || in_array("70", $arr))
                     <td>
                         <div class="d-flex">
-
                             @if($allshift->finishStatus=='1')
                             <a  onclick="finishShift(`{{ $allshift->id }}`,`{{ $allshift->odometer }}`,`{{ $allshift->parcelsToken }}`,`{{ $formattedDate }} {{ $formattedTime }}`)" class="btn text-primary btn-sm btncls"
                                 data-bs-toggle="tooltip"
                                 data-bs-original-title="Finish Shift"><iconify-icon class="finishshift_icon" icon="mdi:stopwatch-start-outline"></iconify-icon>
                             </a>
                             @endif
-
-
                                 @if($allshift->finishStatus=='0')
                                 <a onclick="startShift(`{{ $allshift->id }}`)" class="btn text-primary btn-sm btncls"
                                     data-bs-toggle="tooltip"
                                     data-bs-original-title="Start Shift"><iconify-icon icon="icon-park-outline:check-one"></iconify-icon>
                                 </a>
                                 @endif
-
-
-
-
-
-
                                    @if(in_array("52", $arr))
                                         <a class="btn text-info btn-sm btncls" href="{{ route('admin.shift.report.view', ['id' => $allshift->id]) }}"
                                                     data-bs-toggle="tooltip" data-bs-original-title="View"><span class="fe fe-eye fs-14"></span>
                                         </a>
                                             @endif
-
-
                                         @if(in_array("53", $arr))
                                             <a class="btn text-primary btn-sm btncls" href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
                                                 data-bs-toggle="tooltip"
@@ -1385,48 +1041,32 @@ function yesstartShift()
                                                     class="fe fe-edit fs-14"></span>
                                             </a>
                                         @endif
-
                                         @if(in_array("51", $arr))
-
                                         <a class="btn text-primary btn-sm btncls" href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}"
                                             data-bs-toggle="tooltip"
                                             data-bs-original-title="Parcel"><span
                                                 class="fe fe-box"></span>
                                         </a>
-
-
                                         {{-- <a href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i></a> --}}
                                         @endif
                             </div>
                 </td>
                 @endif
      </tr>
-
                 @endforeach
-
-
-
             </tbody>
         </table>
          <!-- Custom div for lengthMenu, search bar, and buttons -->
-
     </div>
         </div>
-
     @endif
     </div>
-
-
-
-
-
 <?php
 if($yearName || $driverResponsible || $vehicleRego)
 {    ?>
     <script>
        $('.advanced_filters').show();
      </script>
-
 <?php } else { ?>
     <script>
           console.log("else");
@@ -1437,16 +1077,10 @@ if($yearName || $driverResponsible || $vehicleRego)
             });
         })
      </script>
-
     <?php } ?>
-
-
-
-
 <script>
 var ctx = document.getElementById("chartBar1");
 var data=$('#driverList').val();
-
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1471,7 +1105,6 @@ var myChart = new Chart(ctx, {
             backgroundColor: "#44c644"
         }]
     },
-
     options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -1505,20 +1138,8 @@ var myChart = new Chart(ctx, {
         },
     }
 });
-
-
-
-
-
-
-
-
-
-
-
 var ctx = document.getElementById("chartBar2");
 var data=$('#driverList').val();
-
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1543,7 +1164,6 @@ var myChart = new Chart(ctx, {
             backgroundColor: "#44c644"
         }]
     },
-
     options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -1577,19 +1197,12 @@ var myChart = new Chart(ctx, {
         },
     }
 });
-
-
-
-
-
-
     /*LIne-Chart */
 var ctx = document.getElementById("chartLine").getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'line',
     data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-
         datasets: [{
             label: 'Admin Charage Amount',
             data: [{{$Clientrate[0]}}, {{$Clientrate[1]}}, {{$Clientrate[2]}}, {{$Clientrate[3]}}, {{$Clientrate[4]}}, {{$Clientrate[5]}}, {{$Clientrate[6]}} , {{$Clientrate[7]}}, {{$Clientrate[8]}}, {{$Clientrate[9]}}, {{$Clientrate[10]}}, {{$Clientrate[11]}}],
@@ -1615,7 +1228,6 @@ var myChart = new Chart(ctx, {
     options: {
         responsive: true,
         maintainAspectRatio: false,
-
         scales: {
             x: {
                 ticks: {
@@ -1648,16 +1260,7 @@ var myChart = new Chart(ctx, {
         },
     }
 });
-
 </script>
-
-
-
-
-
-
-
-
 <script>
     /* Bar-Chart2*/
     var ctx = document.getElementById("chartBar3");
@@ -1713,13 +1316,7 @@ var myChart = new Chart(ctx, {
         }
     });
 </script>
-
-
-
-
 <script>
-
-
         function finishShift(shiftId,obometer,parcelsToken,formattedDate,formattedTime)
         {
             $("#appendFinishShiftiId").val(shiftId);
@@ -1729,21 +1326,11 @@ var myChart = new Chart(ctx, {
             $("#start-time").val(formattedTime);
             $("#finishShift").modal('show');
         }
-
         function startShift(shiftId)
         {
             var shiftId = shiftId;
             $("#AppendshiftId").val(shiftId);
             $("#startShift").modal('show');
         }
-
 </script>
-
-
-
-
-
 @endsection
-
-
-

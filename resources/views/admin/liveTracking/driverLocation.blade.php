@@ -1,9 +1,23 @@
 @extends('admin.layout')
 @section('content')
 
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&libraries=places" defer></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s"></script>
+<style>
+    .info-window-content {
+        text-align: center;
+    }
+    .info-window-content img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    .no-routes-message {
+        text-align: center;
+        font-size: 24px;
+        color: red;
+        margin-top: 20px;
+    }
+</style>
 
 
 <style>
@@ -66,6 +80,7 @@
 
                           <div class="col-lg-12">
                               <div class="card">
+                                <span class="text-danger" id="error_msg"></span>
                                  <div id="map" style="height: 734px;"></div>
                               </div>
                           </div>
@@ -112,23 +127,29 @@
 </style>
 
 
-    <script>
-    function initMap() {
-        // Assuming you have only one map
-        var locations = {!! json_encode($locations) !!};
+
+<script>
+   function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 0, lng: 0 }, // Default center, can be changed to a more suitable default location
+        zoom: 2 // Default zoom level
+    });
+
+    // Assuming you have only one map
+    var locations = @json($locations);
+
+    if (locations && locations.length > 0) {
         var lastLocation = locations[locations.length - 1];
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-                lat: parseFloat(lastLocation.lat),
-                lng: parseFloat(lastLocation.lng)
-            },
-            zoom: 13
+        map.setCenter({
+            lat: parseFloat(lastLocation.lat),
+            lng: parseFloat(lastLocation.lng)
         });
+        map.setZoom(13);
 
         // Create an InfoWindow for displaying titles
         var infoWindow = new google.maps.InfoWindow();
 
-        // Add markers for the "do mark" location (in green)
+        // Add markers for the locations
         for (var i = 0; i < locations.length; i++) {
             var marker2 = new google.maps.Marker({
                 position: {
@@ -138,31 +159,34 @@
                 map: map,
                 title: locations[i].name,
                 icon: {
-                    url: 'https://techmavesoftwaredev.com/express/public/assets/images/newimages/map-circle.png',
-                    scaledSize: new google.maps.Size(35, 35)  // Set the width and height for resizing
+                    url: 'https://www.techmavedesigns.com/development/express/public/assets/images/newimages/map-circle.png',
+                    scaledSize: new google.maps.Size(35, 35) // Set the width and height for resizing
                 }
             });
 
             // Add a click event listener to each marker
-            marker2.addListener('click', function ()
-                    {
-                        // Set the content of the InfoWindow to the marker's title with black color
-                        infoWindow.setContent('<div><p class="black">Driver Name - ' + this.title + '</p>');
-                        // Open the InfoWindow at the clicked marker
-                        infoWindow.open(map, this);
+            marker2.addListener('click', function () {
+                // Set the content of the InfoWindow to the marker's title with black color
+                infoWindow.setContent('<div><p class="black">Driver Name - ' + this.title + '</p>');
+                // Open the InfoWindow at the clicked marker
+                infoWindow.open(map, this);
 
-                        // Set a specific zoom level when a marker is clicked (e.g., zoom to level 16)
-                        map.setZoom(16);
+                // Set a specific zoom level when a marker is clicked (e.g., zoom to level 16)
+                map.setZoom(16);
 
-                        // Optionally, you can also set the center to the clicked marker's position
-                        map.setCenter(this.getPosition());
-                    });
+                // Optionally, you can also set the center to the clicked marker's position
+                map.setCenter(this.getPosition());
+            });
         }
+    } else {
+        $("#error_msg").text("Live Route Not Found");
     }
+}
+
 </script>
 
 
 
 
-
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMap"></script>
 @endsection

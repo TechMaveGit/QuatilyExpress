@@ -134,13 +134,13 @@ class Expenses extends Controller
 
             if ($request->input('firstSection')==2)
             {
-                $expense = $request->except(['_token','submit']);
-                $expense['general_expense_id']=Expense::orderBy('id','DESC')->first()->id;
-                Tollexpense::create($expense);
-                $Tollexpense=Tollexpense::orderBy('id','DESC')->first();
-                $Tollexpense->rego=DB::table('vehicals')->where('id',$Tollexpense->rego)->first()->rego;
+            $expense = $request->except(['_token','submit']);
+            $expense['general_expense_id']=Expense::orderBy('id','DESC')->first()->id;
+            Tollexpense::create($expense);
+            $Tollexpense=Tollexpense::orderBy('id','DESC')->first();
+            $Tollexpense->rego=DB::table('vehicals')->where('id',$Tollexpense->rego)->first()->rego;
 
-                return response()->json([
+            return response()->json([
                                     'success'=>'200',
                                     'message'=>'expense saved successfully.',
                                     'data'   => $Tollexpense
@@ -150,19 +150,19 @@ class Expenses extends Controller
             if ($request->input('firstSection')==3)
             {
                // return $request->all();
-                $expense1 = $request->except(['_token','submit']);
-                OperactionExp::create($expense1);
-                $OperactionExp=OperactionExp::orderBy('id','DESC')->first();
-                $OperactionExp->vehical_type=DB::table('generalexpensestypes')->where('id',$OperactionExp->vehical_type)->first()->name??'N/A';
+            $expense1 = $request->except(['_token','submit']);
+            OperactionExp::create($expense1);
+            $OperactionExp=OperactionExp::orderBy('id','DESC')->first();
+            $OperactionExp->vehical_type=DB::table('generalexpensestypes')->where('id',$OperactionExp->vehical_type)->first()->name??'N/A';
 
-                $OperactionExp->userName=Driver::whereId($OperactionExp->person_name)->first()->userName??'';
+            $OperactionExp->userName=Driver::whereId($OperactionExp->person_name)->first()->userName??'';
 
 
-                return response()->json([
-                                        'success'=>'200',
-                                        'message'=>'Operaction Expenses added successfully.',
-                                        'data'   => $OperactionExp
-                                    ]);
+            return response()->json([
+                                    'success'=>'200',
+                                    'message'=>'Operaction Expenses added successfully.',
+                                    'data'   => $OperactionExp
+                                ]);
             }
         }
 
@@ -170,8 +170,10 @@ class Expenses extends Controller
         $data['types']= Type::where('status','1')->get();
         $data['dr']= Driver::where('role_id','33')->where('status','1')->get();
 
-        $data['selectPersonType']= Driver::where('status','1')->where('role_id','!=',33)->get();
-        $data['expense']= Expense::orderBy('id','DESC')->get();
+       $data['selectPersonType']= Driver::where('status','1')->where('role_id','!=',33)->get();
+       $data['expense']= Expense::orderBy('id','DESC')->get();
+
+
 
        $data['tollexpense'] = Tollexpense::orderBy('id','DESC')->get();
        $data['operactionexp'] =OperactionExp::orderBy('id','DESC')->get();

@@ -53,7 +53,7 @@ return [
         |
         | A path or resource to your public key.
         |
-        | E.g. 'file://path/to/public/key'
+        | E.g. 'file://path/to/key'
         |
         */
 

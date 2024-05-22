@@ -16,7 +16,7 @@ class Inspection extends Model
 
     public function getAppDriver()
     {
-        return $this->hasOne(Inductiondriver::class, 'induction_id', 'id');
+        return $this->hasOne(Driver::class,  'id','driverId');
     }
 
     public function getVehicleRego()

@@ -85,8 +85,6 @@
                                         $ewgoNumbe=DB::table('vehicals')->where('id',$allinspection->regoNumber)->first()->rego??'N/A';
                                         @endphp
 
-                                         <!--<td class="td">{{$allinspection->getAppDriver->userName??'N/A'}}</td>-->
-
                                         <td class="td">{{$ewgoNumbe}}</td>
                                         <td class="td">{{ Str::of($allinspection->Notes)->words(6, '...')}}</td>
                                         <td class="td">{{$allinspection->created_at}}</td>
@@ -98,10 +96,7 @@
                                              { ?>
                                                     @if ($allinspection->driverInspections=='1')
                                                     <td>
-                                                        @php
-                                                        $appName=  DB::table('drivers')->where('id',$allinspection->driverId)->first()??'N/A';
-                                                        @endphp
-                                                        <span class="btn btn-primary-light status_">{{ $appName->userName??'' }}</span>
+                                                        <span class="btn btn-primary-light status_">{{ $allinspection->getAppDriver->userName??'' }} {{ (isset($allinspection->getAppDriver->surname) && $allinspection->getAppDriver->surname!='N/A') ? $allinspection->getAppDriver->surnam :'' }}</span>
                                                     </td>
                                                     @else
                                                     <td>

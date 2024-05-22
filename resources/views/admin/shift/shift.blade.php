@@ -1,8 +1,5 @@
 @extends('admin.layout')
 @section('content')
-
-
-
 <?php
    $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
    $arr = [];
@@ -11,10 +8,6 @@
      $arr[] = $v['permission_id'];
    }
    ?>
-
-
-
-
 <!--app-content open-->
 <div class="main-content app-content mt-0">
    <!-- PAGE-HEADER -->
@@ -41,7 +34,6 @@
                            <h5 class="m-0">All Shifts</h5>
                         </div>
                         <form action="{{ route('admin.shift') }}" method="post">@csrf
-
                         <div class="right">
                            <div class="check_box_">
                               <div class="form-group m-0">
@@ -78,9 +70,7 @@
                               </tr>
                            </thead>
                            <tbody>
-
                             @forelse ($shift as $allshifts)
-
                               <tr class="border-bottom">
                                  <td>#00{{ $loop->iteration }}</td>
                                  <td>{{ $allshifts['getClientName']->name??'N/A'}}</td>
@@ -89,7 +79,6 @@
                                  <td>{{ $allshifts->rego }}</td>
                                  <td>{{ $allshifts->odometer }}</td>
                                  <td>{{  App\Models\Driver::whereId($allshifts->driverId)->first()->userName??'N/A' }}</td>
-
                                  <td>
                                     <?php
                                     if ($allshifts->finishStatus=='0') { ?>
@@ -108,11 +97,8 @@
                                     <?php } elseif ($allshifts->finishStatus=='6')  { ?>
                                         <span class="btn btn-primary-light status_">Already Paid</span>
                                         <?php } else { ?>
-
                                             <?php } ?>
-
                                  </td>
-
                                  <td>
                                     <div class="g-2 route_btn">
                                         @if(in_array("50", $arr))
@@ -121,14 +107,12 @@
                                           data-bs-original-title="View"><span
                                           class="fe fe-eye fs-14"></span></a>
                                           @endif
-
                                           @if(in_array("49", $arr))
                                        <a class="btn btn-primary" href="{{ route('admin.shift.report.edit', ['id' => $allshifts->id]) }}"
                                           data-bs-toggle="tooltip"
                                           data-bs-original-title="Edit"><span
                                           class="fe fe-edit fs-14"></span></a>
                                           @endif
-
                                           @if(in_array("51", $arr))
                                        <a href="{{ route('admin.shift.parcels'  , ['id' => $allshifts->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i> Parcel Details</a>
                                        @endif
@@ -136,9 +120,7 @@
                                  </td>
                               </tr>
                               @empty
-
                               @endforelse
-
                            </tbody>
                         </table>
                      </div>
@@ -149,9 +131,6 @@
       </div>
    </div>
 </div>
-
-
-
 <script>
     function approveAndReject(shiftId)
         {
@@ -159,7 +138,6 @@
             $("#AppendshiftId").val(shiftId);
             $("#approveAndRejected").modal('show');
         }
-
 function approved()
 {
     $("#approveAndRejected").modal('hide');
@@ -193,15 +171,12 @@ function approved()
                                     text: 'Shift Approved Successfully',
                                     timer: 1000
                                 });
-
                                  window.setTimeout(function(){ } ,1000);
                                 location.reload();
-
                                 if(that){
                                     //delete specific row
                                     $(that).parent().parent().remove();
                                 }
-
                         },
                             error: function(data) {
                         }
@@ -211,9 +186,6 @@ function approved()
                 }
             });
     }
-
-
-
     function rejected()
     {
         $("#approveAndRejected").modal('hide');
@@ -247,16 +219,13 @@ function approved()
                                     text: 'Shift Rejected Successfully',
                                     timer: 1000
                                 });
-
                                 window.setTimeout(function(){ } ,1000);
                                 location.reload();
-
                                 if(that){
                                     //delete specific row
                                     $(that).parent().parent().remove();
                                 }
                         },
-
                             error: function(data) {
                         }
                     });
@@ -265,8 +234,6 @@ function approved()
                 }
             });
     }
-
-
 function shiftPaid(shiftId) {
    var label="Address";
         swal({
@@ -297,22 +264,15 @@ function shiftPaid(shiftId) {
                                     text: 'Shift Paid Successfully',
                                     timer: 1000
                                 });
-
                                 window.setTimeout(function(){ } ,1000);
                                 location.reload();
-
-
                                 if(that){
                                     //delete specific row
                                     $(that).parent().parent().remove();
                                 }
-
-
                                 // window.setTimeout(function(){ } ,1000);
                                 // location.reload();
-
                         },
-
                             error: function(data) {
                             console.log("error");
                             console.log(result);
@@ -324,5 +284,4 @@ function shiftPaid(shiftId) {
             });
     }
 </script>
-
 @endsection
