@@ -177,7 +177,7 @@
                                     {{-- <th class="bg-transparent border-bottom-0">Pda</th> --}}
                                     <!-- <th class="bg-transparent border-bottom-0">Date Start</th>
                                     <th class="bg-transparent border-bottom-0">Date Finish</th> -->
-                                    <th class="bg-transparent border-bottom-0">Base</th>
+                                    <th class="bg-transparent border-bottom-0">Base -</th>
                                     <th class="bg-transparent border-bottom-0">Status</th>
                                     <th class="bg-transparent border-bottom-0">Total Payable</th>
                                     <th class="bg-transparent border-bottom-0">Traveled KM</th>
@@ -193,7 +193,7 @@
                                 <tr class="border-bottom">
                                             <td class="td sorting_1">{{ $loop->iteration }}</td>
                                             <td class="td">{{ $allshift->getClientName->name??'N/A' }}</td>
-                                            <td class="td">{{ $allshift->getDriverName->userName??'N/A' }}</td>
+                                            <td class="td">{{ $allshift->getDriverName->userName??'N/A' }} {{ $allshift->getDriverName->surname??'N/A' }}</td>
                                             <td class="td">{{ $allshift->rego??'N/A' }}</td>
                                             <td class="td">{{ $allshift->getVehicleType->name??'N/A' }}</td>
                                             <td class="td">{{ $allshift->getStateName->name??'N/A' }}</td>

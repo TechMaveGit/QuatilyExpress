@@ -480,7 +480,7 @@
                                 @endphp
                                 <td class="td">{{ $clientcenters->name??'N/A'}}</td>
 
-                                <td class="td">{{ $allshift->getDriverName->userName??'N/A' }}</td>
+                                <td class="td">{{ $allshift->getDriverName->userName??'N/A' }} {{ $allshift->getDriverName->surname??'N/A' }}</td>
 
 
                                 <td hidden class="td">{{ $allshift->parcelsToken??'N/A' }}</td>

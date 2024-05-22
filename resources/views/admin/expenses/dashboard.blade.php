@@ -94,7 +94,7 @@
                                                 <option value=""></option>
                                                 @forelse ($person as $allperson)
                                                     <option value="{{ $allperson->id }}" {{ $personName == $allperson->id ? 'selected' : '' }}>
-                                                        {{ $allperson->userName }} ({{ $allperson->email }})
+                                                        {{ $allperson->userName }} {{ $allperson->surname }} ({{ $allperson->email }})
                                                     </option>
                                                 @empty
                                                     {{-- Handle the case where $person is empty --}}

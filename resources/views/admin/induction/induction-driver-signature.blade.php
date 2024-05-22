@@ -46,7 +46,7 @@
                             @foreach ($inductiondriver as $allinductiondriver)
                                 <tr class="border-bottom">
                                     <td class="td sorting_1">{{ $loop->iteration }}</td>
-                                    <td class="td sorting_1">{{ $allinductiondriver['getDriver']->userName??'' }}</td>
+                                    <td class="td sorting_1">{{ $allinductiondriver['getDriver']->userName??'' }} {{ $allinductiondriver['getDriver']->surname??'' }}</td>
                                     <td class="td sorting_1">{{ $allinductiondriver['getDriver']->email??'' }}</td>
                                     <td class="td sorting_1">{{ $allinductiondriver['getDriver']->mobileNo??'' }}</td>
                                     <td class="td sorting_1">

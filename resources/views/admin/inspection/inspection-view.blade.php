@@ -29,6 +29,25 @@
                     <div class="card-body">
                         <div class="row align-items-center">
 
+                           <div class="col-lg-4">
+                              <div class="mb-3">
+                                 <label class="form-label" for="exampleInputEmail1">Driver Name</label>
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->userName }}" />
+                                 </div>
+                           </div>
+                           <div class="col-lg-4">
+                              <div class="mb-3">
+                                 <label class="form-label" for="exampleInputEmail1">Driver Surname</label>
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->surname }}" />
+                                 </div>
+                           </div>
+                           <div class="col-lg-4">
+                              <div class="mb-3">
+                                 <label class="form-label" for="exampleInputEmail1">Driver Email</label>
+                                 <input class="form-control mb-4"  readonly value="{{ $inspection->getAppDriver->email }}" />
+                                 </div>
+                           </div>
+
                             <div class="col-lg-12">
                                 <div class="check_box">
                                     <label class="form-label" for="exampleInputEmail1">REGO <span class="red">*</span></label>

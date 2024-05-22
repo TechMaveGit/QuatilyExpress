@@ -129,6 +129,50 @@ class ShiftController extends Controller
         }
     }
 
+    public function trackLocationData(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "shiftid"     => "required|integer",
+            "latitude"    => "required|array",
+            "latitude.*"  => "required",
+            "longitude"   => "required|array",
+            "longitude.*"  => "required",
+        ]);
+
+        if ($validator->fails()) {
+            $response["status"] = 400;
+            $response["response"] = $validator->messages();
+            return $response;
+        }
+        
+        $data = [];
+
+        if($request->latitude && !empty($request->latitude)){
+            foreach($request->latitude as $kk=>$lat){
+                $data[] = [
+                    'driver_id'  =>  $this->driverId,
+                    'shiftid'    => $request->input('shiftid'),
+                    'latitude'   => $lat,
+                    'longitude'  => $request->longitude[$kk],
+                ];
+            }
+        }
+
+
+        $inserData = DB::table('track_location')->insert($data);
+        if ($inserData) {
+            return response()->json([
+                "status" => $this->successStatus,
+                "message" => "Success",
+            ]);
+        } else {
+            return response()->json([
+                "status" => $this->successStatus,
+                "message" => "Location not added ",
+            ]);
+        }
+    }
+
     public function ok(Request $request)
     {
 

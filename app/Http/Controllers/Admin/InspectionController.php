@@ -17,14 +17,13 @@ class InspectionController extends Controller
     public function inspection()
     {
       $driverRole=  Auth::guard('adminLogin')->user();
-      $query=Inspection::orderBy('id','DESC');
+      $query=Inspection::with('getAppDriver')->orderBy('id','DESC');
       if($driverRole->role_id=='33')
       {
         $driverId= DB::table('drivers')->where('status','1')->where('email',$driverRole->email)->first()->id;
         $query=$query->where('driverId',$driverId);
       }
       $data['inspection'] =$query->with('getAppDriver')->get();
-
       return view('admin.inspection.inspection',$data);
     }
 
@@ -168,7 +167,7 @@ class InspectionController extends Controller
 
     public function inspectionView(Request $req,$id)
     {
-        $data['inspection']=Inspection::whereId($id)->first();
+        $data['inspection']=Inspection::with('getAppDriver')->whereId($id)->first();
        if(request()->isMethod("post"))
          {
 
@@ -324,7 +323,7 @@ class InspectionController extends Controller
 
     public function inspectionedit(Request $req,$id)
     {
-        $data['inspection']=Inspection::whereId($id)->first();
+        $data['inspection']=Inspection::with('getAppDriver')->whereId($id)->first();
        if(request()->isMethod("post"))
          {
 

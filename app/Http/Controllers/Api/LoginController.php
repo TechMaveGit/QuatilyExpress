@@ -20,14 +20,14 @@ class LoginController extends Controller
         $this->notfound = 404;
         $this->unauthorisedStatus = 400;
         $this->internalServererror = 500;
-        $this->driverId  = auth('driver')->user()->id??'';
+        $this->driverId  = auth('driver')->user()->id ?? '';
     }
 
 
 
     public function login(Request $req)
     {
-        $url = env('APP_URL').'/assets/images/profile/';
+        $url = env('APP_URL') . '/assets/images/profile/';
         $validator = Validator::make($req->all(), [
             "email" => "required",
             "password" => "required",
@@ -39,12 +39,10 @@ class LoginController extends Controller
         }
 
 
-        $checkDriver =  Driver::where('email',$req->input('email'))->where('role_id','33')->first();
-        if($checkDriver)
-        {
-           if($checkDriver->status=='1')
-            {
-                if ($token = Auth::guard("driver")->attempt( $req->only("email", "password"))) {
+        $checkDriver =  Driver::where('email', $req->input('email'))->where('role_id', '33')->first();
+        if ($checkDriver) {
+            if ($checkDriver->status == '1') {
+                if ($token = Auth::guard("driver")->attempt($req->only("email", "password"))) {
                     $agent = Driver::Where("email", $req->input("email"))->first();
                     $destinationPath = url('assets/driver/profileImage/');
                     return response()->json([
@@ -52,31 +50,28 @@ class LoginController extends Controller
                         "access_token" => $token,
                         "token_type" => "bearer",
                         "expires_in" =>
-                            Auth::guard("driver")
-                                ->factory()
-                                ->getTTL() * 60,
+                        Auth::guard("driver")
+                            ->factory()
+                            ->getTTL() * 60,
                         'profileImage' => $destinationPath,
                         "driverDetail" => $agent,
                     ]);
                 } else {
                     return response()->json([
                         "status" => 400,
-                        "message" =>"Not Found"
+                        "message" => "Not Found"
                     ]);
                 }
+            } else {
+                return response()->json([
+                    "status" => 400,
+                    "message" => "User account is not active"
+                ]);
             }
-            else
-            {
-                    return response()->json([
-                        "status" => 400,
-                        "message" =>"User account is not active"
-                    ]);
-            }
-        }
-        else{
+        } else {
             return response()->json([
                 "status" => 400,
-                "message" =>"User not found"
+                "message" => "User not found"
             ]);
         }
     }
@@ -86,8 +81,8 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             "userName" => "required",
             "mobileno" =>
-                "required|string|min:8|max:12|unique:drivers,mobileNo",
-                "dialCode" =>"required",
+            "required|string|min:8|max:12|unique:drivers,mobileNo",
+            "dialCode" => "required",
             "email" => "required|email|unique:drivers",
             "enterPassword" => "required",
             // "selectDocument" => "required",
@@ -122,7 +117,7 @@ class LoginController extends Controller
         $driver->password = Hash::make($request->enterPassword);
         $driver->documentType = $documentType;
         $driver->role_id = 33;
-        $driver->status ='2';
+        $driver->status = '2';
         $driver->save();
 
 
@@ -143,197 +138,157 @@ class LoginController extends Controller
     }
 
 
-  public function updateProfile(Request $request)
-  {
-    $driver= auth('driver')->user()->id;
-    $validator = Validator::make($request->all(), [
-                              //  'profile_image' =>'required',
-                                 'firstName'    =>'required',
-                                 'email' => 'required|email|unique:users,id,'.$driver,
-                                 'mobileNo'     => 'required|string|min:8|max:12",'
-                            ]);
-
-    if ($validator->fails()) {
-        $response['status'] = 400;
-        $response['response'] = $validator->messages();
-        return $response;
-    }
-
-
-    $imageUrl = url('assets/driver/profileImage');
-    $files = $request->file('profile_iamge');
-    if($files)
+    public function updateProfile(Request $request)
     {
-    $destinationPath = 'assets/driver/profileImage';
-    $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
-    $files->move($destinationPath, $file_name);
-    $p_image = $file_name;
-    }
-    else{
-        $agent=Driver::where('id',$driver)->first();
-        $p_image = $agent->profile_image;
-    }
+        $driver = auth('driver')->user()->id;
+        $validator = Validator::make($request->all(), [
+            'firstName'    => 'required',
+            'email' => 'required|email|unique:users,id,' . $driver,
+            'mobileNo'     => 'required|string|min:8|max:12",'
+        ]);
+
+        if ($validator->fails()) {
+            $response['status'] = 400;
+            $response['response'] = $validator->messages();
+            return $response;
+        }
 
 
-       $data=array(
-                    'profile_image'  => $p_image,
-                    'dialCode'       => $request->input('dialCode'),
-                    'userName'       => $request->firstName,
-                    'email'          => $request->email,
-                    'mobileNo'       => $request->mobileNo
-                );
+        $imageUrl = url('assets/driver/profileImage');
+        $files = $request->file('profile_iamge');
+        if ($files) {
+            $destinationPath = 'assets/driver/profileImage';
+            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $files->move($destinationPath, $file_name);
+            $p_image = $file_name;
+        } else {
+            $agent = Driver::where('id', $driver)->first();
+            $p_image = $agent->profile_image;
+        }
+
+
+        $data = array(
+            'profile_image'  => $p_image,
+            'dialCode'       => $request->input('dialCode'),
+            'fullName'       => $request->firstName,
+            'userName'       => $request->firstName,
+            'email'          => $request->email,
+            'mobileNo'       => $request->mobileNo
+        );
 
         Driver::whereId($driver)->update($data);
 
 
-        $driverDetail=Driver::whereId($driver)->first();
+        $driverDetail = Driver::whereId($driver)->first();
         return response()->json(
-                        [
-                        'status' => $this->successStatus,
-                        'message'=>'success',
-                        'data' =>"User profile updated successfully",
-                        'ProfileImageUrl'=>$imageUrl,
-                        'agentDetail' =>$driverDetail,
+            [
+                'status' => $this->successStatus,
+                'message' => 'success',
+                'data' => "User profile updated successfully",
+                'ProfileImageUrl' => $imageUrl,
+                'agentDetail' => $driverDetail,
+            ]
+        );
+    }
 
-                        ]
-            );
-  }
+    public function uploadDocument(Request $req)
+    {
 
-  public function uploadDocument(Request $req)
-  {
+        $allImage = Driver::whereId($this->driverId)->first();
 
-      $allImage= Driver::whereId($this->driverId)->first();
-
-        if ($req->hasFile('driving_license'))
-        {
+        if ($req->hasFile('driving_license')) {
             $files = $req->file('driving_license');
             $destinationPath = 'assets/driver/document';
             $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $driving_license = $file_name;
-        }
-        else{
-           $driving_license=$allImage->driving_license;
+        } else {
+            $driving_license = $allImage->driving_license;
         }
 
 
-        if ($req->hasFile('visa'))
-        {
+        if ($req->hasFile('visa')) {
             $files = $req->file('visa');
             $destinationPath = 'assets/driver/document';
-             $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $visa = $file_name;
-        }
-        else{
-            $visa= $allImage->visa;
+        } else {
+            $visa = $allImage->visa;
         }
 
-        if ($req->hasFile('trafficHistory'))
-        {
+        if ($req->hasFile('trafficHistory')) {
             $files = $req->file('trafficHistory');
             $destinationPath = 'assets/driver/trafficHistory';
-             $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $trafficHistory = $file_name;
-        }
-        else
-        {
-             $trafficHistory=$allImage->traffic_history;
+        } else {
+            $trafficHistory = $allImage->traffic_history;
         }
 
-        if ($req->hasFile('policeChceck'))
-        {
+        if ($req->hasFile('policeChceck')) {
             $files = $req->file('policeChceck');
             $destinationPath = 'assets/driver/driving_license';
-             $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
+            $file_name = md5(uniqid()) . "." . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $policeChceck = $file_name;
-        }
-         else
-        {
-             $policeChceck= $allImage->police_chceck;
+        } else {
+            $policeChceck = $allImage->police_chceck;
         }
 
+        $allDate = Driver::whereId($this->driverId)->first();
 
 
-
-         $allDate= Driver::whereId($this->driverId)->first();
-
-
-         if ($req->input('driving_license_issue_date'))
-        {
-            $driving_license_issue_date=$req->input('driving_license_issue_date');
-        }
-         else
-        {
-             $driving_license_issue_date=$allDate->driving_license_issue_date;
+        if ($req->input('driving_license_issue_date')) {
+            $driving_license_issue_date = $req->input('driving_license_issue_date');
+        } else {
+            $driving_license_issue_date = $allDate->driving_license_issue_date;
         }
 
-         if ($req->input('issue_date_expiry_date'))
-        {
-             $issue_date_expiry_date=$req->input('issue_date_expiry_date');
-        }
-         else
-        {
-              $issue_date_expiry_date= $allDate->driving_date_expiry_date;
+        if ($req->input('issue_date_expiry_date')) {
+            $issue_date_expiry_date = $req->input('issue_date_expiry_date');
+        } else {
+            $issue_date_expiry_date = $allDate->driving_date_expiry_date;
         }
 
-         if ($req->input('visa_issue_date'))
-        {
-            $visa_issue_date=$req->input('visa_issue_date');
-        }
-         else
-        {
-              $visa_issue_date= $allDate->visa_issue_date;
+        if ($req->input('visa_issue_date')) {
+            $visa_issue_date = $req->input('visa_issue_date');
+        } else {
+            $visa_issue_date = $allDate->visa_issue_date;
         }
 
-         if ($req->input('visa_expiry_date'))
-        {
-           $visa_expiry_date=$req->input('visa_expiry_date');
-        }
-         else
-        {
-              $visa_expiry_date= $allDate->visa_expiry_date;
+        if ($req->input('visa_expiry_date')) {
+            $visa_expiry_date = $req->input('visa_expiry_date');
+        } else {
+            $visa_expiry_date = $allDate->visa_expiry_date;
         }
 
-         if ($req->input('traffic_history_issue_date'))
-        {
-            $traffic_history_issue_date=$req->input('traffic_history_issue_date');
-        }
-         else
-        {
-             $traffic_history_issue_date=$allDate->driving_license_issue_date;
+        if ($req->input('traffic_history_issue_date')) {
+            $traffic_history_issue_date = $req->input('traffic_history_issue_date');
+        } else {
+            $traffic_history_issue_date = $allDate->driving_license_issue_date;
         }
 
-         if ($req->input('traffic_history_expire_date'))
-        {
-             $traffic_history_expire_date=$req->input('traffic_history_expire_date');
-        }
-         else
-        {
-              $traffic_history_expire_date= $allDate->traffic_history_expiry_date;
+        if ($req->input('traffic_history_expire_date')) {
+            $traffic_history_expire_date = $req->input('traffic_history_expire_date');
+        } else {
+            $traffic_history_expire_date = $allDate->traffic_history_expiry_date;
         }
 
-         if ($req->input('police_chceck_issue_date'))
-        {
-           $police_chceck_issue_date=$req->input('police_chceck_issue_date');
-        }
-         else
-        {
-              $police_chceck_issue_date= $allDate->police_chceck_issue_date;
+        if ($req->input('police_chceck_issue_date')) {
+            $police_chceck_issue_date = $req->input('police_chceck_issue_date');
+        } else {
+            $police_chceck_issue_date = $allDate->police_chceck_issue_date;
         }
 
-         if ($req->input('police_chceck_expiry_date'))
-        {
-           $police_chceck_expiry_date=$req->input('police_chceck_expiry_date');
-        }
-         else
-        {
-              $police_chceck_expiry_date= $allDate->police_chceck_expiry_date;
+        if ($req->input('police_chceck_expiry_date')) {
+            $police_chceck_expiry_date = $req->input('police_chceck_expiry_date');
+        } else {
+            $police_chceck_expiry_date = $allDate->police_chceck_expiry_date;
         }
 
-        $data=array(
+        $data = array(
             'driving_license' => $driving_license,
             'visa'            => $visa,
             'traffic_history' => $trafficHistory,
@@ -352,41 +307,38 @@ class LoginController extends Controller
             'police_chceck_expiry_date' => $police_chceck_expiry_date,
         );
 
-   Driver::whereId($this->driverId)->update($data);
+        Driver::whereId($this->driverId)->update($data);
 
-   return response()->json([
-    "status" => $this->successStatus,
-    "message" => "Document Added Successfully",
-]);
-}
+        return response()->json([
+            "status" => $this->successStatus,
+            "message" => "Document Added Successfully",
+        ]);
+    }
 
 
- public function getDriverDocs(Request $request)
+    public function getDriverDocs(Request $request)
     {
-        $Parcels=Driver::select('id','driving_license','visa','traffic_history','police_chceck','driving_license_issue_date','driving_date_expiry_date','visa_issue_date','visa_expiry_date','traffic_history_issue_date','traffic_history_expiry_date','police_chceck_issue_date','police_chceck_expiry_date')->where('id',$this->driverId)->first();
+        $Parcels = Driver::select('id', 'driving_license', 'visa', 'traffic_history', 'police_chceck', 'driving_license_issue_date', 'driving_date_expiry_date', 'visa_issue_date', 'visa_expiry_date', 'traffic_history_issue_date', 'traffic_history_expiry_date', 'police_chceck_issue_date', 'police_chceck_expiry_date')->where('id', $this->driverId)->first();
 
-        $driving_license_and_visa_url = env('APP_URL').'assets/driver/document';
-        $trafficHistory = env('APP_URL').'assets/driver/trafficHistory';
-        $policeChceck = env('APP_URL').'assets/driver/driving_license';
+        $driving_license_and_visa_url = env('APP_URL') . 'assets/driver/document';
+        $trafficHistory = env('APP_URL') . 'assets/driver/trafficHistory';
+        $policeChceck = env('APP_URL') . 'assets/driver/driving_license';
 
 
-        if($Parcels)
-        {
+        if ($Parcels) {
             return response()->json([
                 "status" => $this->successStatus,
                 "message" => "Success",
-                "driving_license_and_visa_url"=>$driving_license_and_visa_url,
-                "trafficHistory"=>$trafficHistory,
-                "police_check"=>$policeChceck,
-                "data" =>$Parcels
+                "driving_license_and_visa_url" => $driving_license_and_visa_url,
+                "trafficHistory" => $trafficHistory,
+                "police_check" => $policeChceck,
+                "data" => $Parcels
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 "status" => $this->notfound,
                 "message" => "not found",
             ]);
-
         }
     }
 
@@ -402,39 +354,34 @@ class LoginController extends Controller
             return $response;
         }
 
-        $agetnLogin=Driver::where('email',$req->input('email'))->first();
-        if(empty($agetnLogin))
-        {
+        $agetnLogin = Driver::where('email', $req->input('email'))->first();
+        if (empty($agetnLogin)) {
             return response()->json(
                 [
                     'status' => $this->notfound,
                     'message' => 'User Not Found.',
                 ]
             );
-        }
-        else
-        {
+        } else {
 
-         $driver=Driver::where('email',$req->input('email'))->update([
-                                                            'otp'=>123456,
-         ]);
-         if($driver)
-         {
-            return response()->json(
-                [
-                    'status' => $this->successStatus,
-                    'message' => 'Otp Send Successfully.',
-                ]
-            );
-         }
-         else{
-            return response()->json(
-                [
-                    'status' => $this->notfound,
-                    'message' => 'Internal Server Error.',
-                ]
-            );
-         }
+            $driver = Driver::where('email', $req->input('email'))->update([
+                'otp' => 123456,
+            ]);
+            if ($driver) {
+                return response()->json(
+                    [
+                        'status' => $this->successStatus,
+                        'message' => 'Otp Send Successfully.',
+                    ]
+                );
+            } else {
+                return response()->json(
+                    [
+                        'status' => $this->notfound,
+                        'message' => 'Internal Server Error.',
+                    ]
+                );
+            }
         }
     }
 
@@ -451,29 +398,24 @@ class LoginController extends Controller
             return $response;
         }
 
-        $driver=Driver::where('email',$req->input('email'))->first();
-        if(empty($driver))
-        {
+        $driver = Driver::where('email', $req->input('email'))->first();
+        if (empty($driver)) {
             return response()->json(
                 [
                     'status' => $this->notfound,
                     'message' => 'User Not Found.',
                 ]
             );
-        }
-        else
-        {
-            $driver=Driver::where('email',$req->input('email'))->where('otp',$req->input('otp'))->first();
-            if($driver)
-            {
+        } else {
+            $driver = Driver::where('email', $req->input('email'))->where('otp', $req->input('otp'))->first();
+            if ($driver) {
                 return response()->json(
                     [
                         'status' => $this->successStatus,
                         'message' => 'Otp Verify Successfully.',
                     ]
                 );
-            }
-            else{
+            } else {
                 return response()->json(
                     [
                         'status' => $this->notfound,
@@ -497,32 +439,25 @@ class LoginController extends Controller
             return $response;
         }
 
-        $driver=Driver::where('email',$req->input('email'))->first();
-        if(empty($driver))
-        {
+        $driver = Driver::where('email', $req->input('email'))->first();
+        if (empty($driver)) {
             return response()->json(
                 [
                     'status' => $this->notfound,
                     'message' => 'User Not Found.',
                 ]
             );
+        } else {
+            $driverPassword = Driver::where('email', $req->input('email'))->update(['password' => Hash::make($req->input('password'))]);
+            Admin::where('email', $req->input('email'))->update(['password' => Hash::make($req->input('password'))]);
+            if ($driverPassword) {
+                return response()->json(
+                    [
+                        'status' => $this->successStatus,
+                        'message' => 'Password Update Successfully',
+                    ]
+                );
+            }
         }
-        else
-        {
-           $driverPassword= Driver::where('email',$req->input('email'))->update(['password'=>Hash::make($req->input('password'))]);
-           Admin::where('email',$req->input('email'))->update(['password'=>Hash::make($req->input('password'))]);
-           if($driverPassword)
-           {
-            return response()->json(
-                [
-                    'status' => $this->successStatus,
-                    'message' => 'Password Update Successfully',
-                ]
-            );
-           }
-        }
-
-
     }
-
 }

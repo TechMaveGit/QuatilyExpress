@@ -19,12 +19,13 @@ use Validator;
 class ParcelController extends Controller
 {
 
+    protected $notfound = 404;
+    protected $successStatus = 200;
+    protected $unauthorisedStatus = 400;
+    protected $internalServererror = 500;
+    protected $driverId;
     public function __construct(Request $request)
     {
-        $this->successStatus = 200;
-        $this->notfound = 404;
-        $this->unauthorisedStatus = 400;
-        $this->internalServererror = 500;
         $this->driverId  = auth('driver')->user()->id ?? '';
     }
 
@@ -214,6 +215,39 @@ class ParcelController extends Controller
         } else {
             return response()->json([
                 "status" => $this->notfound,
+                "message" => "Parcel already Updated",
+            ]);
+        }
+    }
+
+
+    public function undeliverParcel(Request $request){
+        $validator = Validator::make($request->all(), [
+            "parcelId" => "required",
+        ]);
+        if ($validator->fails()) {
+            $response["status"] = 400;
+            $response["response"] = $validator->messages();
+            return $response;
+        }
+        $parcelId  =  $request->input('parcelId');
+        $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
+        if (empty($checkParcel)) {
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['status' => '1']);
+            if ($Parcels) {
+                return response()->json([
+                    "status" => $this->successStatus,
+                    "message" => "Parcel Deliverd Successfully",
+                ]);
+            } else {
+                return response()->json([
+                    "status" => $this->notfound,
+                    "message" => "Parcel not found",
+                ]);
+            }
+        }else{
+            return response()->json([
+                "status" => 404,
                 "message" => "Parcel already Updated",
             ]);
         }

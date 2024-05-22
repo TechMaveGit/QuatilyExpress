@@ -81,7 +81,8 @@ class ShiftReportsExport implements FromCollection, WithHeadings
             $saturdayCharge = $clientCharge ? $saturdayCh  * optional($shift->getFinishShifts)->saturdayHours ?? 0 : 0;
             $sundayCharge = $clientCharge ? $sundayCh * optional($shift->getFinishShifts)->sundayHours ?? 0 : 0;
 
-            $km = ($shift->getFinishShift->odometerEndReading  ?? 0) - ($shift->getFinishShift->odometerStartReading ?? 0);
+            // dd($shift->getFinishShift);
+            $km = ((int)$shift?->getFinishShift?->odometerEndReading??0) - ((int)$shift?->getFinishShift?->odometerStartReading ?? 0);
 
             return [
             'S.No '=>$shift->id ??'',
@@ -89,7 +90,7 @@ class ShiftReportsExport implements FromCollection, WithHeadings
             'Shift ID'=>'QE'.$shift->shiftRandId,
             'Client Name'=>$shift->getClientName->name??'N/A',
             'Cost'=>$shift->getCostCenter->name ??'N/A',
-            'Driver'=>$shift->getDriverName->userName??'N/A',
+            'Driver'=>$shift->getDriverName->fullName??'N/A',
             'Parcels Taken'=>$shift->parcelsToken??'N/A',
             'Parcels Delivered'=>$shift->getFinishShift->parcelsDelivered??'N/A',
             'REGO'=>$shift->getRego->rego ??'N/A',
