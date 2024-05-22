@@ -87,7 +87,15 @@ class ClientController extends Controller
         // Fetch clients based on applied filters or default condition
         $clients = $query->get();
 
-        return Excel::download(new ClientsExport($clients), 'clients.xlsx');
+                // Assuming $clients is a collection of client data
+        $clientsExport = new ClientsExport($clients);
+
+        // Export to CSV file
+        $filename = 'clients.csv';
+        $clientsExport->exportToCsv($filename);
+
+        // Optionally, you can serve the file as a download response
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
 
     public function clientAddfirst(Request $request)
