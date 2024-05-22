@@ -858,11 +858,15 @@ class ShiftManagement extends Controller
         // Define the filename
         $filename = 'shift_report.csv';
         
-        // Export to CSV file
-        $shiftsExport->exportToCsv($filename);
+        // Get the CSV content
+        $content = $shiftsExport->exportToCsv();
 
         // Serve the file as a download response
-        return response()->download($filename)->deleteFileAfterSend(true);
+        return response($content)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename=' . $filename)
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function ajaxIndex(Request $request)
@@ -1436,15 +1440,19 @@ class ShiftManagement extends Controller
             ->get();
             
 
-        $shiftsExport = new ShiftReportsExport($shifts);
-    
-        // Define the filename
-        $filename = 'shift_report.csv';
+            $shiftsExport = new ShiftReportsExport($shifts);
         
-        // Export to CSV file
-        $shiftsExport->exportToCsv($filename);
-
-        // Serve the file as a download response
-        return response()->download($filename)->deleteFileAfterSend(true);
+            // Define the filename
+            $filename = 'shift_report.csv';
+            
+            // Get the CSV content
+            $content = $shiftsExport->exportToCsv();
+    
+            // Serve the file as a download response
+            return response($content)
+                ->header('Content-Type', 'text/csv')
+                ->header('Content-Disposition', 'attachment; filename=' . $filename)
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
     }
 }

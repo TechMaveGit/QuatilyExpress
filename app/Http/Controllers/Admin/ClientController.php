@@ -87,15 +87,21 @@ class ClientController extends Controller
         // Fetch clients based on applied filters or default condition
         $clients = $query->get();
 
-                // Assuming $clients is a collection of client data
+        // Assuming $clients is a collection of client data
         $clientsExport = new ClientsExport($clients);
 
-        // Export to CSV file
+        // Define the filename
         $filename = 'clients.csv';
-        $clientsExport->exportToCsv($filename);
+        
+        // Get the CSV content
+        $content = $clientsExport->exportToCsv();
 
-        // Optionally, you can serve the file as a download response
-        return response()->download($filename)->deleteFileAfterSend(true);
+        // Serve the file as a download response
+        return response($content)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename=' . $filename)
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function clientAddfirst(Request $request)
