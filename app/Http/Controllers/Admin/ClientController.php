@@ -14,7 +14,6 @@ use App\Models\States;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ClientController extends Controller
 {

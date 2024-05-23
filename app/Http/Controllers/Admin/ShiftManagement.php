@@ -25,7 +25,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
@@ -375,6 +374,7 @@ class ShiftManagement extends Controller
             }
             $shiftAdd = $request->except(['_token', 'submit']);
             $shiftAdd['shiftRandId'] = rand('9999', '0000');
+            $shiftAdd['is_missed_shift'] = 1;
             $odometerStart = $request->input('odometer_start_reading') ?? '0';
             $odometerFinish = $request->input('odometer_finish_reading') ?? '0';
             $start_date = $request->input('start_date');

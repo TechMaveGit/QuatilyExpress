@@ -5,13 +5,9 @@ namespace App\Imports;
 use App\Models\FinishShift;
 use App\Models\Shift;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
-class ShiftsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class ShiftsImport
 {
     /**
      * The model method is where each row of the spreadsheet is mapped to the model's attributes.
