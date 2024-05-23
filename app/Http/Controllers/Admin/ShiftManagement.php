@@ -1238,7 +1238,7 @@ class ShiftManagement extends Controller
     public function packageDeliver(Request $request)
     {
         $files = $request->file('addPhoto');
-        $destinationPath = 'assets/driver/parcel/finishParcel';
+        $destinationPath = 'public/assets/driver/parcel/finishParcel';
         $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
         $files->move($destinationPath, $file_name);
         $items = $file_name;

@@ -304,7 +304,7 @@ class Homecontroller extends Controller
             Client::where('id', $shift->client)->update(['adminCharge' => $chargeAdmin]);
             Shift::whereId($shiftId)->update(['finishStatus' => '2']);
             $files = $request->file('addPhoto');
-            $destinationPath = 'assets/driver/parcel/finishParcel';
+            $destinationPath = 'public/public/assets/driver/parcel/finishParcel';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $items = $file_name ?? '0';

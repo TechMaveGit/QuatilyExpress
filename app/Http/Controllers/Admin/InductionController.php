@@ -35,7 +35,7 @@ class InductionController extends Controller
             $items = '';
             if ($req->hasFile('uploadFile')) {
                 $files = $req->file('uploadFile');
-                $destinationPath = 'assets/Induction/signatureImage';
+                $destinationPath = 'public/assets/Induction/signatureImage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
@@ -60,7 +60,7 @@ class InductionController extends Controller
             $items = '';
             if ($req->hasFile('uploadFile')) {
                 $files = $req->file('uploadFile');
-                $destinationPath = 'assets/Induction/signatureImage';
+                $destinationPath = 'public/assets/Induction/signatureImage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
@@ -88,7 +88,7 @@ class InductionController extends Controller
             $items = '';
             if ($req->hasFile('uploadFile')) {
                 $files = $req->file('uploadFile');
-                $destinationPath = 'assets/Induction/image';
+                $destinationPath = 'public/assets/Induction/image';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
@@ -126,7 +126,7 @@ class InductionController extends Controller
 
             if ($req->hasFile('uploadFile')) {
                 $files = $req->file('uploadFile');
-                $destinationPath = 'assets/Induction/image';
+                $destinationPath = 'public/assets/Induction/image';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
@@ -158,7 +158,7 @@ class InductionController extends Controller
             $status = $req->input('status');
             if ($req->hasFile('uploadFile')) {
                 $files = $req->file('uploadFile');
-                $destinationPath = 'assets/Induction/image';
+                $destinationPath = 'public/assets/Induction/image';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
