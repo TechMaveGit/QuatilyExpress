@@ -159,7 +159,7 @@
                 map: map,
                 title: locations[i].name,
                 icon: {
-                    url: 'https://www.techmavedesigns.com/development/express/public/assets/images/newimages/map-circle.png',
+                    url: '{{ asset("assets/images/newimages/map-circle.png")}}',
                     scaledSize: new google.maps.Size(35, 35) // Set the width and height for resizing
                 }
             });

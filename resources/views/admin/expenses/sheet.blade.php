@@ -285,7 +285,7 @@
                                                                                 @forelse ($dr as $alldr)
                                                                                     <option value="{{ $alldr->id }}"
                                                                                         data-select2-id="select2-data-2-23cq">
-                                                                                        {{ $alldr->fullName }}</option>
+                                                                                        {{ $alldr->userName??"" }} {{ $alldr->userName??"" }} ({{ $alldr->email??"" }})</option>
 
                                                                                 @empty
                                                                                 @endforelse
@@ -794,7 +794,7 @@
                                                                             @forelse ($dr as $alldr)
                                                                                 <option value="{{ $alldr->id }}"
                                                                                     data-select2-id="select2-data-2-23cq">
-                                                                                    {{ $alldr->fullName }}</option>
+                                                                                    {{ $alldr->userName??'' }} {{ $alldr->surname??'' }} ({{ $alldr->email??'' }})</option>
 
                                                                             @empty
                                                                             @endforelse
