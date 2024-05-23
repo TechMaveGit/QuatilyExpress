@@ -15,8 +15,10 @@ class LiveTrackingController extends Controller
 {
     public function liveTracking(Request $request)
     {
+
+        $allActiveLocation = DB::table('track_location')->get();
+
         $locations = '';
-        $shift = '';
         $driver = Driver::get();
         $driverName = '';
         $shiftName = $request->input('shiftName');
@@ -29,8 +31,6 @@ class LiveTrackingController extends Controller
             $driverName = $request->input('driverName');
             $shiftName = $request->input('shiftName');
             $shiftId = Shift::select('id', 'base')->where('id', $shiftName)->pluck('id')->toArray();
-            $shift = Shift::get();
-            $driver = Driver::get();
             $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng')->orderBy('id', 'DESC');
             $lastLocations = DB::table('track_location')->select('id', 'shiftid')->orderBy('id', 'DESC');
             if ($driverName) {
@@ -71,7 +71,7 @@ class LiveTrackingController extends Controller
             // dd($locations, $shift, $driver, $driverName, $shiftName, $firstLocation, $deliver_address, $parcelLocation, $doMarkLocation);
         }
 
-        return view('admin.liveTracking.live', compact('locations', 'shift', 'driver', 'driverName', 'shiftName', 'firstLocation', 'deliver_address', 'parcelLocation', 'doMarkLocation'));
+        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftName', 'firstLocation', 'deliver_address', 'parcelLocation', 'doMarkLocation'));
     }
 
     public function getDriverLocation(Request $request)

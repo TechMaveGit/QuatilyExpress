@@ -139,7 +139,7 @@ class Administration extends Controller
             $role_data = Roles::whereIn('id', [$input['roles']])->first()->id;
             $person = Driver::select('id', 'fullName')->where('id', $input['first_name'])->first();
             // $input['name']      = $input['first_name'] . $input['last_name'];
-            $input['name'] = $person->fullName;
+            $input['name'] = $person->fullName.' '.($person->surname??'');
             $input['email'] = $input['email'];
             $input['role_id'] = $role_data;
             $input['status'] = $input['status'];
