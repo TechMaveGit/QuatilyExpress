@@ -285,6 +285,7 @@ class ShiftManagement extends Controller
                     $shiftAdd['finishStatus'] = '1';
                     $shiftAdd['shiftStartDate'] = date('Y-m-d H:i');
                     $shiftAdd['rego'] = $regoId;
+                    dd($shiftAdd);
                     $shift = Shift::create($shiftAdd);
 
                     return Redirect::route('admin.shift.report')->with('message', 'Shift Added Successfully!!');

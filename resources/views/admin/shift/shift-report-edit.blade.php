@@ -198,7 +198,7 @@ foreach($D as $v)
                                                         <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one">
                                                                 <option value="">Select Any One</option>
                                                                     @forelse ($driverAdd as $AdddriverAdd)
-                                                                    <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif">{{ $AdddriverAdd->userName }}</option>
+                                                                    <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif>{{ $AdddriverAdd->userName??'' }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
                                                                     @empty
                                                                     @endforelse
                                                         </select>
