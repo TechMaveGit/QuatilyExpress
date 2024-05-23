@@ -65,6 +65,15 @@ class CommonApiController extends Controller
 
             $vehicleRego = DB::table('vehicals')->select('id', 'rego')->get();
 
+            $insepctiopnRego = DB::table('vehicals')
+            ->select('id', 'rego')
+            ->where('controlVehicle', '1')
+            ->where('driverResponsible', $this->driverId)
+            ->get();
+            if (count($insepctiopnRego) <= 0) {
+                $insepctiopnRego = $vehicleRego;
+            }
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Common Api',
