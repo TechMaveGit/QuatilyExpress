@@ -52,7 +52,7 @@ class ClientController extends Controller
     {
         $driver = auth('driver')->user()->id;
         $driver = Driver::Where('id', $driver)->first();
-        $destinationPath = url('assets/driver/profileImage/');
+        $destinationPath = url('public/assets/driver/profileImage/');
 
         return response()->json([
                         'status' => $this->successStatus,

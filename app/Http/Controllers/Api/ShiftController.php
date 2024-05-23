@@ -531,7 +531,7 @@ class ShiftController extends Controller
 
         if ($request->file('missedImage') != '') {
             $files = $request->file('missedImage');
-            $destinationPath = 'assets/driver/parcel/finishParcel';
+            $destinationPath = 'public/assets/driver/parcel/finishParcel';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $items = $file_name;
