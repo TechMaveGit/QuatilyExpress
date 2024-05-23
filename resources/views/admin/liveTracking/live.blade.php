@@ -295,7 +295,7 @@ function initMap() {
                 title: 'Parcel In - ' + redlocations[i].receiverName,
                 location: 'Location - ' + redlocations[i].location,
                 icon: {
-                    url: '{{ asset("assets/assets/flag/placeholder.png") }}',
+                    url: '{{ asset("assets/flag/placeholder.png") }}',
                     scaledSize: new google.maps.Size(25, 35)
                 }
             });
@@ -350,7 +350,7 @@ function initMap() {
                 map: map,
                 title: 'Parcel Out - ' + doMarkLocation[i].deliveredTo,
                 icon: {
-                    url: '{{ asset("Green.png")}}',
+                    url: '{{ asset("Green.png") }}',
                     scaledSize: new google.maps.Size(25, 35)
                 }
             });
