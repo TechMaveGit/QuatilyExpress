@@ -263,7 +263,7 @@ class Personcontroller extends Controller
             if ($request->file('document_file') != '') {
                 $image = $request->file('document_file');
                 $new_name = rand() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('assets/person-document'), $new_name);
+                $image->move(public_path('public/assets/person-document'), $new_name);
             }
             $documentData = [
                 'personId' => $request->input('person_id'),

@@ -65,7 +65,7 @@ class ParcelController extends Controller
             $items = '';
             if ($request->hasFile('parcelIamge')) {
                 $files = $request->file('parcelIamge')[$i];
-                $destinationPath = 'assets/driver/parcel/';
+                $destinationPath = 'public/assets/driver/parcel/';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $items = $file_name;
@@ -181,7 +181,7 @@ class ParcelController extends Controller
         $delivered_longitude = $request->input('deliver_lng');
         if ($request->file('parcelIamge') != '') {
             $files = $request->file('parcelIamge');
-            $destinationPath = 'assets/driver/parcel/';
+            $destinationPath = 'public/assets/driver/parcel/';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $photo = $file_name;
@@ -317,7 +317,7 @@ class ParcelController extends Controller
                 $items = '';
                 if ($request->hasFile('parcelIamge')) {
                     $files = $request->file('parcelIamge')[$i];
-                    $destinationPath = 'assets/driver/parcel/';
+                    $destinationPath = 'public/assets/driver/parcel/';
                     $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                     $files->move($destinationPath, $file_name);
                     $items = $file_name;
@@ -625,7 +625,7 @@ class ParcelController extends Controller
 
                 if ($request->file('addPhoto') != '') {
                     $files = $request->file('addPhoto');
-                    $destinationPath = 'assets/driver/parcel/finishParcel';
+                    $destinationPath = 'public/assets/driver/parcel/finishParcel';
                     $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                     $files->move($destinationPath, $file_name);
                     $items = $file_name;

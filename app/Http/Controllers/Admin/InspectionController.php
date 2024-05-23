@@ -34,7 +34,7 @@ class InspectionController extends Controller
             $frontImage = '';
             if ($req->hasFile('frontImage')) {
                 $files = $req->file('frontImage');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $frontImage = $file_name;
@@ -43,7 +43,7 @@ class InspectionController extends Controller
             $frontLeft = '';
             if ($req->hasFile('frontLeft')) {
                 $files = $req->file('frontLeft');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $frontLeft = $file_name;
@@ -52,7 +52,7 @@ class InspectionController extends Controller
             $frontRight = '';
             if ($req->hasFile('frontRight')) {
                 $files = $req->file('frontRight');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $frontRight = $file_name;
@@ -61,7 +61,7 @@ class InspectionController extends Controller
             $leftSide = '';
             if ($req->hasFile('leftSide')) {
                 $files = $req->file('leftSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $leftSide = $file_name;
@@ -70,7 +70,7 @@ class InspectionController extends Controller
             $rightSide = '';
             if ($req->hasFile('rightSide')) {
                 $files = $req->file('rightSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $rightSide = $file_name;
@@ -79,7 +79,7 @@ class InspectionController extends Controller
             $back = '';
             if ($req->hasFile('back')) {
                 $files = $req->file('back');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $back = $file_name;
@@ -88,7 +88,7 @@ class InspectionController extends Controller
             $backLeftSide = '';
             if ($req->hasFile('backLeftSide')) {
                 $files = $req->file('backLeftSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $backLeftSide = $file_name;
@@ -97,7 +97,7 @@ class InspectionController extends Controller
             $backRightSide = '';
             if ($req->hasFile('backRightSide')) {
                 $files = $req->file('backRightSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $backRightSide = $file_name;
@@ -106,7 +106,7 @@ class InspectionController extends Controller
             $cockpit = '';
             if ($req->hasFile('cockpit')) {
                 $files = $req->file('cockpit');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name);
                 $cockpit = $file_name;
@@ -156,7 +156,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('frontImage')) {
                 $files = $req->file('frontImage');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name1 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name1);
                 $frontImage = $file_name1;
@@ -166,7 +166,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('frontLeft')) {
                 $files = $req->file('frontLeft');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name2 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name2);
                 $frontLeft = $file_name2;
@@ -176,7 +176,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('frontRight')) {
                 $files = $req->file('frontRight');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name3 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name3);
                 $frontRight = $file_name3;
@@ -186,7 +186,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('leftSide')) {
                 $files = $req->file('leftSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name4 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name4);
                 $leftSide = $file_name4;
@@ -196,7 +196,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('rightSide')) {
                 $files = $req->file('rightSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name5 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name5);
                 $rightSide = $file_name5;
@@ -206,7 +206,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('back')) {
                 $files = $req->file('back');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name6 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name6);
                 $back = $file_name6;
@@ -216,7 +216,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('backLeftSide')) {
                 $files = $req->file('backLeftSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name7 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name7);
                 $backLeftSide = $file_name7;
@@ -226,7 +226,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('backRightSide')) {
                 $files = $req->file('backRightSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name8 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name8);
                 $backRightSide = $file_name8;
@@ -236,7 +236,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('cockpit')) {
                 $files = $req->file('cockpit');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name9 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name9);
                 $cockpit = $file_name9;
@@ -275,7 +275,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('frontImage')) {
                 $files = $req->file('frontImage');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name1 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name1);
                 $frontImage = $file_name1;
@@ -285,7 +285,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('frontLeft')) {
                 $files = $req->file('frontLeft');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name2 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name2);
                 $frontLeft = $file_name2;
@@ -295,7 +295,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('frontRight')) {
                 $files = $req->file('frontRight');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name3 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name3);
                 $frontRight = $file_name3;
@@ -305,7 +305,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('leftSide')) {
                 $files = $req->file('leftSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name4 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name4);
                 $leftSide = $file_name4;
@@ -315,7 +315,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('rightSide')) {
                 $files = $req->file('rightSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name5 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name5);
                 $rightSide = $file_name5;
@@ -325,7 +325,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('back')) {
                 $files = $req->file('back');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name6 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name6);
                 $back = $file_name6;
@@ -335,7 +335,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('backLeftSide')) {
                 $files = $req->file('backLeftSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name7 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name7);
                 $backLeftSide = $file_name7;
@@ -345,7 +345,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('backRightSide')) {
                 $files = $req->file('backRightSide');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name8 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name8);
                 $backRightSide = $file_name8;
@@ -355,7 +355,7 @@ class InspectionController extends Controller
 
             if ($req->hasFile('cockpit')) {
                 $files = $req->file('cockpit');
-                $destinationPath = 'assets/inspection/carimage';
+                $destinationPath = 'public/assets/inspection/carimage';
                 $file_name9 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
                 $files->move($destinationPath, $file_name9);
                 $cockpit = $file_name9;

@@ -29,7 +29,7 @@ class LoginController extends Controller
 
     public function login(Request $req)
     {
-        $url = env('APP_URL') . '/assets/images/profile/';
+        $url = env('APP_URL') . '/public/assets/images/profile/';
         $validator = Validator::make($req->all(), [
             'email' => 'required',
             'password' => 'required',
@@ -46,7 +46,7 @@ class LoginController extends Controller
             if ($checkDriver->status == '1') {
                 if ($token = Auth::guard('driver')->attempt($req->only('email', 'password'))) {
                     $agent = Driver::Where('email', $req->input('email'))->first();
-                    $destinationPath = url('assets/driver/profileImage/');
+                    $destinationPath = url('public/assets/driver/profileImage/');
 
                     return response()->json([
                         'status' => $this->successStatus,
@@ -98,7 +98,7 @@ class LoginController extends Controller
         $documentType = '';
         if ($request->hasFile('documentType')) {
             $files = $request->file('documentType');
-            $destinationPath = 'assets/driver/document';
+            $destinationPath = 'public/assets/driver/document';
             $file_name =
                 md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
@@ -148,10 +148,10 @@ class LoginController extends Controller
             return $response;
         }
 
-        $imageUrl = url('assets/driver/profileImage');
+        $imageUrl = url('public/assets/driver/profileImage');
         $files = $request->file('profile_iamge');
         if ($files) {
-            $destinationPath = 'assets/driver/profileImage';
+            $destinationPath = 'public/assets/driver/profileImage';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $p_image = $file_name;
@@ -191,7 +191,7 @@ class LoginController extends Controller
 
         if ($req->hasFile('driving_license')) {
             $files = $req->file('driving_license');
-            $destinationPath = 'assets/driver/document';
+            $destinationPath = 'public/assets/driver/document';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $driving_license = $file_name;
@@ -201,7 +201,7 @@ class LoginController extends Controller
 
         if ($req->hasFile('visa')) {
             $files = $req->file('visa');
-            $destinationPath = 'assets/driver/document';
+            $destinationPath = 'public/assets/driver/document';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $visa = $file_name;
@@ -211,7 +211,7 @@ class LoginController extends Controller
 
         if ($req->hasFile('trafficHistory')) {
             $files = $req->file('trafficHistory');
-            $destinationPath = 'assets/driver/trafficHistory';
+            $destinationPath = 'public/assets/driver/trafficHistory';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $trafficHistory = $file_name;
@@ -221,7 +221,7 @@ class LoginController extends Controller
 
         if ($req->hasFile('policeChceck')) {
             $files = $req->file('policeChceck');
-            $destinationPath = 'assets/driver/driving_license';
+            $destinationPath = 'public/assets/driver/driving_license';
             $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
             $files->move($destinationPath, $file_name);
             $policeChceck = $file_name;
@@ -310,9 +310,9 @@ class LoginController extends Controller
     {
         $Parcels = Driver::select('id', 'driving_license', 'visa', 'traffic_history', 'police_chceck', 'driving_license_issue_date', 'driving_date_expiry_date', 'visa_issue_date', 'visa_expiry_date', 'traffic_history_issue_date', 'traffic_history_expiry_date', 'police_chceck_issue_date', 'police_chceck_expiry_date')->where('id', $this->driverId)->first();
 
-        $driving_license_and_visa_url = env('APP_URL') . 'assets/driver/document';
-        $trafficHistory = env('APP_URL') . 'assets/driver/trafficHistory';
-        $policeChceck = env('APP_URL') . 'assets/driver/driving_license';
+        $driving_license_and_visa_url = env('APP_URL') . 'public/assets/driver/document';
+        $trafficHistory = env('APP_URL') . 'public/assets/driver/trafficHistory';
+        $policeChceck = env('APP_URL') . 'public/assets/driver/driving_license';
 
         if ($Parcels) {
             return response()->json([
