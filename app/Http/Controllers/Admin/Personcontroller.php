@@ -65,7 +65,7 @@ class Personcontroller extends Controller
                 'surname'               => $shortName,
                 'email'                 => $email,
                 'dob'                   => $dob,
-                'phonePrincipal'        => $phoneprinciple,
+                'phonePrincipal'        => $phoneprinciple??'N/A',
                 'phoneAux'              => $phoneaux,
                 'tfn'                   => $tfn,
                 'abn'                   => $abn,

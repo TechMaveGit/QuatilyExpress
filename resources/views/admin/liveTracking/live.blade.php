@@ -295,7 +295,7 @@ function initMap() {
                 title: 'Parcel In - ' + redlocations[i].receiverName,
                 location: 'Location - ' + redlocations[i].location,
                 icon: {
-                    url: 'https://www.techmavedesigns.com/development/express/public/assets/flag/placeholder.png',
+                    url: '{{ asset("assets/assets/flag/placeholder.png") }}',
                     scaledSize: new google.maps.Size(25, 35)
                 }
             });
