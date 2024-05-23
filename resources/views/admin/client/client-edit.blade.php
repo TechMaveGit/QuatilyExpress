@@ -476,7 +476,9 @@
                                              </div>
                                              <input type="hidden" name="addressValue"  value="3"/>
                                              <input type="hidden" name="clientId"  value="{{ $clientId }}"/>
-                                             <div class="col-lg-3">
+                                             <div class="col-lg-12">
+                                                <div class="row">
+                                                <div class="col-lg-3">
                                                 <div class="check_box">
                                                    <label class="form-label" for="exampleInputEmail1">Vehicle Type</label>
                                                    <div class="form-group">
@@ -491,6 +493,9 @@
 
                                                 </div>
                                              </div>
+                                                </div>
+                                             </div>
+                                             
 
 
                                              <div class="col-lg-3">

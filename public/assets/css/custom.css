@@ -865,6 +865,7 @@ span.fe.fe-box {
     border-radius: 4px;
     font-weight: 600;
     font-size: 12px;
+    white-space: nowrap;
   }
   .status-Paid {
     color: #2ecc71;
@@ -873,6 +874,7 @@ span.fe.fe-box {
   border-radius: 4px;
   font-weight: 600;
   font-size: 12px;
+  white-space: nowrap;
   }
   .status-Created {
     color: #f39c12;
@@ -881,6 +883,7 @@ span.fe.fe-box {
     border-radius: 4px;
     font-weight: 600;
   font-size: 12px;
+  white-space: nowrap;
   }
   .status-InProgress {
     color: #e74c3c;
@@ -889,6 +892,7 @@ span.fe.fe-box {
     border-radius: 4px;
     font-weight: 600;
   font-size: 12px;
+  white-space: nowrap;
   }
   .status-AlreadyPaid {
     color: #8e44ad;
@@ -896,11 +900,12 @@ span.fe.fe-box {
     padding: 3px 10px;
     border-radius: 4px;
     font-weight: 600;
-  font-size: 12px;
-  }
+    font-size: 12px;
+    white-space: nowrap;
+    }
   .table td {
     padding: 7px 8px;
-    border-right: 0px !important;
+    /* border-right: 0px !important; */
   }
   .side-menu__item {
     font-weight: 500;
@@ -1233,7 +1238,7 @@ div.dataTables_wrapper div.dataTables_filter input {
   }
 }
 #shiftTable_Container table tr td, #shiftTable_Container table tr th {
-	white-space: nowrap;
+	white-space: unset;
 }
 #shiftTable_Container {
 	overflow: hidden;
@@ -1463,4 +1468,8 @@ section.top_cards_jlpk .row .col-sm-6 {
 	box-shadow: none;
 	color: #fff;
 	border-color: #f1c129;
+}
+
+.text-nowrap {
+	white-space: wrap !important;
 }
