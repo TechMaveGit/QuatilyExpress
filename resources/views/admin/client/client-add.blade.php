@@ -338,7 +338,9 @@
                                                 <h4>Monetize Info</h4>
                                             </div>
                                         </div>
-                                                <div class="col-lg-3">
+                                        <div class="col-lg-12">
+                                            <div class="row">
+                                            <div class="col-lg-3">
                                                     <div class="check_box">
                                                         <label class="form-label" for="exampleInputEmail1">Type</label>
                                                         <div class="form-group">
@@ -355,6 +357,9 @@
                                                     </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                                
 
 
                                                 <div class="col-lg-3">
