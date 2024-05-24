@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Client;
 use App\Models\Clientcenter;
 use App\Models\Driver;
@@ -303,11 +304,11 @@ class Homecontroller extends Controller
             $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
             Client::where('id', $shift->client)->update(['adminCharge' => $chargeAdmin]);
             Shift::whereId($shiftId)->update(['finishStatus' => '2']);
-            $files = $request->file('addPhoto');
-            $destinationPath = 'public/public/assets/driver/parcel/finishParcel';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $items = $file_name ?? '0';
+
+            $image = $request->file('addPhoto');
+            $dateFolder = 'driver/parcel/finishParcel/';
+            $imageupload = ImageController::upload($image, $dateFolder);
+
             $userId = Auth::guard('adminLogin')->user();
             $driverId = Driver::where('email', $userId->email)->first()->id;
             $finishShift = new Finishshift();
@@ -327,7 +328,7 @@ class Homecontroller extends Controller
             $finishShift->endTime = Carbon::parse($endDate)->format('H:i');
             $finishShift->parcelsTaken = $parcelsTaken;
             $finishShift->parcelsDelivered = $parcelDelivered;
-            $finishShift->addPhoto = $items;
+            $finishShift->addPhoto = $imageupload;
             $finishShift->save();
 
             return redirect()->route('admin.dashboard')->with('message', 'Shift Finished Successfully');

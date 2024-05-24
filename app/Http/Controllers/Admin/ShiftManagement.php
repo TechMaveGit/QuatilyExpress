@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use App\Http\Controllers\ImageController;
 
 class ShiftManagement extends Controller
 {
@@ -1238,19 +1239,21 @@ class ShiftManagement extends Controller
 
     public function packageDeliver(Request $request)
     {
-        $files = $request->file('addPhoto');
-        $destinationPath = 'public/assets/driver/parcel/finishParcel';
-        $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-        $files->move($destinationPath, $file_name);
-        $items = $file_name;
+        if($request->hasFile('addPhoto')){
+            $image = $request->file('addPhoto');
+            $dateFolder = 'driver/parcel/finishParcel';
+            $items = ImageController::upload($image, $dateFolder);
+        }
+
         $Parcel = new Finishshift();
         $Parcel->driverId = $request->driverId;
         $Parcel->shiftId = $request->shiftId;
         $Parcel->parcelsTaken = $request->startDate;
         $Parcel->endDate = $request->endDate;
         $Parcel->startTime = $request->startTime;
-        $Parcel->addPhoto = $items;
+        $Parcel->addPhoto = $items??null;
         $Parcel->save();
+        
         if ($Parcel) {
             return response()->json([
                 'status' => 200,
