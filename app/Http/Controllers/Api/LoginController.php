@@ -83,6 +83,7 @@ class LoginController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'userName' => 'required',
+            'surname' => 'required',
             'mobileno' => 'required|string|min:8|max:12|unique:drivers,mobileNo',
             'dialCode' => 'required',
             'email' => 'required|email|unique:drivers',
@@ -104,7 +105,7 @@ class LoginController extends Controller
         }
 
         $driver = new Driver();
-        $driver->fullName = $request->userName;
+        $driver->fullName = $request->userName.' '.($request->surname??'N/A');
         $driver->userName = $request->userName;
         $driver->surname = $request->surname??'N/A';
         $driver->mobileNo = $request->mobileno;
@@ -136,6 +137,7 @@ class LoginController extends Controller
         $driver = auth('driver')->user()->id;
         $validator = Validator::make($request->all(), [
             'firstName'    => 'required',
+            'surname'    => 'nullable',
             'email' => 'required|email|unique:users,id,' . $driver,
             'mobileNo'     => 'required|string|min:8|max:12",',
         ]);
@@ -161,8 +163,9 @@ class LoginController extends Controller
         $data = [
             'profile_image'  => $p_image,
             'dialCode'       => $request->input('dialCode'),
-            'fullName'       => $request->firstName,
+            'fullName'       => $request->firstName.' '.($request->surname??null),
             'userName'       => $request->firstName,
+            'surname'       => $request->surname,
             'email'          => $request->email,
             'mobileNo'       => $request->mobileNo,
         ];
