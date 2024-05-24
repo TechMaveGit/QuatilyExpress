@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Induction;
 use App\Models\Inductiondriver;
 use Illuminate\Http\Request;
@@ -32,13 +33,11 @@ class InductionController extends Controller
 
         $data['induction_id'] = $id;
         if (request()->isMethod('post')) {
-            $items = '';
+            $items = null;
             if ($req->hasFile('uploadFile')) {
-                $files = $req->file('uploadFile');
-                $destinationPath = 'public/assets/Induction/signatureImage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $req->file('uploadFile');
+                $dateFolder = 'induction/signatureImage';
+                $items = ImageController::upload($image, $dateFolder);
             }
             $packageItem = [
               'induction_id'     => $req->input('induction_id'),
@@ -59,11 +58,9 @@ class InductionController extends Controller
         if (request()->isMethod('post')) {
             $items = '';
             if ($req->hasFile('uploadFile')) {
-                $files = $req->file('uploadFile');
-                $destinationPath = 'public/assets/Induction/signatureImage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $req->file('uploadFile');
+                $dateFolder = 'induction/signatureImage';
+                $items = ImageController::upload($image, $dateFolder);
             }
             $packageItem = [
               'induction_id'     => $req->input('induction_id'),
@@ -87,11 +84,9 @@ class InductionController extends Controller
 
             $items = '';
             if ($req->hasFile('uploadFile')) {
-                $files = $req->file('uploadFile');
-                $destinationPath = 'public/assets/Induction/image';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $req->file('uploadFile');
+                $dateFolder = 'induction/image';
+                $items = ImageController::upload($image, $dateFolder);
             }
 
             $packageItem = [
@@ -125,11 +120,9 @@ class InductionController extends Controller
             $status = $req->input('status');
 
             if ($req->hasFile('uploadFile')) {
-                $files = $req->file('uploadFile');
-                $destinationPath = 'public/assets/Induction/image';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $req->file('uploadFile');
+                $dateFolder = 'induction/image';
+                $items = ImageController::upload($image, $dateFolder);
             } else {
                 $items = Induction::whereId($id)->first()->uploadFile;
             }
@@ -157,11 +150,9 @@ class InductionController extends Controller
             $description = $req->input('description');
             $status = $req->input('status');
             if ($req->hasFile('uploadFile')) {
-                $files = $req->file('uploadFile');
-                $destinationPath = 'public/assets/Induction/image';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $req->file('uploadFile');
+                $dateFolder = 'induction/image';
+                $items = ImageController::upload($image, $dateFolder);
             } else {
                 $items = Induction::whereId($id)->first()->uploadFile;
             }

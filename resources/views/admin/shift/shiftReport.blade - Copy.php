@@ -144,10 +144,8 @@ foreach ($D as $v) {
                     <div class="row">
                        <div class="col-lg-12">
                           <div class="approve_cnt">
-                             {{-- <img src="{{ asset('assets/images/newimages/question-mark.png')}}" alt=""> --}}
                              <h3>Do you want to approve ?</h3>
                              <input type="hidden" name="shiftId" id="shiftId" />
-                             {{-- <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto, delectus?</p> --}}
                           </div>
                        </div>
                     </div>
@@ -169,7 +167,7 @@ foreach ($D as $v) {
  <div class="modal fade" id="shift_approve" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
 
-    <form action="{{ route('admin.shift.shiftapprove') }}" method="post"/>@csrf
+    <form action="{{ route('admin.shift.shiftapprove') }}" method="post">@csrf
        <div class="modal-content">
           <div class="modal-body">
              <div class="row">

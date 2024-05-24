@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Alldropdowns;
 use App\Models\Client;
 use App\Models\Clientbase;
@@ -530,13 +531,11 @@ class ShiftController extends Controller
         Shift::whereId($shify->id)->update(['finishStatus' => '2']);
 
         if ($request->file('missedImage') != '') {
-            $files = $request->file('missedImage');
-            $destinationPath = 'public/assets/driver/parcel/finishParcel';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $items = $file_name;
+            $image = $request->file('missedImage');
+            $dateFolder = 'driver/parcel/finishParcel';
+            $items = ImageController::upload($image, $dateFolder);
         } else {
-            $items = '';
+            $items = null;
         }
 
         $Parcel = new Finishshift();

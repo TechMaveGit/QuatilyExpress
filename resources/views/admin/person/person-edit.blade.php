@@ -764,9 +764,7 @@
                                                                         <tr class="border-bottom">
                                                                             <td> {{ $i }}</td>
                                                                             <td> {{ $document->name }}</td>
-                                                                            {{-- <td><img src="{{ asset('assets/person-document/' . $document->document) }}"
-                                                                                    alt="Document Image" width="100px"></td> --}}
-                                                                            <td><a href="{{ asset('assets/person-document/' . $document->document) }}" target="_blank">View Doc</a></td>
+                                                                            <td><a href="{{ $document->document ?  asset(env('STORAGE_URL'). $document->document) : '' }}" target="_blank">View Doc</a></td>
                                                                             <td> {{ $document->status == '1' ? 'Active' : 'Inactive' }}
                                                                             </td>
 
@@ -1194,7 +1192,6 @@
                         $("#documentValidation").hide();
 
                         $("#documentBaseForm")[0].reset();
-                        // $(".dropify").change();
                         $(".dropify-clear").trigger("click");
                         swal({
                             type: 'success',
@@ -1205,16 +1202,19 @@
                         window.location.reload();
                         $('#basic-datatable tbody').empty();
                         if (Array.isArray(data.documents) && data.documents.length > 0) {
+                            let storage_url = "{{env('STORAGE_URL')}}";
+                            
                             var tableHtml = '<tbody>';
                             var sno = 1;
                             data.documents.forEach(doc => {
+                                var document_urls_dtaa = storage_url+doc.document;
                                 var rowHtml2 = `<tr>
-                                                                <td>${sno}</td>
-                                                                <td>${doc.name}</td>
-                                                                <td><img src="{{ asset('assets/person-document/') }}/${doc.document}" alt="Document Image" width="100px"></td>
-                                                                <td>${doc.status == '1' ? 'Active':'Inactive' }</td>
-                                                                <td><a onclick="removePersonDoc(this, ${doc.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
-                                                            </tr>`;
+                                                    <td>${sno}</td>
+                                                    <td>${doc.name}</td>
+                                                    <td><img src="{{ asset('${document_urls_dtaa}') }}" alt="Document Image" width="100px"></td>
+                                                    <td>${doc.status == '1' ? 'Active':'Inactive' }</td>
+                                                    <td><a onclick="removePersonDoc(this, ${doc.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
+                                                </tr>`;
                                 $("#basic-datatable tbody").append(rowHtml2);
                                 sno++;
                             });
