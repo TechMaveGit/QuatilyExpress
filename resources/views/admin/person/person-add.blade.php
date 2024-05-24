@@ -86,10 +86,10 @@
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
                                                                 <label class="form-label"
-                                                                    for="exampleInputEmail1">Surname</label>
+                                                                    for="exampleInputEmail1">Surname <span class="red">*</span></label>
                                                                 <input type="text" class="form-control" name="surname"
                                                                     autocomplete="off" value="{{ old('surname') }}"
-                                                                    placeholder="">
+                                                                    placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3">
@@ -131,8 +131,7 @@
                                                                         data-dynamic-select required>
 
                                                                         @foreach ($countryCode as $countryCodes)
-                                                                            <option value={{ $countryCodes->dial_code }}
-                                                                                data-img="{{ $countryCodes->flag }}">
+                                                                            <option value="{{ $countryCodes->dial_code }}" {{ $countryCodes->dial_code == '+61' ? 'selected' : '' }} data-img="{{ $countryCodes->flag }}"> 
                                                                                 {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
                                                                             </option>
                                                                         @endforeach

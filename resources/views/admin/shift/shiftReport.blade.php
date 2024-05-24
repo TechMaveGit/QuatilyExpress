@@ -713,12 +713,10 @@
                                                                 {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
                                                             </td>
                                                             @if ($finishshifts)
-                                                            <td style="display: none;" class="td column-mobile_data_finish">
-                                                                {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
-                                                            </td>
-                                                        @else
-                                                            <td class="td column-date_finish">N/A</td>
-                                                        @endif
+                                                                <td style="display: none;" class="td column-mobile_data_finish">
+                                                                    {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
+                                                                </td>
+                                                            @endif
                                                         @endif
                                                     @endif
                                                     

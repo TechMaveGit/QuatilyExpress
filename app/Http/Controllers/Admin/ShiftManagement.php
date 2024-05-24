@@ -214,7 +214,6 @@ class ShiftManagement extends Controller
                 'comment' => $rd['33'],
             ];
         }
-        // dd($clientIds);
         foreach ($clientIds as $datas) {
             // if ($datas['odometer_start'] && $datas['odometer_end'])
             // {
@@ -223,7 +222,7 @@ class ShiftManagement extends Controller
             $phpDateTime = Date::excelToDateTimeObject($datas['date_finish']);
             $created_at = $phpDateTime->format('Y/m/d H:s:i');
             $shift = preg_replace('/[^0-9]/', '', $datas['shiftId']);
-            dd($datas['total_payable']);
+            // dd($datas['total_payable']);
             Shift::where('shiftRandId', $shift)->update([
                 'payAmount' => $datas['total_payable'],
                 'created_at' => $created_at,
@@ -286,7 +285,7 @@ class ShiftManagement extends Controller
                     $shiftAdd['finishStatus'] = '1';
                     $shiftAdd['shiftStartDate'] = date('Y-m-d H:i');
                     $shiftAdd['rego'] = $regoId;
-                    dd($shiftAdd);
+                    // dd($shiftAdd);
                     $shift = Shift::create($shiftAdd);
 
                     return Redirect::route('admin.shift.report')->with('message', 'Shift Added Successfully!!');
