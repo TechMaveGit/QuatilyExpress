@@ -222,7 +222,8 @@ class ParcelController extends Controller
         $parcelId = $request->input('parcelId');
         $checkParcel = Parcels::whereId($parcelId)->where('status', '1')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['status' => '1']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => date('Y-m-d'),'status' => '1']);
+            
             if ($Parcels) {
                 return response()->json([
                     'status' => $this->successStatus,
