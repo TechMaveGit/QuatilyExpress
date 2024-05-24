@@ -31,7 +31,7 @@ Route::get('/', function () {
     $data['pageTitle'] = 'Dashboard';
 
     return view('admin.login', $data);
-});
+})->name('home_page');
 Route::get('/testing', [AdminLoginController::class, 'testing'])->name('testing');
 Route::get('/admin', [AdminLoginController::class, 'index'])->name('admin');
 Route::post('login', [AdminLoginController::class, 'login'])->name('admin.login');
