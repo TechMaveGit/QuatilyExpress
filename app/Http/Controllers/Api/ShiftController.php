@@ -444,6 +444,7 @@ class ShiftController extends Controller
         $shify->scanner_id = $request->scanner_id;
         $shify->parcelsToken = $request->parcelsToken;
         $shify->comment = $request->comment;
+        $shify->is_missed_shift = '1';
         $shify->finishStatus = '2';
         $shify->save();
 

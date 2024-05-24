@@ -644,7 +644,7 @@ class ParcelController extends Controller
                 $Parcel->endDate = $request->endDate;
                 $Parcel->startTime = $dayStartTime->format('H:i');
                 $Parcel->endTime = $nightEndTime->format('H:i');
-                $Parcel->parcelsTaken = $request->parcelsTaken;
+                $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
                 $Parcel->addPhoto = $items;
                 $Parcel->save();
