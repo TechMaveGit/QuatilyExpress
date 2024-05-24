@@ -153,6 +153,8 @@
                                 <div class="approve_cnt">
                                     <h3>Do you want to approve ?</h3>
                                     <input type="hidden" name="shiftId" id="shiftId" />
+                                    <hr>
+                                    <textarea id="add_reason" class="form-control" placeholder="Enter reason here ..." rows="2" name="reason"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -1162,13 +1164,15 @@
         function approved() {
             $("#approveAndRejected").modal('hide');
             var shiftId = $("#AppendshiftId").val();
+            var reason = $("#add_reason").val();
             var label = "Shift";
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.shift.shiftapprove') }}",
                 data: {
                     "shiftId": shiftId,
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    "reason":reason
                 },
                 dataType: 'json',
                 success: function(result) {

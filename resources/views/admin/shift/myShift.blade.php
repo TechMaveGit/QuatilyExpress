@@ -221,6 +221,7 @@
                           <div class="approve_cnt">
                              <h3>Do you want to approve ?</h3>
                              <input type="hidden" name="shiftId" id="shiftId" />
+                             <textarea id="add_reason" class="form-control" rows="4" name="reason"></textarea>
                           </div>
                        </div>
                     </div>

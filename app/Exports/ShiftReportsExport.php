@@ -110,7 +110,7 @@ class ShiftReportsExport
             $row['Odometer End'],
             $row['Traveled KM'],
             $row['Comment'],
-            $row['Comment']
+            $row['Approved Reason']
         ]);
     }
 
@@ -209,6 +209,7 @@ class ShiftReportsExport
                 'Total Payable' => round($shift->payAmount, 2) ?? '0',
                 'Traveled KM' => $km ?? '0',
                 'Comment' => $shift->getFinishShift->comments ?? 'N/A',
+                'Approved Reason' => $shift->approval_reason ?? 'N/A'
             ];
         })->toArray();
     }
