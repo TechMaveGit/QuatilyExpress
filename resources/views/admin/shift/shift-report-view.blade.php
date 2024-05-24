@@ -14,7 +14,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
     <h1 class="page-title">Shift View</h1>
         <div>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                 <li class="breadcrumb-item " aria-current="page">Shift Report</li>
                 <li class="breadcrumb-item active" aria-current="page">Shift View</li>
             </ol>
