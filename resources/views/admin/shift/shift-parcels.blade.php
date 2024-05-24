@@ -8,7 +8,7 @@
         <h1 class="page-title">Parcels</h1>
         <div>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page">Shift</li>
                 <li class="breadcrumb-item active" aria-current="page">Parcel Detail</li>
 
@@ -103,8 +103,8 @@
                                                    <td class="parcel_in">
                                                     <div class="magnific-img">
                                                         @if(!empty($allparcelsDetail['ParcelImage']->parcelImage))
-                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url(env('STORAGE_URL').$allparcelsDetail['ParcelImage']->parcelImage) }}">
-                                                                <img src="{{ url(env('STORAGE_URL').$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
+                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
+                                                                <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
                                                             </a>
                                                         @endif
                                                     </div>
@@ -130,8 +130,8 @@
                                                    <td class="parcel_out">
                                                    <div class="magnific-img">
                                                     @if(!empty($allparcelsDetail->parcelphoto))
-                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url(env('STORAGE_URL').$allparcelsDetail->parcelphoto.'')}}">
-                                                        <img src="{{ url(env('STORAGE_URL').$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
+                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}">
+                                                        <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
                                                     }" alt="9.jpg" />
                                                         <!-- <i class="fa fa-search-plus" aria-hidden="true"></i> -->
                                                     </a>

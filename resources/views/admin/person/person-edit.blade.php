@@ -302,13 +302,12 @@
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Phone
-                                                                    Principal <span class="red">*</span></label>
+                                                                <label class="form-label" for="exampleInputEmail1">Phone Principal </label>
                                                                 <input type="text" class="form-control"
                                                                     id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->phonePrincipal ?? 'N/A' }}"
+                                                                    value="{{ $editPerson->phonePrincipal ?? 'N/A' }}" 
                                                                     name="phoneprinciple" aria-describedby="emailHelp"
-                                                                    placeholder="" required>
+                                                                    placeholder="" >
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4">
@@ -394,7 +393,7 @@
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Extra Rate (Per Hour) <span class="red">*</span></label>
-                                                                <input type="number" class="form-control" min="0" id="exampleInputEmail1" value="{{old('extra_rate_per_hour') ?? $editPerson->extra_rate_per_hour}}" autocomplete="off" name="extra_rate_per_hour" aria-describedby="emailHelp" placeholder="" required>
+                                                                <input type="number" class="form-control" min="0" id="exampleInputEmail1" step="any" value="{{old('extra_rate_per_hour') ?? $editPerson->extra_rate_per_hour}}" autocomplete="off" name="extra_rate_per_hour" aria-describedby="emailHelp" placeholder="" required>
                                                             </div>
                                                         </div>
 

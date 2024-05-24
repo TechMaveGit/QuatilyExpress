@@ -106,6 +106,7 @@ class LoginController extends Controller
         $driver = new Driver();
         $driver->fullName = $request->userName;
         $driver->userName = $request->userName;
+        $driver->surname = $request->surname??'N/A';
         $driver->mobileNo = $request->mobileno;
         $driver->dialCode = $request->dialCode;
         $driver->email = $request->email;

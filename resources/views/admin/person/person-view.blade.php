@@ -7,7 +7,7 @@
             <h1 class="page-title">Person View</h1>
             <div>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('person') }}">Person</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Person View</li>
 

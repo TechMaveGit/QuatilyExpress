@@ -90,34 +90,33 @@
 
 
 <script>
-    $(document).ready(function(){
+    // $(document).ready(function(){
 
-    	function updateToDatabase(idString){
-    	   $.ajaxSetup({ headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'}});
+    // 	function updateToDatabase(idString){
+    // 	   $.ajaxSetup({ headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'}});
 
-    	   $.ajax({
-              url:'{{url('/menu/update-order')}}',
-              method:'POST',
-              data:{ids:idString},
-              success:function(){
-                 alert('Successfully updated')
-               	 //do whatever after success
-              }
-           })
-    	}
+    // 	   $.ajax({
+    //           url:'{{url('/menu/update-order')}}',
+    //           method:'POST',
+    //           data:{ids:idString},
+    //           success:function(){
+    //              alert('Successfully updated')
+    //           }
+    //        })
+    // 	}
 
-        var target = $('.sort_menu');
-        target.sortable({
-            handle: '.handle',
-            placeholder: 'highlight',
-            axis: "y",
-            update: function (e, ui){
-               var sortData = target.sortable('toArray',{ attribute: 'data-id'})
-               updateToDatabase(sortData.join(','))
-            }
-        })
+    //     var target = $('.sort_menu');
+    //     target.sortable({
+    //         handle: '.handle',
+    //         placeholder: 'highlight',
+    //         axis: "y",
+    //         update: function (e, ui){
+    //            var sortData = target.sortable('toArray',{ attribute: 'data-id'})
+    //            updateToDatabase(sortData.join(','))
+    //         }
+    //     })
 
-    })
+    // })
 </script>
 
 

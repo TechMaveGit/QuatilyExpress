@@ -350,8 +350,7 @@
                                                                 name="driverId" data-placeholder="Choose one" required>
                                                                 <option value="">Select Any One</option>
                                                                 @forelse ($driver as $AdddriverAdd)
-                                                                    <option value="{{ $AdddriverAdd->id }}">
-                                                                        {{ $AdddriverAdd->fullName }}</option>
+                                                                    <option value="{{ $AdddriverAdd->id }}">{{ $AdddriverAdd->userName??'' }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
                                                                 @empty
                                                                 @endforelse
 

@@ -427,8 +427,8 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="driver" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">Driver</label>
+                                                            value="driver" id="Checkme4" checked />
+                                                        <label class="form-check-label" for="Checkme4">Driver</label>
                                                     </div>
                                                 </a>
                                             </li>
@@ -436,8 +436,8 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="rego" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">Rego</label>
+                                                            value="rego" id="Checkme5" checked />
+                                                        <label class="form-check-label" for="Checkme5">Rego</label>
                                                     </div>
                                                 </a>
                                             </li>
@@ -445,8 +445,8 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="vehicleType" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">Vehicle
+                                                            value="vehicleType" id="Checkme6" checked />
+                                                        <label class="form-check-label" for="Checkme6">Vehicle
                                                             Type</label>
                                                     </div>
                                                 </a>
@@ -455,8 +455,8 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="state" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">State</label>
+                                                            value="state" id="Checkme7" checked />
+                                                        <label class="form-check-label" for="Checkme7">State</label>
                                                     </div>
                                                 </a>
                                             </li>
@@ -464,8 +464,8 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="created_at" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">Created at</label>
+                                                            value="mobile_data_start" id="Checkme8"  />
+                                                        <label class="form-check-label" for="Checkme8">Mobile Date Start</label>
                                                     </div>
                                                 </a>
                                             </li>
@@ -473,8 +473,8 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="start_Date" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">Start Date</label>
+                                                            value="mobile_data_finish" id="Checkme9"  />
+                                                        <label class="form-check-label" for="Checkme9">Mobile Date Finish</label>
                                                     </div>
                                                 </a>
                                             </li>
@@ -482,8 +482,17 @@
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
                                                         <input class="form-check-input column-toggle" type="checkbox"
-                                                            value="date_finish" id="Checkme3" checked />
-                                                        <label class="form-check-label" for="Checkme3">Date Finish</label>
+                                                            value="start_Date" id="Checkme10" checked />
+                                                        <label class="form-check-label" for="Checkme10">Date Start</label>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input column-toggle" type="checkbox"
+                                                            value="date_finish" id="Checkme11" checked />
+                                                        <label class="form-check-label" for="Checkme11">Date Finish</label>
                                                     </div>
                                                 </a>
                                             </li>
@@ -580,8 +589,8 @@
                                     }
                                 </style>
                                 <br>
-                                <div class="table_box" id="shiftTable_Container">
-                                    <table id="custom_table_table1" class="table  table-hover nowrap mb-0"
+                                <div class="" id="">
+                                    <table id="shiftTable" class="table  table-hover nowrap mb-0"
                                         style="margin: 0px !important;width: 100%;">
                                         {{-- <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;"> --}}
                                         <thead class="border-top">
@@ -600,8 +609,8 @@
                                                 <th class="bg-transparent border-bottom-0 column-state">State</th>
                                                 @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
                                                     @if ($driverRole != 33)
-                                                        <th class="bg-transparent border-bottom-0 column-created_at">
-                                                            Created Date</th>
+                                                        <th style="display: none;" class="bg-transparent border-bottom-0 column-mobile_data_start">Mobile Date Start</th>
+                                                        <th style="display: none;" class="bg-transparent border-bottom-0 column-mobile_data_finish">Mobile Date Finish</th>
                                                     @endif
                                                 @endif
                                                 <th class="bg-transparent border-bottom-0 column-start_Date">Date Start
@@ -692,19 +701,27 @@
                                                     <td class="td column-state">
                                                         {{ $allshift->getStateName->name ?? 'N/A' }}
                                                     </td>
-                                                    @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
-                                                        @if ($driverRole != 33)
-                                                            <td class="td column-created_at">
-                                                                {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
-                                                            </td>
-                                                        @endif
-                                                    @endif
                                                     @php
                                                         $finishshifts =
                                                             DB::table('finishshifts')
                                                                 ->where('shiftId', $allshift->id)
                                                                 ->first() ?? '0';
                                                     @endphp
+                                                    @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
+                                                        @if ($driverRole != 33)
+                                                            <td style="display: none;" class="td column-mobile_data_start">
+                                                                {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
+                                                            </td>
+                                                            @if ($finishshifts)
+                                                            <td style="display: none;" class="td column-mobile_data_finish">
+                                                                {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
+                                                            </td>
+                                                        @else
+                                                            <td class="td column-date_finish">N/A</td>
+                                                        @endif
+                                                        @endif
+                                                    @endif
+                                                    
                                                     @if ($allshift['shiftStartDate'])
                                                         <td class="td column-start_Date">
                                                             {{ date('Y/m/d H:i:s', strtotime($allshift['shiftStartDate'])) }}
@@ -1379,5 +1396,7 @@
                 pagination: false,
             });
         });
+
     </script>
+    
 @endsection
