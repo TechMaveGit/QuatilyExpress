@@ -1198,7 +1198,8 @@ class ShiftManagement extends Controller
     public function shiftapr(Request $request)
     {
         $id = $request->input('shiftId');
-        $data['parcelsDetail'] = Shift::whereId($id)->update(['finishStatus' => '3']);
+        $reason = $request->reason??null;
+        $data['parcelsDetail'] = Shift::whereId($id)->update(['finishStatus' => '3','approval_reason'=>$reason]);
 
         return response()->json([
             'status' => 200,
