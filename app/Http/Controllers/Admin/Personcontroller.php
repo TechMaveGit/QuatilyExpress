@@ -66,7 +66,7 @@ class Personcontroller extends Controller
                 'surname'               => $shortName,
                 'email'                 => $email,
                 'dob'                   => $dob,
-                'phonePrincipal'        => $phoneprinciple??'N/A',
+                'phonePrincipal'        => $phoneprinciple ?? 'N/A',
                 'phoneAux'              => $phoneaux,
                 'tfn'                   => $tfn,
                 'abn'                   => $abn,
@@ -112,6 +112,7 @@ class Personcontroller extends Controller
     public function personedit(Request $request, $id)
     {
         $data['person'] = $id;
+        $personData = Driver::where('id', $id)->first();
         $personValue1 = $request->input('personValue1');
         $roles = $request->input('roles');
         $role_data = Roles::where('id', $roles)->first()->id ?? '1000';
@@ -128,50 +129,55 @@ class Personcontroller extends Controller
             $selectPersion = $request->input('selectPersion');
             $password = $request->input('password');
             $extra_rate = $request->input('extra_rate_per_hour');
-            if ($password) {
-                $password = Hash::make($password);
-            } else {
-                $password = Driver::where('email', $email)->first()->password;
-            }
-            $data = [
-                'fullName'              => $name . ' ' . $shortName,
-                'userName'              => $name,
-                'surname'               => $shortName,
-                'email'                 => $email,
-                'dob'                   => $dob,
-                'phonePrincipal'        => $phoneprinciple,
-                'phoneAux'              => $phoneaux,
-                'tfn'                   => $tfn,
-                'abn'                   => $abn,
-                'role_id'               => $role_data,
-                'password'              => $password,
-                'selectPersonType'      => $selectPersion,
-                'extra_rate_per_hour'   => $extra_rate,
-                'mobileNo'              => $request->mobile_number,
-                'dialCode'              => ltrim($request->country_code, '+'),
-            ];
-            Driver::whereId($id)->update($data);
-            if ($role_data) {
-                $adminGmail = Admin::where('email', $email)->first();
-                if ($adminGmail) {
-                    $data = [
-                        'email' => $email,
-                        'name' => $name,
-                        'role_id' => $role_data,
-                        'password' => $password,
-                    ];
-                    Admin::where('email', $email)->update($data);
+
+        
+            if ($email != $personData->email && Driver::where('email', $email)->exists()) {
+                return redirect()->back()->with('error', 'Person Email Already Exists.');
+            }else{
+                if ($password) {
+                    $password = Hash::make($password);
                 } else {
-                    $data = [
-                        'email' => $email,
-                        'name' => $name,
-                        'role_id' => $role_data,
-                        'password' => $password,
-                    ];
-                    Admin::where('email', $email)->insert($data);
+                    $password = $personData->password;
+                }
+                $data = [
+                    'fullName'              => $name . ' ' . $shortName,
+                    'userName'              => $name,
+                    'surname'               => $shortName,
+                    'email'                 => $email,
+                    'dob'                   => $dob,
+                    'phonePrincipal'        => $phoneprinciple,
+                    'phoneAux'              => $phoneaux,
+                    'tfn'                   => $tfn,
+                    'abn'                   => $abn,
+                    'role_id'               => $role_data,
+                    'password'              => $password,
+                    'selectPersonType'      => $selectPersion,
+                    'extra_rate_per_hour'   => $extra_rate,
+                    'mobileNo'              => $request->mobile_number,
+                    'dialCode'              => ltrim($request->country_code, '+'),
+                ];
+                Driver::whereId($id)->update($data);
+                if ($role_data) {
+                    $adminGmail = Admin::where('email', $email)->first();
+                    if ($adminGmail) {
+                        $data = [
+                            'email' => $email,
+                            'name' => $name,
+                            'role_id' => $role_data,
+                            'password' => $password,
+                        ];
+                        Admin::where('email', $email)->update($data);
+                    } else {
+                        $data = [
+                            'email' => $email,
+                            'name' => $name,
+                            'role_id' => $role_data,
+                            'password' => $password,
+                        ];
+                        Admin::where('email', $email)->insert($data);
+                    }
                 }
             }
-
             return redirect()->back()->with('message', 'Person Basic Information Updated Successfully!');
         }
         $personValue2 = $request->input('personValue2');
