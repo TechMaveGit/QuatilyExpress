@@ -216,8 +216,8 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <a href="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" target="_blank">
-                                                        <img src="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
+                                                    <a href="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" target="_blank">
+                                                        <img src="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
                                                                                                                 </div>
                                             </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Admin;
 use App\Models\DialCode;
 use App\Models\Driver;
@@ -262,14 +263,14 @@ class Personcontroller extends Controller
         if ($personValue5 == '5') {
             if ($request->file('document_file') != '') {
                 $image = $request->file('document_file');
-                $new_name = rand() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('public/assets/person-document'), $new_name);
+                $dateFolder = 'person-document';
+                $imageupload = ImageController::upload($image, $dateFolder);
             }
             $documentData = [
                 'personId' => $request->input('person_id'),
                 'name' => $request->input('document_name'),
                 'status' => $request->input('document_status'),
-                'document' => $new_name ?? null,
+                'document' => $imageupload ?? null,
             ];
             Persondocument::insert($documentData);
             $documents = Persondocument::orderBy('id', 'DESC')->where('personId', $request->input('person_id'))->get();

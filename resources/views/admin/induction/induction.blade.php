@@ -35,7 +35,7 @@
 
             </div>
 
-            <form action="{{route('induction.delete')}}" method="post" />@csrf
+            <form action="{{route('induction.delete')}}" method="post" >@csrf
 
             <div class="modal-body">
 

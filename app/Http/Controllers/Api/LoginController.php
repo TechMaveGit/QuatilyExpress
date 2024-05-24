@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Admin;
 use App\Models\Driver;
 use Auth;
@@ -46,7 +47,7 @@ class LoginController extends Controller
             if ($checkDriver->status == '1') {
                 if ($token = Auth::guard('driver')->attempt($req->only('email', 'password'))) {
                     $agent = Driver::Where('email', $req->input('email'))->first();
-                    $destinationPath = url('public/assets/driver/profileImage/');
+                    $destinationPath = asset(env('STORAGE_URL'));
 
                     return response()->json([
                         'status' => $this->successStatus,
@@ -97,12 +98,9 @@ class LoginController extends Controller
 
         $documentType = '';
         if ($request->hasFile('documentType')) {
-            $files = $request->file('documentType');
-            $destinationPath = 'public/assets/driver/document';
-            $file_name =
-                md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $documentType = $file_name;
+            $image = $request->file('documentType');
+            $dateFolder = 'driver/document';
+            $documentType = ImageController::upload($image, $dateFolder);
         }
 
         $driver = new Driver();
@@ -149,13 +147,12 @@ class LoginController extends Controller
             return $response;
         }
 
-        $imageUrl = url('public/assets/driver/profileImage');
+        $imageUrl = asset(env('STORAGE_URL'));
         $files = $request->file('profile_iamge');
         if ($files) {
-            $destinationPath = 'public/assets/driver/profileImage';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $p_image = $file_name;
+            $image = $request->file('profile_iamge');
+            $dateFolder = 'driver/profileImage';
+            $p_image = ImageController::upload($image, $dateFolder);
         } else {
             $agent = Driver::where('id', $driver)->first();
             $p_image = $agent->profile_image;
@@ -189,43 +186,34 @@ class LoginController extends Controller
     {
 
         $allImage = Driver::whereId($this->driverId)->first();
+        $dateFolder = 'driver/document';
 
         if ($req->hasFile('driving_license')) {
-            $files = $req->file('driving_license');
-            $destinationPath = 'public/assets/driver/document';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $driving_license = $file_name;
+            $image = $req->file('driving_license');
+            $driving_license = ImageController::upload($image, $dateFolder);
         } else {
             $driving_license = $allImage->driving_license;
         }
 
         if ($req->hasFile('visa')) {
-            $files = $req->file('visa');
-            $destinationPath = 'public/assets/driver/document';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $visa = $file_name;
+            $image = $req->file('visa');
+            $visa = ImageController::upload($image, $dateFolder);
         } else {
             $visa = $allImage->visa;
         }
 
         if ($req->hasFile('trafficHistory')) {
-            $files = $req->file('trafficHistory');
-            $destinationPath = 'public/assets/driver/trafficHistory';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $trafficHistory = $file_name;
+            $dateFolder = 'driver/trafficHistory';
+            $image = $req->file('trafficHistory');
+            $trafficHistory = ImageController::upload($image, $dateFolder);
         } else {
             $trafficHistory = $allImage->traffic_history;
         }
 
         if ($req->hasFile('policeChceck')) {
-            $files = $req->file('policeChceck');
-            $destinationPath = 'public/assets/driver/driving_license';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $policeChceck = $file_name;
+            $image = $req->file('policeChceck');
+            $dateFolder = 'driver/driving_license';
+            $policeChceck = ImageController::upload($image, $dateFolder);
         } else {
             $policeChceck = $allImage->police_chceck;
         }

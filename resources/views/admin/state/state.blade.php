@@ -112,7 +112,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
-            <form action="{{ route('state.delete') }}" method="post"/>@csrf
+            <form action="{{ route('state.delete') }}" method="post">@csrf
             <div class="modal-body">
                 <div class="mt-2 text-center">
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>

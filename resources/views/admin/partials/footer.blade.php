@@ -1164,57 +1164,7 @@ $(".datetime_picker").flatpickr({
       }
    }, true);
 </script>
-<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.9/css/buttons.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/autofill/2.6.0/css/autoFill.dataTables.min.css"></script> -->
-<!-- <script src="https://cdn.datatables.net/buttons/2.2.9/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.9/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.9/js/buttons.colVis.min.js"></script>
-<script>
-   $(document).ready(function() {
-      var table = $('.table').DataTable({
-         dom: '<"top"lf>rt<"bottom"Bip>',
-         buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-         ],
-         "lengthMenu": [
-            [10, 25, 50, -1],
-            [10, 25, 50, "All"]
-         ],
-         "paging": true,
-         "searching": true,
-         "columnDefs": [{
-            "targets": 'no-sort',
-            "orderable": false,
-         }]
-      });
-      var columns = table.columns().header().toArray();
-      var columnVisibilityDropdown =
-         '<div class="dropdown columnvisibility_drop" style="display:inline-block;">' +
-         '<button class="btn btn-secondary dropdown-toggle" type="button" id="columnVisibilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">Column Visibility</button>' +
-         '<div class="dropdown-menu" aria-labelledby="columnVisibilityDropdown">';
-      columns.forEach(function(column, index) {
-         columnVisibilityDropdown +=
-            '<label class="dropdown-item"><input type="checkbox" class="column-checkbox" data-column="' +
-            index + '" checked>' + $(column).text() + '</label>';
-      });
-      columnVisibilityDropdown += '</div></div>';
-      $('.dataTables_length').parent().append(columnVisibilityDropdown);
-      $('.column-checkbox').on('change', function() {
-         var column = table.column($(this).data('column'));
-         column.visible($(this).is(':checked'));
-      });
-      // Dynamically add export buttons
-      var exportButtons = $('<div class="btn-group" style="margin-left:10px;"></div>');
-      table.buttons().container().appendTo(exportButtons);
-      $('.dataTables_length').parent().append(exportButtons);
-   });
-</script> -->
+
 <script>
     var endDateInput = document.getElementById('end-date');
     // Add click event listener to the text
