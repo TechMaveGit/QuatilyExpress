@@ -532,8 +532,8 @@ class ParcelController extends Controller
 
         $startDate = $request->startDate . ' ' . $request->startTime;
         $endDate = $request->endDate . ' ' . $request->input('endTime');
-        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
         $startDate = strtotime($start_date);
         $endDate = strtotime($end_date);
         $dayStartTime = Carbon::parse($start_date);
@@ -642,8 +642,8 @@ class ParcelController extends Controller
                 $Parcel->totalHours = $totalHr ?? 0;
                 $Parcel->startDate = $request->startDate;
                 $Parcel->endDate = $request->endDate;
-                $Parcel->startTime = $dayStartTime->format('H:i');
-                $Parcel->endTime = $nightEndTime->format('H:i');
+                $Parcel->startTime = $dayStartTime->format('H:i:s');
+                $Parcel->endTime = $nightEndTime->format('H:i:s');
                 $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
                 $Parcel->addPhoto = $items;

@@ -53,6 +53,7 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
     Route::match(['get', 'post'], '/profile', [AdminLoginController::class, 'profile'])->name('admin.profile');
     Route::match(['get', 'post'], '/updatePassword', [AdminLoginController::class, 'updatePassword'])->name('admin.updatePassword');
+    
     Route::group(['prefix' => 'administration'], function () {
         Route::match(['get', 'post'], '/role', [Administration::class, 'index'])->name('administration.role');
         Route::match(['get', 'post'], '/role-add', [Administration::class, 'roleAdd'])->name('administration.role.add');
