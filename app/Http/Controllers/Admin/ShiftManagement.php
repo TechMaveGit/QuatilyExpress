@@ -283,7 +283,7 @@ class ShiftManagement extends Controller
                     $shiftAdd = $request->except(['_token', 'submit']);
                     $shiftAdd['shiftRandId'] = rand('9999', '0000');
                     $shiftAdd['finishStatus'] = '1';
-                    $shiftAdd['shiftStartDate'] = date('Y-m-d H:i');
+                    $shiftAdd['shiftStartDate'] = date('Y-m-d H:i:s');
                     $shiftAdd['rego'] = $regoId;
                     // dd($shiftAdd);
                     $shift = Shift::create($shiftAdd);
@@ -1010,8 +1010,8 @@ class ShiftManagement extends Controller
             if ($managementId == '2') {
                 $startDate = $request->startDate;
                 $endDate = $request->finishDate;
-                $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-                $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+                $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+                $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
                 $startDate = strtotime($start_date);
                 $endDate = strtotime($end_date);
                 $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
@@ -1131,8 +1131,8 @@ class ShiftManagement extends Controller
                         $Parcel->weekendHours = $weekend;
                         $Parcel->startDate = Carbon::parse($startDate)->format('Y-m-d');
                         $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
-                        $Parcel->startTime = Carbon::parse($startDate)->format('H:i');
-                        $Parcel->endTime = Carbon::parse($endDate)->format('H:i');
+                        $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
+                        $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
                         $Parcel->save();
                     }
                 } else {

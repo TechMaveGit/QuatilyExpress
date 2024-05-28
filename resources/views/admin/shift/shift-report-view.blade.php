@@ -193,14 +193,14 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i',strtotime($shiftView->shiftStartDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i:s',strtotime($shiftView->shiftStartDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
-                                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i') }}" placeholder="" readonly>
+                                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i:s') }}" placeholder="" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -209,7 +209,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                     <input type="text" class="form-control "
                                                     value="{{ $extra_rate_per_hour }}"
                                                     aria-describedby="emailHelp" placeholder="" readonly>
-                                                                                             </div>
+                                                </div>
                                             </div>
 
                                             @if (isset($finishshifts->addPhoto))

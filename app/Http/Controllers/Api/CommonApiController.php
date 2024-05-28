@@ -152,8 +152,8 @@ class CommonApiController extends Controller
 
             $startDate = $request->start_date . ' ' . $request->start_time;
             $endDate = $request->end_date . ' ' . $request->input('end_time');
-            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
             $startDate = strtotime($start_date);
             $endDate = strtotime($end_date);
             $dayStartTime = Carbon::parse($start_date);
@@ -248,8 +248,8 @@ class CommonApiController extends Controller
             $Parcel->totalHours = $totalHr ?? 0;
             $Parcel->startDate = $request->start_date;
             $Parcel->endDate = $request->end_date;
-            $Parcel->startTime = $dayStartTime->format('H:i');
-            $Parcel->endTime = $nightEndTime->format('H:i');
+            $Parcel->startTime = $dayStartTime->format('H:i:s');
+            $Parcel->endTime = $nightEndTime->format('H:i:s');
             $Parcel->parcelsTaken = $request->parcelsTaken;
             $Parcel->parcelsDelivered = $request->parcel_delivered;
             $Parcel->addPhoto = $items;
@@ -269,8 +269,8 @@ class CommonApiController extends Controller
             }])->first();
             $startDate = $request->start_date . ' ' . $request->start_time;
             $endDate = $request->end_date . ' ' . $request->end_time;
-            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
             $startDate = strtotime($start_date);
             $endDate = strtotime($end_date);
             $dayStartTime = Carbon::parse($start_date);
@@ -380,8 +380,8 @@ class CommonApiController extends Controller
                     $Parcel->totalHours = $totalHr ?? 0;
                     $Parcel->startDate = $request->start_date;
                     $Parcel->endDate = $request->end_date;
-                    $Parcel->startTime = $dayStartTime->format('H:i');
-                    $Parcel->endTime = $nightEndTime->format('H:i');
+                    $Parcel->startTime = $dayStartTime->format('H:i:s');
+                    $Parcel->endTime = $nightEndTime->format('H:i:s');
                     $Parcel->parcelsTaken = $request->parcelsTaken;
                     $Parcel->parcelsDelivered = $request->parcel_delivered;
                     $Parcel->addPhoto = $items;

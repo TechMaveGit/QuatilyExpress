@@ -80,7 +80,7 @@ class ShiftController extends Controller
         $shify->scanner_id = $request->scanner_id;
         $shify->finishStatus = '1';
         $shify->parcelsToken = $request->parcelsToken;
-        $shify->shiftStartDate = date('Y-m-d H:i');
+        $shify->shiftStartDate = date('Y-m-d H:i:s');
         $shify->save();
 
         if ($shify) {
@@ -195,13 +195,13 @@ class ShiftController extends Controller
             $nightHours = $totalHours - $dayHours;
         }
 
-        $formattedDayStart = $dayStart->format('H:i');
-        $formattedNightStart = $nightStart->format('H:i');
+        $formattedDayStart = $dayStart->format('H:i:s');
+        $formattedNightStart = $nightStart->format('H:i:s');
 
         // Output the results
         $data = [
-            'start' => $dayStartTime->format('H:i'),
-            'end' => $nightEndTime->format('H:i'),
+            'start' => $dayStartTime->format('H:i:s'),
+            'end' => $nightEndTime->format('H:i:s'),
         ];
 
         return $data;
@@ -261,8 +261,8 @@ class ShiftController extends Controller
 
         $validator = Validator::make($request->all(), [
             'shiftid'       => 'required|integer',
-            'startDate' => 'required|date_format:Y-m-d H:i',
-            'finishDate'   => 'required|date_format:Y-m-d H:i',
+            'startDate' => 'required|date_format:Y-m-d H:i:s',
+            'finishDate'   => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -275,8 +275,8 @@ class ShiftController extends Controller
         $startDate = $request->startDate;
         $endDate = $request->finishDate;
 
-        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
 
         $startDate = strtotime($start_date);
         $endDate = strtotime($end_date);
@@ -376,8 +376,8 @@ class ShiftController extends Controller
                     $Parcel->weekendHours = $weekend;
                     $Parcel->startDate = Carbon::parse($startDate)->format('Y-m-d');
                     $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
-                    $Parcel->startTime = Carbon::parse($startDate)->format('H:i');
-                    $Parcel->endTime = Carbon::parse($endDate)->format('H:i');
+                    $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
+                    $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
                     $Parcel->save();
                 }
             }
@@ -456,8 +456,8 @@ class ShiftController extends Controller
 
         $startDate = $request->start_date . ' ' . $request->start_time;
         $endDate = $request->end_date . ' ' . $request->input('end_time');
-        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
         $startDate = strtotime($start_date);
         $endDate = strtotime($end_date);
         $dayStartTime = Carbon::parse($start_date);
@@ -552,8 +552,8 @@ class ShiftController extends Controller
         $Parcel->totalHours = $totalHr ?? 0;
         $Parcel->startDate = $request->start_date;
         $Parcel->endDate = $request->end_date;
-        $Parcel->startTime = $dayStartTime->format('H:i');
-        $Parcel->endTime = $nightEndTime->format('H:i');
+        $Parcel->startTime = $dayStartTime->format('H:i:s');
+        $Parcel->endTime = $nightEndTime->format('H:i:s');
         $Parcel->parcelsTaken = $request->parcelsTaken;
         $Parcel->parcelsDelivered = $request->parcel_delivered;
         $Parcel->addPhoto = $items;
