@@ -89,6 +89,9 @@
             padding-right: 35px;
             margin-left: 10px;
         }
+        .text-parcel{
+            color: #05c3fb !important;
+        }
     </style>
     <style>
         .table td {
@@ -1024,45 +1027,44 @@
                                                     </td>
                                                     @if (in_array('50', $arr) || in_array('51', $arr) || in_array('52', $arr) || in_array('53', $arr))
                                                         <td class="column-action">
-                                                            <div class="d-flex">
-                                                                @if (in_array('50', $arr))
-                                                                    @if ($allshift->finishStatus == '2')
-                                                                        <a onclick="approveAndReject(`{{ $allshift->id }}`)"
-                                                                            class="btn text-green btn-sm btncls"
-                                                                            data-bs-toggle="modal"><span
-                                                                                class="ti-check-box fs-14"></span></a>
-                                                                    @else
-                                                                        <a class="btn text-green btn-sm btncls"
-                                                                            style="color:grey !important"
-                                                                            data-bs-toggle="modal"><span
-                                                                                class="ti-check-box fs-14"></span></a>
+                                                            <div class="dropdown">
+                                                                <a class="nav-link float-end text-muted pe-0 pt-0" href="javascript:void(0)" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fe fe-more-vertical"></i></a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                    @if (in_array('50', $arr))
+                                                                        @if ($allshift->finishStatus == '2')
+                                                                            <a onclick="approveAndReject(`{{ $allshift->id }}`)"
+                                                                                class="dropdown-item text-green"
+                                                                                data-bs-toggle="modal"><i class="ti-check-box fs-14"></i>Approve Shift</a>
+                                                                        @else
+                                                                            <a class="dropdown-item text-green"
+                                                                                style="color:grey !important"
+                                                                                data-bs-toggle="modal"><i class="ti-check-box fs-14"></i>Approve Shift</a>
+                                                                        @endif
                                                                     @endif
-                                                                @endif
-                                                                @if (in_array('51', $arr))
-                                                                    <a class="btn text-info btn-sm btncls"
-                                                                        href="{{ route('admin.shift.report.view', ['id' => $allshift->id]) }}"
-                                                                        data-bs-toggle="tooltip"
-                                                                        data-bs-original-title="View"><span
-                                                                            class="fe fe-eye fs-14"></span>
-                                                                    </a>
-                                                                @endif
-                                                                @if (in_array('52', $arr))
-                                                                    <a class="btn text-primary btn-sm btncls"
-                                                                        href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
-                                                                        data-bs-toggle="tooltip"
-                                                                        data-bs-original-title="Edit"><span
-                                                                            class="fe fe-edit fs-14"></span>
-                                                                    </a>
-                                                                @endif
-                                                                @if (in_array('53', $arr))
-                                                                    <a class="btn text-primary btn-sm btncls"
-                                                                        href="{{ route('admin.shift.parcels', ['id' => $allshift->id]) }}"
-                                                                        data-bs-toggle="tooltip"
-                                                                        data-bs-original-title="Parcel"><span
-                                                                            class="fe fe-box"></span>
-                                                                    </a>
-                                                                    {{-- <a href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i></a> --}}
-                                                                @endif
+                                                                    @if (in_array('51', $arr))
+                                                                        <a class="dropdown-item text-info"
+                                                                            href="{{ route('admin.shift.report.view', ['id' => $allshift->id]) }}"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-original-title="View"><i class="fe fe-eye fs-14"></i>View
+                                                                        </a>
+                                                                    @endif
+                                                                    @if (in_array('52', $arr))
+                                                                        <a class="dropdown-item text-warning"
+                                                                            href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-original-title="Edit"><i class="fe fe-edit fs-14"></i> Edit
+                                                                        </a>
+                                                                    @endif
+
+                                                                    @if (in_array('53', $arr))
+                                                                        <a class="dropdown-item text-parcel"
+                                                                            href="{{ route('admin.shift.parcels', ['id' => $allshift->id]) }}"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-original-title="Parcel"><i class="fe fe-box"></i> Parcel
+                                                                        </a>
+                                                                        {{-- <a href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i></a> --}}
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </td>
                                                     @endif
