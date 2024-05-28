@@ -232,8 +232,12 @@ class Administration extends Controller
         return redirect('admin/administration/role')->with('message', 'Role Permission Updated successfully!');
     }
 
-    public function systemConfiguration()
+    public function systemConfiguration(Request $request)
     {
+        if($request->isMethod('POST')){
+            dd($request->all());
+        }
+
         return view('admin.role.system-configuration');
     }
 }
