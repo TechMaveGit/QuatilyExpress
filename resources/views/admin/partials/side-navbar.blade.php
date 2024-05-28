@@ -8,6 +8,15 @@
 .confirm{
             background-color: #4ecc48!important;
         }
+
+        .dark-mode .dynamic-select .dynamic-select-header.dynamic-select-header-active + .dynamic-select-options {
+            display: flex;
+            background: #202124 !important;
+            border: 1px solid #5e5e5e !important;
+        }
+        .dark-mode .dynamic-select .dynamic-select-options .dynamic-select-option:hover, .dynamic-select .dynamic-select-options .dynamic-select-option:active {
+             background-color: #545455 !important;
+        }
         </style>
 
 

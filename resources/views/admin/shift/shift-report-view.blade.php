@@ -14,7 +14,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
     <h1 class="page-title">Shift View</h1>
         <div>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                 <li class="breadcrumb-item " aria-current="page">Shift Report</li>
                 <li class="breadcrumb-item active" aria-current="page">Shift View</li>
             </ol>
@@ -216,8 +216,8 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <a href="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" target="_blank">
-                                                        <img src="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
+                                                    <a href="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" target="_blank">
+                                                        <img src="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
                                                                                                                 </div>
                                             </div>

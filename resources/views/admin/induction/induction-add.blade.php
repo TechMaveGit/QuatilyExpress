@@ -7,7 +7,7 @@
             <h1 class="page-title">Induction Add</h1>
             <div>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Home</a></li>
                     <li class="breadcrumb-item " aria-current="page">Induction</li>
                     <li class="breadcrumb-item active" aria-current="page">Induction Add</li>
 

@@ -47,7 +47,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
             <!-- <li class="breadcrumb-item" aria-current="page">Administration</li> -->
-            <li class="breadcrumb-item active" aria-current="page">Live Tracking</li>
+            <li class="breadcrumb-item active" aria-current="page">Delivery Tracking</li>
 
         </ol>
     </div>
@@ -295,7 +295,7 @@ function initMap() {
                 title: 'Parcel In - ' + redlocations[i].receiverName,
                 location: 'Location - ' + redlocations[i].location,
                 icon: {
-                    url: 'https://www.techmavedesigns.com/development/express/public/assets/flag/placeholder.png',
+                    url: '{{ asset("assets/flag/placeholder.png") }}',
                     scaledSize: new google.maps.Size(25, 35)
                 }
             });
@@ -328,7 +328,7 @@ function initMap() {
             title: 'Driver Last Location',
             location: deliver_ltn,
             icon: {
-                url: 'https://www.techmavedesigns.com/development/express/public/Blue.png',
+                url: '{{ asset("Blue.png") }}',
                 scaledSize: new google.maps.Size(25, 35)
             }
         });
@@ -350,7 +350,7 @@ function initMap() {
                 map: map,
                 title: 'Parcel Out - ' + doMarkLocation[i].deliveredTo,
                 icon: {
-                    url: 'https://www.techmavedesigns.com/development/express/public/Green.png',
+                    url: '{{ asset("Green.png") }}',
                     scaledSize: new google.maps.Size(25, 35)
                 }
             });

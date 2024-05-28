@@ -7,7 +7,7 @@
             <h1 class="page-title">Person View</h1>
             <div>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('person') }}">Person</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Person View</li>
 
@@ -303,7 +303,7 @@
                                                                         <tr class="border-bottom">
                                                                             <td> {{ $kk + 1 }}</td>
                                                                             <td> {{ $document->name }}</td>
-                                                                            <td><img src="{{ asset('assets/person-document/' . $document->document) }}"
+                                                                            <td><img src="{{ $document->document ? asset(env('STORAGE_URL').$document->document) : '' }}"
                                                                                     alt="Document Image" width="100px"></td>
                                                                             <td> {{ $document->status == '1' ? 'Active' : 'Inactive' }}
                                                                             </td>

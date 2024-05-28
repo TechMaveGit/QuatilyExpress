@@ -139,7 +139,7 @@ class Administration extends Controller
             $role_data = Roles::whereIn('id', [$input['roles']])->first()->id;
             $person = Driver::select('id', 'fullName')->where('id', $input['first_name'])->first();
             // $input['name']      = $input['first_name'] . $input['last_name'];
-            $input['name'] = $person->fullName;
+            $input['name'] = $person->fullName.' '.($person->surname??'');
             $input['email'] = $input['email'];
             $input['role_id'] = $role_data;
             $input['status'] = $input['status'];
@@ -232,8 +232,12 @@ class Administration extends Controller
         return redirect('admin/administration/role')->with('message', 'Role Permission Updated successfully!');
     }
 
-    public function systemConfiguration()
+    public function systemConfiguration(Request $request)
     {
+        if($request->isMethod('POST')){
+            dd($request->all());
+        }
+
         return view('admin.role.system-configuration');
     }
 }

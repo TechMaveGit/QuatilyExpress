@@ -350,8 +350,7 @@
                                                                 name="driverId" data-placeholder="Choose one" required>
                                                                 <option value="">Select Any One</option>
                                                                 @forelse ($driver as $AdddriverAdd)
-                                                                    <option value="{{ $AdddriverAdd->id }}">
-                                                                        {{ $AdddriverAdd->fullName }}</option>
+                                                                    <option value="{{ $AdddriverAdd->id }}">{{ $AdddriverAdd->userName??'' }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
                                                                 @empty
                                                                 @endforelse
 
@@ -1284,39 +1283,6 @@
 
         }
     </script>
-
-
-    {{-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        const startDatePicker = flatpickr("#start-date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            defaultDate: "today",
-            onChange: function(selectedDates, dateStr, instance) {
-                // Calculate the end date 24 hours after the selected start date
-                const endDate = new Date(selectedDates[0].getTime() + 4448 * 60 * 60 * 1000);
-
-                // Set the end date picker options
-                const endOfDaySTD = new Date();
-                endDatePicker.set('minDate', selectedDates[0]);
-                endDatePicker.set('maxDate', endOfDaySTD);
-
-                // Clear the end date input
-                endDatePicker.clear();
-            }
-        });
-
-        const endDatePicker = flatpickr("#end-date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            disable: [
-                function(date) {
-                    // Disable dates greater than 24 hours from the selected start date
-                    return date > new Date(startDatePicker.selectedDates[0].getTime() + 4448 * 60 * 60 * 1000);
-                }
-            ]
-        });
-    </script> --}}
 
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

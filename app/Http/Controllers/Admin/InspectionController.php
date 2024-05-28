@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Inspection;
 use App\Models\Vehical;
 use Auth;
@@ -31,85 +32,61 @@ class InspectionController extends Controller
             $name = $req->input('selectrego');
             $notes = $req->input('notes');
 
-            $frontImage = '';
+            $frontImage = null;
+            $dateFolder = 'inspection/carimage';
+
             if ($req->hasFile('frontImage')) {
-                $files = $req->file('frontImage');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $frontImage = $file_name;
+                $image = $req->file('frontImage');
+                $frontImage = ImageController::upload($image, $dateFolder);
             }
 
-            $frontLeft = '';
+            $frontLeft = null;
             if ($req->hasFile('frontLeft')) {
-                $files = $req->file('frontLeft');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $frontLeft = $file_name;
+                $image = $req->file('frontLeft');
+                $frontLeft = ImageController::upload($image, $dateFolder);
             }
 
-            $frontRight = '';
+            $frontRight = null;
             if ($req->hasFile('frontRight')) {
-                $files = $req->file('frontRight');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $frontRight = $file_name;
+                $image = $req->file('frontRight');
+                $frontRight = ImageController::upload($image, $dateFolder);
             }
 
-            $leftSide = '';
+            $leftSide = null;
             if ($req->hasFile('leftSide')) {
-                $files = $req->file('leftSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $leftSide = $file_name;
+                $image = $req->file('leftSide');
+                $leftSide = ImageController::upload($image, $dateFolder);
             }
 
-            $rightSide = '';
+            $rightSide = null;
             if ($req->hasFile('rightSide')) {
-                $files = $req->file('rightSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $rightSide = $file_name;
+                $image = $req->file('rightSide');
+                $rightSide = ImageController::upload($image, $dateFolder);
             }
 
-            $back = '';
+            $back = null;
             if ($req->hasFile('back')) {
-                $files = $req->file('back');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $back = $file_name;
+                $image = $req->file('back');
+                $dateFolder = 'inspection/carimage';
+                $back = ImageController::upload($image, $dateFolder);
             }
 
-            $backLeftSide = '';
+            $backLeftSide = null;
             if ($req->hasFile('backLeftSide')) {
-                $files = $req->file('backLeftSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $backLeftSide = $file_name;
+                $image = $req->file('backLeftSide');
+                $backLeftSide = ImageController::upload($image, $dateFolder);
             }
 
-            $backRightSide = '';
+            $backRightSide = null;
             if ($req->hasFile('backRightSide')) {
-                $files = $req->file('backRightSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $backRightSide = $file_name;
+                $image = $req->file('backRightSide');
+                $backRightSide = ImageController::upload($image, $dateFolder);
             }
 
-            $cockpit = '';
+            $cockpit = null;
             if ($req->hasFile('cockpit')) {
-                $files = $req->file('cockpit');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $cockpit = $file_name;
+                $image = $req->file('cockpit');
+                $cockpit = ImageController::upload($image, $dateFolder);
             }
 
             $data = [
@@ -154,92 +131,66 @@ class InspectionController extends Controller
             $name = $req->input('selectrego');
             $notes = $req->input('notes');
 
+            $dateFolder = 'inspection/carimage';
             if ($req->hasFile('frontImage')) {
-                $files = $req->file('frontImage');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name1 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name1);
-                $frontImage = $file_name1;
+                $image = $req->file('frontImage');
+                $frontImage = ImageController::upload($image, $dateFolder);
             } else {
                 $frontImage = $data['inspection']->front;
             }
 
             if ($req->hasFile('frontLeft')) {
-                $files = $req->file('frontLeft');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name2 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name2);
-                $frontLeft = $file_name2;
+                $image = $req->file('frontLeft');
+                $frontLeft = ImageController::upload($image, $dateFolder);
             } else {
                 $frontLeft = $data['inspection']->frontleft;
             }
 
             if ($req->hasFile('frontRight')) {
-                $files = $req->file('frontRight');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name3 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name3);
-                $frontRight = $file_name3;
+                $image = $req->file('frontRight');
+                $frontRight = ImageController::upload($image, $dateFolder);
             } else {
                 $frontRight = $data['inspection']->frontRight;
             }
 
             if ($req->hasFile('leftSide')) {
-                $files = $req->file('leftSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name4 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name4);
-                $leftSide = $file_name4;
+                $image = $req->file('leftSide');
+                $leftSide = ImageController::upload($image, $dateFolder);
             } else {
                 $leftSide = $data['inspection']->leftSide;
             }
 
             if ($req->hasFile('rightSide')) {
-                $files = $req->file('rightSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name5 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name5);
-                $rightSide = $file_name5;
+                $image = $req->file('rightSide');
+                $rightSide = ImageController::upload($image, $dateFolder);
             } else {
                 $rightSide = $data['inspection']->rightSide;
             }
 
             if ($req->hasFile('back')) {
-                $files = $req->file('back');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name6 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name6);
-                $back = $file_name6;
+                $image = $req->file('back');
+                $back = ImageController::upload($image, $dateFolder);
             } else {
                 $back = $data['inspection']->backSide;
             }
 
             if ($req->hasFile('backLeftSide')) {
-                $files = $req->file('backLeftSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name7 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name7);
-                $backLeftSide = $file_name7;
+                $image = $req->file('backLeftSide');
+                $backLeftSide = ImageController::upload($image, $dateFolder);
             } else {
                 $backLeftSide = $data['inspection']->backLeftSide;
             }
 
             if ($req->hasFile('backRightSide')) {
-                $files = $req->file('backRightSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name8 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name8);
-                $backRightSide = $file_name8;
+                $image = $req->file('backRightSide');
+                $backRightSide = ImageController::upload($image, $dateFolder);
             } else {
                 $backRightSide = $data['inspection']->backRightSide;
             }
 
             if ($req->hasFile('cockpit')) {
-                $files = $req->file('cockpit');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name9 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name9);
-                $cockpit = $file_name9;
+                $image = $req->file('cockpit');
+                $cockpit = ImageController::upload($image, $dateFolder);
             } else {
                 $cockpit = $data['inspection']->cockpit;
             }
@@ -273,92 +224,66 @@ class InspectionController extends Controller
             $name = $req->input('selectrego');
             $notes = $req->input('notes');
 
+            $dateFolder = 'inspection/carimage';
             if ($req->hasFile('frontImage')) {
-                $files = $req->file('frontImage');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name1 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name1);
-                $frontImage = $file_name1;
+                $image = $req->file('frontImage');
+                $frontImage = ImageController::upload($image, $dateFolder);
             } else {
                 $frontImage = $data['inspection']->front;
             }
 
             if ($req->hasFile('frontLeft')) {
-                $files = $req->file('frontLeft');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name2 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name2);
-                $frontLeft = $file_name2;
+                $image = $req->file('frontLeft');
+                $frontLeft = ImageController::upload($image, $dateFolder);
             } else {
                 $frontLeft = $data['inspection']->frontleft;
             }
 
             if ($req->hasFile('frontRight')) {
-                $files = $req->file('frontRight');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name3 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name3);
-                $frontRight = $file_name3;
+                $image = $req->file('frontRight');
+                $frontRight = ImageController::upload($image, $dateFolder);
             } else {
                 $frontRight = $data['inspection']->frontRight;
             }
 
             if ($req->hasFile('leftSide')) {
-                $files = $req->file('leftSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name4 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name4);
-                $leftSide = $file_name4;
+                $image = $req->file('leftSide');
+                $leftSide = ImageController::upload($image, $dateFolder);
             } else {
                 $leftSide = $data['inspection']->leftSide;
             }
 
             if ($req->hasFile('rightSide')) {
-                $files = $req->file('rightSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name5 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name5);
-                $rightSide = $file_name5;
+                $image = $req->file('rightSide');
+                $rightSide = ImageController::upload($image, $dateFolder);
             } else {
                 $rightSide = $data['inspection']->rightSide;
             }
 
             if ($req->hasFile('back')) {
-                $files = $req->file('back');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name6 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name6);
-                $back = $file_name6;
+                $image = $req->file('back');
+                $back = ImageController::upload($image, $dateFolder);
             } else {
                 $back = $data['inspection']->backSide;
             }
 
             if ($req->hasFile('backLeftSide')) {
-                $files = $req->file('backLeftSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name7 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name7);
-                $backLeftSide = $file_name7;
+                $image = $req->file('backLeftSide');
+                $backLeftSide = ImageController::upload($image, $dateFolder);
             } else {
                 $backLeftSide = $data['inspection']->backLeftSide;
             }
 
             if ($req->hasFile('backRightSide')) {
-                $files = $req->file('backRightSide');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name8 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name8);
-                $backRightSide = $file_name8;
+                $image = $req->file('backRightSide');
+                $backRightSide = ImageController::upload($image, $dateFolder);
             } else {
                 $backRightSide = $data['inspection']->backRightSide;
             }
 
             if ($req->hasFile('cockpit')) {
-                $files = $req->file('cockpit');
-                $destinationPath = 'assets/inspection/carimage';
-                $file_name9 = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name9);
-                $cockpit = $file_name9;
+                $image = $req->file('cockpit');
+                $cockpit = ImageController::upload($image, $dateFolder);
             } else {
                 $cockpit = $data['inspection']->cockpit;
             }

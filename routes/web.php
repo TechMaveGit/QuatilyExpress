@@ -31,8 +31,7 @@ Route::get('/', function () {
     $data['pageTitle'] = 'Dashboard';
 
     return view('admin.login', $data);
-});
-// Auth::routes();
+})->name('home_page');
 Route::get('/testing', [AdminLoginController::class, 'testing'])->name('testing');
 Route::get('/admin', [AdminLoginController::class, 'index'])->name('admin');
 Route::post('login', [AdminLoginController::class, 'login'])->name('admin.login');
@@ -54,6 +53,7 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
     Route::match(['get', 'post'], '/profile', [AdminLoginController::class, 'profile'])->name('admin.profile');
     Route::match(['get', 'post'], '/updatePassword', [AdminLoginController::class, 'updatePassword'])->name('admin.updatePassword');
+    
     Route::group(['prefix' => 'administration'], function () {
         Route::match(['get', 'post'], '/role', [Administration::class, 'index'])->name('administration.role');
         Route::match(['get', 'post'], '/role-add', [Administration::class, 'roleAdd'])->name('administration.role.add');
