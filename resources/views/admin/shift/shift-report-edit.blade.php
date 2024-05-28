@@ -641,7 +641,7 @@ foreach($D as $v)
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                 <label class="form-label" for="exampleInputEmail1">Approved Reason</label>
-                                                <textarea class="form-control mb-4" name="approvedReason" @if($shiftView->finishStatus =='5') disabled @else @endif placeholder="Please Enter Your Comment" rows="4">{{ $shiftView->getShiftMonetizeInformation->approvedReason	??'' }}</textarea>
+                                                <textarea class="form-control mb-4" name="approvedReason" @if($shiftView->finishStatus =='5') disabled @else @endif placeholder="Please Enter Your Comment" rows="4">{{ $shiftView->approval_reason	??'' }}</textarea>
                                                 </div>
                                             </div>
                                         </div>
