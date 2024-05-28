@@ -86,10 +86,10 @@
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
                                                                 <label class="form-label"
-                                                                    for="exampleInputEmail1">Surname</label>
+                                                                    for="exampleInputEmail1">Surname <span class="red">*</span></label>
                                                                 <input type="text" class="form-control" name="surname"
                                                                     autocomplete="off" value="{{ old('surname') }}"
-                                                                    placeholder="">
+                                                                    placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3">
@@ -131,8 +131,7 @@
                                                                         data-dynamic-select required>
 
                                                                         @foreach ($countryCode as $countryCodes)
-                                                                            <option value={{ $countryCodes->dial_code }}
-                                                                                data-img="{{ $countryCodes->flag }}">
+                                                                            <option value="{{ $countryCodes->dial_code }}" {{ $countryCodes->dial_code == '+61' ? 'selected' : '' }} data-img="{{ $countryCodes->flag }}"> 
                                                                                 {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
                                                                             </option>
                                                                         @endforeach
@@ -150,15 +149,13 @@
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Phone
-                                                                    Principal <span class="red">*</span></label>
-
+                                                                <label class="form-label" for="exampleInputEmail1">Phone Principal </label>
                                                                 <input class="form-control" name="phoneprinciple"
                                                                     min="0" autocomplete="off"
                                                                     value="{{ old('phoneprinciple') }}"
                                                                     oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                                                                     type = "number" maxlength="12" placeholder=""
-                                                                    required>
+                                                                    >
 
                                                             </div>
                                                         </div>
@@ -242,7 +239,7 @@
                                                                     value="{{ old('extra_rate_per_hour') }}"
                                                                     min="0" autocomplete="off"
                                                                     name="extra_rate_per_hour"
-                                                                    aria-describedby="emailHelp" placeholder="" required>
+                                                                    aria-describedby="emailHelp" step="any" placeholder="" required>
                                                             </div>
                                                         </div>
 

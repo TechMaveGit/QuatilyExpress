@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Client;
 use App\Models\Finishshift;
 use App\Models\Parcels;
@@ -64,11 +65,9 @@ class ParcelController extends Controller
         for ($i = 0; $i < $hgcount; $i++) {
             $items = '';
             if ($request->hasFile('parcelIamge')) {
-                $files = $request->file('parcelIamge')[$i];
-                $destinationPath = 'assets/driver/parcel/';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $request->file('parcelIamge')[$i];
+                $dateFolder = 'driver/parcel';
+                $items = ImageController::upload($image, $dateFolder);
             }
             $packageItem = [
                 'parcelId'    => $Parcel->id,
@@ -180,11 +179,9 @@ class ParcelController extends Controller
         $delivered_latitude = $request->input('deliver_lat');
         $delivered_longitude = $request->input('deliver_lng');
         if ($request->file('parcelIamge') != '') {
-            $files = $request->file('parcelIamge');
-            $destinationPath = 'assets/driver/parcel/';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $photo = $file_name;
+            $image = $request->file('parcelIamge');
+            $dateFolder = 'driver/parcel';
+            $photo = ImageController::upload($image, $dateFolder);
         } else {
             $photo = '';
         }
@@ -225,7 +222,8 @@ class ParcelController extends Controller
         $parcelId = $request->input('parcelId');
         $checkParcel = Parcels::whereId($parcelId)->where('status', '1')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['status' => '1']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => date('Y-m-d'),'status' => '1']);
+            
             if ($Parcels) {
                 return response()->json([
                     'status' => $this->successStatus,
@@ -314,13 +312,11 @@ class ParcelController extends Controller
             DB::table('addparcelimages')->where('parcelId', $parcelId)->delete();
 
             for ($i = 0; $i < $hgcount; $i++) {
-                $items = '';
+                $items = null;
                 if ($request->hasFile('parcelIamge')) {
-                    $files = $request->file('parcelIamge')[$i];
-                    $destinationPath = 'assets/driver/parcel/';
-                    $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                    $files->move($destinationPath, $file_name);
-                    $items = $file_name;
+                    $image = $request->file('parcelIamge')[$i];
+                    $dateFolder = 'driver/parcel';
+                    $items = ImageController::upload($image, $dateFolder);
                 }
                 $packageItem = [
                     'parcelId'    => $parcelId,
@@ -624,11 +620,9 @@ class ParcelController extends Controller
                 Shift::whereId($request->shiftId)->update(['finishStatus' => '2', 'parcelsToken' => $request->parcelsTaken]);
 
                 if ($request->file('addPhoto') != '') {
-                    $files = $request->file('addPhoto');
-                    $destinationPath = 'assets/driver/parcel/finishParcel';
-                    $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                    $files->move($destinationPath, $file_name);
-                    $items = $file_name;
+                    $image = $request->file('addPhoto');
+                    $dateFolder = 'driver/parcel/finishParcel';
+                    $items = ImageController::upload($image, $dateFolder);
                 } else {
                     $items = '';
                 }
@@ -650,7 +644,7 @@ class ParcelController extends Controller
                 $Parcel->endDate = $request->endDate;
                 $Parcel->startTime = $dayStartTime->format('H:i');
                 $Parcel->endTime = $nightEndTime->format('H:i');
-                $Parcel->parcelsTaken = $request->parcelsTaken;
+                $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
                 $Parcel->addPhoto = $items;
                 $Parcel->save();

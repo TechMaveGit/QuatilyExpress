@@ -8,7 +8,7 @@
         <h1 class="page-title">Parcels</h1>
         <div>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page">Shift</li>
                 <li class="breadcrumb-item active" aria-current="page">Parcel Detail</li>
 

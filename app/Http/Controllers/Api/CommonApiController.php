@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Client;
 use App\Models\Clientcenter;
 use App\Models\Clientrate;
@@ -64,6 +65,15 @@ class CommonApiController extends Controller
             }
 
             $vehicleRego = DB::table('vehicals')->select('id', 'rego')->get();
+
+            $insepctiopnRego = DB::table('vehicals')
+            ->select('id', 'rego')
+            ->where('controlVehicle', '1')
+            ->where('driverResponsible', $this->driverId)
+            ->get();
+            if (count($insepctiopnRego) <= 0) {
+                $insepctiopnRego = $vehicleRego;
+            }
 
             return response()->json([
                 'status' => 200,
@@ -218,13 +228,11 @@ class CommonApiController extends Controller
             Shift::whereId($shify->id)->update(['finishStatus' => '2']);
 
             if ($request->file('missedImage') != '') {
-                $files = $request->file('missedImage');
-                $destinationPath = 'assets/driver/parcel/finishParcel';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $request->file('missedImage');
+                $dateFolder = 'driver/parcel/finishParcel';
+                $items = ImageController::upload($image, $dateFolder);
             } else {
-                $items = '';
+                $items = null;
             }
 
             $Parcel = new Finishshift();
@@ -350,13 +358,11 @@ class CommonApiController extends Controller
 
                     Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
                     if ($request->file('missedImage') != '') {
-                        $files = $request->file('missedImage');
-                        $destinationPath = 'assets/driver/parcel/finishParcel';
-                        $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                        $files->move($destinationPath, $file_name);
-                        $items = $file_name;
+                        $image = $request->file('missedImage');
+                        $dateFolder = 'driver/parcel/finishParcel';
+                        $items = ImageController::upload($image, $dateFolder);
                     } else {
-                        $items = '';
+                        $items = null;
                     }
 
                     Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
