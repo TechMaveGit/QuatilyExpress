@@ -281,7 +281,7 @@ foreach($D as $v)
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
                                                     <input type="text" class="form-control "
-                                                    value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i') }}"
+                                                    value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i:s') }}"
                                                     aria-describedby="emailHelp" placeholder="" readonly>
                                                                                              </div>
                                             </div>
