@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Shift extends Model
 {
     use HasFactory;
-    protected $fillable = ['driverId', 'shiftRandId', 'shiftStartDate', 'state', 'client', 'weekendHours', 'costCenter', 'base', 'vehicleType', 'rego', 'scanner_id', 'odometer', 'parcelsToken', 'finishStatus','is_missed_shift'];
+    protected $fillable = [
+        'driverId','shiftRandId','state','client','costCenter','base','vehicleType','rego','odometer','scanner_id','parcelsToken','status','chageAmount','payAmount','shiftStatus','finishStatus','optShift','comment','approval_reason','shiftStartDate','finishDate','createdDate','startlatitude','startlongitude','endlatitude','endlongitude','startaddress','endaddress','priceOverRideStatus','is_missed_shift'
+    ];
 
     public function getClientName()
     {
