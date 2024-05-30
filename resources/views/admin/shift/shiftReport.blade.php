@@ -135,7 +135,7 @@
                     <div class="">
                         <form action="{{ route('admin.shift.import') }}" method="post" enctype="multipart/form-data"> @csrf
                             <div class="flex_div">
-                                <input class="form-control" type="file" name="excel_file" accept=".xls, .xlsx" required>
+                                <input class="form-control" type="file" name="shift_file" accept=".csv" required>
                                 <input class="btn btn-green import-button" type="submit" value="Import Excel" />
                             </div>
                         </form>

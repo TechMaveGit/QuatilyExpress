@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+
 class ShiftController extends Controller
 {
     public $successStatus = 200;
@@ -81,6 +82,7 @@ class ShiftController extends Controller
         $shify->finishStatus = '1';
         $shify->parcelsToken = $request->parcelsToken;
         $shify->shiftStartDate = date('Y-m-d H:i:s');
+        $shify->createdDate = date('Y-m-d H:i:s');
         $shify->save();
 
         if ($shify) {
@@ -446,6 +448,7 @@ class ShiftController extends Controller
         $shify->comment = $request->comment;
         $shify->is_missed_shift = '1';
         $shify->finishStatus = '2';
+        $shify->createdDate = date('Y-m-d H:i:s');
         $shify->save();
 
         $getClientID = Shift::whereId($shify->id)->first()->client;
