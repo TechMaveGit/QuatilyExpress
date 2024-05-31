@@ -31,7 +31,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('person.deletePerson')}}" method="post" />@csrf
+            <form action="{{route('person.deletePerson')}}" method="post">
+                @csrf
             <div class="modal-body">
                 <div class="mt-2 text-center">
                     <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">

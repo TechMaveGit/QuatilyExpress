@@ -75,7 +75,6 @@
                                                     <div class="row">
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-
                                                                 <label class="form-label" for="exampleInputEmail1">Name
                                                                     <span class="red">*</span></label>
                                                                 <input type="text" class="form-control" name="name"
@@ -104,32 +103,19 @@
                                                                     <div class="error" style="color: red;">
                                                                         {{ $errors->first('email') }}</div>
                                                                 @endif
-
-
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Date Of
-                                                                    Birth</label>
-
-                                                                <input type="text" name="dob" min="1000-01-01T00:00"
-                                                                    max="9999-12-31T23:59"
-                                                                    class="form-control persononlydate" placeholder="" />
-
-
+                                                                <label class="form-label" for="exampleInputEmail1">Date Of Birth</label>
+                                                                <input type="text" name="dob" class="form-control dobDate" placeholder="" />
                                                             </div>
-
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <label for="simpleinput" class="form-label">Mobile No. <span class="red">*</span></label>
                                                             <div class="input-group ">
                                                                 <div class="input-group-prepend">
-                                                                    <select id="country" class="form-control select2"
-                                                                        name="country_code"
-                                                                        data-placeholder="Select a country"
-                                                                        data-dynamic-select required>
-
+                                                                    <select id="country" class="form-control select2" name="country_code" data-placeholder="Select a country" data-dynamic-select required>
                                                                         @foreach ($countryCode as $countryCodes)
                                                                             <option value="{{ $countryCodes->dial_code }}" {{ $countryCodes->dial_code == '+61' ? 'selected' : '' }} data-img="{{ $countryCodes->flag }}"> 
                                                                                 {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
@@ -137,11 +123,7 @@
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
-                                                                <input type="text"
-                                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                                                    value="{{ old('mobile_number') }}"
-                                                                    name="mobile_number" minlength="8" maxlength="13"
-                                                                    class="form-control " required>
+                                                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ old('mobile_number') }}" name="mobile_number" minlength="8" maxlength="13" class="form-control " required>
                                                                 @error('mobile_number')
                                                                     <span class="text-danger">{{ $message }}</span>
                                                                 @enderror
