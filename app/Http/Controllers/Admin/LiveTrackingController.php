@@ -15,86 +15,91 @@ class LiveTrackingController extends Controller
 {
     public function liveTracking(Request $request)
     {
-
-        $allActiveLocation = DB::table('track_location')->get();
-
         $locations = '';
-        $driver = Driver::get();
+        $driver = Driver::with('allshift')->has('allshift')->get();
         $driverName = '';
-        $shiftName = $request->input('shiftName');
-        $firstLocation = '';
-        $parcelLocation = '';
-        $doMarkLocation = '';
-        $deliver_address = '';
+        $shiftId = '';
+        $parcelLocation = null;
+        $startpoints = null;
+        $endpoints = null;
+
         if (request()->isMethod('post')) {
-            $request->all();
             $driverName = $request->input('driverName');
-            $shiftName = $request->input('shiftName');
-            $shiftId = Shift::select('id', 'base')->where('id', $shiftName)->pluck('id')->toArray();
+            $shiftId = $request->input('shiftName');
             $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng')->orderBy('id', 'DESC');
-            $lastLocations = DB::table('track_location')->select('id', 'shiftid')->orderBy('id', 'DESC');
+
             if ($driverName) {
                 $locations->where('driver_id', $driverName);
             }
+
             if ($shiftId) {
-                $locations->whereIn('shiftid', $shiftId);
+                $locations->where('shiftid', $shiftId);
             }
+            $shiftData = Shift::where('id',$shiftId)->first();
+            
+
+            $startpoints = ['lat'=>$shiftData->startlatitude??null,'lng'=>$shiftData->startlongitude??null,'address'=>$shiftData->startaddress??null];
+            $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
             $locations = $locations->get()->toArray();
-            $lastLocations = $lastLocations->first()->shiftid ?? '';
-            $deliver_address = Parcels::where('shiftId', $lastLocations)->first()->deliver_address ?? '';
+
             if ($shiftId) {
-                $parcelLocation = Parcels::select('latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName')->orderBy('sorting', 'DESC');
-                $parcelLocation->whereIn('shiftid', $shiftId);
+                $parcelLocation = Parcels::select('latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
+                $parcelLocation->where('shiftid', $shiftId);
                 $parcelLocation = $parcelLocation->get()->toArray();
-                $doMarkLocation = Parcels::select('shiftId')
-                    ->orderBy('sorting', 'DESC')
-                    ->where('status', '2')
-                    ->whereIn('shiftid', $shiftId)
-                    ->get()
-                    ->toArray();
-                $doMarkLocation = DB::table('parcels')
-                    ->select('delivered_latitude as lat', 'delivered_longitude as lng', 'deliveredTo', 'deliver_address')
-                    ->whereIn('shiftid', $doMarkLocation)
-                    ->orderBy('id', 'DESC')
-                    ->get();
             }
-            if ($shiftId) {
-                $firstLocation = DB::table('track_location')
-                    ->select('latitude as lat', 'longitude as lng')
-                    ->orderBy('id', 'DESC')
-                    ->where('shiftId', $shiftId)
-                    ->get()
-                    ->first();
-            } else {
-                $firstLocation = '';
-            }
-            // dd($locations, $shift, $driver, $driverName, $shiftName, $firstLocation, $deliver_address, $parcelLocation, $doMarkLocation);
         }
 
-        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftName', 'firstLocation', 'deliver_address', 'parcelLocation', 'doMarkLocation'));
+        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftId', 'parcelLocation','startpoints','endpoints'));
     }
 
     public function getDriverLocation(Request $request)
     {
-        $driver = Driver::where('status', '1')->get();
+        $driverName = '';
+        $driverIds = Shift::where('shiftStatus','2')->get()->pluck('driverId')->toArray()??null;
+        $driver = Driver::whereIn('id',$driverIds)->get();
         $locations = [];
-        foreach ($driver as $alldriver) {
-            $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng')
-                ->orderBy('id', 'DESC')
-                ->where('driver_id', $alldriver->id)
-                ->first();
-            if (isset($location->driver_id)) {
-                $location->name = Driver::whereId($location->driver_id ?? '')->first()->userName ?? '';
+        $parcelLocation = null;
+        $startpoints = null;
+        $endpoints = null;
+        
+        if (request()->isMethod('post')) {
+            $driverName = $request->input('driverName');
+            $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng')->orderBy('id', 'DESC');
+            $shiftData = Shift::where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first();
+
+            if ($driverName) {
+                $locations->where('driver_id', $driverName);
             }
-            if ($location) {
-                $locations[] = $location->toArray();
-            } else {
-                // Handle the case when no record is found for the current driver ID
-                // For example, you can add a default location or skip adding to $locations
+            
+            $startpoints = ['lat'=>$shiftData->startlatitude??null,'lng'=>$shiftData->startlongitude??null,'address'=>$shiftData->startaddress??null];
+            $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
+            $locations = $locations->get()->toArray();
+
+            if ($shiftData->id) {
+                $parcelLocation = Parcels::select('latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
+                $parcelLocation->where('shiftid', $shiftData->id);
+                $parcelLocation = $parcelLocation->get()->toArray();
+            }
+        }else{
+            foreach ($driver as $alldriver) {
+                $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng')
+                    ->orderBy('id', 'DESC')
+                    ->where('driver_id', $alldriver->id)
+                    ->first();
+                    if (isset($location->driver_id)) {
+                        $location->driver = Driver::whereId($location->driver_id ?? '')->first()->toArray() ?? '';
+                        $location->shift = Shift::where(['driverId'=>$location->driver_id,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
+                    }
+                    if ($location) {
+                        $locations[] = $location->toArray();
+                    } else {
+                }
             }
         }
 
-        return view('admin.liveTracking.driverLocation', compact('locations'));
+        // dd($locations);
+
+        return view('admin.liveTracking.driverLocation', compact('locations','driver','driverName','parcelLocation','startpoints','endpoints'));
     }
 
     public function getShift(Request $request)

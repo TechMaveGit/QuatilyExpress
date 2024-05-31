@@ -1,219 +1,180 @@
-
-
-
-<?php
-$locations = [
-        ["id" => "7649", "lat" => 37.7749, "lng" => -122.4194, "info" => "Driver 7649 details"],
-        ["id" => "0097", "lat" => 37.7849, "lng" => -122.4294, "info" => "Driver 0097 details"],
-        ["id" => "3042", "lat" => 37.7949, "lng" => -122.4394, "info" => "Driver 3042 details"],
-        ["id" => "9281", "lat" => 37.7049, "lng" => -122.4094, "info" => "Driver 9281 details"]
-    ];
-// dd($locations);
-?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Route Tracking on Google Maps</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s"></script>
-    <style>
-        .info-window-content {
-            text-align: center;
-        }
-        .info-window-content img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-    </style>
-    <script>
-        function initMap() {
-            var locations = @json($locations);
-            var specificLocations = @json($specificLocations??null);
-            
-            // Ensure that latitude and longitude are numbers
-            locations = locations.map(function(location) {
-                return {
-                    lat: parseFloat(location.latitude),
-                    lng: parseFloat(location.longitude)
-                };
-            });
-
-            specificLocations = specificLocations.map(function(location) {
-                return {
-                    lat: parseFloat(location.lat),
-                    lng: parseFloat(location.lng)
-                };
-            });
-
-            if (!locations.length) {
-                console.error('No location data available.');
-                return;
-            }
-
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 6,
-                center: locations[0]  // Center the map on the first point
-            });
-
-            var routeCoordinates = locations;
-
-            var routePath = new google.maps.Polyline({
-                path: routeCoordinates,
-                geodesic: true,
-                strokeColor: '#0000FF',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
-
-            routePath.setMap(map);
-
-            // Custom Icons
-            var truckIcon = 'http://maps.google.com/mapfiles/kml/shapes/truck.png';
-            var packageIcon = 'http://maps.google.com/mapfiles/kml/paddle/grn-stars.png';
-
-            // Start Marker
-            var startMarker = new google.maps.Marker({
-                position: routeCoordinates[0],
-                map: map,
-                title: 'Start Point',
-                icon: truckIcon
-            });
-
-            var startInfoWindow = new google.maps.InfoWindow({
-                content: '<div class="info-window-content"><img src="https://via.placeholder.com/50" alt="User Profile"><h3>Start Location</h3><p>User details here</p></div>'
-            });
-
-            startMarker.addListener('click', function() {
-                startInfoWindow.open(map, startMarker);
-            });
-
-            // End Marker
-            var endMarker = new google.maps.Marker({
-                position: routeCoordinates[routeCoordinates.length - 1],
-                map: map,
-                title: 'End Point',
-                icon: truckIcon
-            });
-
-            var endInfoWindow = new google.maps.InfoWindow({
-                content: '<div class="info-window-content"><img src="https://via.placeholder.com/50" alt="User Profile"><h3>End Location</h3><p>User details here</p></div>'
-            });
-
-            endMarker.addListener('click', function() {
-                endInfoWindow.open(map, endMarker);
-            });
-
-            // Special markers along the route if they match specific locations
-            routeCoordinates.forEach(function(location, index) {
-                specificLocations.forEach(function(specificLocation) {
-                    if (location.lat === specificLocation.lat && location.lng === specificLocation.lng) {
-                        var packageMarker = new google.maps.Marker({
-                            position: location,
-                            map: map,
-                            title: 'Package Location',
-                            icon: packageIcon
-                        });
-
-                        var packageInfoWindow = new google.maps.InfoWindow({
-                            content: '<div class="info-window-content"><img src="https://via.placeholder.com/50" alt="Package"><h3>Package Location</h3><p>Delivery details here</p></div>'
-                        });
-
-                        packageMarker.addListener('click', function() {
-                            packageInfoWindow.open(map, packageMarker);
-                        });
-                    }
-                });
-            });
-        }
-    </script>
+    <title>Google Maps Delivery Route</title>
+    
 </head>
 <body onload="initMap()">
-    <h3>Route Tracking on Google Maps</h3>
-    <div id="map" style="height: 600px; width: 100%;"></div>
+    <div id="map" style="height: 500px; width: 100%;"></div>
 </body>
-</html>
 
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Driver Locations</title>
-    <style>
-        #map { height: 600px; width: 100%; }
-        .custom-marker {
-            background-color: #ffa500;
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
-        }
-    </style>
-</head>
-<body>
-    <div id="map"></div>
-    
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&libraries=places"></script>
     <script>
-        // Initialize the map
+        let map;
+        let directionsService;
+        let directionsRenderer;
+        let deliveryPoints = [
+            {lat: 28.6139, lng: 76.2090, label: '1', delivered: true, info: "Delivered Parcel 1"},
+            {lat: 28.7041, lng: 77.1025, label: '2', delivered: false, info: "Pending Parcel 2"},
+            {lat: 28.5355, lng: 77.3910, label: '3', delivered: false, info: "Pending Parcel 3"},
+            {lat: 28.4595, lng: 77.0266, label: '4', delivered: true, info: "Delivered Parcel 4"},
+            {lat: 28.4089, lng: 77.3178, label: '5', delivered: false, info: "Pending Parcel 5"}
+        ];
+        let driverRoute = [
+            {lat: 28.7041, lng: 77.1025}, // Middle point
+            {lat: 28.5355, lng: 77.3910}  // Current driver location
+        ];
+        let driverLocation = driverRoute[driverRoute.length - 1]; // Last point in driverRoute is current location
+        let startPoint = {lat: 28.6139, lng: 77.2090}; // Start point (red)
+        let endPoint = {lat: 26.9124, lng: 75.7873}; // End point (green)
+
         function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 37.7749, lng: -122.4194},
-                zoom: 12
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: startPoint,
+                zoom: 7
             });
 
-            // Fetch driver data from PHP
-            fetch('drivers.php')
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(driver => {
-                        // Create a custom marker element
-                        var markerDiv = document.createElement('div');
-                        markerDiv.className = 'custom-marker';
-                        markerDiv.innerHTML = 'TRACKING #' + driver.id;
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                polylineOptions: {
+                    strokeColor: 'black'
+                }
+            });
 
-                        // Create an info window
-                        var infoWindow = new google.maps.InfoWindow({
-                            content: `<div>
-                                <h3>Tracking #${driver.id}</h3>
-                                <p>Name: ${driver.name}</p>
-                                <p>Status: ${driver.status}</p>
-                            </div>`
-                        });
-
-                        // Create a custom marker
-                        var customMarker = new google.maps.Marker({
-                            position: {lat: driver.lat, lng: driver.lng},
-                            map: map,
-                            label: {
-                                text: ' ',
-                                className: 'custom-marker-label'
-                            },
-                            icon: {
-                                labelOrigin: new google.maps.Point(0, 0),
-                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="40">
-                                        <rect x="0" y="0" width="100" height="40" fill="#ffa500"/>
-                                        <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" font-size="14" font-family="Arial" fill="white">TRACKING #${driver.id}</text>
-                                    </svg>
-                                `)
-                            }
-                        });
-
-                        // Add click event to the marker to show info window
-                        customMarker.addListener('click', function() {
-                            infoWindow.open(map, customMarker);
-                        });
-                    });
-                })
-                .catch(error => console.error('Error fetching driver data:', error));
+            calculateAndDisplayRoute();
+            addMarkers();
         }
 
-        // Load the map
-        google.maps.event.addDomListener(window, 'load', initMap);
-    </script>
-</body>
-</html>
+        function calculateAndDisplayRoute() {
+            let waypoints = [];
+            if (deliveryPoints.length > 0) {
+                waypoints = deliveryPoints.map(point => ({
+                    location: new google.maps.LatLng(point.lat, point.lng),
+                    stopover: true
+                }));
+            }
 
+            directionsService.route({
+                origin: startPoint,
+                destination: endPoint,
+                waypoints: waypoints,
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.DRIVING
+            }, (response, status) => {
+                if (status === 'OK') {
+                    let route = response.routes[0];
+                    if (deliveryPoints.length > 0) {
+                        renderPaths(route);
+                    } else {
+                        directionsRenderer.setDirections(response);
+                    }
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        }
+
+        function renderPaths(route) {
+            let greenPath = [];
+            let blackPath = [];
+            let reachedCurrentLocation = false;
+
+            route.legs.forEach(leg => {
+                leg.steps.forEach(step => {
+                    step.path.forEach(point => {
+                        if (!reachedCurrentLocation) {
+                            greenPath.push(point);
+                            if (Math.abs(point.lat() - driverLocation.lat) < 0.0001 && Math.abs(point.lng() - driverLocation.lng) < 0.0001) {
+                                reachedCurrentLocation = true;
+                            }
+                        } else {
+                            blackPath.push(point);
+                        }
+                    });
+                });
+            });
+
+            // Draw green path up to current driver location
+            new google.maps.Polyline({
+                path: greenPath,
+                geodesic: true,
+                strokeColor: 'green',
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                map: map
+            });
+
+            // Draw black path from driver location to end point
+            new google.maps.Polyline({
+                path: blackPath,
+                geodesic: true,
+                strokeColor: 'black',
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                map: map
+            });
+        }
+
+        function addMarkers() {
+            // Info windows
+            const infoWindow = new google.maps.InfoWindow();
+
+            // Add start marker (red)
+            const startMarker = new google.maps.Marker({
+                position: startPoint,
+                map: map,
+                icon: {
+                    url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                },
+                title: 'Start Point'
+            });
+            startMarker.addListener('click', () => {
+                infoWindow.setContent('<div><h2>Start Point</h2><p>Driver Info: Starting Point</p></div>');
+                infoWindow.open(map, startMarker);
+            });
+
+            // Add end marker (green)
+            const endMarker = new google.maps.Marker({
+                position: endPoint,
+                map: map,
+                icon: {
+                    url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                },
+                title: 'End Point'
+            });
+            endMarker.addListener('click', () => {
+                infoWindow.setContent('<div><h2>End Point</h2><p>Driver Info: Ending Point</p></div>');
+                infoWindow.open(map, endMarker);
+            });
+
+            // Add delivery point markers
+            deliveryPoints.forEach(point => {
+                const marker = new google.maps.Marker({
+                    position: point,
+                    map: map,
+                    label: point.label,
+                    icon: {
+                        url: point.delivered ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'
+                    }
+                });
+                marker.addListener('click', () => {
+                    infoWindow.setContent('<div><h2>Delivery Point ' + point.label + '</h2><p>' + point.info + '</p></div>');
+                    infoWindow.open(map, marker);
+                });
+            });
+
+            // Add driver current location marker
+            const driverMarker = new google.maps.Marker({
+                position: driverLocation,
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png', // Special marker color for driver location
+                title: 'Driver Location'
+            });
+            driverMarker.addListener('click', () => {
+                infoWindow.setContent('<div><h2>Driver Location</h2><p>Driver Info: Current Location</p></div>');
+                infoWindow.open(map, driverMarker);
+            });
+        }
+    </script>
+</html>

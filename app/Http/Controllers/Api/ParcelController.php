@@ -145,7 +145,7 @@ class ParcelController extends Controller
             return response()->json([
                 'status' => $this->successStatus,
                 'message' => 'Success',
-                'parcelImage' => env('PAREL_IMAGE'),
+                'parcelImage' => asset(env('STORAGE_URL')),
                 'data' => $Parcels,
             ]);
         } else {
@@ -188,7 +188,7 @@ class ParcelController extends Controller
 
         $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d'), 'status' => '2']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d H:i:s'), 'status' => '2']);
             if ($Parcels) {
                 return response()->json([
                     'status' => $this->successStatus,
@@ -222,7 +222,7 @@ class ParcelController extends Controller
         $parcelId = $request->input('parcelId');
         $checkParcel = Parcels::whereId($parcelId)->where('status', '1')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => date('Y-m-d'),'status' => '1']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => null,'status' => '1']);
             
             if ($Parcels) {
                 return response()->json([
@@ -263,7 +263,7 @@ class ParcelController extends Controller
             return response()->json([
                 'status' => $this->successStatus,
                 'message' => 'Success',
-                'parcelImage' => env('PAREL_IMAGE'),
+                'parcelImage' => asset(env('STORAGE_URL')),
                 'data' => $Parcels,
                 'location' => $shipDetail,
             ]);

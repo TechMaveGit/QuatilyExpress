@@ -33,7 +33,7 @@ class LoginController extends Controller
 
     public function login(Request $req)
     {
-        $url = env('APP_URL') . '/public/assets/images/profile/';
+        $url = asset(env('STORAGE_URL'));
         $validator = Validator::make($req->all(), [
             'email' => 'required',
             'password' => 'required',
@@ -305,9 +305,9 @@ class LoginController extends Controller
     {
         $Parcels = Driver::select('id', 'driving_license', 'visa', 'traffic_history', 'police_chceck', 'driving_license_issue_date', 'driving_date_expiry_date', 'visa_issue_date', 'visa_expiry_date', 'traffic_history_issue_date', 'traffic_history_expiry_date', 'police_chceck_issue_date', 'police_chceck_expiry_date')->where('id', $this->driverId)->first();
 
-        $driving_license_and_visa_url = env('APP_URL') . 'public/assets/driver/document';
-        $trafficHistory = env('APP_URL') . 'public/assets/driver/trafficHistory';
-        $policeChceck = env('APP_URL') . 'public/assets/driver/driving_license';
+        $driving_license_and_visa_url = asset(env('STORAGE_URL'));
+        $trafficHistory = asset(env('STORAGE_URL'));
+        $policeChceck = asset(env('STORAGE_URL'));
 
         if ($Parcels) {
             return response()->json([

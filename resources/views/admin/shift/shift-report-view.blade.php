@@ -37,10 +37,8 @@ $driverRole=  Auth::guard('adminLogin')->user();
                             
                             <div class="tab-pane show active" id="home">
                                
-                                  @php
-
+                                @php
                                    $finishshifts=DB::table('finishshifts')->where('shiftId',$shiftView->id)->first();
-
                                    $clientbase=  DB::table('clientbases')->where('id',$shiftView->base)->first();
                                    $rego=  DB::table('vehicals')->where('id',$shiftView->rego)->first();
                                 @endphp
@@ -464,19 +462,14 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                   </div>
-   
-   
-   
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
-   
                                                        <label class="form-label" for="exampleInputEmail1">Date Start</label>
-                                                       @if ($finishshifts)
-                                                       <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       @if ($shiftView->shiftStartDate)
+                                                        <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @else
-                                                       <input type="text" class="form-control" id="#basicDate" value="" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="text" class="form-control" id="#basicDate" value="" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @endif
-   
                                                    </div>
                                                </div>
                                                <div class="col-lg-3">
