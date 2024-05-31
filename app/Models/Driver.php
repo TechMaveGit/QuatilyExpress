@@ -26,6 +26,11 @@ class Driver extends Authenticatable implements JWTSubject
         return $this->hasMany(Personaddress::class, 'personId', 'id');
     }
 
+    public function allshift()
+    {
+        return $this->hasMany(Shift::class, 'driverId', 'id');
+    }
+
     public function getreminder()
     {
         return $this->hasMany(Personreminder::class, 'personId', 'id');
