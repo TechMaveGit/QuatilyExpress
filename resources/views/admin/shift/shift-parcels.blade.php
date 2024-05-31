@@ -83,8 +83,8 @@
                                                     <th class="parcel_in">Receiver Name</th>
                                                     <th class="parcel_in">Parcel Image</th>
                                                     <th class="parcel_in">Date</th>
+                                                    <th class="parcel_in drop_location_lkj">Drop Location</th>
 
-                                                    <th class="parcel_out drop_location_lkj">Drop Location</th>
                                                     <th class="parcel_out">Receiver Name</th>
                                                     <th class="parcel_out">longitude/latitude</th>
                                                     <th class="parcel_out">Delivered Image</th>

@@ -117,7 +117,7 @@ class InductionController extends Controller
 
         return response()->json([
             'status' => 200,
-            'destinationPath' => env('SIGNATURE_IMAGE'),
+            'destinationPath' => asset(env('STORAGE_URL')),
             'message' => 'Signature Updated Successfully',
         ]);
     }

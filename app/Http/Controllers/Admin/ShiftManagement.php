@@ -472,6 +472,10 @@ class ShiftManagement extends Controller
         $data['odometer_start_reading'] = $request->odometer_start_reading;
         $data['odometer_finish_reading'] = $request->odometer_finish_reading;
         if (request()->isMethod('post')) {
+
+            if(Shift::where(['driverId'=>$request->driverId,'shiftStatus'=>'2'])->exists()){
+                return Redirect::route('admin.shift.report')->with('info', 'There is a shift in progress for the driver (you can only create a missed shift).');
+            }else{
             //   return $request->start_date;
             $parcelsTaken = $request->parcelsToken;
             $parcel_delivered = $request->parcel_delivered;
@@ -652,6 +656,7 @@ class ShiftManagement extends Controller
             $Parcel->save();
 
             return Redirect::route('admin.shift.report')->with('message', 'Missed Shift  Added Successfully!');
+        }
         }
         $data['driver'] = Driver::get();
         $data['client'] = Client::get();
