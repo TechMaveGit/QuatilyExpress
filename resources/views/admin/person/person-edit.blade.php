@@ -265,11 +265,7 @@
                                                                 <label class="form-label" for="exampleInputEmail1">Date Of
                                                                     Birth</label>
 
-                                                                <input type="text"
-                                                                    class="form-control onlydate dob_valid"
-                                                                    value="{{ $editPerson->dob ?? 'N/A' }}" id="basicDate"
-                                                                    name="dob" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <input type="text" class="form-control dob_valid dobDate" value="{{ $editPerson->dob ?? 'N/A' }}"  name="dob" aria-describedby="emailHelp" placeholder="">
 
                                                             </div>
 

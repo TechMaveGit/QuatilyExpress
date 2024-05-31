@@ -684,6 +684,8 @@
    $("#basicDate").flatpickr({
       maxDate: new Date()
    });
+
+   
 //    $(".datetime_picker").flatpickr({
 //       enableTime: true,
 //       altFormat: "Y-m-d H:i:s",
@@ -976,6 +978,16 @@ $(".datetime_picker").flatpickr({
         instance.close();
     }
    });
+
+   $(".dobDate").flatpickr({
+      maxDate: "today",
+      enableTime: false,
+      altFormat: "Y-m-d",
+      dateFormat: "Y-m-d",
+      onClose: function(selectedDates, dateStr, instance) {
+        instance.close();
+    }
+   });
 </script>
     <!-- <script>
         document.getElementById('exportBtn').addEventListener('click', function () {
@@ -1212,6 +1224,8 @@ $(".datetime_picker").flatpickr({
     endDateInput.addEventListener('keydown', function(event) {
       event.preventDefault();
     });
+
+    
   </script>
 </body>
 </html>
