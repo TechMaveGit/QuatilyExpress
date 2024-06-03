@@ -90,7 +90,7 @@
                                 </div>
                             </div>
                         <div class="card-body">
-                            <form action="{{route('person')}}" method="post">@csrf
+                            <form action="{{route('person')}}" id="filterFormData" method="post">@csrf
                             <div class="row align-items-center">
                                 <div class="col-lg-4">
                                     <div class="mb-3">
@@ -140,7 +140,7 @@
                 </div>
                         <div class="card-body">
                         <div class="table-responsive">
-                            <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;">
+                            <table id="basic-datatable_person" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;">
                             <thead class="border-top">
                                 <tr>
                                     <th hidden></th>
@@ -154,43 +154,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($person as $allperson)
-                                    <tr class="border-bottom">
-                                        <td hidden></td>
-                                        <td>{{ $allperson->id}}</td>
-                                        <td>{{ $allperson->userName	 }} {{ $allperson->surname	 }}</td>
-                                        <td>{{ $allperson->surname }}</td>
-                                        <td>{{ $allperson->email }}</td>
-                                        <td>{{ $allperson->roleName->name ?? '' }}</td>
-                                        <td>
-                                            <div class="form-group">
-                                                    <select class="form-control select2 form-select" onchange="changeStatus('{{$allperson->id}}',this)" data-placeholder="Choose one">
-                                                            <option value="1" {{ $allperson->status == 1 ? 'selected="selected"' : '' }}>Active</option>
-                                                            <option value="2" {{ $allperson->status == 2 ? 'selected="selected"' : '' }}>Inactive</option>
-                                                    </select>
-                                                    <p id="message{{ $allperson->id	 }}" class="message"></p>
-                                                </div>
-                                        </td>
-                                        <td>
-                                                <div class="g-2">
-                                                    @if(in_array("10", $arr))
-                                                <a class="btn text-info btn-sm" href="{{ route('person.view', ['id' => $allperson->id]) }}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-original-title="View"><span
-                                                            class="fe fe-eye fs-14"></span></a>  @endif
-                                                            @if(in_array("11", $arr))
-                                                    <a class="btn text-primary btn-sm" href="{{ route('person.edit', ['id' => $allperson->id]) }}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-original-title="Edit"><span
-                                                            class="fe fe-edit fs-14"></span></a> @endif
-                                                            @if(in_array("12", $arr))
-                                                                <a class="btn text-danger btn-sm" onclick="remove_vehicle({{ $allperson->id}})" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
-                                                            @endif
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                    @endforelse
+                                
                             </tbody>
                         </table>
                     </div>
@@ -222,6 +186,55 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
+    var table;
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        var formData = new FormData($('#filterFormData')[0]);
+        table = $('#basic-datatable_person').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{{ route('person.ajax.table') }}",
+                "dataType": "json",
+                "type": "POST",
+                "data": function(d) {
+                    d.form = {};
+                    for (var pair of formData.entries()) {
+                        d.form[pair[0]] = pair[1];
+                    }
+                }
+            },
+            "columns": [{
+                    "data": "Id"
+                },
+                {
+                    "data": "Name"
+                },
+                {
+                    "data": "Surname"
+                },
+                {
+                    "data": "Email"
+                },
+                {
+                    "data": "Role"
+                },
+                {
+                    "data": "Status"
+                },
+                {
+                    "data": "Action"
+                }
+            ]
+        });
+    });
+</script>
+<script>
+    
     document.getElementById('personexportBtn').addEventListener('click', function () {
         // Call function to export table data to Excel
         exportToExcel('custom_table');
@@ -263,5 +276,7 @@
         }
     }
 </script>
+
+ 
 @endif
 @endsection

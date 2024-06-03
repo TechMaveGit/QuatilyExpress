@@ -373,9 +373,6 @@ class ShiftManagement extends Controller
     
         return redirect()->back()->with('message', 'Shift Import Updated Successfully!!');
     }
-    
-
-
 
     public function shiftAdd(Request $request)
     {
@@ -1103,6 +1100,8 @@ class ShiftManagement extends Controller
 
     public function shiftReportEdit(Request $request, $id)
     {
+
+       
         $query = Shift::where('id', $id);
         $getClientID = Shift::whereId($id)->first()->client;
         $data['shiftView'] = $query->orderBy('id', 'DESC')->with([
@@ -1117,6 +1116,7 @@ class ShiftManagement extends Controller
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
         if (request()->isMethod('post')) {
+            
             $managementId = $request->input('hrManagerment');
             if ($managementId == '1') {
                 Shift::where('id', $id)->update([

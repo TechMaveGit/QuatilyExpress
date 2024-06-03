@@ -262,7 +262,7 @@ foreach($D as $v)
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1"> Scanner ID <span class="red">*</span></label>
-                                                    <input type="text" min="0" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control" name="scannerName" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}"  @if($shiftView->finishStatus =='5') disabled @else @endif aria-describedby="emailHelp" placeholder="">
+                                                    <input type="text" min="0"  class="form-control" name="scannerName" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}"  @if($shiftView->finishStatus =='5') disabled @else @endif aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -300,6 +300,13 @@ foreach($D as $v)
                                                     <a href="{{ asset(env('STORAGE_URL'). $finishshifts->addPhoto) }}" target="_blank">
                                                         <img src="{{ asset(env('STORAGE_URL'). $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
+                                                </div>
+                                            </div>
+                                            @else
+                                            <div class="col-lg-3">
+                                                <div class="mb-3" style="width: 116px;">
+                                                    <label class="form-label" for="exampleInputEmail1">Shift Image</label>
+                                                    <img src="{{ asset('assets/images/not-found.jpg') }}" alt="Image" style="max-width: 53%;" />
                                                 </div>
                                             </div>
                                         @endif
