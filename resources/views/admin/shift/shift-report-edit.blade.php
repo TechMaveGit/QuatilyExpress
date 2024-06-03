@@ -929,14 +929,25 @@ foreach($D as $v)
 
 
     $("#parcelsToken, #parcelsDelivered").change(function() {
-    var parcelsTokenValue = parseInt($("#parcelsToken").val(), 10);
-    var parcelsDeliveredValue = parseInt($("#parcelsDelivered").val(), 10);
+        var parcelsTokenValue = parseInt($("#parcelsToken").val());
+        var parcelsDeliveredValue = parseInt($("#parcelsDelivered").val());
 
-    if (parcelsDeliveredValue > parcelsTokenValue) {
-        alert("Parcels delivered cannot be greater than parcels token.");
-        $("#parcelsDelivered").val(parcelsTokenValue);
-    }
-});
+        if (parcelsDeliveredValue > parcelsTokenValue) {
+            alert("Parcels delivered cannot be greater than parcels taken.");
+            $("#parcelsDelivered").val(parcelsTokenValue);
+        }
+    });
+
+
+    $("#odometerStartReading, #odometerEndReading").change(function() {
+        var odometerStartReadingValue = parseInt($("#odometerStartReading").val());
+        var odometerEndReadingValue = parseInt($("#odometerEndReading").val());
+
+        if (odometerEndReadingValue < odometerStartReadingValue) {
+            alert("Odometer finish cannot be less than odometer start.");
+            $("#odometerEndReading").val(odometerStartReadingValue);
+        }
+    });
 
 </script>
 @endsection
