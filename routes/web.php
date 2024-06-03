@@ -53,6 +53,8 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
     Route::match(['get', 'post'], '/profile', [AdminLoginController::class, 'profile'])->name('admin.profile');
     Route::match(['get', 'post'], '/updatePassword', [AdminLoginController::class, 'updatePassword'])->name('admin.updatePassword');
+
+    Route::match(['get', 'post'], '/ajax-table-person', [Personcontroller::class, 'personAjaxTable'])->name('person.ajax.table');
     
     Route::group(['prefix' => 'administration'], function () {
         Route::match(['get', 'post'], '/role', [Administration::class, 'index'])->name('administration.role');
@@ -126,6 +128,8 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
         Route::match(['get', 'post'], '/delete/rates', [Personcontroller::class, 'deleteRate'])->name('deleteRate');
         // Route::match(['get','post'],'/edit/{id}', [Personcontroller::class, 'reminderedit'])->name('reminder.edit');
         Route::match(['get', 'post'], '/person/status', [Personcontroller::class, 'personStatus'])->name('personStatus');
+
+       
     });
     Route::group(['prefix' => 'clients'], function () {
         Route::match(['get', 'post'], '/', [ClientController::class, 'clients'])->name('clients');

@@ -102,10 +102,12 @@
 
                                                    <td class="parcel_in">
                                                     <div class="magnific-img">
-                                                        @if(!empty($allparcelsDetail['ParcelImage']->parcelImage))
+                                                        @if($allparcelsDetail['ParcelImage']->parcelImage && !empty($allparcelsDetail['ParcelImage']->parcelImage))
                                                             <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
                                                                 <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
                                                             </a>
+                                                        @else
+                                                            <img src="{{ asset('assets/images/not-found.jpg') }}" alt="" />
                                                         @endif
                                                     </div>
                                                   </td>

@@ -10,7 +10,6 @@ class DataTableHelper
 {
     public static function getData(Request $request, Builder $query, array $columnMapping, string $pageStr)
     {
-
         $columns = array_column($request->input('columns'), 'data');
         $columnData = $request->input('columns');
         $totalDataQuery = clone $query;
@@ -22,6 +21,7 @@ class DataTableHelper
         $orderDirection = $request->input('order.0.dir') ?? 'DESC';
 
         // return $request->all();
+        // dd($query->toSql());
 
         // Apply search filter
         $searchValue = $request->input('search.value');
@@ -73,6 +73,8 @@ class DataTableHelper
             $formattedData = self::userData($data, $columns, $columnMapping);
         } elseif ($pageStr == 'client_table') {
             $formattedData = self::clientData($data, $columns, $columnMapping);
+        }elseif ($pageStr == 'person_table') {
+            $formattedData = self::personData($data, $columns, $columnMapping);
         } elseif ($pageStr == 'shift_table') {
             $formattedData = self::clientData($data, $columns, $columnMapping);
         }
@@ -159,6 +161,72 @@ class DataTableHelper
                     if (in_array('24', $arr)) {
                         // $actionHtml .= '<a class="btn text-danger btn-sm" href="' . route('clientDelete', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>';
                         $actionHtml .= '<a class="btn text-danger btn-sm" href="javascript:void(0)" onclick="deleteClient(\'' . $tableId . '\')" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>';
+                    }
+
+                    $actionHtml .= '</div>';
+                    $nestedData['Action'] = $actionHtml;
+                }
+            }
+            $formattedData[] = $nestedData;
+        }
+
+        return $formattedData;
+    }
+
+
+    private static function personData($items, $columns, $columnMapping)
+    {
+        $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()), true);
+        $arr = [];
+        foreach ($D as $v) {
+            $arr[] = $v['permission_id'];
+        }
+
+        
+        $formattedData = [];
+        foreach ($items as $item) {
+            $nestedData = [];
+            foreach ($columns as $column) {
+                $actualColumnName = $columnMapping[$column] ?? $column;
+                $newNColumn = self::getNestedProperty($item, $actualColumnName);
+
+                $nestedData[$column] = $newNColumn;
+                $tdHtml = '';
+                if ($column == 'Status') {
+                    $tableId = $nestedData['Id'];
+                    $tdHtml = '<div class="form-group">
+                        <select class="form-control select2 form-select" onchange="changeStatus(\'' . $tableId . '\',this)" data-placeholder="Choose one" style="padding: 8px 15px;">
+                            <option value="1"';
+                    if ($newNColumn == 1) {
+                        $tdHtml .= ' selected';
+                    }
+                    $tdHtml .= '>Active</option>
+                            <option value="2"';
+                    if ($newNColumn == 2) {
+                        $tdHtml .= ' selected';
+                    }
+                    $tdHtml .= '>Inactive</option>
+                        </select>
+                        <p id="message' . $tableId . '" class="message"></p>
+                    </div>';
+                    $nestedData[$column] = $tdHtml;
+                }
+
+                if ($column == 'Action') {
+                    $tableId = $nestedData['Id'];
+                    $actionHtml = '<div class="g-2">';
+
+                    if (in_array('10', $arr)) {
+                        $actionHtml .= '<a class="btn text-info btn-sm" href="' . route('person.view', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="View"><span class="fe fe-eye fs-14"></span></a>';
+                    }
+
+                    if (in_array('11', $arr)) {
+                        $actionHtml .= '<a class="btn text-primary btn-sm" href="' . route('person.edit', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>';
+                    }
+
+                    if (in_array('12', $arr)) {
+                        // $actionHtml .= '<a class="btn text-danger btn-sm" href="' . route('clientDelete', ['id' => $tableId]) . '" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>';
+                        $actionHtml .= '<a class="btn text-danger btn-sm" href="javascript:void(0)" onclick="remove_vehicle(\'' . $tableId . '\')" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>';
                     }
 
                     $actionHtml .= '</div>';
