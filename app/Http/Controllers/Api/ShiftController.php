@@ -692,7 +692,7 @@ class ShiftController extends Controller
             }
         }
 
-        $countShift = $shift ? $shift?->count() : '0';
+        $countShift = $shifts ? $shifts?->count() : '0';
         if (!($countShift) == 0) {
             return response()->json([
                 'status' => $this->successStatus,
