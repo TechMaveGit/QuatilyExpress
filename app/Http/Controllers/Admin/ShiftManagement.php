@@ -1126,7 +1126,7 @@ class ShiftManagement extends Controller
                     'base'   => $request->input('base'),
                     'vehicleType'         => $request->input('vehicleType'),
                     'rego'       => $request->input('rego'),
-                    'createdDate'    => $request->input('startDate'),
+                    'createdDate'    => $request->input('shiftStartDate'),
                     'shiftStartDate'    => $request->input('shiftStartDate'),
                     'scanner_id'  => $request->input('scannerName'),
                     'parcelsToken'    => $request->input('parcelsToken'),
@@ -1137,7 +1137,7 @@ class ShiftManagement extends Controller
                 // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
             // }
             // if ($managementId == '2') {
-                $startDate = $request->startDate;
+                $startDate = $request->shiftStartDate;
                 $endDate = $request->finishDate;
                 $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
                 $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');

@@ -487,7 +487,7 @@ foreach($D as $v)
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Start </label>
                                                        @if ($shiftView->shiftStartDate)
-                                                       <input type="text" class="form-control datetime_picker" name="startDate"
+                                                       <input type="text" class="form-control datetime_picker" name="shiftStartDate"
                                                        value="{{ date('Y/m/d H:i:s', strtotime($shiftView->shiftStartDate)) }}"
                                                        aria-describedby="emailHelp" placeholder="">
                                                        @else
