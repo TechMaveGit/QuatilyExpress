@@ -22,6 +22,7 @@ class LiveTrackingController extends Controller
         $parcelLocation = null;
         $startpoints = null;
         $endpoints = null;
+        $beforeParcelImage = null;
 
         if (request()->isMethod('post')) {
             $driverName = $request->input('driverName');
@@ -38,18 +39,21 @@ class LiveTrackingController extends Controller
             $shiftData = Shift::where('id',$shiftId)->first();
             
 
+
             $startpoints = ['lat'=>$shiftData->startlatitude??null,'lng'=>$shiftData->startlongitude??null,'address'=>$shiftData->startaddress??null];
             $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
             $locations = $locations->get()->toArray();
 
             if ($shiftId) {
-                $parcelLocation = Parcels::select('latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
+                $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
                 $parcelLocation->where('shiftid', $shiftId);
                 $parcelLocation = $parcelLocation->get()->toArray();
+                $beforeParcelImage = $parcelLocation[0] ? (DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()?->pluck('parcelImage') ?? null) : null;
+            
             }
         }
 
-        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftId', 'parcelLocation','startpoints','endpoints'));
+        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftId', 'parcelLocation','startpoints','endpoints','beforeParcelImage'));
     }
 
     public function getDriverLocation(Request $request)

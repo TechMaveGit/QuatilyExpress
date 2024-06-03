@@ -373,7 +373,9 @@
             let receiverName = point.receiverName?`<p><b>Receiver Name : ${point.receiverName}</b></p>`:'';
             let deliveredTo = point.deliveredTo?`<p><b>Received By : ${point.deliveredTo}</b></p>`:'';
             let deliver_address = point.deliver_address ?? point.location;
-            let parselImage = point.parcelphoto ? `<img style="width: 150px;" src="${storage_path}/${point.parcelphoto}" />`:'';
+            let beforeImage = '{{$beforeParcelImage}}';
+            let beforeParselImage = beforeImage ? `<p>Persel Before Delivered : <br/><img style="width: 100px;" src="${storage_path}/${beforeImage}" /></p>`:'';
+            let parselImage = point.parcelphoto ? `<p>Persel After Delivered : <br/><img style="width: 100px;" src="${storage_path}/${point.parcelphoto}" /></p>`:'';
             let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
             let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
             let LatLong = { lat: parseFloat(delivered_latitude), lng: parseFloat(delivered_longitude) };
@@ -385,7 +387,7 @@
                 title: `Delivery Point ${ind+1}`
             });
             marker.addListener('click', () => {
-                infoWindow.setContent(`<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${deliveredTo}${parselImage}</div>`);
+                infoWindow.setContent(`<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${deliveredTo}${beforeParselImage}${parselImage}</div>`);
                 infoWindow.open(map, marker);
             });
         });
