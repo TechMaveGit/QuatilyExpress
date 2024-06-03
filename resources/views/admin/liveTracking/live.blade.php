@@ -114,6 +114,8 @@
                                                         class="btn btn-primary srch_btn">Search</button>
                                                     <a href="{{ route('live-tracking') }}"
                                                         class="btn btn-primary srch_btn">Reset</a>
+                                                    <button type="submit"
+                                                        class="btn btn-info srch_btn">Refresh</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -363,6 +365,7 @@
         deliveryPoints.forEach((point,ind) => {
             let delived_date = point.parcelDeliverdDate?`<p><b>Deliverd Date : ${point.parcelDeliverdDate}</b></p>`:'';
             let receiverName = point.receiverName?`<p><b>Receiver Name : ${point.receiverName}</b></p>`:'';
+            let deliveredTo = point.deliveredTo?`<p><b>Received By : ${point.deliveredTo}</b></p>`:'';
             let deliver_address = point.deliver_address ?? point.location;
             let parselImage = point.parcelphoto ? `<img src="${storage_path}/${point.parcelphoto}" />`:'';
             let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
@@ -376,7 +379,7 @@
                 title: `Delivery Point ${ind+1}`
             });
             marker.addListener('click', () => {
-                infoWindow.setContent(`<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${parselImage}</div>`);
+                infoWindow.setContent(`<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${deliveredTo}${parselImage}</div>`);
                 infoWindow.open(map, marker);
             });
         });

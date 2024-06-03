@@ -1040,7 +1040,7 @@
             enableTime: true,
             noCalendar: true,
             time_24hr: true,
-            dateFormat: "H:i",
+            dateFormat: "H:i:s",
         });
     </script>
 
