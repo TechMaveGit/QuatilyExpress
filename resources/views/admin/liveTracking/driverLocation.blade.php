@@ -109,7 +109,7 @@
                         <div class="col-lg-12" style="display:flex;">
                             <div class="col-lg-12">
                                 <div class="card">
-                                    <span class="text-danger" id="error_msg" hidden></span>
+                                    <span class="text-danger" id="error_msg" style="display: none;"></span>
                                     <div id="map" style="height: 734px;"></div>
                                 </div>
                             </div>
@@ -156,46 +156,48 @@
     @if (!$driverName)
         <script>
             function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-        center: {
-            lat: 0,
-            lng: 0
-        },
-        zoom: 2
-    });
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    center: {
+                        lat: 0,
+                        lng: 0
+                    },
+                    zoom: 2
+                });
 
-    // Assuming you have only one map
-    var locations = @json($locations);
-    if (locations && locations.length > 0) {
-        var lastLocation = locations[locations.length - 1];
-        map.setCenter({
-            lat: parseFloat(lastLocation.lat),
-            lng: parseFloat(lastLocation.lng)
-        });
-        map.setZoom(13);
+                // Assuming you have only one map
+                var locations = @json($locations);
 
-        // Create an InfoWindow for displaying titles
-        var infoWindow = new google.maps.InfoWindow();
+                if (locations && locations.length > 0) {
+                    var lastLocation = locations[locations.length - 1];
+                    map.setCenter({
+                        lat: parseFloat(lastLocation.lat),
+                        lng: parseFloat(lastLocation.lng)
+                    });
+                    map.setZoom(13);
 
-        // Add markers for the locations
-        locations.forEach(function(location) {
-            var marker2 = new google.maps.Marker({
-                position: {
-                    lat: parseFloat(location.lat),
-                    lng: parseFloat(location.lng)
-                },
-                map: map,
-                title: location.name,
-                icon: {
-                    url: '{{ asset('assets/images/newimages/map-circle.png') }}',
-                    scaledSize: new google.maps.Size(35, 35) // Set the width and height for resizing
-                }
-            });
+                    // Create an InfoWindow for displaying titles
+                    var infoWindow = new google.maps.InfoWindow();
 
-            // Add a click event listener to each marker
-            marker2.addListener('click', function() {
-                var driverDetails = location; // Use the location directly
-                var contentString = `
+                    // Add markers for the locations
+                    locations.forEach(function(location) {
+                        var marker2 = new google.maps.Marker({
+                            position: {
+                                lat: parseFloat(location.lat),
+                                lng: parseFloat(location.lng)
+                            },
+                            map: map,
+                            title: location.name,
+                            icon: {
+                                url: '{{ asset('assets/images/newimages/map-circle.png') }}',
+                                scaledSize: new google.maps.Size(35,
+                                    35) // Set the width and height for resizing
+                            }
+                        });
+
+                        // Add a click event listener to each marker
+                        marker2.addListener('click', function() {
+                            var driverDetails = location; // Use the location directly
+                            var contentString = `
                     <div style="text-align: center;">
                         <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
                         <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
@@ -211,24 +213,20 @@
                         <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
                     </div>
                 `;
-                infoWindow.setContent(contentString);
-                // Open the InfoWindow at the clicked marker
-                infoWindow.open(map, marker2);
-                // Set a specific zoom level when a marker is clicked (e.g., zoom to level 16)
-                map.setZoom(16);
-                // Optionally, you can also set the center to the clicked marker's position
-                map.setCenter(marker2.getPosition());
-            });
-        });
-    } else {
-        $("#error_msg").attr('hidden', false);
-    }
-}
-
+                            infoWindow.setContent(contentString);
+                            // Open the InfoWindow at the clicked marker
+                            infoWindow.open(map, marker2);
+                            // Set a specific zoom level when a marker is clicked (e.g., zoom to level 16)
+                            map.setZoom(16);
+                            // Optionally, you can also set the center to the clicked marker's position
+                            map.setCenter(marker2.getPosition());
+                        });
+                    });
+                }
+            }
         </script>
     @else
         <script>
-            
             let locations = @json($locations ?? []);
             let parcelLocation = @json($parcelLocation ?? []);
             let map;
@@ -249,7 +247,11 @@
                 lat: parseFloat(endPoint.lat),
                 lng: parseFloat(endPoint.lng)
             };
-            console.log(startPoint, endPoint);
+            if (startPoint.lat && startPoint.lng && endPoint.lat && endPoint.lng && deliveryPoints.length > 0) {} else if (
+                startPoint && deliveryPoints) {
+                $("#error_msg").css('display', 'block');
+                $("#error_msg").text("Shift tracking data not found. Please check your shift.");
+            }
 
             function createSVGMarker(color, label) {
                 const textColor = (color === 'yellow') ? 'black' : 'white'; // Set text color based on marker color
@@ -405,7 +407,7 @@
                 });
                 startMarker.addListener('click', () => {
                     infoWindow.setContent(
-                    `<div class="info-window-content"><h2>Start Point</h2>${start_address}</div>`);
+                        `<div class="info-window-content"><h2>Start Point</h2>${start_address}</div>`);
                     infoWindow.open(map, startMarker);
                 });
 
@@ -447,7 +449,7 @@
                     marker.addListener('click', () => {
                         infoWindow.setContent(
                             `<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${deliveredTo}${parselImage}</div>`
-                            );
+                        );
                         infoWindow.open(map, marker);
                     });
                 });
@@ -462,7 +464,7 @@
                 driverMarker.addListener('click', () => {
                     infoWindow.setContent(
                         '<div class="info-window-content"><h2>Driver Location</h2><p>Driver Info: Current Location</p></div>'
-                        );
+                    );
                     infoWindow.open(map, driverMarker);
                 });
             }
