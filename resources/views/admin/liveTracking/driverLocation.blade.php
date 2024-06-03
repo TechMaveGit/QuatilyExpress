@@ -431,8 +431,8 @@
                     let deliveredTo = point.deliveredTo ? `<p><b>Received By : ${point.deliveredTo}</b></p>` : '';
                     let deliver_address = point.deliver_address ?? point.location;
                     let beforeImage = '{{$beforeParcelImage}}';
-                    let beforeParselImage = beforeImage ? `<p>Persel Before Delivered : <br/><img style="width: 100px;" src="${storage_path}/${beforeImage}" /></p>`:'';
-                    let parselImage = point.parcelphoto ? `<p>Persel After Delivered : <br/><img style="width: 100px;" src="${storage_path}/${point.parcelphoto}" /></p>`:'';
+                    let beforeParselImage = beforeImage ? `<p>Parcel Before Delivered : <br/><img style="width: 100px;" src="${storage_path}/${beforeImage}" /></p>`:'';
+                    let parselImage = point.parcelphoto ? `<p>Parcel After Delivered : <br/><img style="width: 100px;" src="${storage_path}/${point.parcelphoto}" /></p>`:'';
                     let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point
                         .delivered_latitude : point.lat;
                     let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point
