@@ -678,19 +678,21 @@ class ShiftController extends Controller
         }
 
         $shifts = $query->orderBy('id', 'DESC')->where('driverId', $driverId)->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime,odometerStartReading,odometerEndReading,parcelsDelivered', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name')->withCount('getParcel')->get();
-        foreach ($shifts as $shift) {
-            $shift->ReportDetail = Finishshift::select('dayHours', 'nightHours', 'weekendHours', 'odometerStartReading', 'odometerEndReading')
-                ->where('shiftid', $shift->id ?? '')
-                ->first();
+        if($shifts){
+            foreach ($shifts as $shift) {
+                $shift->ReportDetail = Finishshift::select('dayHours', 'nightHours', 'weekendHours', 'odometerStartReading', 'odometerEndReading')
+                    ->where('shiftid', $shift->id ?? '')
+                    ->first();
 
-            $shift->ClientBase = Clientbase::select('id', 'base')
-                ->where('id', $shift->base)
-                ->first()->base ?? '';
+                $shift->ClientBase = Clientbase::select('id', 'base')
+                    ->where('id', $shift->base)
+                    ->first()->base ?? '';
 
-            $shift->ClientRego = Vehical::select('id', 'rego')
-                ->where('status', '1')
-                ->where('id', $shift->rego)
-                ->first()->rego ?? '';
+                $shift->ClientRego = Vehical::select('id', 'rego')
+                    ->where('status', '1')
+                    ->where('id', $shift->rego)
+                    ->first()->rego ?? '';
+            }
         }
 
         $countShift = $shift?->count() ?? '0';
@@ -699,7 +701,7 @@ class ShiftController extends Controller
                 'status' => $this->successStatus,
                 'countShift' => $countShift,
                 'message' => 'Success',
-                'data' => $shifts,
+                'data' => $shifts??[],
             ]);
         } else {
             return response()->json([

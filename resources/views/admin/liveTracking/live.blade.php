@@ -197,7 +197,13 @@
     let endPoint = @json($endpoints??[]); // End point (green)
     let end_address = endPoint.address!=undefined ? `<p><b>Driver Address:</b> ${endPoint.address}</p>` : '';
     if(endPoint != undefined && endPoint.lat) endPoint = {lat:parseFloat(endPoint.lat),lng:parseFloat(endPoint.lng)};
-    console.log(startPoint,endPoint);
+    
+    if(startPoint.lat && startPoint.lng && endPoint.lat && endPoint.lng && deliveryPoints.length > 0){
+    }else if(startPoint && deliveryPoints){
+        locations = [];
+        $("#error_msg").css('display','block');
+        $("#error_msg").text("Shift tracking data not found. Please check you shift.");
+    }
 
     function createSVGMarker(color, label) {
         const textColor = (color === 'yellow') ? 'black' : 'white'; // Set text color based on marker color
