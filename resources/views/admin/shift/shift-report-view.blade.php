@@ -130,6 +130,20 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
+                                                <div class="check_box">
+                                                    <label class="form-label" for="exampleInputEmail1">Driver </label>
+                                                    <div class="form-group">
+                                                        <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one" disabled>
+                                                                <option value="">Select Any One</option>
+                                                                    @forelse ($driverAdd as $AdddriverAdd)
+                                                                    <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif">{{ $AdddriverAdd->userName }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
+                                                                    @empty
+                                                                    @endforelse
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
                                                         <div class="check_box">
                                                             <label class="form-label" for="exampleInputEmail1">Vehicle Type <span class="red">*</span></label>
                                                             <div class="form-group">
@@ -153,40 +167,22 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-3">
-                                                <div class="check_box">
-                                                    <label class="form-label" for="exampleInputEmail1">Driver </label>
-                                                    <div class="form-group">
-                                                        <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one" disabled>
-                                                                <option value="">Select Any One</option>
-                                                                    @forelse ($driverAdd as $AdddriverAdd)
-                                                                    <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif">{{ $AdddriverAdd->userName }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
-                                                                    @empty
-                                                                    @endforelse
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
 
 
-                                            <div class="col-lg-3">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Odometer  <span class="red">*</span></label>
-                                                    <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->odometer }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                </div>
-                                            </div>
+                                            
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1"> Scanner ID <span class="red">*</span></label>
                                                     <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3">
+                                            {{-- <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
                                                     <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
@@ -218,6 +214,13 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                         <img src="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
                                                                                                                 </div>
+                                            </div>
+                                            @else
+                                            <div class="col-lg-3">
+                                                <div class="mb-3" style="width: 116px;">
+                                                    <label class="form-label" for="exampleInputEmail1">Shift Image</label>
+                                                    <img src="{{ asset('assets/images/not-found.jpg') }}" alt="Image" style="max-width: 53%;" />
+                                                </div>
                                             </div>
                                         @endif
 
@@ -436,6 +439,13 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                   </div>
+                                                  <div class="col-lg-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Parcel Outstanding</label>
+                                                        <input type="text" disabled class="form-control" id="exampleInputEmail1" value="{{ ($shiftView->parcelsToken??0) - ($shiftView->getFinishShifts->parcelsDelivered??0)  ??''}}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    </div>
+    
+                                                   </div>
    
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">

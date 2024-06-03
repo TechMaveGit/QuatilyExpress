@@ -1116,9 +1116,8 @@ class ShiftManagement extends Controller
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
         if (request()->isMethod('post')) {
-            
             $managementId = $request->input('hrManagerment');
-            if ($managementId == '1') {
+            // if ($managementId == '1') {
                 Shift::where('id', $id)->update([
                     'state'    => $request->input('state'),
                     'client'     => $request->input('client'),
@@ -1127,14 +1126,17 @@ class ShiftManagement extends Controller
                     'base'   => $request->input('base'),
                     'vehicleType'         => $request->input('vehicleType'),
                     'rego'       => $request->input('rego'),
-                    'createdDate'    => $request->input('createdDate'),
+                    'createdDate'    => $request->input('startDate'),
+                    'shiftStartDate'    => $request->input('shiftStartDate'),
                     'scanner_id'  => $request->input('scannerName'),
-                    'parcelsToken'    => $request->input('parcelToken'),
+                    'parcelsToken'    => $request->input('parcelsToken'),
+                    'comment'=> $request->input('comments'),
+                    'approval_reason'=> $request->input('approvedReason'),
                 ]);
 
-                return Redirect::back()->with('message', 'Shift  Updated Successfully!');
-            }
-            if ($managementId == '2') {
+                // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
+            // }
+            // if ($managementId == '2') {
                 $startDate = $request->startDate;
                 $endDate = $request->finishDate;
                 $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
@@ -1260,16 +1262,32 @@ class ShiftManagement extends Controller
                         $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
                         $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
                         $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
+                        $Parcel->parcelsTaken = $request->input('parcelsToken');
+                        $Parcel->parcelsDelivered = $request->input('parcelsDelivered');
+                        $Parcel->odometerStartReading = $request->input('odometerStartReading');
+                        $Parcel->odometerEndReading = $request->input('odometerEndReading');
                         $Parcel->save();
                     }
                 } else {
                     return Redirect::back()->with('error', ' Shift Id Not Exist!');
                 }
 
-                return Redirect::back()->with('message', ' Shift Hr. Management Updated Successfully!');
-            }
-            if ($managementId == '3') {
-                $shiftMonetizeInformation = $request->except(['_token', 'hrManagerment']);
+                // return Redirect::back()->with('message', ' Shift Hr. Management Updated Successfully!');
+            // }
+            // if ($managementId == '3') {
+                $shiftMonetizeInformation['amountPayablePerService'] = $request->input('amountPayablePerService');
+                $shiftMonetizeInformation['fuelLevyPayable'] = $request->input('fuelLevyPayable');
+                $shiftMonetizeInformation['fuelLevyChargeable250'] = $request->input('fuelLevyChargeable250');
+                $shiftMonetizeInformation['extraPayable'] = $request->input('extraPayable');
+                $shiftMonetizeInformation['totalPayable'] = $request->input('totalPayable');
+                $shiftMonetizeInformation['comments'] = $request->input('comments');
+                $shiftMonetizeInformation['approvedReason'] = $request->input('approvedReason');
+                $shiftMonetizeInformation['amountChargeablePerService'] = $request->input('amountChargeablePerService');
+                $shiftMonetizeInformation['fuelLevyChargeable'] = $request->input('fuelLevyChargeable');
+                $shiftMonetizeInformation['fuelLevyChargeable400'] = $request->input('fuelLevyChargeable400');
+                $shiftMonetizeInformation['extraChargeable'] = $request->input('extraChargeable');
+                $shiftMonetizeInformation['totalChargeable'] = $request->input('totalChargeable');
+                
                 $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
                 if ($shiftMonetize) {
                     $shiftMonetizeInformation['shiftId'] = $id;
@@ -1280,7 +1298,7 @@ class ShiftManagement extends Controller
                 }
                 DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
                 DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
-            }
+            // }
 
             return Redirect::back()->with('message', 'Shift Updated Successfully!');
         }

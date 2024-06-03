@@ -102,7 +102,7 @@
 
                                                    <td class="parcel_in">
                                                     <div class="magnific-img">
-                                                        @if($allparcelsDetail['ParcelImage']->parcelImage && !empty($allparcelsDetail['ParcelImage']->parcelImage))
+                                                        @if($allparcelsDetail['ParcelImage'] && $allparcelsDetail['ParcelImage']->parcelImage && !empty($allparcelsDetail['ParcelImage']->parcelImage))
                                                             <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
                                                                 <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
                                                             </a>

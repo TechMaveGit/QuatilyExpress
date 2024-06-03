@@ -7,9 +7,8 @@
         }
 
         .info-window-content img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            width: 150px;
+            height: 150px;
         }
 
         .no-routes-message {
@@ -102,6 +101,7 @@
                                             @endif
                                         </select>
                                         <button class="btn btn-primary" type="submit">Submit</button>
+                                        <button type="submit" class="btn btn-info">Refresh</button>
                                     </form>
                                 </div>
                             </div>
@@ -197,7 +197,7 @@
                 var driverDetails = location; // Use the location directly
                 var contentString = `
                     <div style="text-align: center;">
-                        <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 100px; height: 100px; border-radius: 50%;" />
+                        <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
                         <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
                         <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
                         <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
@@ -426,6 +426,7 @@
                     let delived_date = point.parcelDeliverdDate ?
                         `<p><b>Deliverd Date : ${point.parcelDeliverdDate}</b></p>` : '';
                     let receiverName = point.receiverName ? `<p><b>Receiver Name : ${point.receiverName}</b></p>` : '';
+                    let deliveredTo = point.deliveredTo ? `<p><b>Received By : ${point.deliveredTo}</b></p>` : '';
                     let deliver_address = point.deliver_address ?? point.location;
                     let parselImage = point.parcelphoto ? `<img src="${storage_path}/${point.parcelphoto}" />` : '';
                     let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point
@@ -445,7 +446,7 @@
                     });
                     marker.addListener('click', () => {
                         infoWindow.setContent(
-                            `<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${parselImage}</div>`
+                            `<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${deliveredTo}${parselImage}</div>`
                             );
                         infoWindow.open(map, marker);
                     });
