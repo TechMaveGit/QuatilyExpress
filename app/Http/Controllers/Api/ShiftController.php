@@ -665,9 +665,6 @@ class ShiftController extends Controller
         if ($status) {
             $query = $query->Where('finishStatus', $status);
         }
-        if ($status == '0') {
-            $query = $query->Where('finishStatus', $status);
-        }
 
         if ($startDate) {
             $query = $query->where('shiftStartDate', '>=', $startDate);
@@ -693,7 +690,7 @@ class ShiftController extends Controller
                 ->first()->rego ?? '';
         }
 
-        $countShift = $shift?->count() ?? '0';
+        $countShift = $shift ? $shift?->count() : '0';
         if (!($countShift) == 0) {
             return response()->json([
                 'status' => $this->successStatus,
