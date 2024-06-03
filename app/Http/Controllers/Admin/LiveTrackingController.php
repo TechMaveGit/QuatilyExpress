@@ -48,7 +48,9 @@ class LiveTrackingController extends Controller
                 $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
                 $parcelLocation->where('shiftid', $shiftId);
                 $parcelLocation = $parcelLocation->get()->toArray();
-                $beforeParcelImage = $parcelLocation[0] ? (DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()?->pluck('parcelImage') ?? null) : null;
+
+                $beforeParcelImageData = $parcelLocation[0] ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
+                $beforeParcelImage =  $beforeParcelImageData ? $beforeParcelImageData->parcelImage : null;
             
             }
         }
@@ -84,7 +86,8 @@ class LiveTrackingController extends Controller
                 $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
                 $parcelLocation->where('shiftid', $shiftData->id);
                 $parcelLocation = $parcelLocation->get()->toArray();
-                $beforeParcelImage = $parcelLocation[0] ? (DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()?->pluck('parcelImage') ?? null) : null;
+                $beforeParcelImageData = $parcelLocation[0] ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
+                $beforeParcelImage =  $beforeParcelImageData ? $beforeParcelImageData->parcelImage : null;
             }
         }else{
             foreach ($driver as $alldriver) {
