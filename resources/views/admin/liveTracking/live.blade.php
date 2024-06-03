@@ -367,7 +367,7 @@
             let receiverName = point.receiverName?`<p><b>Receiver Name : ${point.receiverName}</b></p>`:'';
             let deliveredTo = point.deliveredTo?`<p><b>Received By : ${point.deliveredTo}</b></p>`:'';
             let deliver_address = point.deliver_address ?? point.location;
-            let parselImage = point.parcelphoto ? `<img src="${storage_path}/${point.parcelphoto}" />`:'';
+            let parselImage = point.parcelphoto ? `<img style="width: 150px;" src="${storage_path}/${point.parcelphoto}" />`:'';
             let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
             let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
             let LatLong = { lat: parseFloat(delivered_latitude), lng: parseFloat(delivered_longitude) };
