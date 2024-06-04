@@ -192,10 +192,10 @@
     let driverRoute = locations.length ? locations : [];
     let driverLocation = driverRoute[driverRoute.length - 1]; // Last point in driverRoute is current location
     let startPoint = @json($startpoints??[]); // Start point (red)
-    let start_address = startPoint.address!=undefined ? `<p><b>Driver Address:</b> ${startPoint.address}</p>` : '';
+    let start_address = startPoint.address!=undefined ? `<p><b>Location:</b> ${startPoint.address}</p>` : '';
     if(startPoint != undefined && startPoint.lat) startPoint = {lat:parseFloat(startPoint.lat),lng:parseFloat(startPoint.lng)};
     let endPoint = @json($endpoints??[]); // End point (green)
-    let end_address = endPoint.address!=undefined ? `<p><b>Driver Address:</b> ${endPoint.address}</p>` : '';
+    let end_address = endPoint.address!=undefined ? `<p><b>Location:</b> ${endPoint.address}</p>` : '';
     if(endPoint != undefined && endPoint.lat) endPoint = {lat:parseFloat(endPoint.lat),lng:parseFloat(endPoint.lng)};
     
     if(startPoint.lat && startPoint.lng && endPoint.lat && endPoint.lng && deliveryPoints.length > 0){
@@ -374,8 +374,8 @@
             let deliveredTo = point.deliveredTo?`<p><b>Received By : ${point.deliveredTo}</b></p>`:'';
             let deliver_address = point.deliver_address ?? point.location;
             let beforeImage = '{{$beforeParcelImage}}';
-            let beforeParselImage = beforeImage ? `<p>Parcel Before Delivered : <br/><img style="width: 100px;" src="${storage_path}/${beforeImage}" /></p>`:'';
-            let parselImage = point.parcelphoto ? `<p>Parcel After Delivered : <br/><img style="width: 100px;" src="${storage_path}/${point.parcelphoto}" /></p>`:'';
+            let beforeParselImage = beforeImage ? `<img style="width: 100%;" src="${storage_path}/${beforeImage}" />`:'';
+            let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />`:'';
             let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
             let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
             let LatLong = { lat: parseFloat(delivered_latitude), lng: parseFloat(delivered_longitude) };
@@ -386,21 +386,97 @@
                 icon: createSVGMarker(markerColor, ind+1),
                 title: `Delivery Point ${ind+1}`
             });
+
+            let htmlData = ` <div class="info-window-content" style="border: 1px solid #dbdbdb;
+                    padding: 20px;
+                    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+                    width: 500px;">
+                        <h2 style="margin-top: 0;">Delivery Point ${ind+1}</h2>
+                        
+                        <div class="box_delivery" style="display: flex; gap: 10px;">
+                            <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Expected Deliver Point</h6>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.location||'-'}</p>
+                            </div>
+                            <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
+                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered At</h6>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.deliver_address||'-'}</p>
+                            </div>
+                        </div> 
+                        <div class="box_delivery" style="display: flex; gap: 10px;">
+                            <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Add Date</h6>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.created_at||'-'}</p>
+                            </div>
+                            <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
+                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered Date</h6>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.parcelDeliverdDate||'-'}</p>
+                            </div>
+                        </div> 
+                        <div class="box_delivery" style="display: flex; gap: 10px;">
+                            <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
+                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Receiver Name</h6>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.receiverName||'-'}</p>
+                            </div>
+                            <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
+                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Received By</h6>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.deliveredTo||'-'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="boxpARCEL">
+                            <h6 style="margin:5px 0 10px; font-size:16px">Parcel Image</h6>
+                            <div class="box_delivery" style="display: flex; gap: 10px;">
+                                <div class="dlvryDate" style="text-align:center; padding: 10px; border: 1px solid #dbdbdb;width: 250px;  border-radius: 5px;">
+                                    ${beforeParselImage}
+                                    <p style="margin: 5px 0 0; font-size: 14px;">Before</p>
+                                </div>
+                                <div class="dlvryDate"  style="text-align:center; padding: 10px; border: 1px solid #dbdbdb;width: 250px;  border-radius: 5px;">
+                                    ${parselImage}
+                                    <p style="margin:5px 0 0; font-size: 14px;">After</p>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>`;
+
+
             marker.addListener('click', () => {
-                infoWindow.setContent(`<div class="info-window-content"><h2>Delivery Point ${ind+1}</h2><p>${deliver_address}</p>${delived_date}${receiverName}${deliveredTo}${beforeParselImage}${parselImage}</div>`);
+                infoWindow.setContent(htmlData);
                 infoWindow.open(map, marker);
             });
         });
 
         // Add driver current location marker
+        let newdriverLocation = driverLocation.lat ? {
+                    lat : parseFloat(driverLocation.lat),lng:parseFloat(driverLocation.lng)
+                } : {
+                    lat : 0,lng:0
+                };
         const driverMarker = new google.maps.Marker({
-            position: driverLocation,
+            position: newdriverLocation,
             map: map,
             icon: createSVGMarker('purple', 'D'),
             title: 'Driver Location'
         });
         driverMarker.addListener('click', () => {
-            infoWindow.setContent('<div class="info-window-content"><h2>Driver Location</h2><p>Driver Info: Current Location</p></div>');
+            let driverDetails = @json($selected_driver??[]);
+            infoWindow.setContent(
+                `<div style="text-align: center;color:#000;">
+                            <img src="${storage_path}/${driverDetails['driver']['profile_image']}"  style="width: 150px; height: 150px; border-radius: 50%;" />
+                            <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
+                            <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
+                            <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
+                            <hr>
+                            <h4 class="black">Shift Details:</h4>
+                            <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
+                            <p class="black">Rego: ${driverDetails['shift']['rego']}</p>
+                            <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
+                            <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
+                            <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
+                            <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                        </div>`
+            );
             infoWindow.open(map, driverMarker);
         });
     }
