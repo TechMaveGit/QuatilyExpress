@@ -7,6 +7,13 @@ foreach($D as $v)
 {
   $arr[] = $v['permission_id'];
 }
+
+$readonlybtn = null;
+if(in_array($shiftView->finishStatus,["3","4"])){
+    
+    $readonlybtn = 'disabled';
+}
+
 //  echo "<pre>";
 //  print_r($arr);
 ?>
@@ -57,13 +64,13 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">State  <span class="red">*</span></label>
                                                     <div class="form-group">
                                                     @if($shiftView->finishStatus =='5')
-                                                       <select class="form-control select2 form-select" name="state" >
+                                                       <select class="form-control select2 form-select" name="state" {{$readonlybtn}}>
                                                            @foreach ($allstate as $allstate)
                                                                 <option value="{{ $allstate->id }}">{{ $allstate->name }} </option>
                                                             @endforeach
                                                         </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" onchange="getdata(this)" name="state" data-placeholder="Choose one">
+                                                         <select class="form-control select2 form-select"  @if(!$readonlybtn) onchange="getdata(this)"   name="state" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($allstate as $allstate)
                                                               <option value="{{ $allstate->id }}" @if($allstate->id ==$shiftView->state) selected @else @endif>{{ $allstate->name }} </option>
@@ -78,7 +85,7 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">Client <span class="red">*</span></label>
                                                     <div class="form-group">
                                                         @if($shiftView->finishStatus =='5')
-                                                         <select class="form-control select2 form-select" name="client" id="appendClient" data-placeholder="Choose one" disable>
+                                                         <select class="form-control select2 form-select" name="client" id="appendClient" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                         @foreach ($client as $allclient)
                                                         <option value="{{ $allclient->id }}" @if($allclient->id ==$shiftView->client) selected @else @endif >{{ $allclient->name }}
@@ -86,7 +93,7 @@ foreach($D as $v)
                                                       @endforeach
                                                         </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" id="appendClient"  onchange="getCostCenter(this)" name="client" data-placeholder="Choose one" disable>
+                                                         <select class="form-control select2 form-select" id="appendClient"  @if(!$readonlybtn) onchange="getCostCenter(this)" name="client" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                         @foreach ($client as $allclient)
                                                         <option value="{{ $allclient->id }}" @if($allclient->id == $shiftView->client) selected @else @endif >{{ $allclient->name }}
@@ -102,7 +109,7 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">Cost Centre <span class="red">*</span></label>
                                                     <div class="form-group">
                                                       @if($shiftView->finishStatus =='5')
-                                                        <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                 @foreach ($costCenter as $allcostCenter)
                                                                 <option value="{{ $allcostCenter->id }}">{{ $allcostCenter->name }}
@@ -110,7 +117,7 @@ foreach($D as $v)
                                                               @endforeach
                                                         </select>
                                                         @else
-                                                           <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one">
+                                                           <select class="form-control select2 form-select" id="appendCostCenter" @if(!$readonlybtn) name="costCenter" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($costCenter as $allcostCenter)
                                                                 <option value="{{ $allcostCenter->id }}" @if($allcostCenter->id ==$shiftView->costCenter) selected @else @endif >{{ $allcostCenter->name }}
@@ -129,12 +136,7 @@ foreach($D as $v)
                                                             <label class="form-label" for="exampleInputEmail1">Status <span class="red">*</span></label>
                                                             <div class="form-group">
                                                             @if($shiftView->finishStatus =='5')
-                                                            <select class="form-control select2 form-select" name="finishStatus">
-                                                                <option value="0" @if($shiftView->finishStatus =='0') selected @else @endif >Created</option>
-                                                                <option value="1" @if($shiftView->finishStatus =='1') selected @else @endif >In Progress</option>
-                                                                <option value="2" @if($shiftView->finishStatus =='2') selected @else @endif >To Be Approved</option>
-                                                                <option value="3" @if($shiftView->finishStatus =='3') selected @else @endif >Approved</option>
-                                                                <option value="4" @if($shiftView->finishStatus =='4') selected @else @endif >Rejected</option>
+                                                            <select class="form-control select2 form-select"  name="finishStatus">
                                                                 <option value="5" @if($shiftView->finishStatus =='5') selected @else @endif >Paid</option>
                                                                 <option value="6" @if($shiftView->finishStatus =='6') selected @else @endif >Already Paid</option>
                                                             </select>
@@ -160,7 +162,7 @@ foreach($D as $v)
                                                          $clientbases= DB::table('clientbases')->where('id',$shiftView->base)->get();
                                                         @endphp
                                                          @if($shiftView->finishStatus =='5')
-                                                           <select class="form-control select2 form-select" id="appendBase" name="base">
+                                                           <select class="form-control select2 form-select" id="appendBase" name="base" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                @foreach ($clientbases as $allClientBase)
                                                                 <option value="{{ $allClientBase->id }}" @if($allClientBase->id == $shiftView->base) selected @else @endif >{{ $allClientBase->base }}
@@ -168,7 +170,7 @@ foreach($D as $v)
                                                               @endforeach
                                                            </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" id="appendBase" name="base"  data-placeholder="Choose one">
+                                                         <select class="form-control select2 form-select" id="appendBase" @if(!$readonlybtn) name="base"  @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                               @foreach ($clientbases as $allClientBase)
                                                                 <option value="{{ $allClientBase->id }}" @if($allClientBase->id == $shiftView->base) selected @else @endif >{{ $allClientBase->base }}
@@ -194,7 +196,7 @@ foreach($D as $v)
                                                 <div class="check_box">
                                                     <label class="form-label" for="exampleInputEmail1">Driver </label>
                                                     <div class="form-group">
-                                                        <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" @if(!$readonlybtn) name="driverId" @endif id="appendDriverResponiable" data-placeholder="Choose one" {{$readonlybtn}}>
                                                                 <option value="">Select Any One</option>
                                                                     @forelse ($driverAdd as $AdddriverAdd)
                                                                     <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif>{{ $AdddriverAdd->userName??'' }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
@@ -212,7 +214,7 @@ foreach($D as $v)
                                                             <label class="form-label" for="exampleInputEmail1">Vehicle Type <span class="red">*</span></label>
                                                             <div class="form-group">
                                                          @if($shiftView->finishStatus =='5')
-                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)"  name="vehicleType" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)"  name="vehicleType" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($types as $alltypes)
                                                                <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
@@ -220,7 +222,7 @@ foreach($D as $v)
                                                           @endforeach
                                                             </select>
                                                         @else
-                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)" name="vehicleType" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)" name="vehicleType" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($types as $alltypes)
                                                                <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
@@ -236,7 +238,7 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">Rego <span class="red">*</span></label>
                                                     <div class="form-group">
                                                          @if($shiftView->finishStatus =='5')
-                                                           <select class="form-control select2 form-select" id="regoId"  onchange="getDriverResponiable(this)"  name="rego" data-placeholder="Choose one">
+                                                           <select class="form-control select2 form-select" id="regoId"  onchange="getDriverResponiable(this)"  name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($types as $alltypes)
                                                                <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
@@ -247,7 +249,7 @@ foreach($D as $v)
                                                         @php
                                                         $rego = DB::table('vehicals')->get();
                                                         @endphp
-                                                           <select class="form-control select2 form-select" name="rego" data-placeholder="Choose one">
+                                                           <select class="form-control select2 form-select" name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                @foreach ($rego as $allrego)
                                                                 <option value="{{ $allrego->id }}" @if($allrego->id == $shiftView->rego) selected @else @endif >{{ $allrego->rego }}
@@ -261,7 +263,7 @@ foreach($D as $v)
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1"> Scanner ID <span class="red">*</span></label>
-                                                    <input type="text" min="0"  class="form-control" name="scannerName" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}"  @if($shiftView->finishStatus =='5') disabled @else @endif aria-describedby="emailHelp" placeholder="">
+                                                    <input type="text" min="0"  class="form-control" name="scannerName" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}"  @if($shiftView->finishStatus =='5') $readonlybtn @else @endif aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                             </div>
                                             {{-- <div class="col-lg-3">
@@ -273,15 +275,15 @@ foreach($D as $v)
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate??'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->createdDate??'N/A' }}" aria-describedby="emailHelp" placeholder="" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
                                                     <input type="text" class="form-control "
-                                                    value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i:s') }}"
-                                                    aria-describedby="emailHelp" placeholder="" readonly>
+                                                    value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') }} "
+                                                    aria-describedby="emailHelp" placeholder="" disabled>
                                                                                              </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -447,13 +449,13 @@ foreach($D as $v)
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="parcelsToken">Parcel Taken</label>
-                                                       <input type="text" class="form-control" name="parcelsToken" id="parcelsToken" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" >
+                                                       <input type="text" class="form-control" name="parcelsToken" id="parcelsToken" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="parcelsDelivered">Parcel Delivered</label>
-                                                       <input type="text" class="form-control" name="parcelsDelivered" id="parcelsDelivered" value="{{ $shiftView->getFinishShifts->parcelsDelivered?? 0 }}" aria-describedby="emailHelp" placeholder="" >
+                                                       <input type="text" class="form-control" name="parcelsDelivered" id="parcelsDelivered" value="{{ $shiftView->getFinishShifts->parcelsDelivered?? 0 }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
@@ -465,13 +467,13 @@ foreach($D as $v)
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="odometerStartReading">Odometer Start</label>
-                                                       <input type="text" class="form-control" id="odometerStartReading" name="odometerStartReading" value="{{ $shiftView->getFinishShifts->odometerStartReading?? 0 }}" aria-describedby="emailHelp" placeholder="" >
+                                                       <input type="text" class="form-control" id="odometerStartReading" name="odometerStartReading" value="{{ $shiftView->getFinishShifts->odometerStartReading?? 0 }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="odometerEndReading">Odometer Finish</label>
-                                                       <input type="text" class="form-control" id="odometerEndReading" name="odometerEndReading" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" >
+                                                       <input type="text" class="form-control" id="odometerEndReading" name="odometerEndReading" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                    @php
                                                    $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
@@ -489,11 +491,11 @@ foreach($D as $v)
                                                        @if ($shiftView->shiftStartDate)
                                                        <input type="text" class="form-control datetime_picker" name="shiftStartDate"
                                                        value="{{ date('Y/m/d H:i:s', strtotime($shiftView->shiftStartDate)) }}"
-                                                       aria-describedby="emailHelp" placeholder="">
+                                                       aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                        @else
                                                        <input type="text"  class="form-control" name="startDate"
                                                        value=""
-                                                       aria-describedby="emailHelp" placeholder="">
+                                                       aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                        @endif
                                                    </div>
                                                </div>
@@ -501,9 +503,9 @@ foreach($D as $v)
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish</label>
                                                        @if ($finishshifts)
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" $readonlybtn value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp">
                                                        @else
-                                                       <input type="text"  class="form-control datetime_picker" id="#basicDate2" value="" aria-describedby="emailHelp">
+                                                       <input type="text"  class="form-control datetime_picker" id="#basicDate2" value="" $readonlybtn aria-describedby="emailHelp">
                                                        @endif
                                                    </div>
                                                </div>
@@ -571,7 +573,7 @@ foreach($D as $v)
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="exampleInputEmail1">Total Payable </label>
-                                                        <input type="text" step="0.1" value="{{ $finalpayamnnt  }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="">
+                                                        <input type="text" step="0.1" value="{{ $finalpayamnnt  }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -612,7 +614,7 @@ foreach($D as $v)
                                                 <div class="col-lg-12">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Total Chargeable</label>
-                                                    <input type="text" step="0.1"  id="charge6" onInput="edValueKeyChargePrs('a')"  class="form-control thirdcls" name="totalChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($shiftView->chageAmount??'',2 )}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
+                                                    <input type="text" step="0.1"  id="charge6" onInput="edValueKeyChargePrs('a')"  class="form-control thirdcls" name="totalChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($shiftView->chageAmount??'',2 )}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                                 </div>
                                         </div>
@@ -627,7 +629,7 @@ foreach($D as $v)
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                <label class="form-label" for="exampleInputEmail1">Approved Reason</label>
+                                                <label class="form-label" for="exampleInputEmail1">Approved/Reject Reason</label>
                                                 <textarea class="form-control mb-4" name="approvedReason" @if($shiftView->finishStatus =='5')  @else @endif placeholder="Please Enter Your Comment" rows="4">{{ $shiftView->approval_reason	??'' }}</textarea>
                                                 </div>
                                             </div>

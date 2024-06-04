@@ -44,7 +44,6 @@ class ShiftController extends Controller
             'costCentre'     => 'required|integer',
             'base'           => 'required',
             'vehicleType'    => 'required|integer',
-            //    "rego"           => "required",
             'odometer'       => 'required',
             'parcelsToken'   => 'required',
         ]);
@@ -359,7 +358,7 @@ class ShiftController extends Controller
                 $totalChargeDay = $totalChargeDay + (float)($shiftMonetize->fuelLevyChargeable250??0)+(float)($shiftMonetize->fuelLevyChargeable??0)+(float)($shiftMonetize->fuelLevyChargeable400??0)+(float)($shiftMonetize->extraChargeable??0);
             }
 
-            Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'chageAmount' => $totalChargeDay]);
+            Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'chageAmount' => $totalChargeDay,'shiftStartDate'=>$start_date,'finishDate'=>$end_date]);
 
             $totalHr = $data = $dayHr + $nightHr;
 
@@ -385,6 +384,7 @@ class ShiftController extends Controller
                     $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
                     $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
                     $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
+                    $Parcel->submitted_at = date('Y-m-d H:i:s');
                     $Parcel->save();
                 }
             }
@@ -524,8 +524,6 @@ class ShiftController extends Controller
             // is Driver Payable
         }
 
-        // Client charage Amount
-        Shift::where('id', $shify->id)->update(['chageAmount' => $totalChargeDay]);
         $totalHr = $data = $dayHr + $nightHr;
         // End client Charge Amount
 
@@ -537,7 +535,7 @@ class ShiftController extends Controller
         $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
         Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
 
-        Shift::whereId($shify->id)->update(['finishStatus' => '2']);
+        Shift::whereId($shify->id)->update(['chageAmount' => $totalChargeDay,'finishStatus' => '2']);
 
         if ($request->file('missedImage') != '') {
             $image = $request->file('missedImage');
@@ -562,6 +560,7 @@ class ShiftController extends Controller
         $Parcel->endDate = $request->end_date;
         $Parcel->startTime = $dayStartTime->format('H:i:s');
         $Parcel->endTime = $nightEndTime->format('H:i:s');
+        $Parcel->submitted_at = date('Y-m-d H:i:s');
         $Parcel->parcelsTaken = $request->parcelsTaken;
         $Parcel->parcelsDelivered = $request->parcel_delivered;
         $Parcel->addPhoto = $items;

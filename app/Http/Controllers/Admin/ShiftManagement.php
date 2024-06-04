@@ -380,9 +380,9 @@ class ShiftManagement extends Controller
             if (request()->isMethod('post')) {
                 $driverId = $request->driverId;
                 $shift = Shift::where('driverId', $driverId)->first()->id;
-                $checkExisted = Finishshift::where('shiftId', $shift)->first();
+                $checkExisted = Shift::where(['id'=>$shift,'finishStatus'=>'2'])->first();
                 if ($checkExisted != '') {
-                    return redirect()->back()->with('error', 'Shift has started already, please finish your current shift');
+                    return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
                 } else {
                     $inputtypeRego1 = $request->input('inputtypeRego1');
                     $inputtypeRego2 = $request->input('inputtypeRego2');
@@ -470,9 +470,7 @@ class ShiftManagement extends Controller
         $data['odometer_finish_reading'] = $request->odometer_finish_reading;
         if (request()->isMethod('post')) {
 
-            if(Shift::where(['driverId'=>$request->driverId,'shiftStatus'=>'2'])->exists()){
-                return Redirect::route('admin.shift.report')->with('info', 'There is a shift in progress for the driver (you can only create a missed shift).');
-            }else{
+            
             //   return $request->start_date;
             $parcelsTaken = $request->parcelsToken;
             $parcel_delivered = $request->parcel_delivered;
@@ -648,12 +646,12 @@ class ShiftManagement extends Controller
             $Parcel->endDate = $end_date;
             $Parcel->startTime = $dayStartTime->format('H:i:s');
             $Parcel->endTime = $nightEndTime->format('H:i:s');
+            $Parcel->submitted_at = date('Y-m-d H:i:s');
             $Parcel->parcelsTaken = $parcelsTaken;
             $Parcel->parcelsDelivered = $parcel_delivered;
             $Parcel->save();
 
             return Redirect::route('admin.shift.report')->with('message', 'Missed Shift  Added Successfully!');
-        }
         }
         $data['driver'] = Driver::get();
         $data['client'] = Client::get();

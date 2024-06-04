@@ -187,14 +187,14 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i:s',strtotime($shiftView->shiftStartDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i:s',strtotime($shiftView->createdDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
-                                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i:s') }}" placeholder="" readonly>
+                                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') }}" placeholder="" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -624,7 +624,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                         </div>
                                                         <div class="col-lg-6">
                                                             <div class="mb-3">
-                                                            <label class="form-label" for="exampleInputEmail1">Approved Reason</label>
+                                                            <label class="form-label" for="exampleInputEmail1">Approved/Reject Reason</label>
                                                             <textarea class="form-control mb-4" name="approvedReason" placeholder="Please Enter Your Comment" readonly rows="4">{{ $shiftView->approval_reason	??'' }}</textarea>
             
                                                             </div>

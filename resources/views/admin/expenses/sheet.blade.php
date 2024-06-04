@@ -494,13 +494,12 @@
                                                         <div class="col-lg-3">
 
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Start
-                                                                    Date <span class="red">*</span></label>
+                                                                <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
 
                                                                 <input type="text" name="start_date"
                                                                     min="1000-01-01" max="9999-12-31"
                                                                     class="form-control onlydatenew"
-                                                                    aria-describedby="emailHelp" placeholder="" />
+                                                                    aria-describedby="emailHelp" placeholder="" required/>
 
                                                                 <input type="hidden" name="firstSection"
                                                                     value="2" />
@@ -517,7 +516,7 @@
                                                                 <input type="text" name="end_date"
                                                                     min="1000-01-01" max="9999-12-31"
                                                                     class="form-control onlydatenew"
-                                                                    aria-describedby="emailHelp" placeholder="" />
+                                                                    aria-describedby="emailHelp" placeholder="" required/>
 
 
 

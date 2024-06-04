@@ -706,8 +706,7 @@
                                                         {{ $allshift->getStateName->name ?? 'N/A' }}
                                                     </td>
                                                     @php
-                                                        $finishshifts =
-                                                            DB::table('finishshifts')
+                                                        $finishshifts = DB::table('finishshifts')
                                                                 ->where('shiftId', $allshift->id)
                                                                 ->first() ?? '0';
                                                     @endphp
@@ -716,10 +715,12 @@
                                                             <td style="display: none;" class="td column-mobile_data_start">
                                                                 {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
                                                             </td>
-                                                            @if ($finishshifts)
+                                                            @if ($finishshifts && $finishshifts->submitted_at)
                                                                 <td style="display: none;" class="td column-mobile_data_finish">
-                                                                    {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
+                                                                    {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
                                                                 </td>
+                                                            @else
+                                                            <td> - </td>
                                                             @endif
                                                         @endif
                                                     @endif
