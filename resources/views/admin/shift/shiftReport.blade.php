@@ -355,7 +355,7 @@
                                                         Filter</a>
                                                     @if (in_array('54', $arr))
                                                         <a onclick="showImportForm()" class="btn btn-green "><i
-                                                                class="fa fa-file-excel-o"></i> Import Excel</a>
+                                                                class="fa fa-file-excel-o"></i> Import Csv</a>
                                                     @endif
                                                 </div>
                                             </div>
@@ -390,7 +390,7 @@
                                 </div>
                                 <button class="btn btn-green" style="color: white; margin: 4px;"
                                     onclick="window.location='{{ route('export.shifts', request()->input()) }}'">
-                                    <i class="fa fa-file-excel-o"></i> Download Excel
+                                    <i class="fa fa-file-excel-o"></i> Download Data
                                 </button>
                             </div>
                             <div class="card-body">
@@ -719,8 +719,6 @@
                                                                 <td style="display: none;" class="td column-mobile_data_finish">
                                                                     {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
                                                                 </td>
-                                                            @else
-                                                            <td> - </td>
                                                             @endif
                                                         @endif
                                                     @endif

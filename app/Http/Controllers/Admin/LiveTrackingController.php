@@ -38,8 +38,6 @@ class LiveTrackingController extends Controller
             }
             $shiftData = Shift::where('id',$shiftId)->first();
             
-
-
             $startpoints = ['lat'=>$shiftData->startlatitude??null,'lng'=>$shiftData->startlongitude??null,'address'=>$shiftData->startaddress??null];
             $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
             $locations = $locations->get()->toArray();
@@ -49,7 +47,7 @@ class LiveTrackingController extends Controller
                 $parcelLocation->where('shiftid', $shiftId);
                 $parcelLocation = $parcelLocation->get()->toArray();
 
-                $beforeParcelImageData = $parcelLocation[0] ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
+                $beforeParcelImageData = (isset($parcelLocation[0]) && $parcelLocation[0]) ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
                 $beforeParcelImage =  $beforeParcelImageData ? $beforeParcelImageData->parcelImage : null;
             
             }
@@ -61,7 +59,7 @@ class LiveTrackingController extends Controller
     public function getDriverLocation(Request $request)
     {
         $driverName = '';
-        $driverIds = Shift::where('shiftStatus','2')->get()->pluck('driverId')->toArray()??null;
+        $driverIds = Shift::where(['finishStatus'=>'1','shiftStatus'=>'2'])->get()->pluck('driverId')->toArray()??null;
         $driver = Driver::whereIn('id',$driverIds)->get();
         $locations = [];
         $parcelLocation = null;
@@ -86,15 +84,12 @@ class LiveTrackingController extends Controller
                 $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status')->orderBy('sorting', 'DESC');
                 $parcelLocation->where('shiftid', $shiftData->id);
                 $parcelLocation = $parcelLocation->get()->toArray();
-                $beforeParcelImageData = $parcelLocation[0] ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
+                $beforeParcelImageData = (isset($parcelLocation[0]) && $parcelLocation[0]) ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
                 $beforeParcelImage =  $beforeParcelImageData ? $beforeParcelImageData->parcelImage : null;
             }
         }else{
             foreach ($driver as $alldriver) {
-                $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng')
-                    ->orderBy('id', 'DESC')
-                    ->where('driver_id', $alldriver->id)
-                    ->first();
+                $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng')->orderBy('id', 'DESC')->where('driver_id', $alldriver->id)->first();
                     if (isset($location->driver_id)) {
                         $location->driver = Driver::whereId($location->driver_id ?? '')->first()->toArray() ?? '';
                         $location->shift = Shift::where(['driverId'=>$location->driver_id,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
@@ -105,9 +100,6 @@ class LiveTrackingController extends Controller
                 }
             }
         }
-
-        // dd($locations);
-
         return view('admin.liveTracking.driverLocation', compact('locations','driver','driverName','parcelLocation','startpoints','endpoints','beforeParcelImage'));
     }
 

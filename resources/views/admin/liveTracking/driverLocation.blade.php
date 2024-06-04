@@ -198,21 +198,21 @@
                         marker2.addListener('click', function() {
                             var driverDetails = location; // Use the location directly
                             var contentString = `
-                    <div style="text-align: center;">
-                        <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
-                        <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
-                        <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
-                        <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
-                        <hr>
-                        <h4 class="black">Shift Details:</h4>
-                        <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
-                        <p class="black">Rego: ${driverDetails['shift']['rego']}</p>
-                        <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
-                        <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
-                        <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
-                        <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
-                    </div>
-                `;
+                                <div style="text-align: center;">
+                                    <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
+                                    <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
+                                    <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
+                                    <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
+                                    <hr>
+                                    <h4 class="black">Shift Details:</h4>
+                                    <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
+                                    <p class="black">Rego: ${driverDetails['shift']['rego']}</p>
+                                    <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
+                                    <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
+                                    <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
+                                    <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                                </div>
+                            `;
                             infoWindow.setContent(contentString);
                             // Open the InfoWindow at the clicked marker
                             infoWindow.open(map, marker2);
@@ -469,6 +469,7 @@
                     );
                     infoWindow.open(map, driverMarker);
                 });
+                console.log(driverMarker);
             }
 
             document.addEventListener("DOMContentLoaded", initMap);
