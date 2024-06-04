@@ -351,11 +351,16 @@ class ShiftController extends Controller
 
             $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
 
-            Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
-
+            $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
             $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
+            
+            if($shiftMonetize){
+                $totalPayShiftAmount= $totalPayShiftAmount + (float)($shiftMonetize->fuelLevyPayable??0)+ (float)($shiftMonetize->extraPayable??0);
+                $totalChargeDay = $totalChargeDay + (float)($shiftMonetize->fuelLevyChargeable250??0)+(float)($shiftMonetize->fuelLevyChargeable??0)+(float)($shiftMonetize->fuelLevyChargeable400??0)+(float)($shiftMonetize->extraChargeable??0);
+            }
 
-            Shift::where('id', $id)->update(['chageAmount' => $totalChargeDay]);
+            Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'chageAmount' => $totalChargeDay]);
+
             $totalHr = $data = $dayHr + $nightHr;
 
             $driverPay = Client::where('id', $getClientID)->first();

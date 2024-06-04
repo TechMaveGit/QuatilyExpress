@@ -561,7 +561,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                             <div class="col-lg-12">
                                                                 <div class="mb-3">
                                                                     <label class="form-label" for="exampleInputEmail1">Total Payable</label>
-                                                                    <input type="text" class="form-control secondcls" name="totalPayable" value="{{ $finalpayamnnt}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                                    <input type="text" class="form-control secondcls" name="totalPayable" value="{{ $finalpayamnnt }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>

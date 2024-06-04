@@ -1236,9 +1236,11 @@ class ShiftManagement extends Controller
                         }
                     }
                 }
-                $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
+
+                $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr+(float)$request->input('fuelLevyPayable',0)+(float)$request->input('extraPayable',0);
                 Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
-                $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
+                $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge+(float)$request->input('fuelLevyChargeable250',0)+(float)$request->input('fuelLevyChargeable',0)+(float)$request->input('fuelLevyChargeable400',0)+(float)$request->input('extraChargeable',0);
+                // dd($dayShiftCharge , $nightShiftCharge , $saturdayShiftCharge , $sundayShiftCharge,(float)$request->input('fuelLevyChargeable250',0),(float)$request->input('amountChargeablePerService',0),(float)$request->input('fuelLevyChargeable',0),(float)$request->input('fuelLevyChargeable400',0),(float)$request->input('extraChargeable',0));
                 Shift::where('id', $id)->update(['chageAmount' => $totalChargeDay]);
                 $totalHr = $data = $dayHr + $nightHr;
                 $driverPay = Client::where('id', $getClientID)->first();
@@ -1277,16 +1279,16 @@ class ShiftManagement extends Controller
             // if ($managementId == '3') {
                 $shiftMonetizeInformation['amountPayablePerService'] = $request->input('amountPayablePerService');
                 $shiftMonetizeInformation['fuelLevyPayable'] = $request->input('fuelLevyPayable');
-                $shiftMonetizeInformation['fuelLevyChargeable250'] = $request->input('fuelLevyChargeable250');
                 $shiftMonetizeInformation['extraPayable'] = $request->input('extraPayable');
-                $shiftMonetizeInformation['totalPayable'] = $request->input('totalPayable');
+                $shiftMonetizeInformation['totalPayable'] = $totalPayShiftAmount;
                 $shiftMonetizeInformation['comments'] = $request->input('comments');
                 $shiftMonetizeInformation['approvedReason'] = $request->input('approvedReason');
                 $shiftMonetizeInformation['amountChargeablePerService'] = $request->input('amountChargeablePerService');
+                $shiftMonetizeInformation['fuelLevyChargeable250'] = $request->input('fuelLevyChargeable250');
                 $shiftMonetizeInformation['fuelLevyChargeable'] = $request->input('fuelLevyChargeable');
                 $shiftMonetizeInformation['fuelLevyChargeable400'] = $request->input('fuelLevyChargeable400');
                 $shiftMonetizeInformation['extraChargeable'] = $request->input('extraChargeable');
-                $shiftMonetizeInformation['totalChargeable'] = $request->input('totalChargeable');
+                $shiftMonetizeInformation['totalChargeable'] = $totalChargeDay;
                 
                 $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
                 if ($shiftMonetize) {
@@ -1296,8 +1298,8 @@ class ShiftManagement extends Controller
                     $shiftMonetizeInformation['shiftId'] = $id;
                     DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
                 }
-                DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
-                DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
+                // DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
+                // DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
             // }
 
             return Redirect::back()->with('message', 'Shift Updated Successfully!');

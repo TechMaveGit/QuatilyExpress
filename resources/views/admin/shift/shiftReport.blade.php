@@ -661,8 +661,7 @@
                                                 <th hidden class="bg-transparent border-bottom-0">Total Chargeable</th>
                                                 <th hidden class="bg-transparent border-bottom-0">Odometer Start</th>
                                                 <th hidden class="bg-transparent border-bottom-0">Odometer End</th>
-                                                <th class="bg-transparent border-bottom-0 column-totalPayable">Total
-                                                    Payable</th>
+                                                <th class="bg-transparent border-bottom-0 column-totalPayable">Total Payable</th>
                                                 <th class="bg-transparent border-bottom-0 column-traveledKm">Traveled KM
                                                 </th>
                                                 <th hidden class="bg-transparent border-bottom-0">Comment</th>
