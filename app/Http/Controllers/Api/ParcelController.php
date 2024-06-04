@@ -627,7 +627,7 @@ class ParcelController extends Controller
                     $items = '';
                 }
 
-                Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                Shift::whereId($request->shiftId)->update(['finishStatus' => '2','odometer'=>$request->odometerStartReading]);
 
                 $Parcel = new Finishshift();
                 $Parcel->driverId = $this->driverId;

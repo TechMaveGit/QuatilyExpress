@@ -467,7 +467,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="odometerStartReading">Odometer Start</label>
-                                                       <input type="text" class="form-control" id="odometerStartReading" name="odometerStartReading" value="{{ $shiftView->getFinishShifts->odometerStartReading?? 0 }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
+                                                       <input type="text" class="form-control" id="odometerStartReading" name="odometerStartReading" value="{{ $shiftView->odometer?? 0 }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
@@ -476,7 +476,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                        <input type="text" class="form-control" id="odometerEndReading" name="odometerEndReading" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                    @php
-                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
+                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->odometer ?? 0);
                                                    @endphp
                                                   </div>
                                                   <div class="col-lg-3">

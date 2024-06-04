@@ -450,7 +450,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Odometer Start</label>
-                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerStartReading??''}}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->odometer??''}}" aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
    
                                                   </div>
@@ -461,7 +461,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                    @php
-                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
+                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->odometer ?? 0);
                                                    @endphp
    
                                                   </div>

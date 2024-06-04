@@ -1098,8 +1098,6 @@ class ShiftManagement extends Controller
 
     public function shiftReportEdit(Request $request, $id)
     {
-
-       
         $query = Shift::where('id', $id);
         $getClientID = Shift::whereId($id)->first()->client;
         $data['shiftView'] = $query->orderBy('id', 'DESC')->with([
@@ -1130,6 +1128,7 @@ class ShiftManagement extends Controller
                     'parcelsToken'    => $request->input('parcelsToken'),
                     'comment'=> $request->input('comments'),
                     'approval_reason'=> $request->input('approvedReason'),
+                    'odometer' => $request->input('odometerStartReading')
                 ]);
 
                 // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
