@@ -282,7 +282,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
                                                     <input type="text" class="form-control "
-                                                    value="{{ $shiftView->getFinishShifts->submitted_at ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') : '' }} "
+                                                    value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') : '' }} "
                                                     aria-describedby="emailHelp" placeholder="" disabled>
                                                                                              </div>
                                             </div>
