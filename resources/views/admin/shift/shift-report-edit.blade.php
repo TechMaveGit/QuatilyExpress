@@ -519,11 +519,12 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                        
                                     <hr>
                                     <hr>
+                                    @if ($driverRole->role_id!='33')
                                     <h2>
                                         <span><i class="ti-clipboard"></i></span>
                                         <span>Monetize Information</span>
                                     </h2>
-                                    @if ($driverRole->role_id!='33')
+                                    
                                     <div class="top_dt_sec">
                                         <div class="row">
                                             @php

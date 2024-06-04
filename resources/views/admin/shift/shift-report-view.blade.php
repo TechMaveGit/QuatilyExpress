@@ -278,7 +278,48 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                   @php
                                                       $finalAmount='';
                                                   @endphp
-   
+
+                                                    @php
+                                                    $day='0';
+                                                    @endphp
+                                                    @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
+                                                        @php
+                                                            $day = ($shiftView->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $day = 0
+                                                        @endphp
+                                                    @endif
+
+                                                    @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
+                                                        @php
+                                                             $night = ($shiftView->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                        $night = 0
+                                                        @endphp
+                                                    @endif
+
+                                                    @php
+                                                        $saturday = 0;
+                                                        $sunday = 0;
+
+                                                        if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
+                                                            $saturday = ($shiftView->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
+                                                        }
+
+                                                        if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
+                                                            $sunday = ($shiftView->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
+                                                        }
+                                                        $finalAmount=$saturday +  $sunday;
+                                                    @endphp
+
+                                                    @php
+                                                    $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays??0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                    $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight??0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                    @endphp
                                                   @if ($driverRole->role_id!='33')
    
                                                   <div class="col-lg-3">
@@ -286,18 +327,8 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Day Shift</label>
    
-                                                       @php
-                                                           $day='0';
-                                                       @endphp
-                                                       @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
-                                                        @php
-                                                           $day = ($shiftView->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
-                                                        @endphp
-                                                        @else
-                                                        @php
-                                                        $day = 0
-                                                        @endphp
-                                                           @endif
+                                                       
+                                                           
                                                        <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $day ??'0' }}"  aria-describedby="emailHelp" placeholder="" readonly>
    
    
@@ -316,15 +347,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Night Shift</label>
    
-                                                       @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
-                                                        @php
-                                                             $night = ($shiftView->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
-                                                        @endphp
-                                                        @else
-                                                        @php
-                                                        $night = 0
-                                                        @endphp
-                                                       @endif
+                                                       
                                                        <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $night ??'0' }}" aria-describedby="emailHelp" placeholder="" readonly>
    
    
@@ -339,22 +362,6 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Weekend Shift</label>
-   
-   
-                                                           @php
-                                                               $saturday = 0;
-                                                               $sunday = 0;
-   
-                                                               if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
-                                                                   $saturday = ($shiftView->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
-                                                               }
-   
-                                                               if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
-                                                                   $sunday = ($shiftView->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
-                                                               }
-                                                               $finalAmount=$saturday +  $sunday;
-                                                           @endphp
-   
                                                            <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $saturday + $sunday }}" aria-describedby="emailHelp" placeholder="" readonly>
    
                                                    </div>
@@ -364,10 +371,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Chargeable Day Shift</label>
-                                                   @php
-                                                       $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays??0) * ($shiftView->getFinishShifts->dayHours ?? 0);
-                                                       $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight??0) * ($shiftView->getFinishShifts->nightHours ?? 0);
-                                                   @endphp
+                                                  
    
                                                        <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($chargeDayShift,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
@@ -501,6 +505,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                            </div>
                                         </div>
 
+                                        @if ($driverRole->role_id!='33')
                                         <hr>
                                         <hr>
                                         <h2>
@@ -647,6 +652,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 </div>
                                             </div> --}}
                                             <!-- main_bx_dt -->
+                                            @endif
                                         </div>
                                             </form>
                                     </div>

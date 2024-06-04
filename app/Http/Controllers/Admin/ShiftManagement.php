@@ -1122,7 +1122,6 @@ class ShiftManagement extends Controller
                     'base'   => $request->input('base'),
                     'vehicleType'         => $request->input('vehicleType'),
                     'rego'       => $request->input('rego'),
-                    'createdDate'    => $request->input('shiftStartDate'),
                     'shiftStartDate'    => $request->input('shiftStartDate'),
                     'scanner_id'  => $request->input('scannerName'),
                     'parcelsToken'    => $request->input('parcelsToken'),
@@ -1262,6 +1261,7 @@ class ShiftManagement extends Controller
                         $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
                         $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
                         $Parcel->parcelsTaken = $request->input('parcelsToken');
+                        $Parcel->submitted_at = $Parcel->submitted_at ?? date('Y-m-d H:i:s');
                         $Parcel->parcelsDelivered = $request->input('parcelsDelivered');
                         $Parcel->odometerStartReading = $request->input('odometerStartReading');
                         $Parcel->odometerEndReading = $request->input('odometerEndReading');
