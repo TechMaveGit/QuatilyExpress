@@ -46,6 +46,7 @@ class ShiftController extends Controller
             'vehicleType'    => 'required|integer',
             'odometer'       => 'required',
             'parcelsToken'   => 'required',
+            'createdDate' => 'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -81,7 +82,7 @@ class ShiftController extends Controller
         $shify->finishStatus = '1';
         $shify->parcelsToken = $request->parcelsToken;
         $shify->shiftStartDate = date('Y-m-d H:i:s');
-        $shify->createdDate = date('Y-m-d H:i:s');
+        $shify->createdDate = date('Y-m-d H:i:s',strtotime('createdDate'));
         $shify->save();
 
         if ($shify) {
@@ -384,7 +385,6 @@ class ShiftController extends Controller
                     $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
                     $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
                     $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
-                    $Parcel->submitted_at = date('Y-m-d H:i:s');
                     $Parcel->save();
                 }
             }
@@ -418,6 +418,7 @@ class ShiftController extends Controller
             'end_time' => 'required',
             'parcelsToken' => 'required',
             'parcel_delivered' => 'required',
+            'submitted_at'=>'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -453,7 +454,7 @@ class ShiftController extends Controller
         $shify->comment = $request->comment;
         $shify->is_missed_shift = '1';
         $shify->finishStatus = '2';
-        $shify->createdDate = date('Y-m-d H:i:s');
+        $shify->createdDate = $request->submitted_at ? date('Y-m-d H:i:s',strtotime($request->submitted_at)) : date('Y-m-d H:i:s');
         $shify->save();
 
         $getClientID = Shift::whereId($shify->id)->first()->client;
@@ -560,7 +561,7 @@ class ShiftController extends Controller
         $Parcel->endDate = $request->end_date;
         $Parcel->startTime = $dayStartTime->format('H:i:s');
         $Parcel->endTime = $nightEndTime->format('H:i:s');
-        $Parcel->submitted_at = date('Y-m-d H:i:s');
+        $Parcel->submitted_at = $request->submitted_at ? date('Y-m-d H:i:s',strtotime($request->submitted_at)) : date('Y-m-d H:i:s');
         $Parcel->parcelsTaken = $request->parcelsTaken;
         $Parcel->parcelsDelivered = $request->parcel_delivered;
         $Parcel->addPhoto = $items;

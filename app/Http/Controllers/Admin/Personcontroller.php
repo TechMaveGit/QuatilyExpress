@@ -132,11 +132,16 @@ class Personcontroller extends Controller
     public function personedit(Request $request, $id)
     {
         $data['person'] = $id;
+        
         $personData = Driver::where('id', $id)->first();
         $personValue1 = $request->input('personValue1');
         $roles = $request->input('roles');
         $role_data = Roles::where('id', $roles)->first()->id ?? '1000';
-        if ($personValue1) {
+        if ($request->isMethod('POST')) {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required:rfc|email|unique:drivers,email,'.$id,
+            ]);
             //    return $request->all();
             $name = $request->input('name');
             $shortName = $request->input('surname');

@@ -379,9 +379,8 @@ class ShiftManagement extends Controller
         try {
             if (request()->isMethod('post')) {
                 $driverId = $request->driverId;
-                $shift = Shift::where('driverId', $driverId)->first()->id;
-                $checkExisted = Shift::where(['id'=>$shift,'finishStatus'=>'2'])->first();
-                if ($checkExisted != '') {
+                $shift = Shift::where('driverId', $driverId)->first()->id??null;
+                if ($shift && Shift::where(['id'=>$shift,'finishStatus'=>'1'])->exists()) {
                     return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
                 } else {
                     $inputtypeRego1 = $request->input('inputtypeRego1');

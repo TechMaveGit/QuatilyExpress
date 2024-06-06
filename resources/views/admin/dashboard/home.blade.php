@@ -194,7 +194,7 @@ function yesstartShift()
                                     </script>
                                         <div class="col-lg-6">
                                             <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
-                                            <input type="text" name="startDate" class="form-control"  id="start-date" aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" disabled>
+                                            <input type="datetime-local" name="startDate" class="form-control"  id="start-date" aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" >
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label" for="exampleInputEmail1">End date <span class="red">*</span></label>
@@ -1034,12 +1034,14 @@ function yesstartShift()
                                                     data-bs-toggle="tooltip" data-bs-original-title="View"><span class="fe fe-eye fs-14"></span>
                                         </a>
                                             @endif
+                                            @if ($driverRole != 33)
                                         @if(in_array("53", $arr))
                                             <a class="btn text-primary btn-sm btncls" href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-original-title="Edit"><span
                                                     class="fe fe-edit fs-14"></span>
                                             </a>
+                                        @endif
                                         @endif
                                         @if(in_array("51", $arr))
                                         <a class="btn text-primary btn-sm btncls" href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}"

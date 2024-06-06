@@ -1046,12 +1046,14 @@
                                                                             data-bs-original-title="View"><i class="fe fe-eye fs-14"></i>View
                                                                         </a>
                                                                     @endif
+                                                                    @if ($driverRole != 33)
                                                                     @if (in_array('52', $arr))
                                                                         <a class="dropdown-item text-warning"
                                                                             href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
                                                                             data-bs-toggle="tooltip"
                                                                             data-bs-original-title="Edit"><i class="fe fe-edit fs-14"></i> Edit
                                                                         </a>
+                                                                    @endif
                                                                     @endif
 
                                                                     @if (in_array('53', $arr))

@@ -511,7 +511,7 @@ class ParcelController extends Controller
             'endTime' => 'required',
             'parcelsTaken' => 'required',
             'parcelsDelivered' => 'required',
-            // "addPhoto" => "required"
+            "submitted_at" => "nullable"
         ]);
 
         if ($validator->fails()) {
@@ -644,6 +644,7 @@ class ParcelController extends Controller
                 $Parcel->endDate = $request->endDate;
                 $Parcel->startTime = $dayStartTime->format('H:i:s');
                 $Parcel->endTime = $nightEndTime->format('H:i:s');
+                $Parcel->submitted_at =  $request->submitted_at ? date('Y-m-d H:i:s',strtotime($request->submitted_at)):date('Y-m-d H:i:s');
                 $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
                 $Parcel->addPhoto = $items;

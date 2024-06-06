@@ -326,6 +326,7 @@ class Homecontroller extends Controller
             $finishShift->endDate = Carbon::parse($endDate)->format('Y-m-d');
             $finishShift->startTime = Carbon::parse($startDate)->format('H:i:s');
             $finishShift->endTime = Carbon::parse($endDate)->format('H:i:s');
+            $finishShift->submitted_at = date('Y-m-d H:i:s');
             $finishShift->parcelsTaken = $parcelsTaken;
             $finishShift->parcelsDelivered = $parcelDelivered;
             $finishShift->addPhoto = $imageupload;
