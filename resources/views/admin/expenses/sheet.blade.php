@@ -221,8 +221,7 @@
 
                                                         <div class="col-lg-4">
                                                             <div class="check_box">
-                                                                <label class="form-label" for="exampleInputEmail1">Select
-                                                                    Type</label>
+                                                                <label class="form-label" for="exampleInputEmail1">Select Type <span class="text-danger">*</span></label>
                                                                 <div class="form-group">
 
                                                                     <input type="hidden" name="firstSection"
@@ -321,10 +320,9 @@
                                                                 <div class="col-lg-4">
                                                                     <div class="mb-3">
                                                                         <label class="form-label"
-                                                                            for="exampleInputEmail1">Cost</label>
+                                                                            for="exampleInputEmail1">Cost <span class="text-danger">*</span></label>
                                                                         <input type="number" name="cost"
-                                                                            min="0"
-                                                                            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                                                            min="0" step="any" required
                                                                             class="form-control fc-datepicker"
                                                                             id="first5" aria-describedby="emailHelp"
                                                                             placeholder="">
@@ -496,13 +494,12 @@
                                                         <div class="col-lg-3">
 
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Start
-                                                                    Date <span class="red">*</span></label>
+                                                                <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
 
                                                                 <input type="text" name="start_date"
                                                                     min="1000-01-01" max="9999-12-31"
                                                                     class="form-control onlydatenew"
-                                                                    aria-describedby="emailHelp" placeholder="" />
+                                                                    aria-describedby="emailHelp" placeholder="" required/>
 
                                                                 <input type="hidden" name="firstSection"
                                                                     value="2" />
@@ -519,7 +516,7 @@
                                                                 <input type="text" name="end_date"
                                                                     min="1000-01-01" max="9999-12-31"
                                                                     class="form-control onlydatenew"
-                                                                    aria-describedby="emailHelp" placeholder="" />
+                                                                    aria-describedby="emailHelp" placeholder="" required/>
 
 
 
@@ -613,8 +610,8 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Cost
                                                                     <span class="red">*</span></label>
-                                                                <input type="text" name="trip_cost"
-                                                                    class="form-control" id="first17"
+                                                                <input type="number" name="trip_cost"
+                                                                    class="form-control" id="first17" min="0" step="any"
                                                                     aria-describedby="emailHelp" placeholder="$" required>
                                                                 <p class="first" id="firstcls17" style="display: none">
                                                                     Please Add Trip Cost</p>
@@ -731,8 +728,7 @@
                                                 <form id="saveOperactionExpenses">
                                                     <div class="col-lg-4">
                                                         <div class="check_box">
-                                                            <label class="form-label" for="exampleInputEmail1">Select
-                                                                Type</label>
+                                                            <label class="form-label" for="exampleInputEmail1">Select Type <span class="text-danger">*</span></label>
                                                             <div class="form-group">
 
                                                                 <input type="hidden" name="firstSection"
@@ -809,9 +805,9 @@
                                                             <div class="col-lg-4">
                                                                 <div class="mb-3">
                                                                     <label class="form-label"
-                                                                        for="exampleInputEmail1">Cost</label>
-                                                                    <input type="text"
-                                                                        class="form-control fc-datepicker" name="cost"
+                                                                        for="exampleInputEmail1">Cost <span class="text-danger">*</span></label>
+                                                                    <input type="number" min="0" step="any" required
+                                                                        class="form-control fc-datepicker"  name="cost"
                                                                         id="" aria-describedby="emailHelp"
                                                                         placeholder="">
                                                                 </div>
@@ -1040,7 +1036,7 @@
             enableTime: true,
             noCalendar: true,
             time_24hr: true,
-            dateFormat: "H:i",
+            dateFormat: "H:i:s",
         });
     </script>
 

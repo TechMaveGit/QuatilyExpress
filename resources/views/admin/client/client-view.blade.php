@@ -121,7 +121,7 @@
                                                 <h6>State</h6>
                                             </div>
                                             <div class="detail_ans">
-                                                <h6>{{$client->getState->name}}</h6>
+                                                <h6>{{$client->getState->name??''}}</h6>
                                             </div>
                                         </li>
                                         <li>

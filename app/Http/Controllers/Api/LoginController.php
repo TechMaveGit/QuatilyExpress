@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ImageController;
+use App\Mail\WebSiteMail;
 use App\Models\Admin;
 use App\Models\Driver;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash as FacadesHash;
+use Illuminate\Support\Facades\Mail;
 use Validator;
 
 class LoginController extends Controller
@@ -30,7 +33,7 @@ class LoginController extends Controller
 
     public function login(Request $req)
     {
-        $url = env('APP_URL') . '/public/assets/images/profile/';
+        $url = asset(env('STORAGE_URL'));
         $validator = Validator::make($req->all(), [
             'email' => 'required',
             'password' => 'required',
@@ -302,9 +305,9 @@ class LoginController extends Controller
     {
         $Parcels = Driver::select('id', 'driving_license', 'visa', 'traffic_history', 'police_chceck', 'driving_license_issue_date', 'driving_date_expiry_date', 'visa_issue_date', 'visa_expiry_date', 'traffic_history_issue_date', 'traffic_history_expiry_date', 'police_chceck_issue_date', 'police_chceck_expiry_date')->where('id', $this->driverId)->first();
 
-        $driving_license_and_visa_url = env('APP_URL') . 'public/assets/driver/document';
-        $trafficHistory = env('APP_URL') . 'public/assets/driver/trafficHistory';
-        $policeChceck = env('APP_URL') . 'public/assets/driver/driving_license';
+        $driving_license_and_visa_url = asset(env('STORAGE_URL'));
+        $trafficHistory = asset(env('STORAGE_URL'));
+        $policeChceck = asset(env('STORAGE_URL'));
 
         if ($Parcels) {
             return response()->json([
@@ -335,6 +338,8 @@ class LoginController extends Controller
             return $response;
         }
 
+        
+
         $agetnLogin = Driver::where('email', $req->input('email'))->first();
         if (empty($agetnLogin)) {
             return response()->json(
@@ -345,6 +350,10 @@ class LoginController extends Controller
             );
         } else {
 
+            $password = $this->randomPassword();
+            $newPassword = FacadesHash::make($password);
+            $sendmail = Mail::to($req->email)->send(new WebSiteMail('lost_password','Lost Password',['NEW_PASSWORD'=>$password]));
+            
             $driver = Driver::where('email', $req->input('email'))->update([
                 'otp' => 123456,
             ]);
@@ -352,7 +361,7 @@ class LoginController extends Controller
                 return response()->json(
                     [
                         'status' => $this->successStatus,
-                        'message' => 'Otp Send Successfully.',
+                        'message' => 'Mail Send Successfully.',
                     ]
                 );
             } else {
@@ -364,6 +373,17 @@ class LoginController extends Controller
                 );
             }
         }
+    }
+
+    protected function randomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 
     public function verifyOtp(Request $req)

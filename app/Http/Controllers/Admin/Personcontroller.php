@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\DataTableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ImageController;
 use App\Models\Admin;
@@ -24,7 +25,15 @@ class Personcontroller extends Controller
         $data['status'] = $request->input('selectStatus') ?? null;
         $data['name'] = $request->input('name') ?? null;
         $data['email'] = $request->input('email') ?? null;
-        $query = Driver::with('roleName')->select('*')->orderBy('id', 'DESC');
+
+        return view('admin.person.person', $data);
+    }
+
+    public function personAjaxTable(Request $request){
+        $data['status'] = $request->input('form.selectStatus') ?? null;
+        $data['name'] = $request->input('form.name') ?? null;
+        $data['email'] = $request->input('form.email') ?? null;
+        $query = Driver::with('roleName');
         if ($data['name']) {
             $query = $query->where('userName', 'like', '%' . $data['name'] . '%');
         }
@@ -36,9 +45,20 @@ class Personcontroller extends Controller
         } else {
             $query = $query->where('status', '1');
         }
-        $data['person'] = $query->get();
+        $data['person'] = $query->select('*')->orderBy('id', 'DESC');
 
-        return view('admin.person.person', $data);
+        $columnMapping = [
+            'Id' => 'id',
+            'Name' => 'userName',
+            'Surname' => 'surname',
+            'Email' => 'email',
+            'Role' => 'roleName.name',
+            'Status' => 'status',
+            'Action' => 'id',
+        ];
+        $pageStr = 'person_table';
+
+        return DataTableHelper::getData($request, $query, $columnMapping, $pageStr);
     }
 
     public function personAdd(Request $request)
@@ -112,11 +132,16 @@ class Personcontroller extends Controller
     public function personedit(Request $request, $id)
     {
         $data['person'] = $id;
+        
         $personData = Driver::where('id', $id)->first();
         $personValue1 = $request->input('personValue1');
         $roles = $request->input('roles');
         $role_data = Roles::where('id', $roles)->first()->id ?? '1000';
-        if ($personValue1) {
+        if ($request->isMethod('POST')) {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required:rfc|email|unique:drivers,email,'.$id,
+            ]);
             //    return $request->all();
             $name = $request->input('name');
             $shortName = $request->input('surname');
@@ -382,4 +407,6 @@ class Personcontroller extends Controller
             ]);
         }
     }
+
+    
 }
