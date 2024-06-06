@@ -141,6 +141,7 @@ class CommonApiController extends Controller
             $shify->scanner_id = $request->scanner_id;
             $shify->parcelsToken = $request->parcelsToken;
             $shify->comment = $request->comment;
+            $shify->createdDate = $request->createdDate ? date('Y-m-d H:i:s',strtotime($request->createdDate)):date('Y-m-d H:i:s');
             $shify->finishStatus = '2';
             $shify->save();
 
@@ -250,6 +251,7 @@ class CommonApiController extends Controller
             $Parcel->endDate = $request->end_date;
             $Parcel->startTime = $dayStartTime->format('H:i:s');
             $Parcel->endTime = $nightEndTime->format('H:i:s');
+            $Parcel->submitted_at = $request->createdDate ? date('Y-m-d H:i:s',strtotime($request->createdDate)):date('Y-m-d H:i:s');
             $Parcel->parcelsTaken = $request->parcelsTaken;
             $Parcel->parcelsDelivered = $request->parcel_delivered;
             $Parcel->addPhoto = $items;
@@ -276,7 +278,7 @@ class CommonApiController extends Controller
             $dayStartTime = Carbon::parse($start_date);
             $nightEndTime = Carbon::parse($end_date);
             $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
-
+// finishAt
             $dayHr = $result['dayTotal'];
             $nightHr = $result['nightTotal'];
             $saturdayHrs = $result['totalSaturdayHours'];
@@ -382,6 +384,7 @@ class CommonApiController extends Controller
                     $Parcel->endDate = $request->end_date;
                     $Parcel->startTime = $dayStartTime->format('H:i:s');
                     $Parcel->endTime = $nightEndTime->format('H:i:s');
+                    $Parcel->submitted_at = $request->finishAt ? date('Y-m-d H:i:s',strtotime($request->finishAt)):date('Y-m-d H:i:s');
                     $Parcel->parcelsTaken = $request->parcelsTaken;
                     $Parcel->parcelsDelivered = $request->parcel_delivered;
                     $Parcel->addPhoto = $items;

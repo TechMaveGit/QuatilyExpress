@@ -716,11 +716,13 @@
                                                             <td style="display: none;" class="td column-mobile_data_start">
                                                                 {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
                                                             </td>
+                                                            <td style="display: none;" class="td column-mobile_data_finish">
                                                             @if ($finishshifts && $finishshifts->submitted_at)
-                                                                <td style="display: none;" class="td column-mobile_data_finish">
+                                                                
                                                                     {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
-                                                                </td>
+                                                               
                                                             @endif
+                                                        </td>
                                                         @endif
                                                     @endif
                                                     
