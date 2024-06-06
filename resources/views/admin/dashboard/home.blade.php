@@ -149,7 +149,7 @@ function yesstartShift()
     }
 </script>
    <!-- delete Modal -->
-   <div class="modal fade zoomIn" id="finishShift" tabindex="-1" aria-hidden="true">
+   <div class="modal fade zoomIn" id="finishShift" tabindex="-1" aria-hidden="true" data-bs-focus="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -194,47 +194,47 @@ function yesstartShift()
                                     </script>
                                         <div class="col-lg-6">
                                             <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
-                                            <input type="datetime-local" name="startDate" class="form-control"  id="start-date" aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" >
+                                            <input type="text" name="startDate" class="form-control datetime_picker_start"   aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" required>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-label" for="exampleInputEmail1">End date <span class="red">*</span></label>
-                                            <input type="datetime-local" id="endTm" name="endDate" min="1000-01-01" max="9999-12-31" class="form-control flatpickr-input" required="">
+                                            <input type="text"  name="endDate" min="1000-01-01" max="9999-12-31" class="form-control datetime_picker_end" required="">
                                         </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
-                                    <input type="text" class="form-control" name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" readonly>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="exampleInputEmail1">Parcels Delivered <span class="red">*</span></label>
-                                    <input type="text" class="form-control" value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
-                                    <div id="message_"></div>
-                                </div>
-                            </div>
-                            <script>
-                                function parcelDelivered(event)
-                                       {
-                                           var ParcelsTaken = parseFloat(document.getElementById('ParcelsTaken').value) || 0;
-                                           var parcelDelivered = parseFloat(document.getElementById('parcel_delivered').value + event.key) || 0;
-                                           var addButton = document.querySelector('.btn.btn-primary');
-                                           const key = event.key;
-                                           if (/^[a-zA-Z]$/.test(key))
-                                           {
-                                           event.preventDefault();
-                                           }
-                                           var messageElement = document.getElementById('message_');
-                                           if (parcelDelivered > ParcelsTaken) {
-                                               messageElement.textContent = 'The parcel delivered must be less than or equal to parcels taken ';
-                                               messageElement.style.color = 'red';
-                                               addButton.style.display = 'none';
-                                           } else {
-                                               messageElement.textContent = '';
-                                               addButton.style.display = '';
-                                           }
-                                       }
-                                </script>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
+                                                <input type="text" class="form-control" name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="exampleInputEmail1">Parcels Delivered <span class="red">*</span></label>
+                                                <input type="text" class="form-control" value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
+                                                <div id="message_"></div>
+                                            </div>
+                                        </div>
+                                    <script>
+                                        function parcelDelivered(event)
+                                        {
+                                            var ParcelsTaken = parseFloat(document.getElementById('ParcelsTaken').value) || 0;
+                                            var parcelDelivered = parseFloat(document.getElementById('parcel_delivered').value + event.key) || 0;
+                                            var addButton = document.querySelector('.btn.btn-primary');
+                                            const key = event.key;
+                                            if (/^[a-zA-Z]$/.test(key))
+                                            {
+                                                event.preventDefault();
+                                            }
+                                            var messageElement = document.getElementById('message_');
+                                            if (parcelDelivered > ParcelsTaken) {
+                                                messageElement.textContent = 'The parcel delivered must be less than or equal to parcels taken ';
+                                                messageElement.style.color = 'red';
+                                                addButton.style.display = 'none';
+                                            } else {
+                                                messageElement.textContent = '';
+                                                addButton.style.display = '';
+                                            }
+                                        }
+                                        </script>
                             <div class="col-lg-12">
                                 <div class="mb-6">
                                     <label class="form-label" for="exampleInputEmail1">Image <span class="red">*</span></label>
@@ -261,6 +261,56 @@ function yesstartShift()
     </div>
 </div>
 <!--end modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
+<script>
+    // Initialize the start date picker
+    var startPicker = $(".datetime_picker_start").flatpickr({
+            enableTime: true,
+            altFormat: "Y-m-d H:i:s",
+            dateFormat: "Y-m-d H:i:s",
+            time_24hr: true,
+            appendTo: document.body,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Update the minDate of the end date picker
+                endPicker.set('minDate', dateStr);
+                if (endPicker.selectedDates[0] && endPicker.selectedDates[0] <= selectedDates[0]) {
+                    endPicker.setDate(new Date(selectedDates[0].getTime() + 3600000)); // Add 1 hour to start date
+                }
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                var setButton = document.createElement('button');
+                setButton.className = 'flatpickr-set-button';
+                setButton.innerHTML = 'Ok';
+                setButton.onclick = function() {
+                    instance.close();
+                };
+                instance.calendarContainer.querySelector('.flatpickr-time').appendChild(setButton);
+            }
+        });
+
+        // Initialize the end date picker
+        var endPicker = $(".datetime_picker_end").flatpickr({
+            enableTime: true,
+            altFormat: "Y-m-d H:i:s",
+            dateFormat: "Y-m-d H:i:s",
+            time_24hr: true,
+            appendTo: document.body,
+            onChange: function(selectedDates, dateStr, instance) {
+                if (selectedDates[0] && startPicker.selectedDates[0] && selectedDates[0] <= startPicker.selectedDates[0]) {
+                    instance.setDate(new Date(startPicker.selectedDates[0].getTime() + 3600000)); // Add 1 hour to start date
+                }
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                var setButton = document.createElement('button');
+                setButton.className = 'flatpickr-set-button';
+                setButton.innerHTML = 'Ok';
+                setButton.onclick = function() {
+                    instance.close();
+                };
+                instance.calendarContainer.querySelector('.flatpickr-time').appendChild(setButton);
+            }
+        });
+</script>
 <script>
     // Get the current date and time
     var now = new Date();
@@ -483,7 +533,7 @@ function yesstartShift()
                                     </div>
                                 </div>
                             <div class="card-body pb-0">
-                                <form action="{{ route('admin.dashboard') }}" method="post"/> @csrf
+                                <form action="{{ route('admin.dashboard') }}" method="post"> @csrf
                                 <div class="row align-items-center">
                                         <div class="col-lg-4">
                                         <div class="check_box">
@@ -1335,4 +1385,6 @@ var myChart = new Chart(ctx, {
             $("#startShift").modal('show');
         }
 </script>
+
+
 @endsection

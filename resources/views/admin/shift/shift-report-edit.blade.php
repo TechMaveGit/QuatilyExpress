@@ -272,6 +272,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                     <input type="num" min="0" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control" name="parcelToken" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}"  @if($shiftView->finishStatus =='5') disabled @else @endif aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                             </div> --}}
+                                            @if ($driverRole->role_id != 33)
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
@@ -286,6 +287,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                     aria-describedby="emailHelp" placeholder="" disabled>
                                                                                              </div>
                                             </div>
+                                            @endif
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Driver Rate</label>

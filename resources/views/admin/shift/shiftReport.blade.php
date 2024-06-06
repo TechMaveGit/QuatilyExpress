@@ -6,6 +6,7 @@
     foreach ($D as $v) {
         $arr[] = $v['permission_id'];
     }
+    $driverRole = Auth::guard('adminLogin')->user()->role_id;
     ?>
     <style>
         .relative {
@@ -465,6 +466,7 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @if ($driverRole != 33)
                                             <li>
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
@@ -483,6 +485,7 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @endif
                                             <li>
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
@@ -612,12 +615,10 @@
                                                 <th class="bg-transparent border-bottom-0 column-vehicleType">Vehicle Type
                                                 </th>
                                                 <th class="bg-transparent border-bottom-0 column-state">State</th>
-                                                @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
                                                     @if ($driverRole != 33)
                                                         <th style="display: none;" class="bg-transparent border-bottom-0 column-mobile_data_start">Mobile Date Start</th>
                                                         <th style="display: none;" class="bg-transparent border-bottom-0 column-mobile_data_finish">Mobile Date Finish</th>
                                                     @endif
-                                                @endif
                                                 <th class="bg-transparent border-bottom-0 column-start_Date">Date Start
                                                 </th>
                                                 <th hidden class="bg-transparent border-bottom-0">Time Start</th>

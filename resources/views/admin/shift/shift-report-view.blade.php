@@ -183,7 +183,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                     <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div> --}}
-
+                                            @if ($driverRole->role_id != 33)
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
@@ -197,6 +197,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                     <input type="text" class="form-control" value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') : '' }}" placeholder="" readonly>
                                                 </div>
                                             </div>
+                                            @endif
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Driver Rate</label>
