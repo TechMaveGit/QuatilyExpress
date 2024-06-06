@@ -80,7 +80,7 @@ class ShiftController extends Controller
         $shify->scanner_id = $request->scanner_id;
         $shify->finishStatus = '1';
         $shify->parcelsToken = $request->parcelsToken;
-        $shify->shiftStartDate = date('Y-m-d H:i:s');
+        $shify->shiftStartDate = $request->startDateTime ? date('Y-m-d H:i:s',strtotime($request->startDateTime)):date('Y-m-d H:i:s');
         $shify->createdDate = $request->startDateTime ? date('Y-m-d H:i:s',strtotime($request->startDateTime)):date('Y-m-d H:i:s');
         $shify->save();
 

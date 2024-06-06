@@ -279,7 +279,7 @@ class CommonApiController extends Controller
             $dayStartTime = Carbon::parse($start_date);
             $nightEndTime = Carbon::parse($end_date);
             $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
-// finishAt
+
             $dayHr = $result['dayTotal'];
             $nightHr = $result['nightTotal'];
             $saturdayHrs = $result['totalSaturdayHours'];
