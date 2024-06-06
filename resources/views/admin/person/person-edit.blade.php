@@ -226,63 +226,44 @@
                                                     <div class="row">
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <input type="hidden" name="personValue1"
-                                                                    id="personValue1" value="1" />
-                                                                <label class="form-label" for="exampleInputEmail1">Name
-                                                                    <span class="red">*</span></label>
-                                                                <input type="text" class="form-control" name="name"
-                                                                    value="{{ $editPerson->userName ?? 'N/A' }}"
-                                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <input type="hidden" name="personValue1" id="personValue1" value="1" />
+                                                                <label class="form-label" for="exampleInputEmail1">Name <span class="red">*</span></label>
+                                                                <input type="text" class="form-control" name="name" value="{{ old('name')??($editPerson->userName ?? '') }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
+                                                                @error('name')
+                                                                    <span class="text-danger">{{$message}}</span>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label"
-                                                                    for="exampleInputEmail1">Surname</label>
-                                                                <input type="text" class="form-control" name="surname"
-                                                                    value="{{ $editPerson->surname ?? 'N/A' }}"
-                                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                                    placeholder="">
-
+                                                                <label class="form-label" for="exampleInputEmail1">Surname</label>
+                                                                <input type="text" class="form-control" name="surname"  value="{{ $editPerson->surname ?? 'N/A' }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Email
-                                                                    <span class="red">*</span></label>
-                                                                <input type="text" class="form-control" name="email"
-                                                                    value="{{ $editPerson->email ?? 'N/A' }}"
-                                                                    aria-describedby="emailHelp" placeholder="" readonly>
+                                                                <label class="form-label" for="exampleInputEmail1">Email <span class="red">*</span></label>
+                                                                <input type="text" class="form-control" name="email" value="{{ old('email') ?? ($editPerson->email??'') }}" aria-describedby="emailHelp" placeholder="">
+                                                                @error('email')
+                                                                    <span class="text-danger">{{$message}}</span>
+                                                                @enderror
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Date Of
-                                                                    Birth</label>
-
-                                                                <input type="text"
-                                                                    class="form-control onlydate dob_valid"
-                                                                    value="{{ $editPerson->dob ?? 'N/A' }}" id="basicDate"
-                                                                    name="dob" aria-describedby="emailHelp"
-                                                                    placeholder="">
-
+                                                                <label class="form-label" for="exampleInputEmail1">Date Of Birth</label>
+                                                                <input type="text" class="form-control dob_valid dobDate" value="{{ $editPerson->dob ?? '' }}"  name="dob" aria-describedby="emailHelp" placeholder="">
                                                             </div>
-
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <label for="simpleinput" class="form-label">Mobile No. <span class="red">*</span></label>
                                                             <div class="input-group ">
                                                                 <div class="input-group-prepend">
-                                                                    <select id="country" class="form-control select2"
-                                                                        name="country_code"
-                                                                        data-placeholder="Select a country"
-                                                                        data-dynamic-select required>
-
+                                                                    <select id="country" class="form-control select2" name="country_code" data-placeholder="Select a country" data-dynamic-select required>
                                                                         @foreach ($countryCode as $countryCodes)
                                                                             <option value="{{ $countryCodes->dial_code }}"  {{ $countryCodes->dial_code == $editPerson->dialCode ? 'selected' : '' }}                                                                   data-img="{{ $countryCodes->flag }}">
                                                                                 {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
@@ -290,11 +271,7 @@
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
-                                                                <input type="text"
-                                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                                                    value="{{ old('mobile_number') ?? $editPerson->mobileNo }}"
-                                                                    name="mobile_number" minlength="8" maxlength="13"
-                                                                    class="form-control " required>
+                                                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ old('mobile_number') ?? $editPerson->mobileNo }}" name="mobile_number" minlength="8" maxlength="13" class="form-control " required>
                                                                 @error('mobile_number')
                                                                     <span class="text-danger">{{ $message }}</span>
                                                                 @enderror
@@ -304,32 +281,21 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Phone
                                                                     Principal <span class="red">*</span></label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->phonePrincipal ?? 'N/A' }}"
-                                                                    name="phoneprinciple" aria-describedby="emailHelp"
-                                                                    placeholder="" required>
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->phonePrincipal ?? 'N/A' }}" name="phoneprinciple" aria-describedby="emailHelp" placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Phone
                                                                     Aux</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->phoneAux ?? 'N/A' }}"
-                                                                    name="phoneaux" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->phoneAux ?? 'N/A' }}" name="phoneaux" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label"
                                                                     for="exampleInputEmail1">TFN</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->tfn ?? 'N/A' }}" name="tfn"
-                                                                    aria-describedby="emailHelp" placeholder="">
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->tfn ?? 'N/A' }}" name="tfn" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
@@ -338,54 +304,32 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label"
                                                                     for="exampleInputEmail1">ABN</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->abn ?? 'N/A' }}" name="abn"
-                                                                    aria-describedby="emailHelp" placeholder="">
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->abn ?? 'N/A' }}" name="abn" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label"
-                                                                    for="exampleInputEmail1">Password</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="password" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <label class="form-label" for="exampleInputEmail1">Password</label>
+                                                                <input type="text" class="form-control" name="password" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
-
-
-
                                                         @php
-                                                            $roles = DB::table('roles')
-                                                                ->where('name', '!=', 'my permission')
-                                                                ->orderBy('id', 'DESC')
-                                                                ->get();
-                                                            $adminRoleId =
-                                                                DB::table('admins')
-                                                                    ->where('email', $editPerson->email)
-                                                                    ->orderBy('id', 'DESC')
-                                                                    ->first()->role_id ?? '';
+                                                            $roles = DB::table('roles')->where('name', '!=', 'my permission')->orderBy('id', 'DESC')->get();
+                                                            $adminRoleId = DB::table('admins')->where('email', $editPerson->email)->orderBy('id', 'DESC')->first()->role_id ?? '';
                                                         @endphp
 
                                                         <div class="col-lg-4">
                                                             <div class="check_box">
-                                                                <label class="form-label">Select Role <span
-                                                                        class="red">*</span></label>
+                                                                <label class="form-label">Select Role <span class="red">*</span></label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2 form-select"
-                                                                        name="roles" data-placeholder="Choose one"
-                                                                        required>
+                                                                    <select class="form-control select2 form-select" name="roles" data-placeholder="Choose one" required>
                                                                         <option value="">Select any one</option>
                                                                         @foreach ($roles as $allrole)
-                                                                            <option value="{{ $allrole->id }}"
-                                                                                {{ $allrole->id == $editPerson->role_id ? 'selected' : '' }}>
-                                                                                {{ $allrole->name }}</option>
+                                                                            <option value="{{ $allrole->id }}" {{ $allrole->id == $editPerson->role_id ? 'selected' : '' }}>{{ $allrole->name }}</option>
                                                                         @endforeach
-
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -394,7 +338,7 @@
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Extra Rate (Per Hour) <span class="red">*</span></label>
-                                                                <input type="number" class="form-control" min="0" id="exampleInputEmail1" value="{{old('extra_rate_per_hour') ?? $editPerson->extra_rate_per_hour}}" autocomplete="off" name="extra_rate_per_hour" aria-describedby="emailHelp" placeholder="" required>
+                                                                <input type="number" step="any" class="form-control" min="0" id="exampleInputEmail1" value="{{old('extra_rate_per_hour') ?? $editPerson->extra_rate_per_hour}}" autocomplete="off" name="extra_rate_per_hour" aria-describedby="emailHelp" placeholder="" required>
                                                             </div>
                                                         </div>
 
@@ -406,9 +350,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="action_btns text-end">
-                                                                <button type="submit" value="Submit"
-                                                                    class="btn btn-primary"><i class="bi bi-save"></i>
-                                                                    Save</button>
+                                                                <button type="submit" value="Submit" class="btn btn-primary"><i class="bi bi-save"></i>Save</button>
                                                             </div>
                                                         </div>
                                                     </div>

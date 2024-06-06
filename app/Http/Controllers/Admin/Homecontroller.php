@@ -249,8 +249,8 @@ class Homecontroller extends Controller
             $extra_per_hour_rate = $shift->getDriverName->extra_per_hour_rate;
             $startDate = $request->startDate;
             $endDate = $request->endDate;
-            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
             $startDate = strtotime($start_date);
             $endDate = strtotime($end_date);
             $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
@@ -324,8 +324,9 @@ class Homecontroller extends Controller
             $finishShift->weekendHours = $weekend;
             $finishShift->startDate = Carbon::parse($startDate)->format('Y-m-d');
             $finishShift->endDate = Carbon::parse($endDate)->format('Y-m-d');
-            $finishShift->startTime = Carbon::parse($startDate)->format('H:i');
-            $finishShift->endTime = Carbon::parse($endDate)->format('H:i');
+            $finishShift->startTime = Carbon::parse($startDate)->format('H:i:s');
+            $finishShift->endTime = Carbon::parse($endDate)->format('H:i:s');
+            $finishShift->submitted_at = date('Y-m-d H:i:s');
             $finishShift->parcelsTaken = $parcelsTaken;
             $finishShift->parcelsDelivered = $parcelDelivered;
             $finishShift->addPhoto = $imageupload;

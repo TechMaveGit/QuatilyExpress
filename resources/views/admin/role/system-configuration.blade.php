@@ -4,6 +4,16 @@
     .ck-editor__editable_inline {
         min-height: 250px;
     }
+    .ck-content {
+    color: rgb(0, 0, 0);
+    }
+    div:where(.swal2-container) div:where(.swal2-popup) {
+        width: 60% !important;
+    }
+    div:where(.swal2-container) .swal2-html-container{
+        margin: 12px !important;
+        text-align: inherit;
+    }
 </style>
     <?php
     $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()), true);
@@ -48,7 +58,7 @@
                                         @if (in_array('86', $arr))
                                             <li class="nav-item">
                                                 <a href="#profile" data-bs-toggle="tab" aria-expanded="true"
-                                                    class="nav-link ">
+                                                    class="nav-link" >
                                                     <span><i class="fe fe-mail"></i></span>
                                                     <span> Email for reminders </span>
                                                 </a>
@@ -75,7 +85,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Days before Passport expire</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_passport_expire" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_passport_expire" value="{{$settings_data['days_before_passport_expire']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -83,7 +93,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Days before Police Certificate expire</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_police_certificate_expire" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_police_certificate_expire" value="{{$settings_data['days_before_police_certificate_expire']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -92,7 +102,7 @@
                                                                 <label class="form-label" for="exampleInputEmail1">Days
                                                                     before VISA expire</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_visa_expire" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_visa_expire" value="{{$settings_data['days_before_visa_expire']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -100,7 +110,7 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Days before Driver License expire</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_driver_license_expire" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_driver_license_expire" value="{{$settings_data['days_before_driver_license_expire']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -109,7 +119,7 @@
                                                                 <label class="form-label" for="exampleInputEmail1">Days
                                                                     before Induction expire</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_induction_expire" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_induction_expire" value="{{$settings_data['days_before_induction_expire']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -118,7 +128,7 @@
                                                                 <label class="form-label" for="exampleInputEmail1">Days
                                                                     before Rego Due Date</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_rego_due_date" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_rego_due_date" value="{{$settings_data['days_before_rego_due_date']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -127,7 +137,7 @@
                                                                 <label class="form-label" for="exampleInputEmail1">Days
                                                                     before Service Due Date</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_service_due_date"  aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_service_due_date" value="{{$settings_data['days_before_service_due_date']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -136,7 +146,7 @@
                                                                 <label class="form-label" for="exampleInputEmail1">Days
                                                                     before Inspection Due Date</label>
                                                                 <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1" name="days_before_insepction_due_date" aria-describedby="emailHelp"
+                                                                    id="exampleInputEmail1" name="days_before_insepction_due_date" value="{{$settings_data['days_before_insepction_due_date']}}" aria-describedby="emailHelp"
                                                                     placeholder="">
                                                             </div>
                                                         </div>
@@ -154,15 +164,13 @@
                                                             <div class="editor_top">
                                                                 <h5>Email Template for a Expired Document</h5>
                                                                 <div class="template_action">
-                                                                    <a href="#" class="btn btn-primary"><i
-                                                                            class="fe fe-eye"></i></a>
-                                                                    <a href="#" class="btn btn-info"><i
-                                                                            class="fe fe-send"></i></a>
+                                                                    <a href="#" class="btn btn-primary" onclick="alertShow('{{$settings_data['expirec_docs']}}')"><i class="fe fe-eye"></i></a>
+                                                                   
                                                                 </div>
                                                             </div>
                                                             <div class="card card_edt">
                                                                 <div class="card-body">
-                                                                    <textarea class="textarea_description form-control" name="expirec_docs" rows="10">{{old('expirec_docs')}}</textarea>
+                                                                    <textarea class="textarea_description form-control" name="expirec_docs" rows="10">{{$settings_data['expirec_docs']??old('expirec_docs')}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -170,15 +178,14 @@
                                                             <div class="editor_top">
                                                                 <h5>Email Template for a Expired Rego</h5>
                                                                 <div class="template_action">
-                                                                    <a href="#" class="btn btn-primary"><i
+                                                                    <a href="#" class="btn btn-primary" onclick="alertShow('{{$settings_data['expirec_rego']}}')"><i
                                                                             class="fe fe-eye"></i></a>
-                                                                    <a href="#" class="btn btn-info"><i
-                                                                            class="fe fe-send"></i></a>
+                                                                    
                                                                 </div>
                                                             </div>
                                                             <div class="card card_edt">
                                                                 <div class="card-body">
-                                                                    <textarea class="textarea_description form-control" name="expirec_rego" rows="10">{{old('expirec_rego')}}</textarea>
+                                                                    <textarea class="textarea_description form-control" name="expirec_rego" rows="10">{{$settings_data['expirec_rego']??old('expirec_rego')}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -186,15 +193,14 @@
                                                             <div class="editor_top">
                                                                 <h5>Email Template for a Expired Service</h5>
                                                                 <div class="template_action">
-                                                                    <a href="#" class="btn btn-primary"><i
+                                                                    <a href="#" class="btn btn-primary" onclick="alertShow('{{$settings_data['expirec_service']}}')"><i
                                                                             class="fe fe-eye"></i></a>
-                                                                    <a href="#" class="btn btn-info"><i
-                                                                            class="fe fe-send"></i></a>
+                                                                    
                                                                 </div>
                                                             </div>
                                                             <div class="card card_edt">
                                                                 <div class="card-body">
-                                                                    <textarea class="textarea_description form-control" name="expirec_service" rows="10">{{old('expirec_service')}}</textarea>
+                                                                    <textarea class="textarea_description form-control" name="expirec_service" rows="10">{{$settings_data['expirec_service']??old('expirec_service')}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -202,15 +208,14 @@
                                                             <div class="editor_top">
                                                                 <h5>Email Template for a Expired Inspection</h5>
                                                                 <div class="template_action">
-                                                                    <a href="#" class="btn btn-primary"><i
+                                                                    <a href="#" class="btn btn-primary" onclick="alertShow('{{$settings_data['expirec_inspection']}}')"><i
                                                                             class="fe fe-eye"></i></a>
-                                                                    <a href="#" class="btn btn-info"><i
-                                                                            class="fe fe-send"></i></a>
+                                                                    
                                                                 </div>
                                                             </div>
                                                             <div class="card card_edt">
                                                                 <div class="card-body">
-                                                                    <textarea class="textarea_description form-control" name="expirec_inspection" rows="10">{{old('expirec_inspection')}}</textarea>
+                                                                    <textarea class="textarea_description form-control" name="expirec_inspection" rows="10">{{$settings_data['expirec_inspection']??old('expirec_inspection')}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -227,28 +232,32 @@
                                                         <div class="col-md-6">
                                                             <div class="editor_top">
                                                                 <h5>Email Template for a Lost Password</h5>
-                                                                <!-- <div class="template_action">
-                                                <a href="#" class="btn btn-primary"><i class="fe fe-eye"></i></a>
-                                                <a href="#" class="btn btn-info"><i class="fe fe-send"></i></a>
-                                              </div> -->
+                                                                <div class="template_action">
+                                                                    <a href="#" class="btn btn-primary" onclick="alertShow('{{$settings_data['lost_password']}}')"><i class="fe fe-eye"></i></a>
+                                                                   
+                                                                </div>
                                                             </div>
                                                             <div class="card card_edt">
                                                                 <div class="card-body">
-                                                                    <textarea class="textarea_description form-control" name="lost_password" rows="10">{{old('lost_password')}}</textarea>
+                                                                    <textarea class="textarea_description form-control" name="lost_password" rows="10">{{$settings_data['lost_password']??old('lost_password')}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="editor_top">
                                                                 <h5>Email Template for a New User</h5>
+                                                                <div class="template_action">
+                                                                    <a href="#" class="btn btn-primary" onclick="alertShow('{{$settings_data['new_user']}}')"><i class="fe fe-eye"></i></a>
+                                                                   
+                                                                </div>
                                                                 <!-- <div class="template_action">
                                                 <a href="#" class="btn btn-primary"><i class="fe fe-eye"></i></a>
-                                                <a href="#" class="btn btn-info"><i class="fe fe-send"></i></a>
+                                               
                                               </div> -->
                                                             </div>
                                                             <div class="card card_edt">
                                                                 <div class="card-body">
-                                                                    <textarea class="textarea_description form-control" name="new_user" rows="10">{{old('new_user')}}</textarea>
+                                                                    <textarea class="textarea_description form-control" name="new_user" rows="10">{{$settings_data['new_user']??old('new_user')}}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -289,5 +298,20 @@
                 window.editors[ index ] = newEditor
             } );
     });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function alertShow(htmlData){
+            Swal.fire({
+                html: htmlData,
+                confirmButtonText: 'Ok'
+            });
+        }
+        document.getElementById('alertButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default action of the link
+
+            
+        });
     </script>
 @endsection

@@ -145,7 +145,7 @@ class ParcelController extends Controller
             return response()->json([
                 'status' => $this->successStatus,
                 'message' => 'Success',
-                'parcelImage' => env('PAREL_IMAGE'),
+                'parcelImage' => asset(env('STORAGE_URL')),
                 'data' => $Parcels,
             ]);
         } else {
@@ -188,7 +188,7 @@ class ParcelController extends Controller
 
         $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d'), 'status' => '2']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d H:i:s'), 'status' => '2']);
             if ($Parcels) {
                 return response()->json([
                     'status' => $this->successStatus,
@@ -222,7 +222,7 @@ class ParcelController extends Controller
         $parcelId = $request->input('parcelId');
         $checkParcel = Parcels::whereId($parcelId)->where('status', '1')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => date('Y-m-d'),'status' => '1']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => null,'status' => '1']);
             
             if ($Parcels) {
                 return response()->json([
@@ -263,7 +263,7 @@ class ParcelController extends Controller
             return response()->json([
                 'status' => $this->successStatus,
                 'message' => 'Success',
-                'parcelImage' => env('PAREL_IMAGE'),
+                'parcelImage' => asset(env('STORAGE_URL')),
                 'data' => $Parcels,
                 'location' => $shipDetail,
             ]);
@@ -511,7 +511,6 @@ class ParcelController extends Controller
             'endTime' => 'required',
             'parcelsTaken' => 'required',
             'parcelsDelivered' => 'required',
-            // "addPhoto" => "required"
         ]);
 
         if ($validator->fails()) {
@@ -532,8 +531,8 @@ class ParcelController extends Controller
 
         $startDate = $request->startDate . ' ' . $request->startTime;
         $endDate = $request->endDate . ' ' . $request->input('endTime');
-        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
         $startDate = strtotime($start_date);
         $endDate = strtotime($end_date);
         $dayStartTime = Carbon::parse($start_date);
@@ -627,7 +626,7 @@ class ParcelController extends Controller
                     $items = '';
                 }
 
-                Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                Shift::whereId($request->shiftId)->update(['finishStatus' => '2','odometer'=>$request->odometerStartReading]);
 
                 $Parcel = new Finishshift();
                 $Parcel->driverId = $this->driverId;
@@ -642,8 +641,9 @@ class ParcelController extends Controller
                 $Parcel->totalHours = $totalHr ?? 0;
                 $Parcel->startDate = $request->startDate;
                 $Parcel->endDate = $request->endDate;
-                $Parcel->startTime = $dayStartTime->format('H:i');
-                $Parcel->endTime = $nightEndTime->format('H:i');
+                $Parcel->startTime = $dayStartTime->format('H:i:s');
+                $Parcel->endTime = $nightEndTime->format('H:i:s');
+                $Parcel->submitted_at =  $request->finishAt ? date('Y-m-d H:i:s',strtotime($request->finishAt)):date('Y-m-d H:i:s');
                 $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
                 $Parcel->addPhoto = $items;

@@ -21,8 +21,8 @@ class Expenses extends Controller
 {
     public function expense(Request $request)
     {
-
-        $date = $request->input('date');
+        $ex_year = $request->input('ex_year');
+        $ex_month = $request->input('ex_month');
         $personName = $request->input('personName');
         $rego = $request->input('rego');
 
@@ -32,41 +32,23 @@ class Expenses extends Controller
             $getYear = date('Y');
             $expenseQuery = Expense::orderBy('id', 'desc');
             if (request()->isMethod('post')) {
-                if ($date) {
-                    $expenseQuery->where('created_at', $date);
-                }
-                if ($personName) {
-                    $expenseQuery->where('person_name', $personName);
-                }
-                if ($rego) {
-                    $expenseQuery->where('rego', $rego);
-                }
+                if ($ex_year) $expenseQuery->whereYear('created_at', $ex_year);
+                if ($ex_month) $expenseQuery->whereMonth('created_at', $ex_month);
+                if ($personName) $expenseQuery->where('person_name', $personName);
+                if ($rego) $expenseQuery->where('rego', $rego);
             }
-            $expenseReport[] = $expenseQuery->whereYear('created_at', $getYear)
-                ->whereMonth('created_at', $i)
-                ->sum('cost');
-
+            
+            $expenseReport[] = $expenseQuery->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('cost');
             $tollexpenseQuery = Tollexpense::orderBy('id', 'desc');
-            if (request()->isMethod('post')) {
-                $date = $request->input('date');
-                $personName = $request->input('personName');
-                $rego = $request->input('rego');
 
-                if ($date) {
-                    $tollexpenseQuery->where('created_at', $date);
-                }
-                if ($personName) {
-                    $tollexpenseQuery->where('person_name', $personName);
-                }
-                if ($rego) {
-                    $tollexpenseQuery->where('rego', $rego);
-                }
+            if (request()->isMethod('post')) {
+                if ($ex_year) $tollexpenseQuery->whereYear('created_at', $ex_year);
+                if ($ex_month) $tollexpenseQuery->whereMonth('created_at', $ex_month);
+                if ($personName) $tollexpenseQuery->where('person_name', $personName);
+                if ($rego) $tollexpenseQuery->where('rego', $rego);
             }
 
-            $tollexpense[] = $tollexpenseQuery->whereYear('created_at', $getYear)
-                ->whereMonth('created_at', $i)
-                ->sum('trip_cost');
-
+            $tollexpense[] = $tollexpenseQuery->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('trip_cost');
             $operactionExp[] = OperactionExp::whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('cost');
 
             $totalOperActionExp = OperactionExp::sum('cost');
@@ -81,6 +63,8 @@ class Expenses extends Controller
         for ($i = 0; $i <= 11; $i++) {
             $totalExpense[$i] = (int) ($expenseReport[$i] + $tollexpense[$i] + $operactionExp[$i]);
         }
+
+        // dd('totalOperActionExp<br>',$totalOperActionExp, 'generalExpenses<br>',$generalExpenses, 'totalexpenseQuery<br>',$totalexpenseQuery, 'overrallExpenseGraph<br>',$overrallExpenseGraph, 'expenseReport<br>',$expenseReport, 'Clientrate<br>',$Clientrate, 'tollexpense<br>',$tollexpense, 'operactionExp<br>',$operactionExp, 'totalExpense<br>',$totalExpense, 'date<br>',$date, 'personName<br>',$personName, 'rego<br>',$rego);
 
         $data['person'] = Driver::where('status', '1')->get();
         $data['state'] = State::where('status', '1')->get();
