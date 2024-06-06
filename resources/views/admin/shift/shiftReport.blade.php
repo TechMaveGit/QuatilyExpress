@@ -714,12 +714,11 @@
                                                     @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
                                                         @if ($driverRole != 33)
                                                             <td style="display: none;" class="td column-mobile_data_start">
-                                                                {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
+                                                                {{ date('Y/m/d H:i:s', strtotime($allshift->createdDate)) }}
                                                             </td>
                                                             <td style="display: none;" class="td column-mobile_data_finish">
                                                             @if ($finishshifts && $finishshifts->submitted_at)
-                                                                
-                                                                    {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
+                                                                {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
                                                             @else
                                                             N/A
                                                             @endif

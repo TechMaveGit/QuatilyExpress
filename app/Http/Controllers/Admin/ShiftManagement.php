@@ -36,7 +36,7 @@ class ShiftManagement extends Controller
 
     public function shift(Request $request)
     {
-        $query = Shift::select('id', 'rego', 'odometer', 'driverId', 'parcelsToken', 'client', 'costCenter', 'status', 'state', 'finishStatus', 'vehicleType', 'created_at', 'updated_at');
+        $query = Shift::select('id', 'rego', 'odometer', 'driverId', 'parcelsToken', 'client', 'costCenter', 'status', 'state', 'finishStatus', 'vehicleType', 'created_at','createdDate', 'updated_at');
         $data['status'] = $request->input('shiftStatus');
         if ($data['status']) {
             $query = $query->where('status', $data['status']);
