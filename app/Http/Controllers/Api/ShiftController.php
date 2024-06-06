@@ -650,7 +650,7 @@ class ShiftController extends Controller
     {
         $driverId = auth('driver')->user()->id;
         // $query = Shift::select('id', 'rego', 'odometer', 'base', 'payAmount', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'optShift', 'state', 'created_at as createdDate', 'shiftStartDate', 'vehicleType', 'payAmount', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress', 'scanner_id', 'created_at', 'updated_at')->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime,odometerStartReading,odometerEndReading,parcelsDelivered', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name');
-        $query = Shift::select('id', 'shiftRandId', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'state', 'vehicleType', 'shiftStartDate', 'base', 'scanner_id', 'created_at', 'updated_at');
+        $query = Shift::select('id', 'shiftRandId', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'state', 'vehicleType', 'shiftStartDate', 'base', 'scanner_id', 'created_at', 'updated_at','createdDate');
         $state = $request->input('state');
         $clientId = $request->input('clientId');
         $status = $request->input('status');
@@ -729,7 +729,7 @@ class ShiftController extends Controller
 
         $shift = Shift::select('id', 'rego', 'odometer', 'base', 'payAmount', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'optShift', 'state', 'created_at as createdDate', 'shiftStartDate', 'vehicleType', 'payAmount', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress', 'scanner_id', 'created_at', 'updated_at')->whereId($request->shift_id)->where('driverId', $driverId)->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime,odometerStartReading,odometerEndReading,parcelsDelivered', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name')->first();
 
-        $reportDetail = Finishshift::select('dayHours', 'nightHours', 'weekendHours', 'odometerStartReading', 'odometerEndReading')
+        $reportDetail = Finishshift::select('dayHours', 'nightHours', 'weekendHours', 'odometerStartReading', 'odometerEndReading','submitted_at')
         ->where('shiftId', $request->shift_id ?? '')
         ->first();
 
@@ -803,7 +803,7 @@ class ShiftController extends Controller
             return $response;
         }
 
-        $shift = Shift::select('id', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'state', 'status', 'vehicleType', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress', 'created_at', 'updated_at')->whereId($request->shift_id)->where('driverId', $driverId)->with('getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getClientRate')->first();
+        $shift = Shift::select('id', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'state', 'status', 'vehicleType', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress','createdDate', 'created_at', 'updated_at')->whereId($request->shift_id)->where('driverId', $driverId)->with('getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getClientRate')->first();
 
         if ($shift) {
             return response()->json([
@@ -823,7 +823,7 @@ class ShiftController extends Controller
     public function homePageShift(Request $request)
     {
         $driverId = auth('driver')->user()->id;
-        $query = Shift::select('id', 'shiftRandId', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'state', 'vehicleType', 'created_at', 'updated_at');
+        $query = Shift::select('id', 'shiftRandId', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'state', 'vehicleType', 'createdDate','created_at', 'updated_at');
         $state = $request->input('state');
         $clientId = $request->input('clientId');
         $status = $request->input('status');
@@ -964,7 +964,7 @@ class ShiftController extends Controller
     {
         $driverId = auth('driver')->user()->id;
 
-        $query = Shift::select('id', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'status', 'state', 'vehicleType', 'created_at', 'updated_at');
+        $query = Shift::select('id', 'rego', 'odometer', 'parcelsToken', 'client', 'costCenter', 'status', 'state', 'vehicleType','createdDate', 'created_at', 'updated_at');
 
         $state = $request->input('state');
         $clientId = $request->input('clientId');

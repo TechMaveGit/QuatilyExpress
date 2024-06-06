@@ -720,8 +720,10 @@
                                                             @if ($finishshifts && $finishshifts->submitted_at)
                                                                 
                                                                     {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
-                                                               
+                                                            @else
+                                                            N/A
                                                             @endif
+
                                                         </td>
                                                         @endif
                                                     @endif

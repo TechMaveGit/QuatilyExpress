@@ -45,7 +45,7 @@
                                         <label class="form-label" for="exampleInputEmail1">Year</label>
                                         <select class="form-control form-select" name="ex_year">
                                             @for($i=date('Y'); $i>=1999; $i--)
-                                            <option {{ old('ex_year') == $i ? 'selected' : '' }} value="{{$i}}">{{date("Y", strtotime("01/01/$i"))}}</option>
+                                                <option {{ old('ex_year') == $i ? 'selected' : '' }} value="{{$i}}">{{date("Y", strtotime("01/01/$i"))}}</option>
                                             @endfor
                                         </select>
                                     </div>
@@ -61,7 +61,6 @@
                                                         {{ $allperson->userName }} {{ $allperson->surname }} ({{ $allperson->email }})
                                                     </option>
                                                 @empty
-                                                    {{-- Handle the case where $person is empty --}}
                                                 @endforelse
                                             </select>
                                     </div>

@@ -96,13 +96,13 @@
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <input type="hidden" name="shift" value="{{ $shiftId ?? '' }}"
-                                                        id="shiftData" />
+                                                        id="shiftData"  />
                                                     <div class="check_box">
                                                         <label class="form-label" for="exampleInputEmail1">Shift</label>
                                                         <div class="form-group">
                                                             <select class="form-control select2 form-select"
                                                                 name="shiftName" id="shiftId"
-                                                                data-placeholder="Choose one">
+                                                                data-placeholder="Choose one" required>
                                                             </select>
                                                         </div>
                                                     </div>

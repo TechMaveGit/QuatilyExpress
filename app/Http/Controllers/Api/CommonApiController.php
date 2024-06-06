@@ -143,6 +143,7 @@ class CommonApiController extends Controller
             $shify->comment = $request->comment;
             $shify->createdDate = $request->createdDate ? date('Y-m-d H:i:s',strtotime($request->createdDate)):date('Y-m-d H:i:s');
             $shify->finishStatus = '2';
+            $shify->is_missed_shift = '1';
             $shify->save();
 
             $getClientID = Shift::whereId($shify->id)->first()->client;
