@@ -85,10 +85,13 @@
                 <div class="row">
                     <div class="row">
                         <div class="col-lg-12">
+                           
                             <div class="check_box">
                                 <label class="form-label" for="exampleInputEmail1">Active Driver</label>
                                 <div class="form-group">
                                     <form action="{{ route('driver.location') }}" method="post"> @csrf
+                                    <div class="row">
+                                        <div class="col-lg-4">
                                         <select class="form-control select2" name="driverName" onchange="getShift(this)"
                                             data-placeholder="Choose one" required>
                                             <option value="">Select Any One</option>
@@ -104,8 +107,14 @@
                                                 @endforeach
                                             @endif
                                         </select>
+                                        </div>
+                                        <div class="col-lg-4">
                                         <button class="btn btn-primary" type="submit">Submit</button>
                                         <button type="submit" class="btn btn-info">Refresh</button>
+                                        </div>
+                                    </div>
+                                      
+                                       
                                     </form>
                                 </div>
                             </div>

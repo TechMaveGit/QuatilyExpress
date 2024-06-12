@@ -185,9 +185,10 @@
                                                                     for="exampleInputEmail1">Password <span
                                                                         class="red">*</span></label>
                                                                 <input type="password" class="form-control"
-                                                                    id="exampleInputEmail1" autocomplete="off"
+                                                                id="password-field" autocomplete="off"
                                                                     name="password" aria-describedby="emailHelp"
                                                                     placeholder="" required>
+                                                                    <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                                                             </div>
                                                         </div>
 
@@ -848,5 +849,17 @@
             altFormat: "Y-m-d",
             dateFormat: "Y-m-d",
         });
+    </script>
+    <script>
+        $(".toggle-password").click(function() {
+
+$(this).toggleClass("fa-eye fa-eye-slash");
+var input = $($(this).attr("toggle"));
+if (input.attr("type") == "password") {
+  input.attr("type", "text");
+} else {
+  input.attr("type", "password");
+}
+});
     </script>
 @endsection
