@@ -1157,10 +1157,8 @@ class ShiftManagement extends Controller
                 $saturdayShiftCharge = '0';
                 $sundayShiftCharge = '0';
                 $priceOverRideStatus = '0';
-                $priceCompare = DB::table('personrates')
-                    ->where('type', $data['shiftView']->vehicleType)
-                    ->where('personId', $data['shiftView']->driverId)
-                    ->first();
+                $priceCompare = DB::table('personrates')->where('type', $data['shiftView']->vehicleType)->where('personId', $data['shiftView']->driverId)->first();
+                
                 if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
                     if (!empty($dayHr)) {
                         if (empty($priceCompare)) {
