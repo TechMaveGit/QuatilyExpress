@@ -27,13 +27,18 @@ class Expenses extends Controller
         $date_range = $request->input('date_range');
 
         if($date_range) $datesData = explode('to',$date_range);
-        if($datesData)
+        if($datesData && isset($datesData[1])){
+            $todayMonth = date('Y-m-d',strtotime($datesData[0]));
+            $lastMonth =  date('Y-m-d',strtotime($datesData[1]));
+        }else{
+            $todayMonth = date('Y-m-d');
+            $lastMonth = date('Y-m-d', strtotime($todayMonth. ' - 1 years'));
+        }
 
         $personName = $request->input('personName');
         $rego = $request->input('rego');
 
-        $todayMonth = date('Y-m-d');
-        $lastMonth = date('Y-m-d', strtotime($todayMonth. ' - 1 years'));
+        
 
         $totalExpense = [];
         $totalOperActionExp = 0;
