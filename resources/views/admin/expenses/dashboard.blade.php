@@ -33,7 +33,7 @@
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label" for="exampleInputEmail1">Date Range</label>
-                                        <input class="form-control expenseDatefilter" name="date_range" value="{{old('date_range')}}"  />
+                                        <input class="form-control expenseDatefilter" name="date_range" value="{{$date_range}}"  />
                                         
                                     </div>
                                 </div>

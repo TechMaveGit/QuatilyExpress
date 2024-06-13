@@ -24,7 +24,7 @@ class Expenses extends Controller
     {
         // dd($request->all());
         $datesData = null;
-        $date_range = $request->input('date_range');
+        $date_range = $request->input('date_range',null);
 
         if($date_range) $datesData = explode('to',$date_range);
         if($datesData && isset($datesData[1])){
@@ -35,8 +35,8 @@ class Expenses extends Controller
             $lastMonth = date('Y-m-d', strtotime($todayMonth. ' - 1 years'));
         }
 
-        $personName = $request->input('personName');
-        $rego = $request->input('rego');
+        $personName = $request->input('personName',null);
+        $rego = $request->input('rego',null);
 
         
 
@@ -124,7 +124,7 @@ class Expenses extends Controller
         $data['clientcenters'] = DB::table('clientcenters')->get();
         $data['rego'] = DB::table('vehicals')->where('status', '1')->get();
 
-        return view('admin.expenses.dashboard', $data, compact('totalOperActionExp', 'generalExpenses', 'totalexpenseQuery', 'overrallExpenseGraph', 'expenseReport', 'Clientrate', 'tollexpense', 'operactionExp', 'totalExpense', 'personName', 'rego','monthNames'));
+        return view('admin.expenses.dashboard', $data, compact('totalOperActionExp', 'generalExpenses', 'totalexpenseQuery', 'overrallExpenseGraph', 'expenseReport', 'Clientrate', 'tollexpense', 'operactionExp', 'totalExpense', 'personName', 'rego','monthNames','date_range'));
     }
 
     public function expenseSheet(Request $request)
