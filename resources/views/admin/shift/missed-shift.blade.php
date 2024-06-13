@@ -86,7 +86,7 @@
                                                         class="red">*</span></label>
 
 
-                                                <input type="date" name="start_date" class="form-control" id="start-date"
+                                                <input type="date" name="start_date" class="form-control datetime_picker" 
                                                     aria-describedby="emailHelp" data-input required>
 
                                                 {{-- <input type="text" id="start-date" data-input> --}}
@@ -104,7 +104,7 @@
                                                         class="red">*</span></label>
                                                 {{-- <input type="datetime-local" id="end-date" disabled> --}}
 
-                                                <input type="date" name="end_date" class="form-control" id="end-date"
+                                                <input type="date" name="end_date" class="form-control datetime_picker" 
                                                     aria-describedby="emailHelp" data-input readonly required>
 
                                                 {{-- <input type="text" id="end-date" data-input readonly> --}}

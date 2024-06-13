@@ -492,13 +492,14 @@ class ShiftManagement extends Controller
                 $vehicle->save();
                 $regoId = $vehicle->id;
             }
+            // dd($request->all());
             $shiftAdd = $request->except(['_token', 'submit']);
             $shiftAdd['shiftRandId'] = rand('9999', '0000');
             $shiftAdd['is_missed_shift'] = 1;
             $odometerStart = $request->input('odometer_start_reading') ?? '0';
             $odometerFinish = $request->input('odometer_finish_reading') ?? '0';
-            $start_date = $request->input('start_date');
-            $end_date = $request->input('end_date');
+            $start_date =  Carbon::parse($request->input('start_date'))->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($request->input('end_date'))->format('Y-m-d H:i:s');
             if (is_numeric($odometerStart) && is_numeric($odometerFinish)) {
                 $shiftAdd['odometer'] = $odometerFinish - $odometerStart;
             }
@@ -1097,6 +1098,7 @@ class ShiftManagement extends Controller
 
     public function shiftReportEdit(Request $request, $id)
     {
+        // dd($request->all());
         $query = Shift::where('id', $id);
         $getClientID = Shift::whereId($id)->first()->client;
         $data['shiftView'] = $query->orderBy('id', 'DESC')->with([
@@ -1111,7 +1113,7 @@ class ShiftManagement extends Controller
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
         if (request()->isMethod('post')) {
-            $managementId = $request->input('hrManagerment');
+            // $managementId = $request->input('hrManagerment');
             // if ($managementId == '1') {
                 Shift::where('id', $id)->update([
                     'state'    => $request->input('state'),
@@ -1121,12 +1123,13 @@ class ShiftManagement extends Controller
                     'base'   => $request->input('base'),
                     'vehicleType'         => $request->input('vehicleType'),
                     'rego'       => $request->input('rego'),
-                    'shiftStartDate'    => $request->input('shiftStartDate'),
+                    'shiftStartDate'    => date('Y-m-d H:i:s',strtotime($request->input('shiftStartDate'))),
                     'scanner_id'  => $request->input('scannerName'),
                     'parcelsToken'    => $request->input('parcelsToken'),
                     'comment'=> $request->input('comments'),
                     'approval_reason'=> $request->input('approvedReason'),
-                    'odometer' => $request->input('odometerStartReading')
+                    'odometer' => $request->input('odometerStartReading'),
+
                 ]);
 
                 // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
@@ -1136,6 +1139,7 @@ class ShiftManagement extends Controller
                 $endDate = $request->finishDate;
                 $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
                 $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
+                // dd($start_date,$end_date);
                 $startDate = strtotime($start_date);
                 $endDate = strtotime($end_date);
                 $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
@@ -1255,10 +1259,10 @@ class ShiftManagement extends Controller
                         $Parcel->saturdayHours = $saturdayHrs;
                         $Parcel->sundayHours = $sundayHrs;
                         $Parcel->weekendHours = $weekend;
-                        $Parcel->startDate = Carbon::parse($startDate)->format('Y-m-d');
-                        $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
-                        $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
-                        $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
+                        $Parcel->startDate = date('Y-m-d',strtotime($start_date));
+                        $Parcel->endDate = date('Y-m-d',strtotime($end_date));
+                        $Parcel->startTime = date('H:i:s',strtotime($start_date));
+                        $Parcel->endTime = date('H:i:s',strtotime($end_date));
                         $Parcel->parcelsTaken = $request->input('parcelsToken');
                         $Parcel->submitted_at = $Parcel->submitted_at ?? date('Y-m-d H:i:s');
                         $Parcel->parcelsDelivered = $request->input('parcelsDelivered');
