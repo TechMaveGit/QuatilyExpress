@@ -183,7 +183,7 @@ class ParcelController extends Controller
             $dateFolder = 'driver/parcel';
             $photo = ImageController::upload($image, $dateFolder);
         } else {
-            $photo = '';
+            $photo = null;
         }
 
         $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
@@ -623,7 +623,7 @@ class ParcelController extends Controller
                     $dateFolder = 'driver/parcel/finishParcel';
                     $items = ImageController::upload($image, $dateFolder);
                 } else {
-                    $items = '';
+                    $items = null;
                 }
 
                 Shift::whereId($request->shiftId)->update(['finishStatus' => '2','odometer'=>$request->odometerStartReading]);
