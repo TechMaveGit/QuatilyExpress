@@ -745,12 +745,12 @@ class ShiftController extends Controller
         $extra_rate_per_hour = Driver::whereId($driverId)->first()->extra_rate_per_hour??0;
 
         if (($shift->getFinishShift->dayHours ?? 0) != '0') {
-            $dayammmm = ($shift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ) * ($shift->getFinishShifts->dayHours ?? 0);
+            $dayammmm = ($shift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ) * ($shift->ReportDetail->dayHours ?? 0);
         } else {
             $dayammmm = 0;
         }
         if ($shift->getFinishShift->nightHours ?? 0 != '0') {
-            $nightamm = ($shift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ) * ($shift->getFinishShifts->nightHours ?? 0);
+            $nightamm = ($shift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ) * ($shift->ReportDetail->nightHours ?? 0);
         } else {
             $nightamm = 0;
         }
@@ -759,11 +759,11 @@ class ShiftController extends Controller
         // return $dayammmm;
 
         if ($shift->getFinishShift && $shift->getFinishShift->saturdayHours != '0') {
-            $saturday = ($shift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ) * ($shift->getFinishShifts->saturdayHours ?? 0);
+            $saturday = ($shift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ) * ($shift->ReportDetail->saturdayHours ?? 0);
         }
 
         if ($shift->getFinishShift && $shift->getFinishShift->sundayHours != '0') {
-            $sunday = ($shift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour) * ($shift->getFinishShifts->sundayHours ?? 0);
+            $sunday = ($shift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour) * ($shift->ReportDetail->sundayHours ?? 0);
         }
         $finalAmount = $saturday + $sunday;
         $payAmount = round($dayammmm, 2) + round($nightamm, 2) + round($finalAmount, 2);
