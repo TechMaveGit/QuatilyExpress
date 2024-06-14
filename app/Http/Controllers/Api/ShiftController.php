@@ -771,7 +771,8 @@ class ShiftController extends Controller
 
         $finalshiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where(['shiftId'=>$request->shift_id])->first();
         
-        $updatedAmnt = round(($finalshiftMonetizeInformation->amountPayablePerService??$shift->payAmount) ?? 0, 2);
+        $updatedAmnt = round(($shift->payAmount) ?? 0, 2);
+        return $updatedAmnt;
         if ($payAmount < $updatedAmnt) {
             $finalpayamnnt = $updatedAmnt;
         } else {
