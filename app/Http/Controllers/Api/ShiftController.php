@@ -734,7 +734,7 @@ class ShiftController extends Controller
         ->where('shiftId', $request->shift_id ?? '')
         ->first();
 
-        $shift->ReportDetail = $reportDetail ?? '0';
+        $shift->ReportDetail = $reportDetail ?? 0;
         $shift->ClientBase = Clientbase::select('id', 'base')->where('id', $shift->base)->first()->base ?? '';
         // if ($shift->finishStatus == '2') {
             // $extra_rate_per_hour = $shift->getDriverName->extra_rate_per_hour ?? 0;
@@ -770,13 +770,12 @@ class ShiftController extends Controller
 
         $finalshiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where(['shiftId'=>$request->shift_id])->first();
         
-        $updatedAmnt = round($finalshiftMonetizeInformation->amountPayablePerService ?? 0, 2);
+        $updatedAmnt = round(($finalshiftMonetizeInformation->amountPayablePerService??$shift->payAmount) ?? 0, 2);
         if ($payAmount < $updatedAmnt) {
             $finalpayamnnt = $updatedAmnt;
         } else {
             $finalpayamnnt = $payAmount;
         }
-
        
 
         $shift->payAmount = "$finalpayamnnt";
