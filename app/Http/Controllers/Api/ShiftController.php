@@ -769,10 +769,8 @@ class ShiftController extends Controller
         $finalAmount = $saturday + $sunday;
         $payAmount = round($dayammmm, 2) + round($nightamm, 2) + round($finalAmount, 2);
 
-        $finalshiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where(['shiftId'=>$request->shift_id])->first();
-        
         $updatedAmnt = round(($shift->payAmount) ?? 0, 2);
-        return $updatedAmnt;
+        // return $updatedAmnt;
         if ($payAmount < $updatedAmnt) {
             $finalpayamnnt = $updatedAmnt;
         } else {
