@@ -641,8 +641,8 @@ class ParcelController extends Controller
                 $Parcel->totalHours = $totalHr ?? 0;
                 $Parcel->startDate = date('Y-m-d',strtotime($request->startDate));
                 $Parcel->endDate =  date('Y-m-d',strtotime($request->endDate));
-                $Parcel->startTime = date('H:i:s',strtotime($request->startDate)); 
-                $Parcel->endTime =  date('H:i:s',strtotime($request->endDate)); 
+                $Parcel->startTime = date('H:i:s',strtotime($request->startTime)); 
+                $Parcel->endTime =  date('H:i:s',strtotime($request->endTime)); 
                 $Parcel->submitted_at =  $request->finishAt ? date('Y-m-d H:i:s',strtotime($request->finishAt)):date('Y-m-d H:i:s');
                 $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
