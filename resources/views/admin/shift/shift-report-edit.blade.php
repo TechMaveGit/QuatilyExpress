@@ -10,7 +10,7 @@ foreach($D as $v)
 
 $readonlybtn = null;
 if(in_array($shiftView->finishStatus,["3","4"])){
-    $readonlybtn = 'readonly';
+    $readonlybtn = 'disabled';
 }
 
 //  echo "<pre>";
@@ -50,7 +50,9 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                         <span><i class="ti-light-bulb"></i></span>
                                         <span> Show Shift</span>
                                     </h2>
+                                    @if(in_array($shiftView->finishStatus,["3","4"]))
                                      <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
+                                        @endif
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
@@ -69,7 +71,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                             @endforeach
                                                         </select>
                                                         @else
-                                                         <select class="form-control select2 form-select"  @if(!$readonlybtn) onchange="getdata(this)" @endif  name="state"  data-placeholder="Choose one" {{$readonlybtn}}>
+                                                         <select class="form-control select2 form-select"  @if(!$readonlybtn) onchange="getdata(this)"   name="state" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($allstate as $allstate)
                                                               <option value="{{ $allstate->id }}" @if($allstate->id ==$shiftView->state) selected @else @endif>{{ $allstate->name }} </option>
@@ -92,7 +94,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                       @endforeach
                                                         </select>
                                                         @else
-                                                         <select   class="form-control select2 form-select" id="appendClient" onchange="getCostCenter(this)" name="client" data-placeholder="Choose one" {{$readonlybtn}}>
+                                                         <select class="form-control select2 form-select" id="appendClient"  @if(!$readonlybtn) onchange="getCostCenter(this)" name="client" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                         @foreach ($client as $allclient)
                                                         <option value="{{ $allclient->id }}" @if($allclient->id == $shiftView->client) selected @else @endif >{{ $allclient->name }}
@@ -116,7 +118,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                               @endforeach
                                                         </select>
                                                         @else
-                                                           <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one" {{$readonlybtn}}>
+                                                           <select class="form-control select2 form-select" id="appendCostCenter" @if(!$readonlybtn) name="costCenter" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($costCenter as $allcostCenter)
                                                                 <option value="{{ $allcostCenter->id }}" @if($allcostCenter->id ==$shiftView->costCenter) selected @else @endif >{{ $allcostCenter->name }}
@@ -169,7 +171,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                               @endforeach
                                                            </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" id="appendBase"  name="base"  data-placeholder="Choose one" {{$readonlybtn}}>
+                                                         <select class="form-control select2 form-select" id="appendBase" @if(!$readonlybtn) name="base"  @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                               @foreach ($clientbases as $allClientBase)
                                                                 <option value="{{ $allClientBase->id }}" @if($allClientBase->id == $shiftView->base) selected @else @endif >{{ $allClientBase->base }}
@@ -195,7 +197,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                 <div class="check_box">
                                                     <label class="form-label" for="exampleInputEmail1">Driver </label>
                                                     <div class="form-group">
-                                                        <select class="form-control select2 form-select"  name="driverId" id="appendDriverResponiable" data-placeholder="Choose one" {{$readonlybtn}}>
+                                                        <select class="form-control select2 form-select" @if(!$readonlybtn) name="driverId" @endif id="appendDriverResponiable" data-placeholder="Choose one" {{$readonlybtn}}>
                                                                 <option value="">Select Any One</option>
                                                                     @forelse ($driverAdd as $AdddriverAdd)
                                                                     <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif>{{ $AdddriverAdd->userName??'' }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
@@ -642,6 +644,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                 
                                 <!-- main_bx_dt -->
                             </div>
+                            @if(in_array($shiftView->finishStatus,["3","4"]))
                             <div class="bottom_footer_dt">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -652,7 +655,9 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                     </div>
                                 </div>
                             </div>
+                            
                                 </form>
+                                @endif
                                 @endif
                                     </div>
                                 </div>
