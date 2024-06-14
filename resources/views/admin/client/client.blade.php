@@ -23,9 +23,17 @@
         }
     </style>
     <style>
-        .colum_visibility_ak {
+       .dropdown.colum_visibility_ak:nth-child(odd){
+    display: none !important;
+}
+
+.dropdown.colum_visibility_ak {
+  top: 23px;
+  margin-left: 20px;
+}
+        /* .colum_visibility_ak {
             display: none !important;
-        }
+        } */
     </style>
 
 
@@ -224,9 +232,7 @@
                                         <thead class="border-top">
 
                                             <tr>
-                                                <td hidden>
-                                                </td>
-
+                                               
                                                 {{-- <th class="bg-transparent border-bottom-0 hidden"></th> --}}
 
                                                 <th class="bg-transparent border-bottom-0">Id</th>
@@ -279,23 +285,18 @@
     </div>
 
 
-
-
-
-    <!-- Include DataTables CSS and JS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <script type="text/javascript" charset="utf8"
-        src="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"></script>
-
-    <!-- Include DataTables Buttons CSS and JS -->
-    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/jquery-3.7.0.js">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js">
-    </script>
-    <script type="text/javascript" charset="utf8"
-        src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js">
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- Include DataTables CSS and JS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"></script>
+<!-- Include DataTables Buttons CSS and JS -->
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/jquery-3.7.0.js">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
     <script>
@@ -351,7 +352,22 @@
                     }
                 ]
             });
+            var columns = table.columns().header().toArray();
+    var columnVisibilityDropdown = '<div class="dropdown colum_visibility_ak" style="display:inline-block;">' +
+      '<button class="btn btn-warning dropdown-toggle" type="button" id="columnVisibilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">Column Visibility</button>' +
+      '<div class="dropdown-menu custom_dp_menu" aria-labelledby="columnVisibilityDropdown">';
+    columns.forEach(function(column, index) {
+      columnVisibilityDropdown += '<div class="form-check"><input class="form-check-input column-toggle" type="checkbox" value="' + $(column).text() + '" id="Checkme' + index + '" checked><label class="form-check-label" for="Checkme' + index + '">' + $(column).text() + '</label></div>';
+    });
+    columnVisibilityDropdown += '</div></div>';
+    $('.dataTables_length').parent().append(columnVisibilityDropdown);
+    table.buttons().container().appendTo($('.dataTables_length').parent());
+    $('.column-toggle').on('change', function() {
+      var columnIndex = $(this).parent().index();
+      table.column(columnIndex).visible(this.checked);
+    });
         });
+        
     </script>
 
 

@@ -25,15 +25,24 @@
     background: transparent;
     border: none;
 }
-.colum_visibility_ak
-{
-    display: none!important;
-}
+
 </style>
 
 
 
+<style>
+    .dropdown.colum_visibility_ak:nth-child(odd){
+ display: none !important;
+}
 
+.dropdown.colum_visibility_ak {
+top: 23px;
+margin-left: 20px;
+}
+     /* .colum_visibility_ak {
+         display: none !important;
+     } */
+ </style>
 <!-- delete Modal -->
 
 <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1" aria-hidden="true">
@@ -329,6 +338,20 @@ $(document).ready( function ()
                         ],
 
             });
+            var columns = table.columns().header().toArray();
+    var columnVisibilityDropdown = '<div class="dropdown colum_visibility_ak" style="display:inline-block;">' +
+      '<button class="btn btn-warning dropdown-toggle" type="button" id="columnVisibilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">Column Visibility</button>' +
+      '<div class="dropdown-menu custom_dp_menu" aria-labelledby="columnVisibilityDropdown">';
+    columns.forEach(function(column, index) {
+      columnVisibilityDropdown += '<div class="form-check"><input class="form-check-input column-toggle" type="checkbox" value="' + $(column).text() + '" id="Checkme' + index + '" checked><label class="form-check-label" for="Checkme' + index + '">' + $(column).text() + '</label></div>';
+    });
+    columnVisibilityDropdown += '</div></div>';
+    $('.dataTables_length').parent().append(columnVisibilityDropdown);
+    table.buttons().container().appendTo($('.dataTables_length').parent());
+    $('.column-toggle').on('change', function() {
+      var columnIndex = $(this).parent().index();
+      table.column(columnIndex).visible(this.checked);
+    });
 });
 </script>
 
