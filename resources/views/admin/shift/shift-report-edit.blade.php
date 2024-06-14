@@ -10,8 +10,7 @@ foreach($D as $v)
 
 $readonlybtn = null;
 if(in_array($shiftView->finishStatus,["3","4"])){
-    
-    $readonlybtn = 'disabled';
+    $readonlybtn = 'readonly';
 }
 
 //  echo "<pre>";

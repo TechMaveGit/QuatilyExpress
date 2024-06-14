@@ -1188,7 +1188,7 @@ class ShiftManagement extends Controller
                 $sundayShiftCharge = '0';
                 $priceOverRideStatus = '0';
                 $priceCompare = DB::table('personrates')->where('type', $data['shiftView']->vehicleType)->where('personId', $data['shiftView']->driverId)->first();
-              
+                // dd($request->all());
                 if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
                     if (!empty($dayHr)) {
                         if (empty($priceCompare)) {
@@ -1279,6 +1279,7 @@ class ShiftManagement extends Controller
                 Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
                 $existingFinishshiftId = $id;
                 if ($existingFinishshiftId) {
+                   
                     // return Carbon::parse($endDate)->format('Y-m-d');
                     $Parcel = Finishshift::where('shiftId', $existingFinishshiftId)->first();
                     if ($Parcel) {
