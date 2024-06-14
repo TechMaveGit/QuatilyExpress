@@ -693,6 +693,8 @@
                                                         $rego = DB::table('vehicals')
                                                             ->where('id', $allshift->rego)
                                                             ->first();
+
+                                                        $clientRates = DB::table('clientrates')->where(['clientId'=>$allshift->client,'type'=>$allshift->vehicleType])->first();
                                                     @endphp
                                                     <td class="td column-cost">{{ $clientcenters->name ?? 'N/A' }}</td>
                                                     <td class="td column-driver">
@@ -774,16 +776,16 @@
                                                         $nightHours = 0;
                                                         $weekendHours = 0;
                                                     @endphp
-                                                    @if ($allshift->getFinishShift)
+                                                    @if ($finishshifts)
                                                         @php
-                                                            $daySum =  floatval($allshift->getFinishShift->dayHours) ?? 0;
-                                                            $nightHours =  floatval($allshift->getFinishShift->nightHours) ?? 0;
-                                                            $weekendHours = floatval($allshift->getFinishShift->weekendHours) ?? 0;
+                                                            $daySum =  floatval($finishshifts->dayHours) ?? 0;
+                                                            $nightHours =  floatval($finishshifts->nightHours) ?? 0;
+                                                            $weekendHours = floatval($finishshifts->weekendHours) ?? 0;
                                                         @endphp
                                                     @endif
                                                     @php
-                                                        $chargeDayShift = ($allshift->getClientReportCharge->hourlyRateChargeableDays ?? 0) * ($allshift->getFinishShifts->dayHours ?? 0);
-                                                        $chargeNight = ($allshift->getClientReportCharge->ourlyRateChargeableNight ?? 0) * ($allshift->getFinishShifts->nightHours ?? 0);
+                                                        $chargeDayShift = ($clientRates->hourlyRateChargeableDays ?? 0) * ($finishshifts->dayHours ?? 0);
+                                                        $chargeNight = ($clientRates->ourlyRateChargeableNight ?? 0) * ($finishshifts->nightHours ?? 0);
                                                     @endphp
                                                     <td hidden class="td sorting_1">
                                                         {{ $daySum + $nightHours + $weekendHours }}</td>
@@ -810,7 +812,7 @@
                                                                 ->first();
                                                             $day = $priceCompare
                                                                 ? ($priceCompare->hourlyRatePayableDays ?? 0) *
-                                                                        optional($allshift->getFinishShifts)
+                                                                        optional($finishshifts)
                                                                             ->dayHours ??
                                                                     0
                                                                 : 0;
@@ -818,10 +820,10 @@
                                                         <td hidden class="td sorting_1">{{ $day }}</td>
                                                     @else
                                                         @php
-                                                            $clientCharge = $allshift->getClientCharge;
+                                                            $clientCharge = $clientRates;
                                                             $day = $clientCharge
                                                                 ? $clientCharge->hourlyRatePayableDay *
-                                                                        optional($allshift->getFinishShifts)
+                                                                        optional($finishshifts)
                                                                             ->dayHours ??
                                                                     0
                                                                 : 0;
@@ -838,18 +840,18 @@
                                                                 ($priceCompare
                                                                     ? $priceCompare->hourlyRatePayableNight
                                                                     : 0) *
-                                                                ($allshift->getFinishShifts
-                                                                    ? $allshift->getFinishShifts->nightHours ?? 0
+                                                                ($finishshifts
+                                                                    ? $finishshifts->nightHours ?? 0
                                                                     : 0);
                                                         @endphp
                                                         <td hidden class="td sorting_1">{{ $night }}</td>
                                                     @else
-                                                        @if ($allshift->getFinishShifts && $allshift->getFinishShifts->nightHours ?? 0 != '0')
+                                                        @if ($finishshifts && $finishshifts->nightHours ?? 0 != '0')
                                                             @php
                                                                 $night =
-                                                                    $allshift->getClientReportCharge
+                                                                    $clientRates
                                                                         ->hourlyRatePayableNight ??
-                                                                    (0 * $allshift->getFinishShifts->nightHours ?? 0);
+                                                                    (0 * $finishshifts->nightHours ?? 0);
                                                             @endphp
                                                         @else
                                                             @php
@@ -859,7 +861,7 @@
                                                         <td hidden class="td sorting_1">{{ $night }}</td>
                                                     @endif
                                                     <td hidden
-                                                        class="td sorting_1 {{ $allshift->getClientReportCharge->ourlyRateChargeableNight ?? 0 }}">
+                                                        class="td sorting_1 {{ $clientRates->ourlyRateChargeableNight ?? 0 }}">
                                                         {{ $chargeNight }}</td>
                                                     @if ($allshift->priceOverRideStatus == '1')
                                                         @php
@@ -869,14 +871,14 @@
                                                                 ->first();
                                                             $saturday = $priceCompare
                                                                 ? ($priceCompare->hourlyRatePayableSaturday ?? 0) *
-                                                                    ($allshift->getFinishShifts
-                                                                        ? $allshift->getFinishShifts->saturdayHours
+                                                                    ($finishshifts
+                                                                        ? $finishshifts->saturdayHours
                                                                         : 0)
                                                                 : 0;
                                                             $sunday = $priceCompare
                                                                 ? ($priceCompare->hourlyRatepayableSunday ?? 0) *
-                                                                    ($allshift->getFinishShifts
-                                                                        ? $allshift->getFinishShifts->sundayHours
+                                                                    ($finishshifts
+                                                                        ? $finishshifts->sundayHours
                                                                         : 0)
                                                                 : 0;
                                                         @endphp
@@ -886,48 +888,48 @@
                                                             $saturday = 0;
                                                             $sunday = 0;
                                                             if (
-                                                                $allshift->getFinishShifts &&
-                                                                $allshift->getFinishShifts->saturdayHours != '0'
+                                                                $finishshifts &&
+                                                                $finishshifts->saturdayHours != '0'
                                                             ) {
                                                                 $saturday =
-                                                                    $allshift->getClientReportCharge
+                                                                    $clientRates
                                                                         ->hourlyRatePayableSaturday ??
-                                                                    (0 * $allshift->getFinishShifts->saturdayHours ??
+                                                                    (0 * $finishshifts->saturdayHours ??
                                                                         0);
                                                             }
                                                             if (
-                                                                $allshift->getFinishShifts &&
-                                                                $allshift->getFinishShifts->sundayHours !== null &&
-                                                                $allshift->getFinishShifts->sundayHours != '0'
+                                                                $finishshifts &&
+                                                                $finishshifts->sundayHours !== null &&
+                                                                $finishshifts->sundayHours != '0'
                                                             ) {
                                                                 $sunday =
                                                                     floatval(
-                                                                        $allshift->getClientReportCharge
+                                                                        $clientRates
                                                                             ->hourlyRatePayableSunday,
                                                                     ) *
-                                                                    floatval($allshift->getFinishShifts->sundayHours);
+                                                                    floatval($finishshifts->sundayHours);
                                                             }
                                                         @endphp
                                                         <td hidden class="td sorting_1">{{ $saturday + $sunday }}</td>
                                                     @endif
-                                                    @if (!empty($allshift->getFinishShifts->saturdayHours))
+                                                    @if (!empty($finishshifts->saturdayHours))
                                                         @php
                                                             $saturday =
-                                                                $allshift->getClientReportCharge
+                                                                $clientRates
                                                                     ->hourlyRateChargeableSaturday ??
-                                                                (0 * $allshift->getFinishShifts->saturdayHours ?? 0);
+                                                                (0 * $finishshifts->saturdayHours ?? 0);
                                                         @endphp
                                                     @else
                                                         @php
                                                             $saturday = 0;
                                                         @endphp
                                                     @endif
-                                                    @if (!empty($allshift->getFinishShifts->sundayHours))
+                                                    @if (!empty($finishshifts->sundayHours))
                                                         @php
                                                             $sunday =
-                                                                $allshift->getClientReportCharge
+                                                                $clientRates
                                                                     ->hourlyRateChargeableSunday *
-                                                                $allshift->getFinishShifts->sundayHours;
+                                                                $finishshifts->sundayHours;
                                                         @endphp
                                                     @else
                                                         @php
@@ -975,12 +977,12 @@
                                                             @endphp
                                                             @if($allshift->getFinishShift->dayHours ?? 0 !='0')
                                                                 @php
-                                                                    $dayammmm = ($allshift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->dayHours ?? 0);
+                                                                    $dayammmm = ($clientRates->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($finishshifts->dayHours ?? 0);
                                                                 @endphp
                                                             @endif
                                                             @if($allshift->getFinishShift->nightHours ?? 0 !='0')
                                                                 @php
-                                                                    $nightamm = ($allshift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->nightHours ?? 0);
+                                                                    $nightamm = ($clientRates->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($finishshifts->nightHours ?? 0);
                                                                 @endphp
                                                             @else
                                                                 @php
@@ -991,10 +993,10 @@
                                                             $saturday = 0;
                                                             $sunday = 0;
                                                                 if ($allshift->getFinishShift && $allshift->getFinishShift->saturdayHours != '0') {
-                                                                    $saturday = ($allshift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->saturdayHours ?? 0);
+                                                                    $saturday = ($clientRates->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($finishshifts->saturdayHours ?? 0);
                                                                 }
                                                                 if ($allshift->getFinishShift && $allshift->getFinishShift->sundayHours != '0') {
-                                                                    $sunday = ($allshift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->sundayHours ?? 0);
+                                                                    $sunday = ($clientRates->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($finishshifts->sundayHours ?? 0);
                                                                 }
                                                             $finalAmount=$saturday +  $sunday;
                                                             @endphp

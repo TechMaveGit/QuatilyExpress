@@ -745,12 +745,12 @@ class ShiftController extends Controller
         $extra_rate_per_hour = Driver::whereId($driverId)->first()->extra_rate_per_hour??0;
         $clientRates = DB::table('clientrates')->where(['clientId'=>$shift->client,'type'=>$shift->vehicleType])->first();
 
-        if (($shift->getFinishShift->dayHours ?? 0) != '0') {
+        if (($shift->ReportDetail->dayHours ?? 0) != '0') {
             $dayammmm = ($clientRates->hourlyRatePayableDay + $extra_rate_per_hour ) * ($shift->ReportDetail->dayHours ?? 0);
         } else {
             $dayammmm = 0;
         }
-        if ($shift->getFinishShift->nightHours ?? 0 != '0') {
+        if ($shift->ReportDetail->nightHours ?? 0 != '0') {
             $nightamm = ($clientRates->hourlyRatePayableNight + $extra_rate_per_hour ) * ($shift->ReportDetail->nightHours ?? 0);
         } else {
             $nightamm = 0;
@@ -759,11 +759,11 @@ class ShiftController extends Controller
         $sunday = 0;
         // return $clientRates->hourlyRatePayableDay;
 
-        if ($shift->getFinishShift && $shift->getFinishShift->saturdayHours != '0') {
+        if ($shift->ReportDetail && $shift->ReportDetail->saturdayHours != '0') {
             $saturday = ($clientRates->hourlyRatePayableSaturday + $extra_rate_per_hour ) * ($shift->ReportDetail->saturdayHours ?? 0);
         }
 
-        if ($shift->getFinishShift && $shift->getFinishShift->sundayHours != '0') {
+        if ($shift->ReportDetail && $shift->ReportDetail->sundayHours != '0') {
             $sunday = ($clientRates->hourlyRatePayableSunday + $extra_rate_per_hour) * ($shift->ReportDetail->sundayHours ?? 0);
         }
         $finalAmount = $saturday + $sunday;
