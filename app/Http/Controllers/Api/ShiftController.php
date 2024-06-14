@@ -354,10 +354,11 @@ class ShiftController extends Controller
             }
 
             $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
+            $finaltotalPayShiftAmount = $totalPayShiftAmount;
 
             $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
             $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
-            
+            $finaltotalChargeDay = $totalChargeDay;
             if($shiftMonetize){
                 $finaltotalPayShiftAmount= $totalPayShiftAmount + (float)($shiftMonetize->fuelLevyPayable??0)+ (float)($shiftMonetize->extraPayable??0);
                 $finaltotalChargeDay = $totalChargeDay + (float)($shiftMonetize->fuelLevyChargeable250??0)+(float)($shiftMonetize->fuelLevyChargeable??0)+(float)($shiftMonetize->fuelLevyChargeable400??0)+(float)($shiftMonetize->extraChargeable??0);
