@@ -639,10 +639,10 @@ class ParcelController extends Controller
                 $Parcel->sundayHours = $sundayHrs;
                 $Parcel->weekendHours = $weekendHours ?? 0;
                 $Parcel->totalHours = $totalHr ?? 0;
-                $Parcel->startDate = $request->startDate;
-                $Parcel->endDate = $request->endDate;
-                $Parcel->startTime = $dayStartTime->format('H:i:s');
-                $Parcel->endTime = $nightEndTime->format('H:i:s');
+                $Parcel->startDate = date('Y-m-d',strtotime($request->startDate));
+                $Parcel->endDate =  date('Y-m-d',strtotime($request->endDate));
+                $Parcel->startTime = date('H:i:s',strtotime($request->startDate)); 
+                $Parcel->endTime =  date('H:i:s',strtotime($request->endDate)); 
                 $Parcel->submitted_at =  $request->finishAt ? date('Y-m-d H:i:s',strtotime($request->finishAt)):date('Y-m-d H:i:s');
                 $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
