@@ -671,7 +671,7 @@
                                                                         $start_date = new DateTime(
                                                                             $alltollexpense->start_date,
                                                                         );
-                                                                        $startDt = $start_date->format('Y/m/d H:i:s');
+                                                                        $startDt = $start_date->format('Y/m/d');
                                                                     @endphp
 
 

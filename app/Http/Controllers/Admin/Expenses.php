@@ -22,23 +22,22 @@ class Expenses extends Controller
 {
     public function expense(Request $request)
     {
-        // dd($request->all());
         $datesData = null;
         $date_range = $request->input('date_range',null);
 
         if($date_range) $datesData = explode('to',$date_range);
         if($datesData && isset($datesData[1])){
-            $todayMonth = date('Y-m-d',strtotime($datesData[0]));
-            $lastMonth =  date('Y-m-d',strtotime($datesData[1]));
+            $lastMonth = date('Y-m-d',strtotime($datesData[0]));
+            $todayMonth =  date('Y-m-d',strtotime($datesData[1]));
         }else{
             $todayMonth = date('Y-m-d');
             $lastMonth = date('Y-m-d', strtotime($todayMonth. ' - 1 years'));
         }
 
+        // dd($lastMonth,$todayMonth);
+
         $personName = $request->input('personName',null);
         $rego = $request->input('rego',null);
-
-        
 
         $totalExpense = [];
         $totalOperActionExp = 0;

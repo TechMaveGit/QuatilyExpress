@@ -49,7 +49,7 @@
                 </button>
             </div>
 
-            <form action="{{route('vehicle.delete')}}" method="post" />@csrf
+            <form action="{{route('vehicle.delete')}}" method="post" >@csrf
 
             <div class="modal-body">
 
@@ -219,13 +219,13 @@
 
                                 <h5>All Vehicles</h5>
                                 <?php
-                          $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
-                          $arr = [];
-                          foreach($D as $v)
-                          {
-                            $arr[] = $v['permission_id'];
-                          }
-                          ?>
+                                    $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
+                                    $arr = [];
+                                    foreach($D as $v)
+                                    {
+                                        $arr[] = $v['permission_id'];
+                                    }
+                                ?>
 
                                 @if(in_array("25", $arr))
                                 <a href="{{ route('vehicle.add') }}" class="btn btn-primary">+ Add New Vehicle</a>
@@ -258,11 +258,7 @@
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
-
                                 </thead>
-
-
-
 
                                 </table>
 

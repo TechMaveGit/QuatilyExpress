@@ -396,12 +396,25 @@ class ShiftManagement extends Controller
                         $vehicle->save();
                         $regoId = $vehicle->id;
                     }
+
+                    $selectedClient = $request->client ?? null;
+                    $selectedvehicleType = $request->vehicleType ?? null;
+                    $selecteddriverId = $request->driverId ?? null;
+                    
+                    $clientRateData = null;
+                    $extra_rate_per_hour = null;
+
+                    if($selectedClient) $clientRateData = json_encode(Clientrate::where(['clientId'=>$selectedClient,'type'=>$selectedvehicleType])->first()->toArray());
+                    if($selecteddriverId) $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
+
                     $shiftAdd = $request->except(['_token', 'submit']);
                     $shiftAdd['shiftRandId'] = rand('9999', '0000');
                     $shiftAdd['finishStatus'] = '1';
                     $shiftAdd['shiftStartDate'] = date('Y-m-d H:i:s');
                     $shiftAdd['createdDate'] = date('Y-m-d H:i:s');
                     $shiftAdd['rego'] = $regoId;
+                    $shiftAdd['client_data_json'] = $clientRateData;
+                    $shiftAdd['extra_rate_person'] = $extra_rate_per_hour;
                     // dd($shiftAdd);
                     $shift = Shift::create($shiftAdd);
 
@@ -503,10 +516,25 @@ class ShiftManagement extends Controller
             if (is_numeric($odometerStart) && is_numeric($odometerFinish)) {
                 $shiftAdd['odometer'] = $odometerFinish - $odometerStart;
             }
+
+            $selectedClient = $request->client ?? null;
+            $selectedvehicleType = $request->vehicleType ?? null;
+            $selecteddriverId = $request->driverId ?? null;
+            
+            $clientRateData = null;
+            $extra_rate_per_hour = null;
+
+            if($selectedClient) $clientRateData = json_encode(Clientrate::where(['clientId'=>$selectedClient,'type'=>$selectedvehicleType])->first()->toArray());
+            if($selecteddriverId) $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
+
+
             $shiftAdd['rego'] = $regoId;
             $shiftAdd['shiftStartDate'] = $start_date;
             $shiftAdd['finishDate'] = $end_date;
             $shiftAdd['createdDate'] = date('Y-m-d H:i:s');
+            $shiftAdd['client_data_json'] = $clientRateData;
+            $shiftAdd['extra_rate_person'] = $extra_rate_per_hour;
+
             $shify = Shift::create($shiftAdd);
             $getClientID = Shift::whereId($shify->id)->first()->client;
             $query = Shift::where('id', $shify->id);
@@ -534,6 +562,7 @@ class ShiftManagement extends Controller
             $sundayShiftCharge = '0';
             $priceOverRideStatus = '0';
             $totalChargeDay = '0';
+            
             if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
                 if (!empty($dayHr)) {
                     if (empty($priceCompare)) {
@@ -1129,12 +1158,11 @@ class ShiftManagement extends Controller
                     'comment'=> $request->input('comments'),
                     'approval_reason'=> $request->input('approvedReason'),
                     'odometer' => $request->input('odometerStartReading'),
-
                 ]);
 
                 // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
             // }
-            if (!in_array($request->input('finishStatus'),[0,1])) {
+            // if (!in_array($request->input('finishStatus'),[0,1])) {
                 $startDate = $request->shiftStartDate;
                 $endDate = $request->finishDate;
                 $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
@@ -1298,7 +1326,7 @@ class ShiftManagement extends Controller
                 }
                 // DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
                 // DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
-            }
+            // }
 
             return Redirect::back()->with('message', 'Shift Updated Successfully!');
         }
