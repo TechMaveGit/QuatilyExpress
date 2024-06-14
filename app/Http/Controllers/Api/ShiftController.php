@@ -735,11 +735,11 @@ class ShiftController extends Controller
 
         $shift->ReportDetail = $reportDetail ?? '0';
         $shift->ClientBase = Clientbase::select('id', 'base')->where('id', $shift->base)->first()->base ?? '';
-        if ($shift->finishStatus == '2') {
-            $extra_rate_per_hour = $shift->getDriverName->extra_rate_per_hour ?? '0';
-        } else {
-            $extra_rate_per_hour = 0;
-        }
+        // if ($shift->finishStatus == '2') {
+            $extra_rate_per_hour = $shift->getDriverName->extra_rate_per_hour ?? 0;
+        // } else {
+        //     $extra_rate_per_hour = 0;
+        // }
         if ($shift->getFinishShift->dayHours ?? 0 != '0') {
             $dayammmm = ($shift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shift->getFinishShifts->dayHours ?? 0);
         } else {
