@@ -9,13 +9,14 @@ foreach($D as $v)
 }
 
 $readonlybtn = null;
-if(in_array($shiftView->finishStatus,["3","4"])){
+if(in_array($shiftView->finishStatus,["3","4","5","6"])){
     $readonlybtn = 'disabled';
 }
 
 //  echo "<pre>";
 //  print_r($arr);
 ?>
+
 <!--app-content open-->
 <div class="main-content app-content mt-0">
     <!-- PAGE-HEADER -->
@@ -50,7 +51,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                         <span><i class="ti-light-bulb"></i></span>
                                         <span> Show Shift</span>
                                     </h2>
-                                    @if(in_array($shiftView->finishStatus,["3","4"]))
+                                    @if(!in_array($shiftView->finishStatus,["3","4","5","6"]))
                                      <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
                                         @endif
                                         <div class="row">
@@ -644,7 +645,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                 
                                 <!-- main_bx_dt -->
                             </div>
-                            @if(in_array($shiftView->finishStatus,["3","4"]))
+                            @if(!in_array($shiftView->finishStatus,["3","4","5","6"]))
                             <div class="bottom_footer_dt">
                                 <div class="row">
                                     <div class="col-lg-12">
