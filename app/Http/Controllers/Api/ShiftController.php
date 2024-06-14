@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Clientbase;
 use App\Models\Clientcenter;
 use App\Models\Clientrate;
+use App\Models\Driver;
 use App\Models\Finishshift;
 use App\Models\rego;
 use App\Models\Shift;
@@ -736,38 +737,47 @@ class ShiftController extends Controller
         $shift->ReportDetail = $reportDetail ?? '0';
         $shift->ClientBase = Clientbase::select('id', 'base')->where('id', $shift->base)->first()->base ?? '';
         // if ($shift->finishStatus == '2') {
-            $extra_rate_per_hour = $shift->getDriverName->extra_rate_per_hour ?? 0;
+            // $extra_rate_per_hour = $shift->getDriverName->extra_rate_per_hour ?? 0;
         // } else {
         //     $extra_rate_per_hour = 0;
         // }
-        if ($shift->getFinishShift->dayHours ?? 0 != '0') {
-            $dayammmm = ($shift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shift->getFinishShifts->dayHours ?? 0);
+
+        $extra_rate_per_hour = Driver::whereId($driverId)->first()->extra_rate_per_hour??0;
+
+        if (($shift->getFinishShift->dayHours ?? 0) != '0') {
+            $dayammmm = ($shift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ) * ($shift->getFinishShifts->dayHours ?? 0);
         } else {
             $dayammmm = 0;
         }
         if ($shift->getFinishShift->nightHours ?? 0 != '0') {
-            $nightamm = ($shift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($shift->getFinishShifts->nightHours ?? 0);
+            $nightamm = ($shift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ) * ($shift->getFinishShifts->nightHours ?? 0);
         } else {
             $nightamm = 0;
         }
         $saturday = 0;
         $sunday = 0;
+        // return $dayammmm;
 
         if ($shift->getFinishShift && $shift->getFinishShift->saturdayHours != '0') {
-            $saturday = ($shift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($shift->getFinishShifts->saturdayHours ?? 0);
+            $saturday = ($shift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ) * ($shift->getFinishShifts->saturdayHours ?? 0);
         }
 
         if ($shift->getFinishShift && $shift->getFinishShift->sundayHours != '0') {
-            $sunday = ($shift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($shift->getFinishShifts->sundayHours ?? 0);
+            $sunday = ($shift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour) * ($shift->getFinishShifts->sundayHours ?? 0);
         }
         $finalAmount = $saturday + $sunday;
         $payAmount = round($dayammmm, 2) + round($nightamm, 2) + round($finalAmount, 2);
-        $updatedAmnt = round($shift->payAmount ?? 0, 2);
+
+        $finalshiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where(['shiftId'=>$request->shift_id])->first();
+        
+        $updatedAmnt = round($finalshiftMonetizeInformation->amountPayablePerService ?? 0, 2);
         if ($payAmount < $updatedAmnt) {
             $finalpayamnnt = $updatedAmnt;
         } else {
             $finalpayamnnt = $payAmount;
         }
+
+       
 
         $shift->payAmount = "$finalpayamnnt";
         $shift->ClientRego = Vehical::select('id', 'rego')->where('status', '1')->where('id', $shift->rego)->first()->rego ?? '';
