@@ -276,9 +276,11 @@ class ShiftController extends Controller
 
         $startDate = $request->startDate;
         $endDate = $request->finishDate;
+        
 
         $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
         $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
+
 
         $startDate = strtotime($start_date);
         $endDate = strtotime($end_date);
@@ -381,10 +383,10 @@ class ShiftController extends Controller
                     $Parcel->saturdayHours = $saturdayHrs;
                     $Parcel->sundayHours = $sundayHrs;
                     $Parcel->weekendHours = $weekend;
-                    $Parcel->startDate = Carbon::parse($startDate)->format('Y-m-d');
-                    $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
-                    $Parcel->startTime = Carbon::parse($startDate)->format('H:i:s');
-                    $Parcel->endTime = Carbon::parse($endDate)->format('H:i:s');
+                    $Parcel->startDate = date('Y-m-d', strtotime($request->startDate));
+                    $Parcel->endDate =date('Y-m-d', strtotime($request->finishDate)); 
+                    $Parcel->startTime = date('H:i:s', strtotime($request->startDate)); 
+                    $Parcel->endTime = date('H:i:s', strtotime($request->finishDate)); 
                     $Parcel->save();
                 }
             }
