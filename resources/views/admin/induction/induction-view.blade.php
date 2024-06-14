@@ -61,7 +61,7 @@
                                                         {{-- <label class="form-label" for="exampleInputEmail1">View Upload File</label> --}}
                                                         <div class="form-group">
 
-                                                            <a href="{{ asset('assets/Induction/image/'.$inductionDetail->uploadFile.'')}}" target="_blank">View Document
+                                                            <a href="{{asset(env('STORAGE_URL').$inductionDetail->uploadFile.'')}}" target="_blank">View Document
                                                             </a>
 
                                                         </div>

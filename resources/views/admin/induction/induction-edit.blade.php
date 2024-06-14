@@ -61,7 +61,7 @@
                                                     <div class="check_box">
                                                         <label class="form-label" for="exampleInputEmail1">Upload File</label>
                                                         <div class="form-group">
-                                                          <input name="uploadFile" type="file" data-default-file="{{ asset('assets/Induction/image/'.$inductionDetail->uploadFile.'')}}" class="dropify" data-height="100" />
+                                                          <input name="uploadFile" type="file" data-default-file="{{asset(env('STORAGE_URL').$inductionDetail->uploadFile.'')}}" class="dropify" data-height="100" />
                                                         </div>
                                                     </div>
 
