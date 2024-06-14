@@ -1003,8 +1003,14 @@
                                                     @php
                                                         $payAmount = round($dayammmm,2) + round($nightamm,2) + round($finalAmount,2) ;
                                                         $updatedAmnt =  round($allshift->payAmount?? 0 , 2);
+                                                        $shiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where('shiftId',$allshift->id)->first();
+                                                        $finalpayAmount = $payAmount + ($shiftMonetizeInformation->fuelLevyPayable??0)+($shiftMonetizeInformation->extraPayable??0);
                                                     @endphp
-                                                    @if ($payAmount < $updatedAmnt)
+                                                    @if($finalpayAmount)
+                                                    @php
+                                                         $finalpayamnnt = $finalpayAmount;
+                                                    @endphp
+                                                    @elseif ($payAmount < $updatedAmnt)
                                                         @php
                                                             $finalpayamnnt = $updatedAmnt;
                                                         @endphp

@@ -780,11 +780,16 @@ class ShiftController extends Controller
             $sunday = ($clientRates->hourlyRatePayableSunday + $extra_rate_per_hour) * ($shift->ReportDetail->sundayHours ?? 0);
         }
         $finalAmount = $saturday + $sunday;
+        $shiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where('shiftId',$shift->id)->first();
         $payAmount = round($dayammmm, 2) + round($nightamm, 2) + round($finalAmount, 2);
+        $finalpayAmount = $payAmount + ($shiftMonetizeInformation->fuelLevyPayable??0)+($shiftMonetizeInformation->extraPayable??0);
+
 
         $updatedAmnt = round(($shift->payAmount) ?? 0, 2);
         // return $updatedAmnt;
-        if ($payAmount < $updatedAmnt) {
+        if($finalpayAmount){
+            $finalpayamnnt = $finalpayAmount;
+        }elseif ($payAmount < $updatedAmnt) {
             $finalpayamnnt = $updatedAmnt;
         } else {
             $finalpayamnnt = $payAmount;
