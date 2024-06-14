@@ -549,12 +549,12 @@ class ParcelController extends Controller
 
         if ($data['shiftView']) {
             $finishshift = Finishshift::where('shiftId', $request->shiftId)->first();
-            if ($finishshift) {
-                return response()->json([
-                    'status' => $this->successStatus,
-                    'message' => 'This Shift is already finished',
-                ]);
-            } else {
+            // if ($finishshift) {
+            //     return response()->json([
+            //         'status' => $this->successStatus,
+            //         'message' => 'This Shift is already finished',
+            //     ]);
+            // } else {
 
                 $dayShift = $nightShift = $sundayHr = $saturdayHr = $dayShiftCharge = $nightShiftCharge = $saturdayShiftCharge = $sundayShiftCharge = $priceOverRideStatus = '0';
 
@@ -594,7 +594,8 @@ class ParcelController extends Controller
                     $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
 
                     $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
-                    Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'shiftStartDate'=>$startDate]);
+                    // return $request->startDate . ' ' . $request->startTime;
+                    Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'shiftStartDate'=>$request->startDate . ' ' . $request->startTime]);
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalPayShiftAmount, 'status' => '0']);  // O is pay to Driver
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalChargeDay, 'status' => '1']); // 1 is charge to admin
                     // is Driver Payable
@@ -655,7 +656,7 @@ class ParcelController extends Controller
                         'message' => 'Shift Finished Successfully',
                     ]);
                 }
-            }
+            // }
         } else {
             return response()->json([
                 'status' => $this->notfound,
