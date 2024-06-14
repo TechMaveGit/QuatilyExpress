@@ -1335,11 +1335,11 @@ class ShiftManagement extends Controller
             return Redirect::back()->with('message', 'Shift Updated Successfully!');
         }
         $data['driverAdd'] = Driver::get();
-        if ($data['shiftView']->finishStatus == '2') {
-            $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
-        } else {
-            $data['extra_rate_per_hour'] = 0;
-        }
+        // if ($data['shiftView']->finishStatus == '2') {
+            $data['extra_rate_per_hour'] = $extra_rate_per_hour ?? '0';
+        // } else {
+        //     $data['extra_rate_per_hour'] = 0;
+        // }
 
         // dd($data);
         // $data['extra_rate_per_hour'] = + $shiftView->getDriverName->extra_rate_per_hour
