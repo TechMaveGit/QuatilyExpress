@@ -743,7 +743,7 @@ class ShiftController extends Controller
 
         $shift = Shift::select('id', 'rego', 'odometer', 'base', 'payAmount', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'optShift', 'state', 'createdDate', 'shiftStartDate', 'vehicleType', 'payAmount', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress', 'scanner_id', 'created_at', 'updated_at')->whereId($request->shift_id)->where('driverId', $driverId)->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime,odometerStartReading,odometerEndReading,parcelsDelivered', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name')->first();
 
-        $reportDetail = Finishshift::select('dayHours', 'nightHours', 'weekendHours', 'odometerStartReading', 'odometerEndReading','submitted_at')
+        $reportDetail = Finishshift::select('dayHours', 'nightHours', 'saturdayHours','sundayHours','weekendHours', 'odometerStartReading', 'odometerEndReading','submitted_at')
         ->where('shiftId', $request->shift_id ?? '')
         ->first();
 
@@ -784,6 +784,7 @@ class ShiftController extends Controller
         $payAmount = round($dayammmm, 2) + round($nightamm, 2) + round($finalAmount, 2);
         $finalpayAmount = $payAmount + ($shiftMonetizeInformation->fuelLevyPayable??0)+($shiftMonetizeInformation->extraPayable??0);
 
+        // return json_encode($shift->ReportDetail);
 
         $updatedAmnt = round(($shift->payAmount) ?? 0, 2);
         // return $updatedAmnt;
