@@ -1050,11 +1050,11 @@ class ShiftManagement extends Controller
                 $query->where('clientId', $getClientID);
             },
         ])->first();
-        if ($data['shiftView']->finishStatus == '2') {
+        // if ($data['shiftView']->finishStatus == '2') {
             $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
-        } else {
-            $data['extra_rate_per_hour'] = 0;
-        }
+        // } else {
+        //     $data['extra_rate_per_hour'] = 0;
+        // }
         // dd($data['extra_rate_per_hour']);
         // dd($data['shiftView']->getClientCharge);
         $data['weekendHour'] = '';

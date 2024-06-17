@@ -339,6 +339,17 @@
         });
     }
 
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     function addMarkers() {
         // Info windows
         const infoWindow = new google.maps.InfoWindow();
@@ -387,6 +398,17 @@
                 title: `Delivery Point ${ind+1}`
             });
 
+            let datetimeFormat = '';
+            let parcelDeliverdDate = '';
+            if(point.created_at){
+                let sdate = new Date(point.created_at);
+                datetimeFormat = formatDate(sdate);
+            }
+            if(point.parcelDeliverdDate){
+                let pdate = new Date(point.parcelDeliverdDate);
+                parcelDeliverdDate = formatDate(pdate);
+            }
+
             let htmlData = ` <div class="info-window-content" style="border: 1px solid #dbdbdb;
                     padding: 20px;
                     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -406,11 +428,11 @@
                         <div class="box_delivery" style="display: flex; gap: 10px;">
                             <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
                                 <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Add Date</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.created_at||'-'}</p>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${datetimeFormat}</p>
                             </div>
                             <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
                                 <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered Date</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.parcelDeliverdDate||'-'}</p>
+                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${parcelDeliverdDate}</p>
                             </div>
                         </div> 
                         <div class="box_delivery" style="display: flex; gap: 10px;">

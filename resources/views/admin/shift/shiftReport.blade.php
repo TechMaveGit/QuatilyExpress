@@ -977,7 +977,7 @@
                                                             @endif
                                                             @if($allshift->getFinishShift->nightHours ?? 0 !='0')
                                                                 @php
-                                                                    $nightamm = ($clientRates->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($finishshifts->nightHours ?? 0);
+                                                                    $nightamm = (($clientRates->hourlyRatePayableNight??0) + $extra_rate_per_hour ?? 0) * ($finishshifts->nightHours ?? 0);
                                                                 @endphp
                                                             @else
                                                                 @php
