@@ -336,9 +336,9 @@ var chart = c3.generate({
         var data = {
             columns: [
                 ['Overall Expense', {{$overrallExpenseGraph}}],
-                ['General Expenses', {{$totalOperActionExp}}],
+                ['General Expenses', {{$totalexpenseQuery}}],
                 ['Toll Expenses', {{$generalExpenses}}],
-                ['Operation Expenses', {{$totalexpenseQuery}}]
+                ['Operation Expenses', {{$totalOperActionExp}}]
             ],
             type: 'donut',
             colors: {

@@ -51,9 +51,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                         <span><i class="ti-light-bulb"></i></span>
                                         <span> Show Shift</span>
                                     </h2>
-                                    @if(!in_array($shiftView->finishStatus,["3","4","5","6"]))
                                      <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
-                                        @endif
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
@@ -645,7 +643,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                 
                                 <!-- main_bx_dt -->
                             </div>
-                            @if(!in_array($shiftView->finishStatus,["3","4","5","6"]))
+                            
                             <div class="bottom_footer_dt">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -658,7 +656,6 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                             </div>
                             
                                 </form>
-                                @endif
                                 @endif
                                     </div>
                                 </div>

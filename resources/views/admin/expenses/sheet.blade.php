@@ -304,7 +304,7 @@
 
                                                                             <select
                                                                                 class="form-control select2 form-select"
-                                                                                name="driverResponsible" required>
+                                                                                name="person_approve" required>
                                                                                 <option value=""> Select Any One
                                                                                 </option>
                                                                                 @forelse ($dr as $alldr)
@@ -396,8 +396,8 @@
                                                                         </th>
                                                                         <th class="bg-transparent border-bottom-0">Date
                                                                         </th>
-                                                                        {{-- <th class="bg-transparent border-bottom-0">Person Name</th> --}}
-                                                                        <!--<th class="bg-transparent border-bottom-0">Person Approve </th>-->
+                                                                        <th class="bg-transparent border-bottom-0">Person Name</th>
+                                                                        <th class="bg-transparent border-bottom-0">Person Approve </th>
                                                                         <th class="bg-transparent border-bottom-0">Cost
                                                                         </th>
                                                                         <th class="bg-transparent border-bottom-0">
@@ -413,22 +413,12 @@
 
                                                                     @forelse ($expense as $key=>$allexpense)
                                                                         @php
-                                                                            $vehical_type =
-                                                                                DB::table('generalexpensestypes')
-                                                                                    ->where(
-                                                                                        'id',
-                                                                                        $allexpense->vehical_type,
-                                                                                    )
-                                                                                    ->first()->name ?? 'N/A'
-
-
+                                                                            $vehical_type =DB::table('generalexpensestypes')->where('id',$allexpense->vehical_type)->first()->name ?? 'N/A'
                                                                         @endphp
                                                                         @if ($allexpense->date != null)
-                                                                        @php
-
-                                                                        $dateTime = date('Y-m-d',strtotime($allexpense->date));
-
-                                                                        @endphp
+                                                                            @php 
+                                                                                $dateTime = date('Y-m-d',strtotime($allexpense->date));
+                                                                            @endphp
                                                                         @else
                                                                         @php
                                                                             $dateTime = '--';
@@ -439,31 +429,20 @@
                                                                             <td>{{ $key + 1 }}</td>
                                                                             <td>{{ $vehical_type }}</td>
                                                                             <td>{{ $dateTime }}</td>
-                                                                            {{-- <td>{{ $userName }}</td> --}}
-                                                                            <!--<td>{{ $allexpense->person_approve }}</td>-->
+                                                                            <td>{{ $allexpense->personName->fullName??'' }}</td>
+                                                                            <td>{{ $allexpense->personApprove->fullName??'' }}</td>
                                                                             <td>{{ $allexpense->cost }}</td>
                                                                             <td>{{ $allexpense->description }}</td>
                                                                             @php
-                                                                                $regoId =
-                                                                                    DB::table('vehicals')
-                                                                                        ->where('id', $allexpense->rego)
-                                                                                        ->first()->rego ?? '';
+                                                                                $regoId = DB::table('vehicals')->where('id', $allexpense->rego)->first()->rego ?? '';
                                                                             @endphp
                                                                             <td>{{ $regoId }}</td>
-
-
                                                                             @if (in_array('38', $arr))
                                                                                 <td>
                                                                                     <div class="g-2">
-                                                                                        {{-- <a class="btn text-primary btn-sm"  data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a> --}}
-
-
-
-                                                                                        <a onclick="removeGeneralExpenses(this,'{{ $allexpense->id }}')"
-                                                                                            class="btn text-danger btn-sm"
-                                                                                            data-bs-toggle="tooltip"
-                                                                                            data-bs-original-title="Delete"><span
-                                                                                                class="fe fe-trash-2 fs-14"></span></a>
+                                                                                        <a onclick="removeGeneralExpenses(this,'{{ $allexpense->id }}')" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete">
+                                                                                            <span class="fe fe-trash-2 fs-14"></span>
+                                                                                        </a>
                                                                                     </div>
                                                                                 </td>
                                                                             @endif
@@ -919,13 +898,6 @@
                                                                                     $alloperactionexp->vehical_type,
                                                                                 )
                                                                                 ->first()->name ?? 'N/A';
-                                                                        $userName =
-                                                                            DB::table('drivers')
-                                                                                ->where(
-                                                                                    'id',
-                                                                                    $alloperactionexp->person_name,
-                                                                                )
-                                                                                ->first()->userName ?? 'N/A';
                                                                     @endphp
 
                                                                     <tr class="border-bottom">
@@ -943,8 +915,7 @@
 
 
                                                                         <td>{{ $alloperactionexps }}</td>
-                                                                        {{-- <td>{{ $userName }}</td> --}}
-                                                                        <td>{{ $alloperactionexp->person_approve }}</td>
+                                                                        <td>{{ $alloperactionexp->personApprove->fullName??"" }}</td>
                                                                         <td>{{ $alloperactionexp->cost }}</td>
                                                                         <td>{{ $alloperactionexp->description }}</td>
                                                                         <!--<td>{{ $alloperactionexp->rego }}</td>-->

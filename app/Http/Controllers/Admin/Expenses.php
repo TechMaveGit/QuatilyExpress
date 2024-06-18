@@ -47,9 +47,9 @@ class Expenses extends Controller
         $monthsData = [];
 
 
-        $expenseQuery = Expense::whereBetween('date',[$lastMonth,$todayMonth])->orderBy('date', 'desc');
+        $expenseQuery = Expense::with(['personName','personApprove'])->whereBetween('date',[$lastMonth,$todayMonth])->orderBy('date', 'desc');
         $tollexpenseQuery = Tollexpense::whereBetween('start_date',[$lastMonth,$todayMonth])->orderBy('start_date', 'desc');
-        $operactionExpQuery = OperactionExp::whereBetween('date',[$lastMonth,$todayMonth])->orderBy('date', 'desc');
+        $operactionExpQuery = OperactionExp::with(['personApprove'])->whereBetween('date',[$lastMonth,$todayMonth])->orderBy('date', 'desc');
         $ClientrateQuery = Clientrate::whereBetween('created_at',[$lastMonth,$todayMonth])->orderBy('created_at', 'desc');
 
         if (request()->isMethod('post')) {

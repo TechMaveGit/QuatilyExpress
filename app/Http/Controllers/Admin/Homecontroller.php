@@ -291,7 +291,7 @@ class Homecontroller extends Controller
                 }
             }
             $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
-            Shift::where('id', $shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
+            Shift::where('id', $shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'shiftStartDate'=>date('Y-m-d H:i:s',strtotime($request->startDate))]);
             DB::table('clientcharge')->insert(['shiftId' => $shiftId, 'amount' => $totalPayShiftAmount, 'status' => '0']);  // O is pay to Driver
             $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
             Shift::where('id', $shiftId)->update(['chageAmount' => $totalChargeDay]);
@@ -322,10 +322,10 @@ class Homecontroller extends Controller
             $finishShift->saturdayHours = $saturdayHrs;
             $finishShift->sundayHours = $sundayHrs;
             $finishShift->weekendHours = $weekend;
-            $finishShift->startDate = Carbon::parse($startDate)->format('Y-m-d');
-            $finishShift->endDate = Carbon::parse($endDate)->format('Y-m-d');
-            $finishShift->startTime = Carbon::parse($startDate)->format('H:i:s');
-            $finishShift->endTime = Carbon::parse($endDate)->format('H:i:s');
+            $finishShift->startDate = date('Y-m-d',strtotime($request->startDate));
+            $finishShift->endDate = date('Y-m-d',strtotime($request->endDate));
+            $finishShift->startTime =date('H:i:s',strtotime($request->startDate));
+            $finishShift->endTime = date('H:i:s',strtotime($request->endDate));
             $finishShift->submitted_at = date('Y-m-d H:i:s');
             $finishShift->parcelsTaken = $parcelsTaken;
             $finishShift->parcelsDelivered = $parcelDelivered;
