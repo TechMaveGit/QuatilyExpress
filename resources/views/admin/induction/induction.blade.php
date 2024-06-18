@@ -150,22 +150,26 @@
                 <div class="col-lg-12">
                     <div class="card">
                     <div class="card-header">
-                            <div class="top_section_title">
+                    <div class="flexMobile">
+                    <div class="top_section_title">
                             <h5>  All Induction Document</h5>
 
-
+                            </div>
+                            <div class="ActionBtn scrollBtn">
                             @if(in_array("71", $arr))
                             <a href="{{ route('induction.add') }}"  style="margin: 2px" class="btn btn-primary">+ Add New Induction</a>
                             @endif
-
-                            </div>
-
                             <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                            </div>
+                    </div>
+                            
+
+                          
 
                         </div>
 
                         <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="">
                         <table id="custom_table"  class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
                                 <tr>

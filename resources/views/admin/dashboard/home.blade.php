@@ -860,20 +860,27 @@ function yesstartShift()
       <div class="col-lg-12">
         <div class="card brdcls">
         <div class="card-header">
-        <div class="top_section_title">
-           <h5>All Driver Report</h5>
-           <!-- <a href="person-add.php" class="btn btn-primary">+ Add New Person</a> -->
-        </div>
-        <div class="search_btn m-0">
-            @if(in_array("48", $arr))
-               <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add New Shift</a>
-            @endif
-         </div>
-         <div class="search_btn m-2">
-            @if(in_array("49", $arr))
-            <a href="{{ route('admin.shift.missed.shift') }}" class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
-            @endif
-         </div>
+            <div class="flexMobile">
+                <div class="top_section_title">
+                    <h5>All Driver Report</h5>
+                    <!-- <a href="person-add.php" class="btn btn-primary">+ Add New Person</a> -->
+                </div>
+                <div class="ActionBtn">
+                <div class="search_btn m-0">
+                    @if(in_array("48", $arr))
+                    <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add New Shift</a>
+                    @endif
+                </div>
+                <div class="search_btn m-2">
+                    @if(in_array("49", $arr))
+                    <a href="{{ route('admin.shift.missed.shift') }}" class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
+                    @endif
+                </div>
+                </div>
+
+            </div>
+       
+        
     </div>
       <div class="card-body">
         <div class="table_box" is="shiftTable_Container">

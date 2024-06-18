@@ -38,6 +38,9 @@
                     <div class="top_section_title">
                        <h5>Driver Documents</h5>
                        <!-- <a href="induction-add.php" class="btn btn-primary">+ Add New Induction</a> -->
+                      
+                        <a href="{{route('driver') }}" class="btn btn-primary">Driver List</a>
+                       
                     </div>
 
                 </div>
@@ -172,13 +175,9 @@
 
 
 
-                        <div class="top_section_title">
-
-
-                                                   <a href="{{route('driver') }}" class="btn btn-primary">Driver List</a>
-
-                         </div>
+             
                     </div>
+                  
                         </div>
                     </div>
                 </div>
