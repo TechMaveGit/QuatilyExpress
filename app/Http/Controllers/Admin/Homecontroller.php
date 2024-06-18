@@ -89,11 +89,14 @@ class Homecontroller extends Controller
         }
         // End Shift Report By Driver............................... 1
         // Client Profit And Loss....................................... 2
-        $clientName = Client::get();
+        $clientName = Client::leftJoin('shifts', 'clients.id', '=', 'shifts.client')
+        ->select('clients.*', DB::raw('SUM(shifts.chageAmount) as total_chageAmount'),DB::raw('SUM(shifts.payAmount) as total_payAmount'))
+        ->groupBy('clients.id')
+        ->get();
         foreach ($clientName as $allClient) {
             $name[] = $allClient->name;
-            $adminCharge[] = $allClient->adminCharge;
-            $driverPay[] = $allClient->driverPay;
+            $adminCharge[] = $allClient->total_chageAmount;
+            $driverPay[] = $allClient->total_payAmount;
         }
         $clientName1 = $name;
         $adminCharge2 = $adminCharge;

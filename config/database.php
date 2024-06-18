@@ -56,7 +56,7 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'prefix_indexes' => true,
-            'strict' => true,
+            'strict' => false,
             // 'timezone' => 'Australia/Sydney', // Set the timezone here
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
