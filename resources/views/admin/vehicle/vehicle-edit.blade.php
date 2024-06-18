@@ -108,6 +108,12 @@
                                                     Control Reminder
                                                         </label>
                                                 </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="vehicleControl" value="" id="autoNone" {{ $vehicleId->controlVehicle == '' ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="autoNone">
+                                                    None
+                                                        </label>
+                                                </div>
 
                                                 {{-- <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="vehicleControl" value="3" id="autoSizingCheck1b" {{ $vehicleId->controlVehicle == 3 ? 'checked' : '' }}>

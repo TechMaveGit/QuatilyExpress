@@ -9,7 +9,7 @@ class Shift extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'driverId','shiftRandId','state','client','costCenter','base','vehicleType','rego','odometer','scanner_id','parcelsToken','status','chageAmount','payAmount','shiftStatus','finishStatus','optShift','comment','approval_reason','shiftStartDate','finishDate','createdDate','startlatitude','startlongitude','endlatitude','endlongitude','startaddress','endaddress','priceOverRideStatus','is_missed_shift'
+        'driverId','shiftRandId','state','client','costCenter','base','vehicleType','rego','odometer','scanner_id','parcelsToken','status','chageAmount','payAmount','shiftStatus','finishStatus','optShift','comment','approval_reason','shiftStartDate','finishDate','createdDate','startlatitude','startlongitude','endlatitude','endlongitude','startaddress','endaddress','priceOverRideStatus','is_missed_shift','client_data_json','extra_rate_person'
     ];
 
     public function getClientName()

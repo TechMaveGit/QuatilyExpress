@@ -9,14 +9,14 @@ foreach($D as $v)
 }
 
 $readonlybtn = null;
-if(in_array($shiftView->finishStatus,["3","4"])){
-    
+if(in_array($shiftView->finishStatus,["3","4","5","6"])){
     $readonlybtn = 'disabled';
 }
 
 //  echo "<pre>";
 //  print_r($arr);
 ?>
+
 <!--app-content open-->
 <div class="main-content app-content mt-0">
     <!-- PAGE-HEADER -->
@@ -505,9 +505,9 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish</label>
                                                        @if ($finishshifts)
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" $readonlybtn value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" {{$readonlybtn}} value="{{ date('Y/m/d', strtotime($finishshifts->endDate))??'N/A' }} {{  date('H:i:s', strtotime($finishshifts->endTime))??'N/A' }}" aria-describedby="emailHelp">
                                                        @else
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate2" value="" $readonlybtn aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate2" value="" {{$readonlybtn}} aria-describedby="emailHelp">
                                                        @endif
                                                    </div>
                                                </div>
@@ -576,7 +576,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="exampleInputEmail1">Total Payable </label>
-                                                        <input type="text" step="0.1" value="{{ $finalpayamnnt  }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="text" step="0.1" value="{{ round($day,2)+ round($night,2) + round($finalAmount,2) + ($shiftView->getShiftMonetizeInformation->fuelLevyPayable??0) + ($shiftView->getShiftMonetizeInformation->extraPayable??0) }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -643,6 +643,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                 
                                 <!-- main_bx_dt -->
                             </div>
+                            
                             <div class="bottom_footer_dt">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -653,6 +654,7 @@ if(in_array($shiftView->finishStatus,["3","4"])){
                                     </div>
                                 </div>
                             </div>
+                            
                                 </form>
                                 @endif
                                     </div>

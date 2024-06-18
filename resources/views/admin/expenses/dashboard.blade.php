@@ -30,27 +30,15 @@
                         <div class="card-body pb-0">
                             <form action="{{ route('expense-dashboard') }}" method="post"> @csrf
                             <div class="row align-items-center">
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
-                                        <label class="form-label" for="exampleInputEmail1">Month</label>
-                                        <select class="form-control form-select" name="ex_month">
-                                            @for($i=1; $i<=12; $i++)
-                                            <option {{ old('ex_month') == $i ? 'selected' : '' }} value="{{$i}}">{{date("F", strtotime("$i/01/2025"))}}</option>
-                                            @endfor
-                                        </select>
+                                        <label class="form-label" for="exampleInputEmail1">Date Range</label>
+                                        <input class="form-control expenseDatefilter" name="date_range" value="{{$date_range}}"  />
+                                        
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="exampleInputEmail1">Year</label>
-                                        <select class="form-control form-select" name="ex_year">
-                                            @for($i=date('Y'); $i>=1999; $i--)
-                                                <option {{ old('ex_year') == $i ? 'selected' : '' }} value="{{$i}}">{{date("Y", strtotime("01/01/$i"))}}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-                                 <div class="col-lg-3">
+                                
+                                 <div class="col-lg-4">
                                     <div class="check_box">
                                         <label class="form-label" for="exampleInputEmail1">Person Name</label>
                                         <div class="form-group">
@@ -66,7 +54,7 @@
                                     </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                     <div class="check_box">
                                         <label class="form-label" for="exampleInputEmail1">Rego</label>
                                         <div class="form-group">
@@ -149,7 +137,7 @@ var ctx = document.getElementById("chartLine").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: ['{{$monthNames[0]}}', '{{$monthNames[1]}}', '{{$monthNames[2]}}', '{{$monthNames[3]}}', '{{$monthNames[4]}}', '{{$monthNames[5]}}', '{{$monthNames[6]}}', '{{$monthNames[7]}}', '{{$monthNames[8]}}', '{{$monthNames[9]}}', '{{$monthNames[10]}}', '{{$monthNames[11]}}'],
             datasets: [{
                 label: 'Expenses',
                 data: [{{ $totalExpense[0] }}, {{ $totalExpense[1] }}, {{ $totalExpense[2] }}, {{ $totalExpense[3] }}, {{ $totalExpense[4] }}, {{ $totalExpense[5] }}, {{ $totalExpense[6] }},{{ $totalExpense[7] }},{{ $totalExpense[8] }},{{ $totalExpense[9] }},{{ $totalExpense[10] }},{{ $totalExpense[11] }}],
@@ -212,7 +200,7 @@ var ctx = document.getElementById("chartLine").getContext('2d');
             x: {
                 type: 'category',
                 // name of each category
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                categories: ['{{$monthNames[0]}}', '{{$monthNames[1]}}', '{{$monthNames[2]}}', '{{$monthNames[3]}}', '{{$monthNames[4]}}', '{{$monthNames[5]}}', '{{$monthNames[6]}}', '{{$monthNames[7]}}', '{{$monthNames[8]}}', '{{$monthNames[9]}}', '{{$monthNames[10]}}', '{{$monthNames[11]}}']
             },
         },
         bar: {
@@ -254,7 +242,7 @@ var ctx = document.getElementById("chartLine").getContext('2d');
                x: {
                    type: 'category',
                    // name of each category
-                   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                   categories: ['{{$monthNames[0]}}', '{{$monthNames[1]}}', '{{$monthNames[2]}}', '{{$monthNames[3]}}', '{{$monthNames[4]}}', '{{$monthNames[5]}}', '{{$monthNames[6]}}', '{{$monthNames[7]}}', '{{$monthNames[8]}}', '{{$monthNames[9]}}', '{{$monthNames[10]}}', '{{$monthNames[11]}}']
                },
                rotated: true,
            },
@@ -295,7 +283,7 @@ var ctx = document.getElementById("chartLine").getContext('2d');
                x: {
                    type: 'category',
                    // name of each category
-                   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                   categories: ['{{$monthNames[0]}}', '{{$monthNames[1]}}', '{{$monthNames[2]}}', '{{$monthNames[3]}}', '{{$monthNames[4]}}', '{{$monthNames[5]}}', '{{$monthNames[6]}}', '{{$monthNames[7]}}', '{{$monthNames[8]}}', '{{$monthNames[9]}}', '{{$monthNames[10]}}', '{{$monthNames[11]}}']
                },
                rotated: true,
            },
@@ -331,7 +319,7 @@ var chart = c3.generate({
         x: {
             type: 'category',
             // name of each category
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            categories: ['{{$monthNames[0]}}', '{{$monthNames[1]}}', '{{$monthNames[2]}}', '{{$monthNames[3]}}', '{{$monthNames[4]}}', '{{$monthNames[5]}}', '{{$monthNames[6]}}', '{{$monthNames[7]}}', '{{$monthNames[8]}}', '{{$monthNames[9]}}', '{{$monthNames[10]}}', '{{$monthNames[11]}}']
         },
     },
     legend: {
@@ -348,9 +336,9 @@ var chart = c3.generate({
         var data = {
             columns: [
                 ['Overall Expense', {{$overrallExpenseGraph}}],
-                ['General Expenses', {{$totalOperActionExp}}],
+                ['General Expenses', {{$totalexpenseQuery}}],
                 ['Toll Expenses', {{$generalExpenses}}],
-                ['Operation Expenses', {{$totalexpenseQuery}}]
+                ['Operation Expenses', {{$totalOperActionExp}}]
             ],
             type: 'donut',
             colors: {
@@ -377,5 +365,24 @@ var chart = c3.generate({
         };
         // Generate the pie chart
         var chart = c3.generate(chartConfig);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
+    <script>
+    $(".expenseDatefilter").flatpickr({
+        altFormat: "Y-m-d",
+        dateFormat: "Y-m-d",
+        mode: "range",
+        appendTo: document.body,
+        onReady: function(selectedDates, dateStr, instance) {
+            var setButton = document.createElement('button');
+            setButton.className = 'flatpickr-set-button'; // Assigning the class 'flatpickr-set-button'
+            setButton.innerHTML = 'Ok';
+            setButton.onclick = function() {
+                instance.close();
+            };
+            instance.calendarContainer.querySelector('.flatpickr-time').appendChild(setButton);
+        }
+    });
+
     </script>
 @endsection

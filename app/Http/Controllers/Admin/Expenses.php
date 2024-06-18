@@ -14,6 +14,7 @@ use App\Models\State;
 use App\Models\Tollexpense;
 use App\Models\Type;
 use App\Models\Vehical;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -21,50 +22,99 @@ class Expenses extends Controller
 {
     public function expense(Request $request)
     {
-        $ex_year = $request->input('ex_year');
-        $ex_month = $request->input('ex_month');
-        $personName = $request->input('personName');
-        $rego = $request->input('rego');
+        $datesData = null;
+        $date_range = $request->input('date_range',null);
+
+        if($date_range) $datesData = explode('to',$date_range);
+        if($datesData && isset($datesData[1])){
+            $lastMonth = date('Y-m-d',strtotime($datesData[0]));
+            $todayMonth =  date('Y-m-d',strtotime($datesData[1]));
+        }else{
+            $todayMonth = date('Y-m-d');
+            $lastMonth = date('Y-m-d', strtotime($todayMonth. ' - 1 years'));
+        }
+
+        // dd($lastMonth,$todayMonth);
+
+        $personName = $request->input('personName',null);
+        $rego = $request->input('rego',null);
 
         $totalExpense = [];
-        for ($i = 1; $i <= 12; $i++) {
+        $totalOperActionExp = 0;
+        $generalExpenses = 0;
+        $totalexpenseQuery = 0;
+        $overrallExpenseGraph = 0;
+        $monthsData = [];
 
-            $getYear = date('Y');
-            $expenseQuery = Expense::orderBy('id', 'desc');
-            if (request()->isMethod('post')) {
-                if ($ex_year) $expenseQuery->whereYear('created_at', $ex_year);
-                if ($ex_month) $expenseQuery->whereMonth('created_at', $ex_month);
-                if ($personName) $expenseQuery->where('person_name', $personName);
-                if ($rego) $expenseQuery->where('rego', $rego);
+
+        $expenseQuery = Expense::with(['personName','personApprove'])->whereBetween('date',[$lastMonth,$todayMonth])->orderBy('date', 'desc');
+        $tollexpenseQuery = Tollexpense::whereBetween('start_date',[$lastMonth,$todayMonth])->orderBy('start_date', 'desc');
+        $operactionExpQuery = OperactionExp::with(['personApprove'])->whereBetween('date',[$lastMonth,$todayMonth])->orderBy('date', 'desc');
+        $ClientrateQuery = Clientrate::whereBetween('created_at',[$lastMonth,$todayMonth])->orderBy('created_at', 'desc');
+
+        if (request()->isMethod('post')) {
+            if ($personName){
+                $expenseQuery->where('person_name', $personName);
+                $tollexpenseQuery->where('person_name', $personName);
+                $operactionExpQuery->where('person_name', $personName);
+            } 
+            if ($rego){
+                $expenseQuery->where('rego', $rego);
+                $tollexpenseQuery->where('rego', $rego);
+                $operactionExpQuery->where('rego', $rego);
             }
-            
-            $expenseReport[] = $expenseQuery->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('cost');
-            $tollexpenseQuery = Tollexpense::orderBy('id', 'desc');
+        }
+        $expenseQeReport = $expenseQuery->get();
+        $tollexpenseQeReport = $tollexpenseQuery->get();
+        $operactionExpQeReport = $operactionExpQuery->get();
+        $ClientrateQeReport = $ClientrateQuery->get();
 
-            if (request()->isMethod('post')) {
-                if ($ex_year) $tollexpenseQuery->whereYear('created_at', $ex_year);
-                if ($ex_month) $tollexpenseQuery->whereMonth('created_at', $ex_month);
-                if ($personName) $tollexpenseQuery->where('person_name', $personName);
-                if ($rego) $tollexpenseQuery->where('rego', $rego);
-            }
+        $monthNames = [];
+        $expenseReport = [];
+        $tollexpense = [];
+        $operactionExp = [];
+        $Clientrate = [];
 
-            $tollexpense[] = $tollexpenseQuery->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('trip_cost');
-            $operactionExp[] = OperactionExp::whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('cost');
-
-            $totalOperActionExp = OperactionExp::sum('cost');
-            $generalExpenses = Tollexpense::sum('trip_cost');
-            $totalexpenseQuery = Expense::sum('cost');
-
-            $overrallExpenseGraph = (int) ($totalOperActionExp + $generalExpenses + $totalexpenseQuery);
-
-            $Clientrate[] = Clientrate::whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('adminCharageAmount');
+        for ($i = 0; $i < 12; $i++) {
+            $currentDate = Carbon::now()->subMonths($i);
+            $month = $currentDate->month;
+            $year = $currentDate->year;
+            $monthNames[] = $currentDate->format('M-y');
+        
+            $expenseReport[] = $expenseQeReport->filter(function ($item) use ($month, $year) {
+                $itemDate = Carbon::parse($item->date);
+                return $itemDate->month == $month && $itemDate->year == $year;
+            })->sum('cost');
+        
+            $tollexpense[] = $tollexpenseQeReport->filter(function ($item) use ($month, $year) {
+                $itemDate = Carbon::parse($item->start_date);
+                return $itemDate->month == $month && $itemDate->year == $year;
+            })->sum('trip_cost');
+        
+            $operactionExp[] = $operactionExpQeReport->filter(function ($item) use ($month, $year) {
+                $itemDate = Carbon::parse($item->date);
+                return $itemDate->month == $month && $itemDate->year == $year;
+            })->sum('cost');
+        
+            $Clientrate[] = $ClientrateQeReport->filter(function ($item) use ($month, $year) {
+                $itemDate = Carbon::parse($item->created_at);
+                return $itemDate->month == $month && $itemDate->year == $year;
+            })->sum('adminCharageAmount');
         }
 
-        for ($i = 0; $i <= 11; $i++) {
-            $totalExpense[$i] = (int) ($expenseReport[$i] + $tollexpense[$i] + $operactionExp[$i]);
+        $totalOperActionExp = $operactionExpQeReport->sum('cost');
+        $generalExpenses = $tollexpenseQeReport->sum('trip_cost');
+        $totalexpenseQuery = $expenseQeReport->sum('cost');
+
+        $overrallExpenseGraph = (int)($totalOperActionExp + $generalExpenses + $totalexpenseQuery);
+
+        $totalExpense = [];
+        for ($i = 0; $i < 12; $i++) {
+            $totalExpense[$i] = (int)($expenseReport[$i] + $tollexpense[$i] + $operactionExp[$i]);
         }
 
-        // dd('totalOperActionExp<br>',$totalOperActionExp, 'generalExpenses<br>',$generalExpenses, 'totalexpenseQuery<br>',$totalexpenseQuery, 'overrallExpenseGraph<br>',$overrallExpenseGraph, 'expenseReport<br>',$expenseReport, 'Clientrate<br>',$Clientrate, 'tollexpense<br>',$tollexpense, 'operactionExp<br>',$operactionExp, 'totalExpense<br>',$totalExpense, 'date<br>',$date, 'personName<br>',$personName, 'rego<br>',$rego);
+
+        // dd('totalOperActionExp<br>',$totalOperActionExp, 'generalExpenses<br>',$generalExpenses, 'totalexpenseQuery<br>',$totalexpenseQuery, 'overrallExpenseGraph<br>',$overrallExpenseGraph, 'expenseReport<br>',$expenseReport, 'Clientrate<br>',$Clientrate, 'tollexpense<br>',$tollexpense, 'operactionExp<br>',$operactionExp, 'totalExpense<br>',$totalExpense, 'personName<br>',$personName, 'rego<br>',$rego);
 
         $data['person'] = Driver::where('status', '1')->get();
         $data['state'] = State::where('status', '1')->get();
@@ -73,7 +123,7 @@ class Expenses extends Controller
         $data['clientcenters'] = DB::table('clientcenters')->get();
         $data['rego'] = DB::table('vehicals')->where('status', '1')->get();
 
-        return view('admin.expenses.dashboard', $data, compact('totalOperActionExp', 'generalExpenses', 'totalexpenseQuery', 'overrallExpenseGraph', 'expenseReport', 'Clientrate', 'tollexpense', 'operactionExp', 'totalExpense', 'date', 'personName', 'rego'));
+        return view('admin.expenses.dashboard', $data, compact('totalOperActionExp', 'generalExpenses', 'totalexpenseQuery', 'overrallExpenseGraph', 'expenseReport', 'Clientrate', 'tollexpense', 'operactionExp', 'totalExpense', 'personName', 'rego','monthNames','date_range'));
     }
 
     public function expenseSheet(Request $request)
