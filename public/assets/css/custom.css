@@ -1673,4 +1673,17 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus {
     .top_section_title {
       margin-bottom: 5px;
     }
+    /* .logo-horizontal {
+      display: block;
+      inset-inline-start: 0;
+      position: absolute;
+      inset-inline-end: 0;
+      width: inherit;
+      height: 173px;
+      top: -97px;
+    } */
+    .sidebar-mini .app-sidebar {
+      width: 240px;
+      z-index: 9999;
+    }
 }
