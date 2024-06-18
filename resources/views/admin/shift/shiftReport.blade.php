@@ -1014,13 +1014,13 @@
                                                             $finalpayamnnt = $payAmount;
                                                         @endphp
                                                     @endif
-                                                    @if ($allshift->finishStatus == '5' || $allshift->finishStatus == '2' || $allshift->finishStatus == '3')
+                                                    {{-- @if ($allshift->finishStatus == '5' || $allshift->finishStatus == '2' || $allshift->finishStatus == '3') --}}
                                                         {{-- <td class="td">{{ $allshift->getShiftMonetizeInformation->totalPayable??'0' + $payAmount??'0'}} </td> --}}
-                                                        <td class="td column-totalPayable">{{ round($finalpayamnnt, 2) }}
+                                                        <td class="td column-totalPayable">{{ $finalpayamnnt ? round($finalpayamnnt, 2) : 0 }}
                                                         </td>
-                                                    @else
+                                                    {{-- @else
                                                         <td class="td column-totalPayable">0</td>
-                                                    @endif
+                                                    @endif --}}
                                                     {{-- // Add pay --}}
                                                     @php
                                                         $km = ($allshift->getFinishShift?->odometerEndReading ?? 0) - ($allshift->getFinishShift?->odometerStartReading ?? 0);
