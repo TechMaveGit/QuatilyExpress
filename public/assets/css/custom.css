@@ -1297,9 +1297,9 @@ div.dataTables_wrapper div.dataTables_filter input {
     border: 1px solid #d5d8e0;
   }
   .dark-mode .form-select {
-    color: #afafaf;
-    border-color: rgb(79, 80, 82);
-    background-color: #202124;
+    color: #afafaf !important;
+    border-color: rgb(79, 80, 82) !important;
+    background-color: #202124 !important;
   }
   .dark-mode .customClose {
     font-size: 25px;
@@ -1575,4 +1575,102 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus {
   position: absolute;
   top: 47px;
   right: 26px;
+}
+.flexMobile {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+.ActionBtn {
+	display: flex;
+	align-items: center;
+}
+@media (max-width:767px){
+  section.top_cards_jlpk .row .col-sm-6 {
+    width: 50% !important;
+    max-width: 50%;
+    flex: 1 0 50%;
+  }
+  .page-header {
+    width: 100%;
+  }
+  .page-header {
+    padding: 0 15px;
+    position: fixed;
+    top: 72px;
+    flex-wrap: nowrap;
+    display: flex !important;
+    left: 0;
+  }
+  .page-title {
+    font-size: 13px;
+  }
+  .top_cards_jlpk .number-font {
+    font-size: 22px;
+  }
+  .app-header .container-fluid.main-container div:first-child {
+     text-align: left !important;
+  }
+  .app-header .dropdown-menu {
+    width: 200px;
+  }
+  .flexMobile {
+      flex-direction: column;
+  }
+  .top {
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+  }
+  #custom_table_filter {
+    width: 50%;
+  }
+  #custom_table_length {
+    width: 50%;
+  }
+  #custom_table_filter label {
+    font-size: 0;
+  }
+  div.dataTables_wrapper div.dataTables_filter input {
+    width: 153px;
+  }
+  .card-body {
+      padding: 15px;
+     }
+     .page-link {
+      font-size: 14px;
+    }
+    .scrollBtn {
+      display: flex;
+      align-items: center;
+      width: 300px;
+      overflow: hidden;
+      overflow-x: auto;
+    }
+    .top_tb_dt {
+      flex-wrap: wrap;
+    }
+    .group100{
+      width: 100%;
+    }
+    .search_box {
+       width: 100%;
+      margin-top: 10px;
+    }
+    .visibilityBtnhui{
+      width: 88%;
+  display: block;
+    }
+    .testingcls {
+         width: 100%;
+    }
+    .top_dt_sec h2 {
+      font-size: 18px;
+    }
+    .card-header {
+      padding: 10px 15px;
+    }
+    .top_section_title {
+      margin-bottom: 5px;
+    }
 }

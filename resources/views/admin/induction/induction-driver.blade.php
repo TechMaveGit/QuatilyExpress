@@ -83,7 +83,7 @@
 
                 </div>
                         <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="">
                         <table id="custom_table"  class="table table-bordered text-nowrap mb-0">
 
                             <thead class="border-top">

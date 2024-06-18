@@ -374,9 +374,11 @@
                     <div class="col-lg-12">
                         <div class="card brdcls">
                             <div class="card-header">
+                                <div class="flexMobile">
                                 <div class="top_section_title">
                                     <h5>All Driver Shift Report</h5>
                                 </div>
+                                <div class="ActionBtn scrollBtn">
                                 <div class="search_btn m-0">
                                     @if (in_array('48', $arr))
                                         <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add
@@ -393,11 +395,15 @@
                                     onclick="window.location='{{ route('export.shifts', request()->input()) }}'">
                                     <i class="fa fa-file-excel-o"></i> Download Data
                                 </button>
+                                </div>
+                                </div>
+                                
+                               
                             </div>
                             <div class="card-body">
                                 <div class="top_tb_dt">
                                     <div class="dropdown testingcls">
-                                        <button class="btn btn-primary dropdown-toggle" type="button"
+                                        <button class="btn btn-primary dropdown-toggle visibilityBtnhui" type="button"
                                             id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             Column Visiblity
                                         </button>
@@ -556,7 +562,7 @@
                                     </div>
                                     <div class="search_box">
                                         <!-- <label class="form-label" for="exampleInputEmail1">Search</label> -->
-                                        <div class="form-group">
+                                        <div class="form-group group100">
                                             <form id="searchForm" method="GET">
                                                 <input type="text" name="search"
                                                     value="{{ isset($_GET['search']) ? $_GET['search'] : '' }}"
@@ -597,7 +603,7 @@
                                     }
                                 </style>
                                 <br>
-                                <div class="" id="">
+                                <div class="table-responsive" id="">
                                     <table id="shiftTable" class="table  table-hover nowrap mb-0"
                                         style="margin: 0px !important;width: 100%;">
                                         {{-- <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;"> --}}
