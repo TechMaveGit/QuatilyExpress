@@ -136,7 +136,7 @@ class Homecontroller extends Controller
         if ($roleId->role_id !== 1) {
             $driverId = Driver::where('email', $roleId->email)->first()->id;
             $data['monthlyShift'] = Shift::where('driverId', $driverId)->count();
-            $data['totalReceivedAmount'] = Shift::where('driverId', $driverId)->where('payAmount', $roleId->id)->sum('payAmount');
+            $data['totalReceivedAmount'] = Shift::where('driverId', $driverId)->sum('payAmount');
             $data['dayHours'] = Finishshift::where('driverId', $driverId)->sum('dayHours');
             $data['nightHours'] = Finishshift::where('driverId', $driverId)->sum('nightHours');
             $data['allSub'] = $data['dayHours'] + $data['nightHours'];
