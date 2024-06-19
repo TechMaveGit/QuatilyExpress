@@ -529,8 +529,8 @@ class ShiftManagement extends Controller
 
 
             $shiftAdd['rego'] = $regoId;
-            $shiftAdd['shiftStartDate'] = $start_date;
-            $shiftAdd['finishDate'] = $end_date;
+            $shiftAdd['shiftStartDate'] = date('Y-m-d H:i:s',strtotime($request->input('start_date')));
+            $shiftAdd['finishDate'] = date('Y-m-d H:i:s',strtotime($request->input('end_date')));
             $shiftAdd['createdDate'] = date('Y-m-d H:i:s');
             $shiftAdd['client_data_json'] = $clientRateData;
             $shiftAdd['extra_rate_person'] = $extra_rate_per_hour;
@@ -671,10 +671,10 @@ class ShiftManagement extends Controller
             $Parcel->saturdayHours = $saturdayHrs;
             $Parcel->sundayHours = $sundayHrs;
             $Parcel->weekendHours = $weekend;
-            $Parcel->startDate = $start_date;
-            $Parcel->endDate = $end_date;
-            $Parcel->startTime = $dayStartTime->format('H:i:s');
-            $Parcel->endTime = $nightEndTime->format('H:i:s');
+            $Parcel->startDate = date('Y-m-d',strtotime($request->input('start_date')));
+            $Parcel->endDate = date('Y-m-d',strtotime($request->input('end_date')));
+            $Parcel->startTime = date('H:i:s',strtotime($request->input('start_date')));
+            $Parcel->endTime = date('H:i:s',strtotime($request->input('end_date')));
             $Parcel->submitted_at = date('Y-m-d H:i:s');
             $Parcel->parcelsTaken = $parcelsTaken;
             $Parcel->parcelsDelivered = $parcel_delivered;

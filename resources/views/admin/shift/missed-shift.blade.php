@@ -335,16 +335,16 @@
 
                                             @php
                                                 $driverUser = Auth::guard('adminLogin')->user();
+                                                $driverId = DB::table('drivers')->where('email', $driverUser->email)->first()->id??null;
                                                 $driverRole = $driverUser->role_id;
                                             @endphp
 
                                             @if ($driverRole == '33')
-                                                <input type="hidden" name="driverId" value="{{ $driverUser->id }}" />
+                                                <input type="hidden" name="driverId" value="{{ $driverId }}" />
                                             @else
                                                 <div class="col-lg-3">
                                                     <div class="check_box">
-                                                        <label class="form-label" for="exampleInputEmail1">Driver <span
-                                                                class="red">*</span></label>
+                                                        <label class="form-label" for="exampleInputEmail1">Driver <span class="red">*</span></label>
                                                         <div class="form-group">
                                                             <select class="form-control select2 form-select"
                                                                 name="driverId" data-placeholder="Choose one" required>
