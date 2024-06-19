@@ -8,9 +8,8 @@ use App\Mail\WebSiteMail;
 use App\Models\Admin;
 use App\Models\Driver;
 use Auth;
-use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash as FacadesHash;
+use Illuminate\Support\Facades\Hash ;
 use Illuminate\Support\Facades\Mail;
 use Validator;
 
@@ -351,10 +350,10 @@ class LoginController extends Controller
         } else {
 
             $password = $this->randomPassword();
-            $newPassword = FacadesHash::make($password);
+            $newPassword = Hash::make($password);
             $sendmail = Mail::to($req->email)->send(new WebSiteMail('lost_password','Lost Password',['NEW_PASSWORD'=>$password]));
             
-            $driver = Driver::where('email', $req->input('email'))->update([
+            $driver = Driver::where('email', $req->email)->update([
                 'otp' => 123456,
                 'password' => $newPassword,
             ]);
