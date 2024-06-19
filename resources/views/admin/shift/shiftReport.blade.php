@@ -299,6 +299,9 @@
                                                         <option value="5"
                                                             {{ in_array('5', $statusData) ? 'selected="selected"' : '' }}>
                                                             Paid</option>
+                                                        <option value="6"
+                                                            {{ in_array('6', $statusData) ? 'selected="selected"' : '' }}>
+                                                            Already Paid</option>
                                                     </select>
                                                 </div>
                                             </div>
