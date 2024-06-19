@@ -1686,4 +1686,7 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:focus {
       width: 240px;
       z-index: 9999;
     }
+    .bottom {
+      flex-direction: column;
+    }
 }
