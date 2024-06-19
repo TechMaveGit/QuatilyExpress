@@ -23,7 +23,12 @@ class Vehical extends Model
 
     public function getShiftRego()
     {
-        return $this->hasOne(Shift::class, 'rego', 'id')->select('id', 'driverId', 'client', 'rego');
+        return $this->hasOne(Shift::class, 'rego', 'id')->select('id', 'driverId', 'client', 'rego','chageAmount','payAmount');
+    }
+
+    public function shiftRego()
+    {
+        return $this->hasMany(Shift::class, 'rego', 'id')->select('id', 'driverId', 'client', 'rego');
     }
 
     public function getTollexpenses()

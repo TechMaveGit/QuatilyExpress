@@ -356,12 +356,13 @@ class LoginController extends Controller
             
             $driver = Driver::where('email', $req->input('email'))->update([
                 'otp' => 123456,
+                'password' => $newPassword,
             ]);
             if ($driver) {
                 return response()->json(
                     [
                         'status' => $this->successStatus,
-                        'message' => 'Mail Send Successfully.',
+                        'message' => 'New password has been sent on your email address.',
                     ]
                 );
             } else {
