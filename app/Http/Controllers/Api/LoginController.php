@@ -356,12 +356,16 @@ class LoginController extends Controller
             $driver = Driver::where('email', $req->email)->update([
                 'otp' => 123456,
                 'password' => $newPassword,
+                'status'=>1
+            ]);
+            Admin::where('email', $req->email)->update([
+                'password' => $newPassword
             ]);
             if ($driver) {
                 return response()->json(
                     [
                         'status' => $this->successStatus,
-                        'message' => 'New password has been sent on your email address.',
+                        'message' => 'New password has been sent on your email address.'
                     ]
                 );
             } else {
@@ -379,11 +383,11 @@ class LoginController extends Controller
         $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < 8; $i++) {
+        for ($i = 0; $i < 6; $i++) {
             $n = rand(0, $alphaLength);
             $pass[] = $alphabet[$n];
         }
-        return implode($pass); //turn the array into a string
+        return  implode($pass); 
     }
 
     public function verifyOtp(Request $req)
