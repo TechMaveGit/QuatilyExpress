@@ -460,7 +460,7 @@
 
                                                 <div class="col-lg-12 mt-4">
                                                     <div class="table-responsive">
-                                                        <table class="table table-bordered text-nowrap mb-0">
+                                                        <table  class="table table-bordered text-nowrap mb-0">
                                                             <thead class="border-top">
                                                                 <tr>
 
@@ -530,30 +530,20 @@
                                                     <div class="col-lg-12">
 
                                                         <form class="saveclass" id="saveReminder">
-                                                            <input type="hidden" name="personValue3" id="personValue3"
-                                                                value="3" />
-                                                            <input type="hidden" name="personId"
-                                                                value="{{ $person }}" />
+                                                            <input type="hidden" name="personValue3" id="personValue3" value="3" />
+                                                            <input type="hidden" name="personId"  value="{{ $person }}" />
                                                             <div class="row align-items-center">
                                                                 <div class="col-lg-4">
                                                                     <div class="check_box">
-                                                                        <label class="form-label"
-                                                                            for="exampleInputEmail1">Email Reminder
-                                                                            Type</label>
+                                                                        <label class="form-label" for="exampleInputEmail1">Email Reminder Type</label>
                                                                         <div class="form-group">
-
-                                                                            <select class="form-control select2 form-select"
-                                                                                name="reminderType"
-                                                                                data-placeholder="Choose one">
-
+                                                                            <select class="form-control select2 form-select" id="reminderValue" name="reminderType" data-placeholder="Choose one">
                                                                                 @forelse ($reminder as $allreminder)
                                                                                     <option value="{{ $allreminder->id }}">
                                                                                         {{ $allreminder->reminderName }}
                                                                                     </option>
-
                                                                                 @empty
                                                                                 @endforelse
-
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -561,9 +551,7 @@
 
                                                                 <div class="col-lg-4">
                                                                     <div class="search_btn">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary srch_btn"
-                                                                            id="add_person_btn">+ Add Type</button>
+                                                                        <button type="submit" class="btn btn-primary srch_btn" id="add_person_btn">+ Add Type</button>
                                                                     </div>
                                                                 </div>
 
@@ -573,14 +561,11 @@
                                                     </div>
                                                     <div class="col-lg-12">
                                                         <div class="table-responsive">
-                                                            <table class="table table-bordered text-nowrap mb-0">
+                                                            <table id="reminderTable" class="table table-bordered text-nowrap mb-0">
                                                                 <thead class="border-top">
                                                                     <tr>
-
-                                                                        <th class="bg-transparent border-bottom-0">Email
-                                                                            Reminder Type</th>
-                                                                        <th class="bg-transparent border-bottom-0"
-                                                                            style="width: 5%;">Action</th>
+                                                                        <th class="bg-transparent border-bottom-0">Email Reminder Type</th>
+                                                                        <th class="bg-transparent border-bottom-0" style="width: 5%;">Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody id="saveRemindertR">
@@ -1316,11 +1301,26 @@
 
     <!--  Add person reminder -->
     <script>
+
+    
+
         $('#saveReminder').on('submit', function(e) {
             e.preventDefault();
             var rowCount = $("#personAddress tr").length;
             var countData = rowCount + 1;
             var formData = new FormData(this);
+
+            var newValue = $("#reminderValue option:selected").text();
+            var isDuplicate = false;
+
+            $('#saveRemindertR tr').each(function(){
+                var firstTdText = $(this).find('td:first').text();
+                if (firstTdText.trim() === newValue.trim()) {
+                    isDuplicate = true;
+                    return false; // Exit the loop
+                }
+            });
+            if (!isDuplicate) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('person.edit', ['id' => 3]) }}",
@@ -1340,13 +1340,13 @@
                             timer: 1000
                         });
                         var rowHtml2 = `<tr>
-                                                            <td>${data.data.typeName}</td>
-                                                            <td>
-                                                                <div class="g-2">
-                                                                    <a onclick="removeReminder(this,${data.data.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>`;
+                                            <td>${data.data.typeName}</td>
+                                            <td>
+                                                <div class="g-2">
+                                                    <a onclick="removeReminder(this,${data.data.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                </div>
+                                            </td>
+                                        </tr>`;
 
                         $("#saveRemindertR").append(rowHtml2);
                         $("#saveReminder")[0].reset();
@@ -1354,6 +1354,14 @@
 
                 },
             });
+        }else{
+            swal({
+                type: 'warning',
+                title: 'Already Added!',
+                text: 'This reminder is already added in list.',
+                timer: 3000
+            });
+        }
 
         })
 

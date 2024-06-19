@@ -572,7 +572,7 @@ function yesstartShift()
                                             <select class="form-control select2 form-select" name="vehicleRego">
                                                     <option value="">Select Any One</option>
                                                     @forelse ($totalRego as $alltotalRego)
-                                                    <option value="{{ $alltotalRego->rego }}" {{ $alltotalRego->rego == $vehicleRego ? 'selected="selected"' : '' }}>{{ $alltotalRego->rego }}</option>
+                                                    <option value="{{ $alltotalRego->id }}" {{ $alltotalRego->id == $vehicleRego ? 'selected="selected"' : '' }}>{{ $alltotalRego->rego }}</option>
                                                     @empty
                                                     @endforelse
                                                 </select>
@@ -644,24 +644,11 @@ function yesstartShift()
                                     @forelse ($allRego as $allRego)
                                     <tr class="border-bottom">
                                         <td class="td sorting_1">{{ $allRego->rego }}</td>
-                                           @if(isset($allRego->getShiftRego))
-                                               @if(isset($allRego->getShiftRego->getClientNm))
-                                                <td class="td">{{ round($allRego->getShiftRego->getClientNm->adminCharge?? 0 ,2)  }}</td>
-                                                @else
-                                                <td class="td">0</td>
-                                                @endif
-                                            @else
-                                            <td class="td">0</td>
-                                            @endif
-                                               @if(isset($allRego->getShiftRego))
-                                                   @if(isset($allRego->getShiftRego->getClientNm))
-                                                    <td class="td">{{ round($allRego->getShiftRego->getClientNm->driverPay?? 0 ,2) }}</td>
-                                                    @else
-                                                    <td class="td">0</td>
-                                                    @endif
-                                                @else
-                                               <td class="td">0</td>
-                                               @endif
+                                           
+                                                <td class="td">{{ round($allRego->total_chageAmount?? 0 ,2)  }}</td>
+                                              
+                                                    <td class="td">{{ round($allRego->total_payAmount?? 0 ,2) }}</td>
+                                                    
                                             @php
                                              $trip_cost = DB::table('tollexpenses')->where('rego',$allRego->id)->sum('trip_cost')??'0';
                                              $cost = DB::table('expenses')->where('rego',$allRego->id)->sum('cost')??'0';

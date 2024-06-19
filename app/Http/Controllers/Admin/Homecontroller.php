@@ -29,40 +29,48 @@ class Homecontroller extends Controller
         } else {
             $getYear = $request->input('getYear');
         }
-        $driver = $request->input('driverResponsible');
-        $rego = $request->input('vehicleRego');
+        $driver = $request->input('driverResponsible',null);
+        $rego = $request->input('vehicleRego',null);
         for ($i = 1; $i <= 12; $i++) {
-            $query = DB::table('clientcharge')->where('status', '1');
-            if ($driver) {
-                $query = $query->where('driverResponsible', $driver);
+            $adminChargeQuery = Shift::whereYear('shiftStartDate', $getYear)->whereMonth('shiftStartDate', $i)->where('finishStatus', '=', '5');
+            $driverPayQuery = Shift::whereYear('shiftStartDate', $getYear)->whereMonth('shiftStartDate', $i)->where('finishStatus', '=', '5');
+            if($driver){
+                $adminChargeQuery->where('driverId',$driver);   
+                $driverPayQuery->where('driverId',$driver);   
             }
-            if ($rego) {
-                $query = $query->where('rego', $rego);
+            if($rego){
+                $adminChargeQuery->where('rego',$rego);  
+                $driverPayQuery->where('rego',$rego);  
             }
-            $adminCharge[] = $query->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('amount');
-            $qery2 = DB::table('clientcharge')->where('status', '0');
-            if ($driver) {
-                $qery2 = $qery2->where('driverResponsible', $driver);
-            }
-            $driverPay[] = $qery2->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('amount');
+
+            $adminCharge[] = $adminChargeQuery->sum('chageAmount');
+            $driverPay[] = $driverPayQuery->sum('payAmount');
         }
         $firstGraphClientCharge = $adminCharge;
         $firstGraphdriverPay3 = $driverPay;
 
         $totalsum = [];
         for ($i = 1; $i <= 12; $i++) {
+            $expenseReportQuery = DB::table('expenses')->whereYear('created_at', $getYear)->whereMonth('created_at', $i);
+            $tollexpenseQuery = DB::table('tollexpenses')->whereYear('created_at', $getYear)->whereMonth('created_at', $i);
+            $operactionExpQuery = DB::table('operaction_exps')->whereYear('created_at', $getYear)->whereMonth('created_at', $i);
 
-            $clientrate_sum = DB::table('clientrates')
-                ->whereYear('created_at', $getYear)
-                ->whereMonth('created_at', $i)
-                ->select(DB::raw('SUM(driverEarning) as total_driver_earning, SUM(adminCharageAmount) as total_admin_charge'))
-                ->first();
-            $expenseReport[] = DB::table('expenses')->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('cost');
-            $tollexpense[] = DB::table('tollexpenses')->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('trip_cost');
-            $operactionExp[] = DB::table('operaction_exps')->whereYear('created_at', $getYear)->whereMonth('created_at', $i)->sum('cost');
-            $driverPayAmount[] = $clientrate_sum->total_driver_earning ?? 0;
-            $Clientrate[] = $clientrate_sum->total_admin_charge ?? 0;
+            if($driver){
+                $expenseReportQuery->where('person_name',$driver);   
+            }
+            if($rego){
+                $expenseReportQuery->where('rego',$driver);   
+                $tollexpenseQuery->where('rego',$driver);   
+                $operactionExpQuery->where('rego',$driver);   
+            }
+            $expenseReport[] = $expenseReportQuery->sum('cost');
+            $tollexpense[] = $tollexpenseQuery->sum('trip_cost');
+            $operactionExp[] = $operactionExpQuery->sum('cost');
+            
         }
+
+        $driverPayAmount = $driverPay;
+        $Clientrate = $adminCharge;
         $secondGraphOverAllExpense = [];
         $clientCharge = [];
         $secondClientrate = [];
@@ -72,6 +80,10 @@ class Homecontroller extends Controller
             $secondClientrate[$i] = (int) ($clientCharge[$i]) - ($secondGraphOverAllExpense[$i]);  // Profit and loss
             $totalsum[$i] = (int) ($expenseReport[$i] + $tollexpense[$i] + $operactionExp[$i] + $driverPayAmount[$i] - $Clientrate[$i]);
         }
+
+        // dd($driver,$expenseReport);
+
+        
 
         $row = Shift::selectRaw('driverId')->groupBy('driverId')->get();
         $driverId[] = '';
@@ -89,10 +101,19 @@ class Homecontroller extends Controller
         }
         // End Shift Report By Driver............................... 1
         // Client Profit And Loss....................................... 2
-        $clientName = Client::leftJoin('shifts', 'clients.id', '=', 'shifts.client')
-        ->select('clients.*', DB::raw('SUM(shifts.chageAmount) as total_chageAmount'),DB::raw('SUM(shifts.payAmount) as total_payAmount'))
-        ->groupBy('clients.id')
-        ->get();
+        $clientNameQuery = Client::leftJoin('shifts', 'clients.id', '=', 'shifts.client')
+        ->select('clients.*', DB::raw('SUM(shifts.chageAmount) as total_chageAmount'),DB::raw('SUM(shifts.payAmount) as total_payAmount'));
+        if($driver){
+            $clientNameQuery->where('shifts.driverId',$driver);   
+        }
+        if($rego){
+            $clientNameQuery->where('shifts.rego',$rego);   
+        }
+
+        $clientName = $clientNameQuery->groupBy('clients.id')->get();
+        $name = [];
+        $adminCharge = [];
+        $driverPay = [];
         foreach ($clientName as $allClient) {
             $name[] = $allClient->name;
             $adminCharge[] = $allClient->total_chageAmount;
@@ -122,15 +143,17 @@ class Homecontroller extends Controller
         $yearName = $request->input('getYear');
         $driverResponsible = $request->input('driverResponsible');
         $vehicleRego = $request->input('vehicleRego');
-        $data['allRego'] = Vehical::orderBy('id', 'DESC');
+        $data['allRego'] = Vehical::leftJoin('shifts', 'shifts.rego', '=', 'vehicals.id')
+        ->select('vehicals.*', DB::raw('SUM(shifts.payAmount) as total_payAmount'), DB::raw('SUM(shifts.chageAmount) as total_chageAmount'))
+        ->groupBy('vehicals.id')->orderBy('vehicals.id', 'DESC');
         if ($yearName) {
-            $data['allRego'] = $data['allRego']->whereYear('created_at', $yearName);
+            $data['allRego'] = $data['allRego']->whereYear('vehicals.created_at', $yearName);
         }
         if ($driverResponsible) {
-            $data['allRego'] = $data['allRego']->where('driverResponsible', $driverResponsible);
+            $data['allRego'] = $data['allRego']->where('vehicals.driverResponsible', $driverResponsible);
         }
         if ($vehicleRego) {
-            $data['allRego'] = $data['allRego']->where('rego', $vehicleRego);
+            $data['allRego'] = $data['allRego']->where('vehicals.id', $vehicleRego);
         }
         $data['allRego'] = $data['allRego']->with(['getShiftRego.getClientNm'])->get();
         // dd($data['allRego']);
@@ -139,7 +162,7 @@ class Homecontroller extends Controller
         if ($roleId->role_id !== 1) {
             $driverId = Driver::where('email', $roleId->email)->first()->id;
             $data['monthlyShift'] = Shift::where('driverId', $driverId)->count();
-            $data['totalReceivedAmount'] = Shift::where('driverId', $driverId)->sum('payAmount');
+            $data['totalReceivedAmount'] = Shift::where('driverId', $driverId)->where('finishStatus', '=', '5')->sum('payAmount');
             $data['dayHours'] = Finishshift::where('driverId', $driverId)->sum('dayHours');
             $data['nightHours'] = Finishshift::where('driverId', $driverId)->sum('nightHours');
             $data['allSub'] = $data['dayHours'] + $data['nightHours'];
@@ -166,7 +189,7 @@ class Homecontroller extends Controller
         $data['client'] = Client::where('status', '1')->get();
         $data['clientcenter'] = Clientcenter::select('id', 'name')->get();
         $data['clientbases'] = DB::table('clientbases')->select('id', 'base')->get();
-
+        // dd($adminCharge2,$driverPay3,$clientName1);
         //   return $userData;
         return view('admin.dashboard.home', $data, compact('secondGraphOverAllExpense', 'clientCharge', 'secondClientrate', 'firstGraphClientCharge', 'firstGraphdriverPay3', 'yearName', 'driverResponsible', 'vehicleRego', 'expenseReport', 'Clientrate', 'tollexpense', 'operactionExp', 'totalsum', 'row', 'list', 'clientName1', 'adminCharge2', 'driverPay3'));
     }
