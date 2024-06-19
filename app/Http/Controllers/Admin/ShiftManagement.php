@@ -1143,7 +1143,7 @@ class ShiftManagement extends Controller
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
         $clientRates = DB::table('clientrates')->where(['clientId'=>$data['shiftView']->client,'type'=>$data['shiftView']->vehicleType])->first();
-        $extra_rate_per_hour = Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour??0;
+        $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
         if (request()->isMethod('post')) {
 
             if(in_array($shiftData->finishStatus,['0','1','2'])){
@@ -1161,6 +1161,7 @@ class ShiftManagement extends Controller
                     'comment'=> $request->input('comments'),
                     'approval_reason'=> $request->input('approvedReason'),
                     'odometer' => $request->input('odometerStartReading'),
+                    'driverId'=> $request->input('driverId')??$shiftData->driverId
                 ]);
             }else{
                 Shift::where('id', $id)->update(['finishStatus' => $request->input('finishStatus'),'comment'=> $request->input('comments'),'approval_reason'=> $request->input('approvedReason')]);
