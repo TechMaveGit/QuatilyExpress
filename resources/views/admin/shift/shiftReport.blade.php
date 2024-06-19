@@ -775,9 +775,11 @@
                                                             <?php } ?>>Approved</span>
                                                         <?php  } elseif ($allshift->finishStatus=='4') { ?>
                                                         <span class="light status-ToBeApr">Rejected</span>
-                                                        <?php } elseif ($allshift->finishStatus=='5' || $allshift->finishStatus=='6')  { ?>
+                                                        <?php } elseif ($allshift->finishStatus=='5')  { ?>
                                                         <span class="light status-Paid">Paid</span>
-                                                        <?php } else { ?>
+                                                        <?php }elseif ($allshift->finishStatus=='6')  { ?>
+                                                            <span class="light status-Paid">Already Paid</span>
+                                                            <?php } else { ?>
                                                         <?php } ?>
                                                     </td>
                                                     @php
