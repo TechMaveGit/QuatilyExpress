@@ -466,8 +466,8 @@
                         step.path.forEach(point => {
                             if (!reachedCurrentLocation) {
                                 greenPath.push(point);
-                                if (Math.abs(point.lat() - driverLocation.lat) < 0.0001 && Math.abs(
-                                        point.lng() - driverLocation.lng) < 0.0001) {
+                                if (Math.abs(point.lat() - driverLocation ? driverLocation.lat : 0) < 0.0001 && Math.abs(
+                                        point.lng() - driverLocation ? driverLocation.lng : 0) < 0.0001) {
                                     reachedCurrentLocation = true;
                                 }
                             } else {
@@ -623,7 +623,7 @@
                     markers.push(marker);
                 });
 
-                let newdriverLocation = driverLocation.lat ? {
+                let newdriverLocation = driverLocation && driverLocation.lat ? {
                     lat: parseFloat(driverLocation.lat),
                     lng: parseFloat(driverLocation.lng)
                 } : {
