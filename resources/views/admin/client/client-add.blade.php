@@ -375,7 +375,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Night</label>
-                                                       <input type="number" min="0"  class="form-control thirdcls " id="hourlyRateChargeable" aria-describedby="emailHelp" placeholder="">
+                                                       <input type="number" min="0"  class="form-control thirdcls " step="any" id="hourlyRateChargeable" aria-describedby="emailHelp" placeholder="">
                                                        <span id="hourlyRateChargeableError" class="text-danger" hidden>This field is required.</span>
                                                         @error('city')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -386,7 +386,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Saturday</label>
-                                                       <input type="number" min="0" class="form-control thirdcls" id="HourlyRateChargeableSaturday" aria-describedby="emailHelp" placeholder="">
+                                                       <input type="number" min="0" step="any" class="form-control thirdcls" id="HourlyRateChargeableSaturday" aria-describedby="emailHelp" placeholder="">
                                                        <span id="HourlyRateChargeableSaturdayError" class="text-danger" hidden>This field is required.</span>
                                                        @error('city')
                                                            <span class="text-danger">{{ $message }}</span>
@@ -396,7 +396,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Sunday</label>
-                                                       <input type="number" min="0"  class="form-control thirdcls"  id="HourlyRateChargeableSunday" aria-describedby="emailHelp" placeholder="">
+                                                       <input type="number" min="0" step="any" class="form-control thirdcls"  id="HourlyRateChargeableSunday" aria-describedby="emailHelp" placeholder="">
                                                        <span id="HourlyRateChargeableSundayError" class="text-danger" hidden>This field is required.</span>
                                                         @error('city')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -406,7 +406,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Day</label>
-                                                        <input type="number" min="0" class="form-control secondcls"  id="HourlyRatePayableDay" aria-describedby="emailHelp" placeholder="">
+                                                        <input type="number" min="0" step="any" class="form-control secondcls"  id="HourlyRatePayableDay" aria-describedby="emailHelp" placeholder="">
                                                         <span id="HourlyRatePayableDayError" class="text-danger" hidden>This field is required.</span>
                                                         @error('city')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -416,7 +416,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Night</label>
-                                                       <input type="number" min="0" class="form-control secondcls" id="HourlyRatePayableNight" aria-describedby="emailHelp" placeholder="">
+                                                       <input type="number" min="0" step="any" class="form-control secondcls" id="HourlyRatePayableNight" aria-describedby="emailHelp" placeholder="">
                                                        <span id="HourlyRatePayableNightError" class="text-danger" hidden>This field is required.</span>
                                                         @error('city')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -426,7 +426,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Saturday</label>
-                                                       <input type="number" min="0" class="form-control secondcls" id="HourlyRatePayableSaturday" aria-describedby="emailHelp" placeholder="">
+                                                       <input type="number" min="0" step="any" class="form-control secondcls" id="HourlyRatePayableSaturday" aria-describedby="emailHelp" placeholder="">
                                                        <span id="HourlyRatePayableSaturdayError" class="text-danger" hidden>This field is required.</span>
                                                        @error('city')
                                                            <span class="text-danger">{{ $message }}</span>
@@ -436,7 +436,7 @@
                                                  <div class="col-lg-3">
                                                     <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Sunday</label>
-                                                       <input type="number" min="0"  class="form-control secondcls"  id="HourlyRatePayableSunday" aria-describedby="emailHelp" placeholder="">
+                                                       <input type="number" min="0" step="any" class="form-control secondcls"  id="HourlyRatePayableSunday" aria-describedby="emailHelp" placeholder="">
                                                        <span id="HourlyRatePayableSundayError" class="text-danger" hidden>This field is required.</span>
                                                         @error('city')
                                                             <span class="text-danger">{{ $message }}</span>

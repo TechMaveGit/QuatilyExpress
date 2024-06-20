@@ -266,8 +266,8 @@ function yesstartShift()
     // Initialize the start date picker
     var startPicker = $(".datetime_picker_start").flatpickr({
             enableTime: true,
-            altFormat: "Y-m-d H:i:s",
-            dateFormat: "Y-m-d H:i:s",
+            altFormat: "Y-m-d H:i",
+            dateFormat: "Y-m-d H:i",
             time_24hr: true,
             appendTo: document.body,
             onChange: function(selectedDates, dateStr, instance) {
@@ -291,8 +291,8 @@ function yesstartShift()
         // Initialize the end date picker
         var endPicker = $(".datetime_picker_end").flatpickr({
             enableTime: true,
-            altFormat: "Y-m-d H:i:s",
-            dateFormat: "Y-m-d H:i:s",
+            altFormat: "Y-m-d H:i",
+            dateFormat: "Y-m-d H:i",
             time_24hr: true,
             appendTo: document.body,
             onChange: function(selectedDates, dateStr, instance) {
@@ -944,14 +944,14 @@ function yesstartShift()
                 <td class="td">{{ $allshift->getStateName->name??'N/A' }}</td>
                 @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
                 @if($driverRole!=33)
-                <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift['created_at'])) }} </td>
+                <td class="td">{{ date("Y/m/d H:i", strtotime($allshift['created_at'])) }} </td>
                 @endif
               @endif
                 @php
                 $finishshifts=DB::table('finishshifts')->where('shiftId',$allshift->id)->first()??'0';
                 @endphp
                @if($allshift['shiftStartDate'])
-                <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift['shiftStartDate'])) }}</td>
+                <td class="td">{{ date("Y/m/d H:i", strtotime($allshift['shiftStartDate'])) }}</td>
                 @else
                 <td class="td">N/A</td>
                 @endif

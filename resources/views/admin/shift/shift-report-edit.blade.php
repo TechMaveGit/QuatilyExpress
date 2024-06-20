@@ -283,7 +283,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
                                                     <input type="text" class="form-control "
-                                                    value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') : '' }} "
+                                                    value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i') : '' }} "
                                                     aria-describedby="emailHelp" placeholder="" disabled>
                                                                                              </div>
                                             </div>
@@ -492,7 +492,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                        <label class="form-label" for="exampleInputEmail1">Date Start </label>
                                                        @if ($shiftView->shiftStartDate)
                                                        <input type="text" class="form-control datetime_picker" name="shiftStartDate"
-                                                       value="{{ date('Y/m/d H:i:s', strtotime($shiftView->shiftStartDate)) }}"
+                                                       value="{{ date('Y/m/d H:i', strtotime($shiftView->shiftStartDate)) }}"
                                                        aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                        @else
                                                        <input type="text"  class="form-control" name="startDate"
@@ -505,7 +505,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish</label>
                                                        @if ($finishshifts)
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" {{$readonlybtn}} value="{{ date('Y/m/d', strtotime($finishshifts->endDate))??'N/A' }} {{  date('H:i:s', strtotime($finishshifts->endTime))??'N/A' }}" aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" {{$readonlybtn}} value="{{ date('Y/m/d', strtotime($finishshifts->endDate))??'N/A' }} {{  date('H:i', strtotime($finishshifts->endTime))??'N/A' }}" aria-describedby="emailHelp">
                                                        @else
                                                        <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate2" value="" {{$readonlybtn}} aria-describedby="emailHelp">
                                                        @endif

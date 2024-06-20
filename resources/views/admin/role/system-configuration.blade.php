@@ -83,7 +83,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Days before Passport expire</label>
+                                                                <label class="form-label" for="exampleInputEmail1">Days before Traffic History expire</label>
                                                                 <input type="text" class="form-control"
                                                                     id="exampleInputEmail1" name="days_before_passport_expire" value="{{$settings_data['days_before_passport_expire']}}" aria-describedby="emailHelp"
                                                                     placeholder="">

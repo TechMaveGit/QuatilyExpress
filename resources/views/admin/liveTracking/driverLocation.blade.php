@@ -73,7 +73,6 @@
             <div>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <!-- <li class="breadcrumb-item" aria-current="page">Administration</li> -->
                     <li class="breadcrumb-item active" aria-current="page">Live Tracking</li>
                 </ol>
             </div>
@@ -85,45 +84,46 @@
                 <div class="row">
                     <div class="row">
                         <div class="col-lg-12">
-                           
                             <div class="check_box">
                                 <label class="form-label" for="exampleInputEmail1">Active Driver</label>
                                 <div class="form-group">
                                     <form action="{{ route('driver.location') }}" method="post"> @csrf
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                        <select class="form-control select2" name="driverName" onchange="getShift(this)"
-                                            data-placeholder="Choose one" required>
-                                            <option value="">Select Any One</option>
-                                            @if ($driver)
-                                                @foreach ($driver as $alldriver)
-                                                    @if ($alldriver->status == '1')
-                                                        <option value="{{ $alldriver->id }}"
-                                                            {{ $alldriver->id == $driverName ? 'selected="selected"' : '' }}>
-                                                            {{ $alldriver->userName }} {{ $alldriver->surname }}
-                                                            ({{ $alldriver->email }})
-                                                        </option>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <select class="form-control select2" name="driverName" onchange="getShift(this)"
+                                                    data-placeholder="Choose one" required>
+                                                    <option value="">Select Any One</option>
+                                                    @if ($driver)
+                                                        @foreach ($driver as $alldriver)
+                                                            @if ($alldriver->status == '1')
+                                                                <option value="{{ $alldriver->id }}"
+                                                                    {{ $alldriver->id == $driverName ? 'selected="selected"' : '' }}>
+                                                                    {{ $alldriver->userName }} {{ $alldriver->surname }}
+                                                                    ({{ $alldriver->email }})
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
                                                     @endif
-                                                @endforeach
-                                            @endif
-                                        </select>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                                <button type="submit" class="btn btn-info">Refresh</button>
+                                            </div>
                                         </div>
-                                        <div class="col-lg-4">
-                                        <button class="btn btn-primary" type="submit">Submit</button>
-                                        <button type="submit" class="btn btn-info">Refresh</button>
-                                        </div>
-                                    </div>
-                                      
-                                       
                                     </form>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12" style="display:flex;">
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <span class="text-danger" id="error_msg" style="display: none;"></span>
-                                    <div id="map" style="height: 734px;"></div>
+                            <div id="map-container" style="position: relative; width: 100%;">
+                                <span class="text-danger" id="error_msg"></span>
+                                <div id="map" style="height: 734px;"></div>
+                                <div id="sidebarMap" class="sidebarMap">
+                                    <button id="toggleButton" onclick="toggleSidebar()">Show/Hide List</button>
+                                    <div id="sidebarMapList">
+                                    <ul id="markerList" class="marker-list"></ul>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -160,11 +160,52 @@
             </div>
         </div>
     </div>
-    </div>
     <style>
         .black {
             color: #000;
             font-weight: bold;
+        }
+
+        .sidebarMap {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 250px;
+            height: auto;
+            background-color: rgb(6, 5, 5);
+            border: 1px solid rgb(6, 5, 5);
+            overflow-y: auto;
+            display: block;
+            box-shadow: 0px 0px 10px rgba(3, 3, 3, 0.1);
+        }
+
+        #sidebarMapList{
+            display: none;
+        }
+
+        .sidebarMap button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+        }
+
+        .marker-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .marker-list li {
+            padding: 10px;
+            border-bottom: 1px solid rgb(6, 5, 5);
+            cursor: pointer;
+        }
+
+        .marker-list li:hover {
+            background-color: rgb(6, 5, 5);
         }
     </style>
     <script>
@@ -172,6 +213,8 @@
     </script>
     @if (!$driverName)
         <script>
+            var markers = []; // Array to store all markers
+
             function initMap() {
                 var map = new google.maps.Map(document.getElementById('map'), {
                     center: {
@@ -203,15 +246,13 @@
                                 lng: parseFloat(location.lng)
                             },
                             map: map,
-                            title: location.name,
+                            title: location['driver']['fullName']+' (QE'+location['shift']['shiftRandId']+')',
                             icon: {
                                 url: '{{ asset('assets/images/newimages/map-circle.png') }}',
-                                scaledSize: new google.maps.Size(35,
-                                    35) // Set the width and height for resizing
+                                scaledSize: new google.maps.Size(35, 35) // Set the width and height for resizing
                             }
                         });
 
-                        // Add a click event listener to each marker
                         marker2.addListener('click', function() {
                             var driverDetails = location; // Use the location directly
                             var contentString = `
@@ -231,19 +272,64 @@
                                 </div>
                             `;
                             infoWindow.setContent(contentString);
-                            // Open the InfoWindow at the clicked marker
                             infoWindow.open(map, marker2);
-                            // Set a specific zoom level when a marker is clicked (e.g., zoom to level 16)
                             map.setZoom(16);
-                            // Optionally, you can also set the center to the clicked marker's position
                             map.setCenter(marker2.getPosition());
                         });
+
+                        markers.push(marker2); // Add marker to the global array
                     });
+
+                    populateMarkerList(); // Populate the marker list
                 }
             }
+
+            
+
+            function populateMarkerList() {
+                var markerList = document.getElementById('markerList');
+                markerList.innerHTML = ''; // Clear the list before populating
+
+                // Create a map to store the last index of each marker title
+                const lastIndexMap = new Map();
+                markers.forEach((marker, index) => {
+                    lastIndexMap.set(marker.getTitle(), index);
+                });
+
+                // Filter markers to keep only the last occurrence of each title
+                const uniqueMarkers = markers.filter((marker, index) => {
+                    return lastIndexMap.get(marker.getTitle()) === index;
+                });
+
+                // Use uniqueMarkers for the list
+                uniqueMarkers.forEach((marker, index) => {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = marker.getTitle();
+                    listItem.addEventListener('click', () => {
+                        google.maps.event.trigger(marker, 'click');
+                        map.setCenter(marker.getPosition());
+                        map.setZoom(16);
+                    });
+                    markerList.appendChild(listItem);
+                });
+                
+            }
+
+
+
+
+            function toggleSidebar() {
+                var sidebarMapList = document.getElementById('sidebarMapList');
+                var sidebarMap = document.getElementById('sidebarMap');
+                sidebarMapList.style.display = sidebarMapList.style.display === 'none' ? 'block' : 'none';
+                sidebarMap.style.height = sidebarMapList.style.display === 'none' ? 'auto' : 'calc(100% - 20px)';
+            }
+
+            document.addEventListener("DOMContentLoaded", initMap);
         </script>
     @else
         <script>
+            var markers = []; // Array to store all markers
             let locations = @json($locations ?? []);
             let parcelLocation = @json($parcelLocation ?? []);
             let map;
@@ -297,6 +383,7 @@
 
                 calculateAndDisplayRoutes();
                 addMarkers();
+                populateMarkerList(); // Populate the marker list
             }
 
             function calculateAndDisplayRoutes() {
@@ -390,7 +477,6 @@
                     });
                 });
 
-                // Draw green path up to current driver location
                 new google.maps.Polyline({
                     path: greenPath,
                     geodesic: true,
@@ -400,7 +486,6 @@
                     map: map
                 });
 
-                // Draw black path from driver location to end point
                 new google.maps.Polyline({
                     path: blackPath,
                     geodesic: true,
@@ -423,10 +508,8 @@
             }
 
             function addMarkers() {
-                // Info windows
                 const infoWindow = new google.maps.InfoWindow();
 
-                // Add start marker (red)
                 const startMarker = new google.maps.Marker({
                     position: startPoint,
                     map: map,
@@ -438,8 +521,8 @@
                         `<div class="info-window-content"><h2>Start Point</h2>${start_address}</div>`);
                     infoWindow.open(map, startMarker);
                 });
+                markers.push(startMarker);
 
-                // Add end marker (green)
                 const endMarker = new google.maps.Marker({
                     position: endPoint,
                     map: map,
@@ -450,114 +533,102 @@
                     infoWindow.setContent(`<div class="info-window-content"><h2>End Point</h2>${end_address}</div>`);
                     infoWindow.open(map, endMarker);
                 });
+                markers.push(endMarker);
 
-
-                
-
-                // Add delivery point markers
                 deliveryPoints.forEach((point, ind) => {
-                    let delived_date = point.parcelDeliverdDate ?
-                        `<p><b>Deliverd Date : ${point.parcelDeliverdDate}</b></p>` : '';
-                    let receiverName = point.receiverName ? `<p><b>Receiver Name : ${point.receiverName}</b></p>` : '';
-                    let deliveredTo = point.deliveredTo ? `<p><b>Received By : ${point.deliveredTo}</b></p>` : '';
-                    let deliver_address = point.deliver_address ?? point.location;
-                    let beforeImage = '{{$beforeParcelImage}}';
-                    let beforeParselImage = beforeImage ? `<img style="width: 100%;" src="${storage_path}/${beforeImage}" />`:'';
-                    let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />`:'';
-                    let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point
-                        .delivered_latitude : point.lat;
-                    let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point
-                        .delivered_longitude : point.lng;
                     let LatLong = {
-                        lat: parseFloat(delivered_latitude),
-                        lng: parseFloat(delivered_longitude)
+                        lat: parseFloat(point.lat),
+                        lng: parseFloat(point.lng)
                     };
                     const markerColor = point.status == "2" ? 'blue' : 'yellow';
                     const marker = new google.maps.Marker({
                         position: LatLong,
                         map: map,
                         icon: createSVGMarker(markerColor, ind + 1),
-                        title: `Delivery Point ${ind+1}`
+                        title: `Delivery Point ${ind + 1}`
                     });
 
-
-                    let datetimeFormat = '';
-                    let parcelDeliverdDate = '';
-                    if(point.created_at){
-                        let sdate = new Date(point.created_at);
-                        datetimeFormat = formatDate(sdate);
-                    }
-                    if(point.parcelDeliverdDate){
-                        let pdate = new Date(point.parcelDeliverdDate);
-                        parcelDeliverdDate = formatDate(pdate);
-                    }
-
-                    let htmlData = ` <div class="info-window-content" style="border: 1px solid #dbdbdb;
-                    padding: 20px;
-                    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-                    width: 500px;">
-                        <h2 style="margin-top: 0;">Delivery Point ${ind+1}</h2>
-                        
-                        <div class="box_delivery" style="display: flex; gap: 10px;">
-                            <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
-                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Expected Deliver Point</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.location||'-'}</p>
-                            </div>
-                            <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
-                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered At</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.deliver_address||'-'}</p>
-                            </div>
-                        </div> 
-                        <div class="box_delivery" style="display: flex; gap: 10px;">
-                            <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
-                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Add Date</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${datetimeFormat}</p>
-                            </div>
-                            <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
-                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered Date</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${parcelDeliverdDate}</p>
-                            </div>
-                        </div> 
-                        <div class="box_delivery" style="display: flex; gap: 10px;">
-                            <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
-                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Receiver Name</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.receiverName||'-'}</p>
-                            </div>
-                            <div class="dlvryDate"  style="padding: 10px; border: 1px solid #dbdbdb;width: 250px;  margin-bottom: 10px; border-radius: 5px;">
-                                <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Received By</h6>
-                                <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.deliveredTo||'-'}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="boxpARCEL">
-                            <h6 style="margin:5px 0 10px; font-size:16px">Parcel Image</h6>
-                            <div class="box_delivery" style="display: flex; gap: 10px;">
-                                <div class="dlvryDate" style="text-align:center; padding: 10px; border: 1px solid #dbdbdb;width: 250px;  border-radius: 5px;">
-                                    ${beforeParselImage}
-                                    <p style="margin: 5px 0 0; font-size: 14px;">Before</p>
-                                </div>
-                                <div class="dlvryDate"  style="text-align:center; padding: 10px; border: 1px solid #dbdbdb;width: 250px;  border-radius: 5px;">
-                                    ${parselImage}
-                                    <p style="margin:5px 0 0; font-size: 14px;">After</p>
-                                </div>
-                            </div>
-                        </div>
-                    
-                    </div>`;
-                    
                     marker.addListener('click', () => {
-                        infoWindow.setContent(
-                            htmlData
-                        );
+                        let delived_date = point.parcelDeliverdDate ? `<p><b>Deliverd Date : ${point.parcelDeliverdDate}</b></p>` : '';
+                        let receiverName = point.receiverName ? `<p><b>Receiver Name : ${point.receiverName}</b></p>` : '';
+                        let deliveredTo = point.deliveredTo ? `<p><b>Received By : ${point.deliveredTo}</b></p>` : '';
+                        let deliver_address = point.deliver_address ?? point.location;
+                        let beforeImage = '{{$beforeParcelImage}}';
+                        let beforeParselImage = beforeImage ? `<img style="width: 100%;" src="${storage_path}/${beforeImage}" />` : '';
+                        let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />` : '';
+                        let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
+                        let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
+
+                        let datetimeFormat = '';
+                        let parcelDeliverdDate = '';
+                        if (point.created_at) {
+                            let sdate = new Date(point.created_at);
+                            datetimeFormat = formatDate(sdate);
+                        }
+                        if (point.parcelDeliverdDate) {
+                            let pdate = new Date(point.parcelDeliverdDate);
+                            parcelDeliverdDate = formatDate(pdate);
+                        }
+
+                        let htmlData = ` <div class="info-window-content" style="border: 1px solid #dbdbdb; padding: 20px; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; width: 500px;">
+                            <h2 style="margin-top: 0;">Delivery Point ${ind + 1}</h2>
+                            <div class="box_delivery" style="display: flex; gap: 10px;">
+                                <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Expected Deliver Point</h6>
+                                    <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.location || '-'}</p>
+                                </div>
+                                <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered At</h6>
+                                    <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.deliver_address || '-'}</p>
+                                </div>
+                            </div>
+                            <div class="box_delivery" style="display: flex; gap: 10px;">
+                                <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Add Date</h6>
+                                    <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${datetimeFormat}</p>
+                                </div>
+                                <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Delivered Date</h6>
+                                    <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${parcelDeliverdDate}</p>
+                                </div>
+                            </div>
+                            <div class="box_delivery" style="display: flex; gap: 10px;">
+                                <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Receiver Name</h6>
+                                    <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.receiverName || '-'}</p>
+                                </div>
+                                <div class="dlvryDate" style="padding: 10px; border: 1px solid #dbdbdb;width: 250px; margin-bottom: 10px; border-radius: 5px;">
+                                    <h6 style="margin: 0; font-size: 14px; margin-bottom: 5px;">Received By</h6>
+                                    <p style="margin: 0; font-size: 14px; color: #5d5d5d;">${point.deliveredTo || '-'}</p>
+                                </div>
+                            </div>
+                            <div class="boxpARCEL">
+                                <h6 style="margin:5px 0 10px; font-size:16px">Parcel Image</h6>
+                                <div class="box_delivery" style="display: flex; gap: 10px;">
+                                    <div class="dlvryDate" style="text-align:center; padding: 10px; border: 1px solid #dbdbdb;width: 250px; border-radius: 5px;">
+                                        ${beforeParselImage}
+                                        <p style="margin: 5px 0 0; font-size: 14px;">Before</p>
+                                    </div>
+                                    <div class="dlvryDate" style="text-align:center; padding: 10px; border: 1px solid #dbdbdb;width: 250px; border-radius: 5px;">
+                                        ${parselImage}
+                                        <p style="margin:5px 0 0; font-size: 14px;">After</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                        infoWindow.setContent(htmlData);
                         infoWindow.open(map, marker);
                     });
+
+                    markers.push(marker);
                 });
 
-                // Add driver current location marker
                 let newdriverLocation = driverLocation.lat ? {
-                    lat : parseFloat(driverLocation.lat),lng:parseFloat(driverLocation.lng)
+                    lat: parseFloat(driverLocation.lat),
+                    lng: parseFloat(driverLocation.lng)
                 } : {
-                    lat : 0,lng:0
+                    lat: 0,
+                    lng: 0
                 };
                 const driverMarker = new google.maps.Marker({
                     position: newdriverLocation,
@@ -566,31 +637,75 @@
                     title: 'Driver Location'
                 });
                 driverMarker.addListener('click', () => {
-                    let driverDetails = @json($selected_driver??[]);
-                    infoWindow.setContent(
-                        `<div style="text-align: center;">
-                                    <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
-                                    <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
-                                    <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
-                                    <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
-                                    <hr>
-                                    <h4 class="black">Shift Details:</h4>
-                                    <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
-                                    <p class="black">Rego: ${driverDetails['shift']['rego']}</p>
-                                    <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
-                                    <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
-                                    <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
-                                    <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
-                                </div>`
-                    );
+                    let driverDetails = @json($selected_driver ?? []);
+                    let htmlData = `<div style="text-align: center;">
+                        <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
+                        <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
+                        <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
+                        <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
+                        <hr>
+                        <h4 class="black">Shift Details:</h4>
+                        <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
+                        <p class="black">Rego: ${driverDetails['shift']['rego']}</p>
+                        <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
+                        <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
+                        <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
+                        <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                    </div>`;
+                    infoWindow.setContent(htmlData);
                     infoWindow.open(map, driverMarker);
                 });
-                console.log(driverLocation,newdriverLocation,driverMarker);
+                markers.push(driverMarker);
+            }
+
+            function bringMarkerToFront(marker) {
+                // Remove the marker from the map
+                marker.setMap(null);
+
+                // Add the marker back to the map
+                marker.setMap(map);
+            }
+
+            function populateMarkerList() {
+                var markerList = document.getElementById('markerList');
+                markerList.innerHTML = ''; // Clear the list before populating
+
+                // Create a map to store the last index of each marker title
+                const lastIndexMap = new Map();
+                markers.forEach((marker, index) => {
+                    lastIndexMap.set(marker.getTitle(), index);
+                });
+
+                // Filter markers to keep only the last occurrence of each title
+                const uniqueMarkers = markers.filter((marker, index) => {
+                    return lastIndexMap.get(marker.getTitle()) === index;
+                });
+
+                // Use uniqueMarkers for the list
+                uniqueMarkers.forEach((marker, index) => {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = marker.getTitle();
+                    listItem.addEventListener('click', () => {
+                        bringMarkerToFront(marker);
+                        google.maps.event.trigger(marker, 'click');
+                        map.setCenter(marker.getPosition());
+                        map.setZoom(16);
+                    });
+                    markerList.appendChild(listItem);
+                });
+
+                
+            }
+
+            function toggleSidebar() {
+                var sidebarMapList = document.getElementById('sidebarMapList');
+                var sidebarMap = document.getElementById('sidebarMap');
+                sidebarMapList.style.display = sidebarMapList.style.display === 'none' ? 'block' : 'none';
+                sidebarMap.style.height = sidebarMapList.style.display === 'none' ? 'auto' : 'calc(100% - 20px)';
             }
 
             document.addEventListener("DOMContentLoaded", initMap);
         </script>
     @endif
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&callback=initMap"></script>
 @endsection

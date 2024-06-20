@@ -119,7 +119,7 @@
                                 @forelse ($roles as $role)
                                 @php
                                      $dateTime = new DateTime($role->created_at);
-                                     $created_at = $dateTime->format('Y/m/d H:i:s');
+                                     $created_at = $dateTime->format('Y/m/d H:i');
                                 @endphp
 
                                 <tr>

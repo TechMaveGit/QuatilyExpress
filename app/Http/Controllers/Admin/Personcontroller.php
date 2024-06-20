@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\DataTableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ImageController;
+use App\Mail\WebSiteMail;
 use App\Models\Admin;
 use App\Models\DialCode;
 use App\Models\Driver;
@@ -17,6 +18,7 @@ use App\Models\Roles;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class Personcontroller extends Controller
 {
@@ -109,6 +111,8 @@ class Personcontroller extends Controller
                 $user = Admin::create($input);
             }
 
+            $sendmail = Mail::to($email)->send(new WebSiteMail('new_user',"Welcome $name | Quality Express",['NAME'=>$name,'NEW_PASSWORD'=>$password,'http://LINK_BOOMERANG'=>env('APP_URL')]));
+            
             return redirect()->route('person')->with('message', 'Persion Basic Information Added Successfully!!');
         }
         $roles = Roles::where('name', '!=', 'my permission')->where('status', '1')->orderBy('id', 'DESC')->get();

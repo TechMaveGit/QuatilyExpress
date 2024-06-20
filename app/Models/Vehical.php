@@ -13,7 +13,7 @@ class Vehical extends Model
 
     public function getDriverRsp()
     {
-        return $this->hasOne(Driver::class, 'id', 'driverResponsible')->select('id', 'userName', 'email');
+        return $this->hasOne(Driver::class, 'id', 'driverResponsible')->select('id', 'fullName','userName', 'email');
     }
 
     public function getDriverRego()

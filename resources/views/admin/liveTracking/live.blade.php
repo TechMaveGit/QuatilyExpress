@@ -129,16 +129,66 @@
             @if ($driverName)
             <div class="row">
                 <div class="col-lg-12" style="display:flex;">
-                    <div class="col-lg-12">
+                    <div id="map-container" style="position: relative; width: 100%;">
                         <span class="text-danger" id="error_msg"></span>
-                        <div class="card">
-                           
-                            <div id="map" style="height: 734px;"></div>
-                           
+                        <div id="map" style="height: 734px;"></div>
+                        <div id="sidebarMap" class="sidebarMap">
+                            <button id="toggleButton" onclick="toggleSidebar()">Show/Hide List</button>
+                            <div id="sidebarMapList">
+                            <ul id="markerList" class="marker-list"></ul>
+                        </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <style>
+                .black {
+                    color: #000;
+                    font-weight: bold;
+                }
+        
+                .sidebarMap {
+                    position: absolute;
+                    bottom: 10px;
+                    left: 10px;
+                    width: 250px;
+                    height: auto;
+                    background-color: rgb(6, 5, 5);
+                    border: 1px solid rgb(6, 5, 5);
+                    overflow-y: auto;
+                    display: block;
+                    box-shadow: 0px 0px 10px rgba(3, 3, 3, 0.1);
+                }
+        
+                #sidebarMapList{
+                    display: none;
+                }
+        
+                .sidebarMap button {
+                    width: 100%;
+                    padding: 10px;
+                    background-color: #007bff;
+                    color: rgb(0, 0, 0);
+                    border: none;
+                    cursor: pointer;
+                }
+        
+                .marker-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+        
+                .marker-list li {
+                    padding: 10px;
+                    border-bottom: 1px solid rgb(6, 5, 5);
+                    cursor: pointer;
+                }
+        
+                .marker-list li:hover {
+                    background-color: rgb(6, 5, 5);
+                }
+            </style>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="locations_hints_options">
@@ -182,6 +232,7 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&libraries=places"></script>
 <script>
+    var markers = []; // Array to store all markers
     let storage_path = "{{asset(env('STORAGE_URL'))}}";
     let locations = @json($locations ?? []);
     let parcelLocation = @json($parcelLocation??[]);
@@ -226,6 +277,7 @@
 
         calculateAndDisplayRoutes();
         addMarkers();
+        populateMarkerList();
     }
 
     function calculateAndDisplayRoutes() {
@@ -366,6 +418,8 @@
             infoWindow.open(map, startMarker);
         });
 
+        markers.push(startMarker)
+
         // Add end marker (green)
         const endMarker = new google.maps.Marker({
             position: endPoint,
@@ -377,6 +431,8 @@
             infoWindow.setContent(`<div class="info-window-content"><h2>End Point</h2>${end_address}</div>`);
             infoWindow.open(map, endMarker);
         });
+
+        markers.push(endMarker)
 
         // Add delivery point markers
         deliveryPoints.forEach((point,ind) => {
@@ -467,7 +523,9 @@
                 infoWindow.setContent(htmlData);
                 infoWindow.open(map, marker);
             });
+            markers.push(marker)
         });
+        
 
         // Add driver current location marker
         let newdriverLocation = driverLocation.lat ? {
@@ -501,6 +559,53 @@
             );
             infoWindow.open(map, driverMarker);
         });
+        markers.push(driverMarker)
+    }
+
+    function bringMarkerToFront(marker) {
+        // Remove the marker from the map
+        marker.setMap(null);
+
+        // Add the marker back to the map
+        marker.setMap(map);
+    }
+
+    function populateMarkerList() {
+        var markerList = document.getElementById('markerList');
+        markerList.innerHTML = ''; // Clear the list before populating
+
+        // Create a map to store the last index of each marker title
+        const lastIndexMap = new Map();
+        markers.forEach((marker, index) => {
+            lastIndexMap.set(marker.getTitle(), index);
+        });
+
+        // Filter markers to keep only the last occurrence of each title
+        const uniqueMarkers = markers.filter((marker, index) => {
+            return lastIndexMap.get(marker.getTitle()) === index;
+        });
+
+        // Use uniqueMarkers for the list
+        uniqueMarkers.forEach((marker, index) => {
+            var listItem = document.createElement('li');
+            listItem.textContent = marker.getTitle();
+            listItem.addEventListener('click', () => {
+                bringMarkerToFront(marker);
+                google.maps.event.trigger(marker, 'click');
+                map.setCenter(marker.getPosition());
+                map.setZoom(16);
+            });
+            markerList.appendChild(listItem);
+        });
+
+        
+    }
+
+    function toggleSidebar() {
+        var sidebarMapList = document.getElementById('sidebarMapList');
+        var sidebarMap = document.getElementById('sidebarMap');
+        sidebarMapList.style.display = sidebarMapList.style.display === 'none' ? 'block' : 'none';
+        sidebarMap.style.height = sidebarMapList.style.display === 'none' ? 'auto' : 'calc(100% - 20px)';
     }
 
     document.addEventListener("DOMContentLoaded", initMap);

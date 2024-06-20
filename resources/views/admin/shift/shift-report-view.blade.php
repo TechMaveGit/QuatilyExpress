@@ -187,14 +187,14 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i:s',strtotime($shiftView->createdDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i',strtotime($shiftView->createdDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
-                                                    <input type="text" class="form-control" value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i:s') : '' }}" placeholder="" readonly>
+                                                    <input type="text" class="form-control" value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i') : '' }}" placeholder="" readonly>
                                                 </div>
                                             </div>
                                             @endif

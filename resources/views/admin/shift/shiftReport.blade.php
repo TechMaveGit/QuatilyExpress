@@ -725,11 +725,11 @@
                                                     @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
                                                         @if ($driverRole != 33)
                                                             <td style="display: none;" class="td column-mobile_data_start">
-                                                                {{ date('Y/m/d H:i:s', strtotime($allshift->createdDate)) }}
+                                                                {{ date('Y/m/d H:i', strtotime($allshift->createdDate)) }}
                                                             </td>
                                                             <td style="display: none;" class="td column-mobile_data_finish">
                                                             @if ($finishshifts && $finishshifts->submitted_at)
-                                                                {{ date('Y/m/d H:i:s', strtotime($finishshifts->submitted_at)) }}
+                                                                {{ date('Y/m/d H:i', strtotime($finishshifts->submitted_at)) }}
                                                             @else
                                                             N/A
                                                             @endif
@@ -740,7 +740,7 @@
                                                     
                                                     @if ($allshift['shiftStartDate'])
                                                         <td class="td column-start_Date">
-                                                            {{ date('Y/m/d H:i:s', strtotime($allshift['shiftStartDate'])) }}
+                                                            {{ date('Y/m/d H:i', strtotime($allshift['shiftStartDate'])) }}
                                                         </td>
                                                     @else
                                                         <td class="td column-start_Date">N/A</td>
@@ -749,7 +749,7 @@
                                                         {{ $allshift->getFinishShift->startTime ?? 'N/A' }}</td>
                                                     @if ($finishshifts)
                                                         <td class="td column-date_finish">
-                                                            {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
+                                                            {{ date('Y/m/d H:i', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
                                                         </td>
                                                     @else
                                                         <td class="td column-date_finish">N/A</td>

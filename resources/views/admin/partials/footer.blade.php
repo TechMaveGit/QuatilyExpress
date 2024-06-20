@@ -948,8 +948,8 @@
 <script>
 $(".datetime_picker").flatpickr({
     enableTime: true,
-    altFormat: "Y-m-d H:i:s",
-    dateFormat: "Y-m-d H:i:s",
+    altFormat: "Y-m-d H:i",
+    dateFormat: "Y-m-d H:i",
     time_24hr: true,
     appendTo: document.body,
     onReady: function(selectedDates, dateStr, instance) {
