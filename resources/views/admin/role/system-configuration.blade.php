@@ -114,7 +114,7 @@
                                                                     placeholder="">
                                                             </div>
                                                         </div>
-                                                        <div class="col-lg-3">
+                                                        <div class="col-lg-3" hidden>
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Days
                                                                     before Induction expire</label>
