@@ -69,7 +69,7 @@ class CronJobs extends Command
                                 $htmlData .= '<li> <b>Rego</b> :'.$rego->rego.'  | <b>Due Dates</b> :'.$dueDate.'</li>';
                             }
                         }
-                        Mail::to($user['email'])->send(new WebSiteMail($metaKry, "Veheicle $docName Document Expired | Quality Express", ['LIST_VEHICLES' => $htmlData]));
+                        Mail::to($user['email'])->send(new WebSiteMail($metaKry, "Vehicles $docName Document Expired | Quality Express", ['LIST_VEHICLES' => $htmlData]));
                     }
 
                 }
