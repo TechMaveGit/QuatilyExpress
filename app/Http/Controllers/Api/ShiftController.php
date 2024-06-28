@@ -263,8 +263,8 @@ class ShiftController extends Controller
 
         $validator = Validator::make($request->all(), [
             'shiftid'       => 'required|integer',
-            'startDate' => 'required|date_format:Y-m-d H:i:s',
-            'finishDate'   => 'required|date_format:Y-m-d H:i:s',
+            'startDate' => 'required|date_format:Y-m-d H:i',
+            'finishDate'   => 'required|date_format:Y-m-d H:i',
         ]);
 
         if ($validator->fails()) {
