@@ -134,7 +134,7 @@ class CommonApiController extends Controller
             $shify->client = $request->client;
             $shify->costCenter = $request->costCentre;
             $shify->base = $request->base;
-            $shify->shiftStartDate = $request->start_date . ' ' . $request->start_time;
+            $shify->shiftStartDate = date('Y-m-d',strtotime($request->start_date)) . ' ' . date('H:i:s',strtotime($request->start_time));
             $shify->vehicleType = $request->vehicleType;
             $shify->rego = $rego;
             $shify->odometer = $request->odometer_start_reading;

@@ -595,7 +595,7 @@ class ParcelController extends Controller
 
                     $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
                     // return $request->startDate . ' ' . $request->startTime;
-                    Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'shiftStartDate'=>$request->startDate . ' ' . $request->startTime]);
+                    Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'shiftStartDate'=>date('Y-m-d',strtotime($request->startDate)) . ' ' . date('H:i:s',strtotime($request->startTime))]);
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalPayShiftAmount, 'status' => '0']);  // O is pay to Driver
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalChargeDay, 'status' => '1']); // 1 is charge to admin
                     // is Driver Payable

@@ -364,7 +364,7 @@ class ShiftController extends Controller
                 $finaltotalChargeDay = $totalChargeDay + (float)($shiftMonetize->fuelLevyChargeable250??0)+(float)($shiftMonetize->fuelLevyChargeable??0)+(float)($shiftMonetize->fuelLevyChargeable400??0)+(float)($shiftMonetize->extraChargeable??0);
             }
 
-            Shift::where('id', $id)->update(['payAmount' => $finaltotalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'chageAmount' => $finaltotalChargeDay,'shiftStartDate'=>$start_date,'finishDate'=>$end_date]);
+            Shift::where('id', $id)->update(['payAmount' => $finaltotalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'chageAmount' => $finaltotalChargeDay,'shiftStartDate'=>date('Y-m-d H:i:s',strtotime($request->startDate)),'finishDate'=>date('Y-m-d H:i:s',strtotime($request->finishDate))]);
 
             $totalHr = $data = $dayHr + $nightHr;
 
@@ -458,7 +458,7 @@ class ShiftController extends Controller
         $shify->client = $request->client;
         $shify->costCenter = $request->costCentre;
         $shify->base = $request->base;
-        $shify->shiftStartDate = $request->start_date . ' ' . $request->start_time;
+        $shify->shiftStartDate = date('Y-m-d',strtotime($request->start_date)) . ' ' . date('H:i:s',strtotime($request->start_time));
         $shify->vehicleType = $request->vehicleType;
         $shify->rego = $rego;
         $shify->odometer = $request->odometer_start_reading;
@@ -645,7 +645,7 @@ class ShiftController extends Controller
         }
 
         $driverId = auth('driver')->user()->id;
-        $shift = Shift::whereId($request->shift_id)->where('driverId', $driverId)->update(['finishStatus' => '1', 'shiftStartDate' => date('Y-m-d H:i:s')]);
+        $shift = Shift::whereId($request->shift_id)->where('driverId', $driverId)->update(['finishStatus' => '1']);
 
         if ($shift) {
             return response()->json([
