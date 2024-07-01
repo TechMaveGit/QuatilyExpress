@@ -272,27 +272,26 @@ class ShiftManagement extends Controller
             $finish_time = $finishDateTime ? $finishDateTime->format('H:i:s') : null;
 
 
-
-            if($rd[16]=='APPROVED'){
+            if($rd[16]=='APPROVED' || $rd[16]=='Approved'){
                 $status ='1';
                 $final_status = '3';
-            }elseif($rd[16]=='IN_PROGRESS'){
+            }elseif($rd[16]=='IN_PROGRESS' || $rd[16]=='In Progress'){
                 $status = '2';
                 $final_status = '1';
             }
-            elseif($rd[16]=='PAID'){
+            elseif($rd[16]=='PAID' || $rd[16]=='Paid'){
                 $status = '3';
                 $final_status = '5';
             }
-            elseif($rd[16]=='REJECTED'){
+            elseif($rd[16]=='REJECTED' || $rd[16]=='Rejected'){
                 $status = '4';
                 $final_status = '4';
             }
-            elseif($rd[16]=='TO_APPROVE'){
+            elseif($rd[16]=='TO_APPROVE' || $rd[16]=='To Be Approved'){
                 $status = '5';
                 $final_status = '2';
             }
-    
+            
             // echo $rd[12].' '.$rd[13].'+++++++'.$start_at.'<br>';
             // echo '#######'.$rd[14].' '.$rd[15].'+++++++'.$finish_at.'========'.$finish_date.'<br>';
             
@@ -380,7 +379,7 @@ class ShiftManagement extends Controller
             if (request()->isMethod('post')) {
                 $driverId = $request->driverId;
                 $shift = Shift::where('driverId', $driverId)->first()->id??null;
-                if ($shift && Shift::where(['id'=>$shift,'finishStatus'=>'1'])->exists()) {
+                if ($shift && Shift::where(['driverId'=>$driverId,'finishStatus'=>'1'])->exists()) {
                     return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
                 } else {
                     $inputtypeRego1 = $request->input('inputtypeRego1');
