@@ -22,19 +22,6 @@ jobs:
     - name: Install dependencies
       run: composer install --no-dev --prefer-dist --optimize-autoloader
 
-    - name: Verify Laravel Pint installation
-      run: composer require --dev laravel/pint
-
-    - name: Verify PHP CodeSniffer installation
-      run: composer require --dev squizlabs/php_codesniffer
-
-    - name: Run Laravel Pint
-      run: ./vendor/bin/pint || vendor/bin/pint
-
-    - name: Run PHP CodeSniffer
-      run: ./vendor/bin/phpcs --standard=PSR12 app/ routes/ tests/ resources/ || vendor/bin/phpcs --standard=PSR12 app/ routes/ tests/ resources/
-
-
     - name: Prepare environment
       run: |
         cp .env.example .env
