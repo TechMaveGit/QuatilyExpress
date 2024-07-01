@@ -291,79 +291,106 @@ class ShiftManagement extends Controller
                 $status = '5';
                 $final_status = '2';
             }
-            
-            // echo $rd[12].' '.$rd[13].'+++++++'.$start_at.'<br>';
-            // echo '#######'.$rd[14].' '.$rd[15].'+++++++'.$finish_at.'========'.$finish_date.'<br>';
-            
 
-            $shidt =Shift::updateOrCreate(
-                ['shiftRandId' => preg_replace('/[^0-9]/', '', $rd[0])],
-                [
-                    'driverId' => $clientIds['driver'],
-                    'state' => $clientIds['state'],
-                    'client' => $clientIds['client'],
-                    'costCenter' => $clientIds['cost'],
-                    'base' => trim($rd[5]),
-                    'vehicleType' => $clientIds['vehicle_type'],
-                    'rego' => trim($rd[9]),
-                    'odometer' => $rd[35],
-                    'scanner_id' => $rd[4],
-                    'parcelsToken' => $rd[6],
-                    'shiftStatus' => $status,
-                    'finishStatus' => $final_status,
-                    'comment' => $rd[38],
-                    'approval_reason' => $rd[39],
-                    'shiftStartDate' => $start_at,
-                    'finishDate' => $finish_at,
-                    'createdDate' => $start_at,
-                    'payAmount' => $rd[33],
-                    'chageAmount' => $rd[34]
-                ]
-            );
+            $shift_update_data = [
+                'driverId' => $clientIds['driver'],
+                'state' => $clientIds['state'],
+                'client' => $clientIds['client'],
+                'costCenter' => $clientIds['cost'],
+                'base' => trim($rd[5]),
+                'vehicleType' => $clientIds['vehicle_type'],
+                'rego' => trim($rd[9]),
+                'odometer' => $rd[35],
+                'scanner_id' => $rd[4],
+                'parcelsToken' => $rd[6],
+                'shiftStatus' => $status,
+                'finishStatus' => $final_status,
+                'comment' => $rd[38],
+                'approval_reason' => $rd[39],
+                'shiftStartDate' => $start_at,
+                'finishDate' => $finish_at,
+                'createdDate' => $start_at,
+                'payAmount' => $rd[33],
+                'chageAmount' => $rd[34]
+            ];
+
+            if(isset($rd[40])){
+                $shift_update_data['extra_rate_person'] = $rd[40];
+            }
+            if(isset($rd[41])){
+                $shift_update_data['createdDate'] = date('Y-m-d H:i:s',strtotime($rd[41]));
+            }
+
+
             
-            $shiftId = $shidt->id;
-    
-            DB::table('finishshifts')->updateOrInsert(
-                [
-                    'shiftId' => $shiftId,
-                    'driverId' => $clientIds['driver'],
-                ],
-                [
-                    'driverId' => $clientIds['driver'],
-                    'startDate' => $start_date,
-                    'endDate' => $finish_date,
-                    'dayHours' => $rd[18],
-                    'nightHours' => $rd[19],
-                    'totalHours' => $rd[17],
-                    'weekendHours' => $rd[20],
-                    'startTime' => $start_time,
-                    'endTime' => $finish_time,
-                    'amount_payable_day_shift' => $rd[21]??0,
-                    'amount_chargeable_day_shift' => $rd[22]??0,
-                    'amount_payable_night_shift' => $rd[23]??0,
-                    'amount_chargeable_night_shift' => $rd[24]??0,
-                    'amount_payable_weekend_shift' => $rd[25]??0,
-                    'amount_chargeable_weekend_shift' => $rd[26]??0,
-                    'parcelsTaken' => $rd[6],
-                    'parcelsDelivered' => $rd[7],
-                    'odometerStartReading' => $rd[35] ?? 0,
-                    'odometerEndReading' => $rd[36] ?? 0,
-                    'status' => 2
-                ]
+            
+            if(Shift::where('shiftRandId',preg_replace('/[^0-9]/', '', $rd[0]))->exists()){
+                $shidt =Shift::updateOrCreate(
+                    ['shiftRandId' => preg_replace('/[^0-9]/', '', $rd[0])],
                 );
-    
-            DB::table('shiftMonetizeInformation')->updateOrInsert(
-                ['shiftId' => $shiftId],
-                [
-                    'fuelLevyPayable' => is_numeric($rd[27]) ? $rd[27] : 0,
-                    'fuelLevyChargeable' => is_numeric($rd[28]) ? $rd[28] : 0,
+                $shiftId = $shidt->id;
+
+                DB::table('shifts')->where(['id' => $shiftId,'driverId' => $clientIds['driver']])->update(['shiftStatus'=> $status,'finishStatus'=>$final_status]);
+        
+                DB::table('shiftMonetizeInformation')->where(['shiftId' => $shiftId])->update([
+                        'fuelLevyPayable' => is_numeric($rd[27]) ? $rd[27] : 0,
+                        'fuelLevyChargeable' => is_numeric($rd[28]) ? $rd[28] : 0,
+                        'fuelLevyChargeable250' => is_numeric($rd[29]) ? $rd[29] : 0,
+                        'fuelLevyChargeable400' => is_numeric($rd[30]) ? $rd[30] : 0,
+                        'extraPayable' => is_numeric($rd[31]) ? $rd[31] : 0,
+                        'extraChargeable' => is_numeric($rd[32]) ? $rd[32] : 0,
+                        'totalChargeable' => is_numeric($rd[34]) ? $rd[34] : 0,
+                    ]
+                );
+
+            }else{
+                $shift_update_data['driverId'] = $clientIds['driver'];
+                $shift_update_data['payAmount'] =is_numeric($rd[33]) ? $rd[33] : 0;
+                $shift_update_data['chageAmount'] = is_numeric($rd[34]) ? $rd[34] : 0;
+                $shiftId = DB::table('shifts')->insertGetId($shift_update_data);
+
+                $shift_finish_update_data = [
+                    'shiftId'=>$shiftId,
+                    'driverId'=>$clientIds['driver'],
+                    'odometerStartReading'=> $rd[35],
+                    'odometerEndReading'=> $rd[35],
+                    'startDate'=> date('Y-m-d',strtotime($rd[12])),
+                    'startTime'=> date('H:i:s',strtotime($rd[13])),
+                    'endDate'=> date('Y-m-d',strtotime($rd[14])),
+                    'endTime'=> date('H:i:s',strtotime($rd[15])),
+                    'dayHours'=> trim($rd[18]),
+                    'nightHours'=> trim($rd[19]),
+                    'totalHours'=> trim($rd[17]),
+                    'weekendHours'=> trim($rd[20]),
+                    'amount_payable_day_shift'=> trim($rd[21]),
+                    'amount_chargeable_day_shift'=>trim($rd[22]),
+                    'amount_payable_night_shift'=>trim($rd[23]),
+                    'amount_chargeable_night_shift'=>trim($rd[24]),
+                    'amount_payable_weekend_shift'=>trim($rd[25]),
+                    'amount_chargeable_weekend_shift'=>trim($rd[26]),
+                    'parcelsTaken'=>trim($rd[6]),
+                    'parcelsDelivered'=>trim($rd[7]),
+                ];
+
+                if(isset($rd[42])){
+                    $shift_finish_update_data['submitted_at'] = date('Y-m-d H:i:s',strtotime($rd[42]));
+                }
+
+                DB::table('finishshifts')->insert($shift_finish_update_data);
+
+                $shiftMonetizeInformation = [
+                    'shiftId'=>$shiftId,
+                    'fuelLevyPayable'=>is_numeric($rd[27]) ? $rd[27] : 0,
+                    'fuelLevyChargeable'=> is_numeric($rd[28]) ? $rd[28] : 0,
                     'fuelLevyChargeable250' => is_numeric($rd[29]) ? $rd[29] : 0,
                     'fuelLevyChargeable400' => is_numeric($rd[30]) ? $rd[30] : 0,
                     'extraPayable' => is_numeric($rd[31]) ? $rd[31] : 0,
                     'extraChargeable' => is_numeric($rd[32]) ? $rd[32] : 0,
+                    'totalPayable' => is_numeric($rd[33]) ? $rd[33] : 0,
                     'totalChargeable' => is_numeric($rd[34]) ? $rd[34] : 0,
-                ]
-            );
+                ];
+                DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
+            }
         }
         }catch (\Exception $e) {
             return $e->getMessage();

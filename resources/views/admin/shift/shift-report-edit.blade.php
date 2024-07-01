@@ -276,7 +276,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->createdDate??'N/A' }}" aria-describedby="emailHelp" placeholder="" disabled>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->createdDate ? date('Y-m-d H:s', strtotime($shiftView->createdDate)):'N/A' }}" aria-describedby="emailHelp" placeholder="" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -478,7 +478,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                        <input type="text" class="form-control" id="odometerEndReading" name="odometerEndReading" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                    @php
-                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->odometer ?? 0);
+                                                   $km = isset($shiftView->getFinishShift->odometerEndReading) && isset($shiftView->odometer) ?  ($shiftView->getFinishShift->odometerEndReading -  $shiftView->odometer) : '';
                                                    @endphp
                                                   </div>
                                                   <div class="col-lg-3">

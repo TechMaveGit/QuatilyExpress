@@ -359,7 +359,7 @@ class CommonApiController extends Controller
                     $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
                     Client::where('id', $data['shiftView']->client)->update(['adminCharge' => $chargeAdmin]);
 
-                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2',]);
                     if ($request->file('missedImage') != '') {
                         $image = $request->file('missedImage');
                         $dateFolder = 'driver/parcel/finishParcel';
@@ -368,7 +368,7 @@ class CommonApiController extends Controller
                         $items = null;
                     }
 
-                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2', 'shiftStartDate' => date('Y-m-d',strtotime($request->start_date)) . ' ' . date('H:i:s',strtotime($request->start_time))]);
 
                     $Parcel = new Finishshift();
                     $Parcel->driverId = $this->driverId;

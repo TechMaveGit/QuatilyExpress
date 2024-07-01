@@ -193,23 +193,23 @@ function yesstartShift()
                                         }
                                     </script>
                                         <div class="col-lg-6">
-                                            <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
-                                            <input type="text" name="startDate" class="form-control datetime_picker_start"   aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" required>
+                                            <label class="form-label" for="shiftStartDate">Start Date <span class="red">*</span></label>
+                                            <input type="text" name="startDate" id="shiftStartDate" class="form-control datetime_picker_start"   aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" required>
                                         </div>
                                         <div class="col-lg-6">
-                                            <label class="form-label" for="exampleInputEmail1">End date <span class="red">*</span></label>
-                                            <input type="text"  name="endDate" min="1000-01-01" max="9999-12-31" class="form-control datetime_picker_end" required="">
+                                            <label class="form-label" for="shiftEndDate">End date <span class="red">*</span></label>
+                                            <input type="text"  name="endDate" id="shiftEndDate" min="1000-01-01" max="9999-12-31" class="form-control datetime_picker_end" required="">
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
-                                                <input type="text" class="form-control" name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" required>
+                                                <label class="form-label" for="ParcelsTaken">Parcels Taken  <span class="red">*</span></label>
+                                                <input type="text" class="form-control"  name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label class="form-label" for="exampleInputEmail1">Parcels Delivered <span class="red">*</span></label>
-                                                <input type="text" class="form-control" value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
+                                                <label class="form-label" for="parcel_delivered">Parcels Delivered <span class="red">*</span></label>
+                                                <input type="text" class="form-control"  value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
                                                 <div id="message_"></div>
                                             </div>
                                         </div>
@@ -295,6 +295,7 @@ function yesstartShift()
             dateFormat: "Y-m-d H:i",
             time_24hr: true,
             appendTo: document.body,
+            defaultDate: "{{date('Y-m-d H:i')}}",
             onChange: function(selectedDates, dateStr, instance) {
                 if (selectedDates[0] && startPicker.selectedDates[0] && selectedDates[0] <= startPicker.selectedDates[0]) {
                     instance.setDate(new Date(startPicker.selectedDates[0].getTime() + 3600000)); // Add 1 hour to start date
@@ -1054,15 +1055,13 @@ function yesstartShift()
                  <td hidden class="td"><span id="span_status_31240">{{ $allshift->getFinishShift->comments??'N/A' }}</span>
                 </td>
                 @php
-                    $carbonDateTime = \Carbon\Carbon::parse($allshift->shiftStartDate);
-                    $formattedDate = $carbonDateTime->format('d/m/Y');
-                    $formattedTime = $carbonDateTime->format('h:i A');
+                    $carbonDateTime = date('Y-m-d H:i',strtotime($allshift->shiftStartDate));
                @endphp
                  @if(in_array("53", $arr) || in_array("52", $arr) || in_array("54", $arr) || in_array("70", $arr))
                     <td>
                         <div class="d-flex">
                             @if($allshift->finishStatus=='1')
-                            <a  onclick="finishShift(`{{ $allshift->id }}`,`{{ $allshift->odometer }}`,`{{ $allshift->parcelsToken }}`,`{{ $formattedDate }} {{ $formattedTime }}`)" class="btn text-primary btn-sm btncls"
+                            <a  onclick="finishShift(`{{ $allshift->id }}`,`{{ $allshift->odometer }}`,`{{ $allshift->parcelsToken }}`,`{{ $carbonDateTime }}`)" class="btn text-primary btn-sm btncls"
                                 data-bs-toggle="tooltip"
                                 data-bs-original-title="Finish Shift"><iconify-icon class="finishshift_icon" icon="mdi:stopwatch-start-outline"></iconify-icon>
                             </a>
@@ -1363,13 +1362,12 @@ var myChart = new Chart(ctx, {
     });
 </script>
 <script>
-        function finishShift(shiftId,obometer,parcelsToken,formattedDate,formattedTime)
+        function finishShift(shiftId,obometer,parcelsToken,formattedDate)
         {
             $("#appendFinishShiftiId").val(shiftId);
             $("#odometer_start_reading").val(obometer);
             $("#ParcelsTaken").val(parcelsToken);
-            $("#start-date").val(formattedDate);
-            $("#start-time").val(formattedTime);
+            $("#shiftStartDate").val(formattedDate);
             $("#finishShift").modal('show');
         }
         function startShift(shiftId)

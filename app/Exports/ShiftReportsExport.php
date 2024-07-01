@@ -29,8 +29,7 @@ class ShiftReportsExport
             'Client',
             'Cost',
             'Driver',
-            'Driver Rate',
-            'Scanner ID',
+            'Scanner ID',
             'Base',
             'Parcels Taken',
             'Parcels Delivered',
@@ -38,8 +37,6 @@ class ShiftReportsExport
             'Vehicle',
             'Vehicle Type',
             'State',
-            'Mobile Date Start',
-            'Mobile Date Finish',
             'Date Start',
             'Time Start',
             'Date Finish',
@@ -67,7 +64,10 @@ class ShiftReportsExport
             'Odometer End',
             'Traveled KM',
             'Comments',
-            'Approved Reason'
+            'Approved Reason',
+            'Driver Rate',
+            'Mobile Date Start',
+            'Mobile Date Finish',
         ]);
     }
 
@@ -78,7 +78,6 @@ class ShiftReportsExport
             $row['Client Name'],
             $row['Cost'],
             $row['Driver'],
-            $row['Driver Rate'],
             $row['Scanner Id'],
             $row['Base'],
             $row['Parcels Taken'],
@@ -87,8 +86,6 @@ class ShiftReportsExport
             $row['REGO'],
             $row['Vehicle Type'],
             $row['State'],
-            $row['Mobile Date Start'],
-            $row['Mobile Date Finish'],
             $row['Date Start'],
             $row['Time Start'],
             $row['Date Finish'],
@@ -116,7 +113,10 @@ class ShiftReportsExport
             $row['Odometer End'],
             $row['Traveled KM'],
             $row['Comment'],
-            $row['Approved Reason']
+            $row['Approved Reason'],
+            $row['Driver Rate'],
+            $row['Mobile Date Start'],
+            $row['Mobile Date Finish'],
         ]);
     }
 
@@ -180,8 +180,8 @@ class ShiftReportsExport
                 'Client Name' => $shift->getClientName->name ?? 'N/A',
                 'Cost' => $shift->getCostCenter->name ?? 'N/A',
                 'Driver' => $shift->getDriverName->fullName ?? 'N/A',
-                'Driver Rate' => $extra_per_hour_rate ?? '0',
                 'Scanner Id' => $shift->scanner_id ?? 'N/A',
+                'Driver Rate' => $extra_per_hour_rate ?? '0',
                 'Parcels Taken' => $shift->parcelsToken ?? 0,
                 'Parcels Delivered' => $shift->getFinishShift->parcelsDelivered ?? 0,
                 'Outstanding Parcels' => (($shift->parcelsToken??0) - ($shift->getFinishShift->parcelsDelivered??0)),

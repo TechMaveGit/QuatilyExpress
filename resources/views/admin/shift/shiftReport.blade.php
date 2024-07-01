@@ -129,7 +129,7 @@
                 {{-- <div class="modal-header"> --}}
                 <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                     <h2 style="margin-left: 9px; font-weight: bold; }">Select file</h2>
-                    {{-- <p class="text-muted mx-4 mb-0" style="font-size: 19px;">Editable fields: Status, Fuel Levy Payable, Fuel Levy Chargeable, Fuel Levy Chargeable250, Fuel Levy Chargeable400, Extra Payable, Extra Chargeable</p> --}}
+                    <p class="text-muted m-4 mb-0" style="font-size: 13px;">Editable fields: Status, Fuel Levy Payable, Fuel Levy Chargeable, Fuel Levy Chargeable250, Fuel Levy Chargeable400, Extra Payable, Extra Chargeable</p>
                 </div>
                 {{-- </div> --}}
                 <div class="import">

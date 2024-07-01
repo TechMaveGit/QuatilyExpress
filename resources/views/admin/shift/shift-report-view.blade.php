@@ -466,7 +466,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                    @php
-                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->odometer ?? 0);
+                                                   $km = isset($shiftView->getFinishShift->odometerEndReading) && isset($shiftView->odometer) ?  ($shiftView->getFinishShift->odometerEndReading -  $shiftView->odometer) : '';
                                                    @endphp
    
                                                   </div>
@@ -481,7 +481,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Start</label>
                                                        @if ($shiftView->shiftStartDate)
-                                                        <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate ? date('Y-m-d H:i',strtotime($shiftView->shiftStartDate)) : '' }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @else
                                                         <input type="text" class="form-control" id="#basicDate" value="" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @endif
@@ -491,7 +491,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish </label>
                                                        @if ($finishshifts)
-                                                       <input type="text" class="form-control" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <input type="text" class="form-control" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime ? date('H:i',strtotime($finishshifts->endTime)) : 'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @else
                                                        <input type="text" class="form-control" id="#basicDate1" value="" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @endif

@@ -43,7 +43,7 @@ class LiveTrackingController extends Controller
             $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
             $locations = $locations->get()->toArray();
             $selected_driver['driver'] = Driver::whereId($driverName ?? '')->first()->toArray() ?? '';
-            $selected_driver['shift'] = Shift::where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
+            $selected_driver['shift'] = Shift::with('getRego')->where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
 
             if ($shiftId) {
                 $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
@@ -78,7 +78,7 @@ class LiveTrackingController extends Controller
             // $selected_driver = Driver::whereId($driverName ?? '')->first()->toArray();
 
             $selected_driver['driver'] = Driver::whereId($driverName ?? '')->first()->toArray() ?? '';
-            $selected_driver['shift'] = Shift::where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
+            $selected_driver['shift'] = Shift::with('getRego')->where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
            
             if ($driverName) {
                 $locations->where('driver_id', $driverName);
@@ -100,7 +100,7 @@ class LiveTrackingController extends Controller
                 $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng')->orderBy('id', 'DESC')->where('driver_id', $alldriver->id)->first();
                     if (isset($location->driver_id)) {
                         $location->driver = Driver::whereId($location->driver_id ?? '')->first()->toArray() ?? '';
-                        $location->shift = Shift::where(['driverId'=>$location->driver_id,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
+                        $location->shift = Shift::with('getRego')->where(['driverId'=>$location->driver_id,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
                     }
                     if ($location) {
                         $locations[] = $location->toArray();
@@ -141,7 +141,7 @@ class LiveTrackingController extends Controller
                 return redirect()->back()->with('message', 'State Added Successfully!');
             }
         }
-        $state = State::get();
+        $state = State::where('status','!=','2')->get();
 
         return view('admin.state.state', compact('state'));
     }
@@ -163,7 +163,7 @@ class LiveTrackingController extends Controller
     public function stateDelete(Request $request)
     {
         $stateId = $request->input('stateId');
-        State::whereId($stateId)->update(['status' => '0']);
+        State::whereId($stateId)->update(['status' => '2']);
 
         return redirect()->back()->with('message', 'State Delete Successfully!');
     }
