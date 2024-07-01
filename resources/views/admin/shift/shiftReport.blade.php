@@ -605,6 +605,7 @@
                                         flex-direction: row-reverse;
                                     }
                                 </style>
+                                
                                 <br>
                                 <div class="table-responsive" id="">
                                     <table id="shiftTable" class="table  table-hover nowrap mb-0"
@@ -681,7 +682,9 @@
                                                 @endif
                                             </tr>
                                         </thead>
+                                        
                                         <tbody>
+                                            
                                             @foreach ($shift as $key => $allshift)
                                                 <tr class="border-bottom">
                                                     <td hidden>{{ $key + 1 }}</td>
@@ -717,6 +720,7 @@
                                                     <td class="td column-state">
                                                         {{ $allshift->getStateName->name ?? 'N/A' }}
                                                     </td>
+                                                    
                                                     @php
                                                         $finishshifts = DB::table('finishshifts')
                                                                 ->where('shiftId', $allshift->id)
@@ -745,6 +749,7 @@
                                                     @else
                                                         <td class="td column-start_Date">N/A</td>
                                                     @endif
+                                                    
                                                     <td hidden class="td">
                                                         {{ $allshift->getFinishShift->startTime ?? 'N/A' }}</td>
                                                     @if ($finishshifts)
@@ -798,6 +803,7 @@
                                                         $chargeDayShift = ($clientRates->hourlyRateChargeableDays ?? 0) * ($finishshifts->dayHours ?? 0);
                                                         $chargeNight = ($clientRates->ourlyRateChargeableNight ?? 0) * ($finishshifts->nightHours ?? 0);
                                                     @endphp
+                                                    
                                                     <td hidden class="td sorting_1">
                                                         {{ $daySum + $nightHours + $weekendHours }}</td>
                                                     @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
@@ -923,6 +929,7 @@
                                                         @endphp
                                                         <td hidden class="td sorting_1">{{ $saturday + $sunday }}</td>
                                                     @endif
+                                                    
                                                     @if (!empty($finishshifts->saturdayHours))
                                                         @php
                                                             $saturday =
@@ -946,6 +953,7 @@
                                                             $sunday = 0;
                                                         @endphp
                                                     @endif
+                                                    
                                                     <td hidden class="td sorting_1 saturday">{{ $saturday + $sunday }}
                                                     </td>
                                                     <td hidden class="td sorting_1">
@@ -1012,6 +1020,7 @@
                                                         $shiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where('shiftId',$allshift->id)->first();
                                                         $finalpayAmount = $payAmount + ($shiftMonetizeInformation->fuelLevyPayable??0)+($shiftMonetizeInformation->extraPayable??0);
                                                     @endphp
+                                                    
                                                     @if($finalpayAmount)
                                                     @php
                                                          $finalpayamnnt = $finalpayAmount;
@@ -1034,13 +1043,15 @@
                                                     @endif --}}
                                                     {{-- // Add pay --}}
                                                     @php
-                                                        $km = ($allshift->getFinishShift?->odometerEndReading ?? 0) - ($allshift->getFinishShift?->odometerStartReading ?? 0);
+                                                        $km = ((float)$allshift->getFinishShift?->odometerEndReading ?? 0) - ((float)$allshift->getFinishShift?->odometerStartReading ?? 0);
                                                     @endphp
+                                                    
                                                     <td class="td column-traveledKm"><span id="span_status_31240">{{ $km ??'0' }}</span>
                                                     </td>
                                                     <td hidden><span
                                                             id="span_status_31240">{{ $allshift->getFinishShift->comments ?? 'N/A' }}</span>
                                                     </td>
+                                                    
                                                     @if (in_array('50', $arr) || in_array('51', $arr) || in_array('52', $arr) || in_array('53', $arr))
                                                         <td class="column-action">
                                                             <div class="dropdown">

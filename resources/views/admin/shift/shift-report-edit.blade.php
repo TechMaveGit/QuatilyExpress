@@ -478,7 +478,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                        <input type="text" class="form-control" id="odometerEndReading" name="odometerEndReading" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                    @php
-                                                   $km = isset($shiftView->getFinishShift->odometerEndReading) && isset($shiftView->odometer) ?  ($shiftView->getFinishShift->odometerEndReading -  $shiftView->odometer) : '';
+                                                   $km = (isset($shiftView->getFinishShift->odometerEndReading) && $shiftView->getFinishShift->odometerEndReading != 0 && $shiftView->getFinishShift->odometerEndReading != '' && isset($shiftView->odometer)) ?  ((float)$shiftView->getFinishShift->odometerEndReading -  (float)$shiftView->odometer) : '';
                                                    @endphp
                                                   </div>
                                                   <div class="col-lg-3">
@@ -576,7 +576,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="exampleInputEmail1">Total Payable </label>
-                                                        <input type="text" step="0.1" value="{{ round($day,2)+ round($night,2) + round($finalAmount,2) + ($shiftView->getShiftMonetizeInformation->fuelLevyPayable??0) + ($shiftView->getShiftMonetizeInformation->extraPayable??0) }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="text" step="0.1" value="{{ round($day,2) + round($night,2) + round($finalAmount,2) + ($shiftView->getShiftMonetizeInformation->fuelLevyPayable??0)+($shiftView->getShiftMonetizeInformation->extraPayable??0) }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                             </div>

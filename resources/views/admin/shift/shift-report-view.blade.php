@@ -466,7 +466,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                    @php
-                                                   $km = isset($shiftView->getFinishShift->odometerEndReading) && isset($shiftView->odometer) ?  ($shiftView->getFinishShift->odometerEndReading -  $shiftView->odometer) : '';
+                                                   $km = (isset($shiftView->getFinishShift->odometerEndReading) && $shiftView->getFinishShift->odometerEndReading != 0 && $shiftView->getFinishShift->odometerEndReading != '' && isset($shiftView->odometer)) ?  ((float)$shiftView->getFinishShift->odometerEndReading -  (float)$shiftView->odometer) : '';
                                                    @endphp
    
                                                   </div>

@@ -315,7 +315,7 @@ class ShiftManagement extends Controller
 
                 $smont = DB::table('shiftMonetizeInformation')->where(['shiftId' => $shiftId])->first();
 
-                $dataShiftM['totalPayable'] = $smont->amountPayablePerService + $dataShiftM['fuelLevyPayable']+$dataShiftM['extraPayable'];
+                $dataShiftM['totalPayable'] = ($smont->amountPayablePerService??0) + $dataShiftM['fuelLevyPayable']+$dataShiftM['extraPayable'];
                 DB::table('shiftMonetizeInformation')->where(['shiftId' => $shiftId])->update($dataShiftM);
 
                 DB::table('shifts')->where('id' ,$shiftId)->update(['payAmount'=>$dataShiftM['totalPayable'],'chageAmount'=>$dataShiftM['totalChargeable']]);
@@ -344,7 +344,7 @@ class ShiftManagement extends Controller
                     'payAmount' => $rd[33],
                     'chageAmount' => $rd[34]
                 ];
-    
+                $shift_update_data['extra_rate_person'] = 0;
                 if(isset($rd[40])){
                     $shift_update_data['extra_rate_person'] = $rd[40];
                 }
@@ -399,6 +399,7 @@ class ShiftManagement extends Controller
                     'totalChargeable' => is_numeric($rd[34]) ? $rd[34] : 0,
                 ];
                 DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
+
             }
         }
         }catch (\Exception $e) {
