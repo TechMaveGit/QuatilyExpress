@@ -1164,6 +1164,8 @@ class ShiftManagement extends Controller
         $data['types'] = Type::where(['status' => '1'])->get();
         $data['driverAdd'] = Driver::get();
 
+        // dd($data);
+
         return view('admin.shift.shift-report-view', $data, compact('finalAmount'));
     }
 
@@ -1403,7 +1405,7 @@ class ShiftManagement extends Controller
         // } else {
         //     $data['extra_rate_per_hour'] = 0;
         // }
-
+        // dd($data);
         // dd($data);
         // $data['extra_rate_per_hour'] = + $shiftView->getDriverName->extra_rate_per_hour
         return view('admin.shift.shift-report-edit', $data);
