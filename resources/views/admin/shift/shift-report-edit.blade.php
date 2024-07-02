@@ -276,7 +276,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->createdDate ? date('Y-m-d H:s', strtotime($shiftView->createdDate)):'N/A' }}" aria-describedby="emailHelp" placeholder="" disabled>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->createdDate ? date('Y-m-d H:i', strtotime($shiftView->createdDate)):'N/A' }}" aria-describedby="emailHelp" placeholder="" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
