@@ -182,9 +182,10 @@ class Homecontroller extends Controller
         if ($userId->role_id == '33') {
             $currentDate = now()->toDateString();
             $driverId = Driver::where('email', $userId->email)->first()->id;
-            $query = $query->where('driverId', $driverId)->whereDate('created_at', '=', $currentDate)->whereIn('finishStatus', ['0', '1']);
+            $query = $query->where('driverId', $driverId)->whereIn('finishStatus', ['0', '1']);
         }
         $data['shift'] = $query->orderBy('id', 'DESC')->with('getClientName:id,name', 'getDriverName:id,userName', 'getVehicleType:id,name', 'getStateName:id,name', 'getFinishShift')->get();
+       
         $data['state'] = DB::table('states')->get();
         $data['client'] = Client::where('status', '1')->get();
         $data['clientcenter'] = Clientcenter::select('id', 'name')->get();

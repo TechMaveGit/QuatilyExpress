@@ -412,6 +412,12 @@ class ShiftManagement extends Controller
 
     public function shiftAdd(Request $request)
     {
+        if(auth()->user()->role_id == '33'){
+            $driverId = Driver::where('email', auth()->user()->email)->first()->id;
+            if (Shift::where(['driverId'=>$driverId,'finishStatus'=>'1'])->exists()) {
+                return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
+            }
+        }
         try {
             if (request()->isMethod('post')) {
                 $driverId = $request->driverId;
