@@ -20,7 +20,7 @@ jobs:
         tools: composer, php-cs-fixer
 
     - name: Install dependencies
-      run: composer install --no-dev --prefer-dist --optimize-autoloader
+      run: composer update --no-dev --prefer-dist --optimize-autoloader
 
     - name: Prepare environment
       run: |
