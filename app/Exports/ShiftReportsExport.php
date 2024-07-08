@@ -3,6 +3,8 @@
 namespace App\Exports;
 
 use App\Models\Clientrate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 class ShiftReportsExport
 {
@@ -11,6 +13,78 @@ class ShiftReportsExport
     public function __construct($shifts)
     {
         $this->shifts = $shifts;
+    }
+
+    public function exportToXls()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers
+        $headers = $this->generateHeaders();
+        $sheet->fromArray($headers, NULL, 'A1');
+
+        // Add data
+        $data = $this->collection();
+        $sheet->fromArray($data, NULL, 'A2');
+
+        // Create the XLS writer
+        $writer = new Xls($spreadsheet);
+
+        // Save to a temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'shift_report');
+        $writer->save($tempFile);
+
+        return $tempFile;
+    }
+
+    protected function generateHeaders()
+    {
+        return [
+            'ID',
+            'Client',
+            'Cost',
+            'Driver',
+            'Scanner ID',
+            'Base',
+            'Parcels Taken',
+            'Parcels Delivered',
+            'Outstanding Parcels',
+            'Vehicle',
+            'Vehicle Type',
+            'State',
+            'Date Start',
+            'Time Start',
+            'Date Finish',
+            'Time Finish',
+            'Status',
+            'Total Hours',
+            'Hours Morning Shift',
+            'Hours Night Shift',
+            'Hours Weekend Shift',
+            'Amount Payable Day Shift',
+            'Amount Chargeable Day Shift',
+            'Amount Payable Night Shift',
+            'Amount Chargeable Night Shift',
+            'Amount Payable Weekend Shift',
+            'Amount Chargeable Weekend Shift',
+            'Fuel Levy Payable',
+            'Fuel Levy Chargeable Fixed',
+            'Fuel Levy Chargeable 250+',
+            'Fuel Levy Chargeable 400+',
+            'Extra Payable',
+            'Extra Chargeable',
+            'Total Payable',
+            'Total Chargeable',
+            'Odometer Start',
+            'Odometer End',
+            'Traveled KM',
+            'Comments',
+            'Approved Reason',
+            'Driver Rate',
+            'Mobile Date Start',
+            'Mobile Date Finish',
+        ];
     }
 
     public function exportToCsv()
@@ -174,22 +248,18 @@ class ShiftReportsExport
             $km = ((int) $shift?->getFinishShift?->odometerEndReading ?? 0) - ((int) $shift?->getFinishShift?->odometerStartReading ?? 0);
 
             return [
-                'Client Id' => $shift->client ?? '',
                 'Shift ID' => 'QE' . $shift->shiftRandId,
-                'Base' => $shift->base??'N/A',
                 'Client Name' => $shift->getClientName->name ?? 'N/A',
                 'Cost' => $shift->getCostCenter->name ?? 'N/A',
                 'Driver' => $shift->getDriverName->fullName ?? 'N/A',
                 'Scanner Id' => $shift->scanner_id ?? 'N/A',
-                'Driver Rate' => $extra_per_hour_rate ?? '0',
+                'Base' => $shift->base??'N/A',
                 'Parcels Taken' => $shift->parcelsToken ?? 0,
                 'Parcels Delivered' => $shift->getFinishShift->parcelsDelivered ?? 0,
                 'Outstanding Parcels' => (($shift->parcelsToken??0) - ($shift->getFinishShift->parcelsDelivered??0)),
                 'REGO' => $shift->getRego->rego ?? 'N/A',
                 'Vehicle Type' => $shift->getVehicleType->name ?? 'N/A',
                 'State' => $shift->getStateName->name ?? 'N/A',
-                'Mobile Date Start' => $shift->createdDate ? date('d-m-Y H:i:s',strtotime($shift->createdDate)) : 'N/A',
-                'Mobile Date Finish' => $shift->getFinishShift->submitted_at ? date('d-m-Y H:i:s',strtotime($shift->getFinishShift->submitted_at)) : 'N/A',
                 'Date Start' => $shift->getFinishShift->startDate ? date('d-m-Y',strtotime($shift->getFinishShift->startDate)) : 'N/A',
                 'Time Start' => $shift->getFinishShift->startTime ?? 'N/A',
                 'Date Finish' => $shift->getFinishShift->endDate ? date('d-m-Y',strtotime($shift->getFinishShift->endDate)) : 'N/A',
@@ -211,13 +281,16 @@ class ShiftReportsExport
                 'Fuel Levy Chargeable 400+' => $shift->getShiftMonetizeInformation->fuelLevyChargeable400 ?? '0',
                 'Extra Payable' => $shift->getShiftMonetizeInformation->extraPayable ?? '0',
                 'Extra Chargeable' => $shift->getShiftMonetizeInformation->extraChargeable ?? '0',
+                'Total Payable' => round($shift->payAmount, 2) ?? '0',
                 'Total Chargeable' => $shift->getShiftMonetizeInformation->totalChargeable ?? '0',
                 'Odometer Start' => $shift->getFinishShift->odometerStartReading ?? '0',
                 'Odometer End' => $shift->getFinishShift->odometerEndReading ?? '0',
-                'Total Payable' => round($shift->payAmount, 2) ?? '0',
                 'Traveled KM' => $km ?? '0',
                 'Comment' => $shift->getFinishShift->comments ?? 'N/A',
-                'Approved Reason' => $shift->approval_reason ?? 'N/A'
+                'Approved Reason' => $shift->approval_reason ?? 'N/A',
+                'Driver Rate' => $extra_per_hour_rate ?? '0',
+                'Mobile Date Start' => $shift->createdDate ? date('d-m-Y H:i:s',strtotime($shift->createdDate)) : 'N/A',
+                'Mobile Date Finish' => $shift->getFinishShift->submitted_at ? date('d-m-Y H:i:s',strtotime($shift->getFinishShift->submitted_at)) : 'N/A',
             ];
         })->toArray();
     }

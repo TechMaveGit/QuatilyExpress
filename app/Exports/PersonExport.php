@@ -5,13 +5,13 @@ namespace App\Exports;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
-class ClientsExport
+class PersonExport
 {
-    protected $clients;
+    protected $persons;
 
-    public function __construct($clients)
+    public function __construct($persons)
     {
-        $this->clients = $clients;
+        $this->persons = $persons;
     }
 
     public function exportToCsv()
@@ -40,7 +40,7 @@ class ClientsExport
         $writer = new Xls($spreadsheet);
 
         // Save to a temporary file
-        $tempFile = tempnam(sys_get_temp_dir(), 'client_report');
+        $tempFile = tempnam(sys_get_temp_dir(), 'person_report');
         $writer->save($tempFile);
 
         return $tempFile;
@@ -49,53 +49,49 @@ class ClientsExport
     protected function generateCsvHeaders()
     {
         return implode(',', [
-            'ID',
-            'Name',
-            'Short Name',
-            'Abn',
-            'Phone Principal',
-            'State',
+            'Full Name',
+            'Mobile No',
+            'Email',
+            'DOB',
             'Status',
+            'Extra Rate Per Hour'
         ]);
     }
 
     protected function generateHeaders()
     {
         return [
-            'ID',
-            'Name',
-            'Short Name',
-            'Abn',
-            'Phone Principal',
-            'State',
+            'Full Name',
+            'Mobile No',
+            'Email',
+            'DOB',
             'Status',
+            'Extra Rate Per Hour'
         ];
     }
 
     protected function generateCsvRow($index, $row)
     {
         return implode(',', [
-            $row['ID'],
-            $row['Name'],
-            $row['Short Name'],
-            $row['Abn'],
-            $row['Phone Principal'],
-            $row['State'],
+            $row['Full Name'],
+            $row['Mobile No'],
+            $row['Email'],
+            $row['DOB'],
             $row['Status'],
+            $row['Extra Rate Per Hour']
         ]);
     }
 
     public function collection()
     {
-        return $this->clients->map(function ($client) {
+        return $this->persons->map(function ($person) {
             return [
-                'ID' => $client->id,
-                'Name' => $client->name,
-                'Short Name' => $client->shortName,
-                'Abn' => $client->abn,
-                'Phone Principal' => $client->phonePrinciple,
-                'State' => $client->getState->name,
-                'Status' => $client->status == 1 ? 'Active' : 'Inactive',
+                'Full Name' => $person->fullName,
+                'Mobile No' => $person->mobileNo,
+                'Email' => $person->email,
+                'DOB' => $person->dob,
+                'Status' => $person->status == 1 ? 'Active' : 'Inactive',
+                'Extra Rate Per Hour' => $person->extra_rate_per_hour,
             ];
         })->toArray();
     }

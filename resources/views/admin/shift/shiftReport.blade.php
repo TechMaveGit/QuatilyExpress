@@ -136,7 +136,7 @@
                     <div class="">
                         <form action="{{ route('admin.shift.import') }}" method="post" enctype="multipart/form-data"> @csrf
                             <div class="flex_div">
-                                <input class="form-control" type="file" name="shift_file" accept=".csv" required>
+                                <input class="form-control" type="file" name="shift_file" accept=".csv,.xls" required>
                                 <input class="btn btn-green import-button" type="submit" value="Import Excel" />
                             </div>
                         </form>
@@ -359,7 +359,7 @@
                                                         Filter</a>
                                                     @if (in_array('54', $arr))
                                                         <a onclick="showImportForm()" class="btn btn-green "><i
-                                                                class="fa fa-file-excel-o"></i> Import Csv</a>
+                                                                class="fa fa-file-excel-o"></i> Import File</a>
                                                     @endif
                                                 </div>
                                             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PersonExport;
 use App\Helpers\DataTableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ImageController;
@@ -414,5 +415,34 @@ class Personcontroller extends Controller
                 'message' => 'Done.',
             ]);
         }
+    }
+
+    public function exportPersons(Request $request)
+    {
+        // dd("Asdasd");
+        // $query = Driver::query();
+        // Check if any filter input is provided
+        $data['status'] = $request->input('form.selectStatus') ?? null;
+        $data['name'] = $request->input('form.name') ?? null;
+        $data['email'] = $request->input('form.email') ?? null;
+        $query = Driver::with('roleName');
+        if ($data['name']) {
+            $query = $query->where('userName', 'like', '%' . $data['name'] . '%');
+        }
+        if ($data['email']) {
+            $query = $query->where('email', $data['email']);
+        }
+        if ($data['status']) {
+            $query = $query->where('status', $data['status']);
+        } else {
+            $query = $query->where('status', '1');
+        }
+        $persons = $query->select('*')->orderBy('id', 'DESC')->limit(10)->get();
+        // dd($persons);
+
+        $export = new PersonExport($persons);
+        $tempFile = $export->exportToXls();
+    
+        return response()->download($tempFile, 'persons.xls')->deleteFileAfterSend(true);
     }
 }

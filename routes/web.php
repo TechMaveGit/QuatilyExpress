@@ -128,6 +128,7 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
         Route::match(['get', 'post'], '/delete/rates', [Personcontroller::class, 'deleteRate'])->name('deleteRate');
         // Route::match(['get','post'],'/edit/{id}', [Personcontroller::class, 'reminderedit'])->name('reminder.edit');
         Route::match(['get', 'post'], '/person/status', [Personcontroller::class, 'personStatus'])->name('personStatus');
+        Route::match(['get', 'post'], '/export-person', [Personcontroller::class, 'exportPersons'])->name('export.person');
 
        
     });

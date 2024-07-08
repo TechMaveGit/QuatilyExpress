@@ -138,8 +138,10 @@
                        <a href="{{ route('person.add') }}" class="btn btn-primary" style="margin: 3px ">+ Add New Person</a>
                        @endif
                     </div>
-                    <a class="btn btn-green" style="color: white;" id="personexportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
-                    {{-- <a  class="btn btn-green srch_btn ms-3" id="exportBtn" style="color: white;"> <i class="fa fa-file-excel-o"></i> Download Excel</a> --}}
+                    <button class="btn btn-green" style="color: white; margin: 4px;"
+                    onclick="window.location='{{ route('export.person', request()->input()) }}'"><i
+                        class="fa fa-file-excel-o"></i>Download Excel</button>
+                    
                 </div>
                         <div class="card-body">
                         <div class="table-responsive">

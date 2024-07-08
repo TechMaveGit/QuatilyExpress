@@ -215,37 +215,56 @@ class ShiftManagement extends Controller
             return redirect()->back()->with('error', 'No file uploaded');
         }
     
-        $file = $request->file('shift_file'); // Get the uploaded file
+        $file = $request->file('shift_file');
     
         // Check if the file is valid
         if (!$file->isValid()) {
             return redirect()->back()->with('error', 'Uploaded file is not valid');
         }
     
-        $filePath = $file->getRealPath(); // Get the real path of the file
+        $filePath = $file->getRealPath();
+        $fileExtension = $file->getClientOriginalExtension();
     
         $data = [];
-       
-
-        if (($handle = fopen($filePath, 'r')) !== FALSE) {
-            // Set the delimiter to comma and the enclosure to double quotes
-            while (($row = fgetcsv($handle, 1000, ',', '"')) !== FALSE) {
-                $data[] = array_map([$this, 'sanitizeText'], $row); // Sanitize each cell
+    
+        if ($fileExtension == 'csv') {
+            // Read CSV file
+            if (($handle = fopen($filePath, 'r')) !== FALSE) {
+                while (($row = fgetcsv($handle, 1000, ',', '"')) !== FALSE) {
+                    $data[] = array_map([$this, 'sanitizeText'], $row);
+                }
+                fclose($handle);
             }
-            fclose($handle);
+        } elseif (in_array($fileExtension, ['xls', 'xlsx'])) {
+            // Read XLS/XLSX file
+            $spreadsheet = IOFactory::load($filePath);
+            $worksheet = $spreadsheet->getActiveSheet();
+            foreach ($worksheet->getRowIterator() as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE);
+                $rowData = [];
+                foreach ($cellIterator as $cell) {
+                    $rowData[] = $this->sanitizeText($cell->getValue());
+                }
+                $data[] = $rowData;
+            }
+        } else {
+            return redirect()->back()->with('error', 'Unsupported file type');
         }
     
+        // Rest of your existing code...
         $clients = DB::table('clients')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
         $clientbase = DB::table('clientbases')->select(DB::raw('LOWER(base) AS base'),'id')->get()->pluck('id','base')->toArray();
         $clientcenters =DB::table('clientcenters')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
         $drivers = DB::table('drivers')->select(DB::raw('LOWER(fullName) AS fullName'),'id')->get()->pluck('id','fullName')->toArray();
         $vehicals = DB::table('vehicals')->select(DB::raw('LOWER(rego) AS rego'),'id')->get()->pluck('id','rego')->toArray();
         $vehicals_type = DB::table('types')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
-        $states =DB::table('states')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
+        $states =DB::table('states')->where('status', '1')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
     
         unset($data[0]); // Remove the header row if present
     
 
+        // dd($data);
         foreach ($data as $kk => $rd) {
             $clientIds = [];
             $clientIds['shiftId'] = preg_replace('/[^0-9]/', '', $rd[0]);
@@ -894,7 +913,7 @@ class ShiftManagement extends Controller
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
-            $states = DB::table('states')
+            $states = DB::table('states')->where('status', '1')
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
@@ -990,6 +1009,7 @@ class ShiftManagement extends Controller
                 $query->where('endDate', '>=', $enddate);
             });
         }
+         $userId = Auth::guard('adminLogin')->user();
         if ($userId->role_id == '33') {
             $driverId = Driver::where('email', $userId->email)->first()->id;
             $query = $query->where('driverId', $driverId);
@@ -1018,7 +1038,7 @@ class ShiftManagement extends Controller
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
-            $states = DB::table('states')
+            $states = DB::table('states')->where('status', '1')
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
@@ -1171,7 +1191,7 @@ class ShiftManagement extends Controller
 
     public function shiftReportEdit(Request $request, $id)
     {
-        // dd($request->all());
+       
         $query = Shift::where('id', $id);
         $shiftData = Shift::whereId($id)->first();
         $getClientID = $shiftData->client;
@@ -1188,10 +1208,12 @@ class ShiftManagement extends Controller
         $data['types'] = Type::where(['status' => '1'])->get();
         $clientRates = DB::table('clientrates')->where(['clientId'=>$data['shiftView']->client,'type'=>$data['shiftView']->vehicleType])->first();
         $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+   
         if (request()->isMethod('post')) {
-
+            // dd($request->all(),$shiftData->finishStatus);
             if(in_array($shiftData->finishStatus,['0','1','2'])){
-                Shift::where('id', $id)->update([
+                // dd("---");
+                $ss = Shift::where('id', $id)->update([
                     'state'    => $request->input('state'),
                     'client'     => $request->input('client'),
                     'costCenter'        => $request->input('costCenter'),
@@ -1207,6 +1229,7 @@ class ShiftManagement extends Controller
                     'odometer' => $request->input('odometerStartReading'),
                     'driverId'=> $request->input('driverId')??$shiftData->driverId
                 ]);
+                // dd($ss);
             }else{
                 Shift::where('id', $id)->update(['finishStatus' => $request->input('finishStatus'),'comment'=> $request->input('comments'),'approval_reason'=> $request->input('approvedReason')]);
             }
@@ -1215,6 +1238,7 @@ class ShiftManagement extends Controller
             // }
             // if (!in_array($request->input('finishStatus'),[0,1])) {
             if(in_array($shiftData->finishStatus,['0','1','2'])){
+                
                 $startDate = $request->shiftStartDate;
                 $endDate = $request->finishDate;
                 $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
@@ -1333,6 +1357,7 @@ class ShiftManagement extends Controller
                     // return Carbon::parse($endDate)->format('Y-m-d');
                     
                     $Parcel = Finishshift::where('shiftId', $existingFinishshiftId)->first();
+                    // dd('--',$Parcel);
                     if ($Parcel) {
                         $Parcel->dayHours = $dayHr;
                         $Parcel->nightHours = $nightHr;
@@ -1350,10 +1375,30 @@ class ShiftManagement extends Controller
                         $Parcel->odometerStartReading = $request->input('odometerStartReading');
                         $Parcel->odometerEndReading = $request->input('odometerEndReading');
                         $Parcel->save();
+                    }else {
+
+                        $finishshift_data = [
+                            'shiftId'=>$existingFinishshiftId,
+                            'dayHours' => $dayHr,
+                            'nightHours' => $nightHr,
+                            'totalHours' => $totalHr,
+                            'saturdayHours' => $saturdayHrs,
+                            'sundayHours' => $sundayHrs,
+                            'weekendHours' => $weekend,
+                            'startDate' => date('Y-m-d',strtotime($start_date)),
+                            'endDate' => date('Y-m-d',strtotime($end_date)),
+                            'startTime' => date('H:i:s',strtotime($start_date)),
+                            'endTime' => date('H:i:s',strtotime($end_date)),
+                            'parcelsTaken' => $request->input('parcelsToken'),
+                            'submitted_at' => 'submitted_at' ?? date('Y-m-d H:i:s'),
+                            'parcelsDelivered' => $request->input('parcelsDelivered'),
+                            'odometerStartReading' => $request->input('odometerStartReading'),
+                            'odometerEndReading' => $request->input('odometerEndReading')
+                        ];
+                        Finishshift::create($finishshift_data);
+                        // return Redirect::back()->with('error', ' Shift Id Not Exist!');
                     }
-                } else {
-                    return Redirect::back()->with('error', ' Shift Id Not Exist!');
-                }
+                } 
             }else{
                 $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
                 $totalPayShiftAmount = (
@@ -1430,7 +1475,7 @@ class ShiftManagement extends Controller
 
     public function shiftparcels($id)
     {
-        $data['parcelsDetail'] = Parcels::where('shiftId', $id)->with('ParcelImage')->get();
+        $data['parcelsDetail'] = Parcels::where('shiftId', $id)->with('ParcelImage')->orderBy('sorting','ASC')->get();
         $data['shiftLocation'] = Shift::whereId($id)->first();
 
         // dd($data['parcelsDetail']);
@@ -1686,19 +1731,25 @@ class ShiftManagement extends Controller
             ->get();
 
 
-        $shiftsExport = new ShiftReportsExport($shifts);
+        // $shiftsExport = new ShiftReportsExport($shifts);
 
-        // Define the filename
-        $filename = 'shift_report.csv';
+        // // Define the filename
+        // $filename = 'shift_report.csv';
 
-        // Get the CSV content
-        $content = $shiftsExport->exportToCsv();
+        // // Get the CSV content
+        // $content = $shiftsExport->exportToCsv();
 
-        // Serve the file as a download response
-        return response($content)
-            ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', 'attachment; filename=' . $filename)
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0');
+        // // Serve the file as a download response
+        // return response($content)
+        //     ->header('Content-Type', 'text/csv')
+        //     ->header('Content-Disposition', 'attachment; filename=' . $filename)
+        //     ->header('Pragma', 'no-cache')
+        //     ->header('Expires', '0');
+
+
+        $export = new ShiftReportsExport($shifts);
+        $tempFile = $export->exportToXls();
+
+        return response()->download($tempFile, 'shift_report.xls')->deleteFileAfterSend(true);
     }
 }
