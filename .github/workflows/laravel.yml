@@ -58,7 +58,11 @@ jobs:
           git reset --hard
           git clean -fd
           git pull origin production
+<<<<<<< HEAD
           /usr/bin/php8.0 $(which composer) update --no-dev --prefer-dist --optimize-autoloader
+=======
+          /usr/bin/php8.0 $(which composer) install --no-dev --prefer-dist --optimize-autoloader
+>>>>>>> parent of da76cbd (Update laravel.yml)
           /usr/bin/php8.0 artisan optimize
           /usr/bin/php8.0 artisan optimize:clear
           /usr/bin/php8.0 artisan storage:link
