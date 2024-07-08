@@ -58,7 +58,7 @@ jobs:
           git reset --hard
           git clean -fd
           git pull origin production
-          /usr/bin/php8.1 $(which composer) install --no-dev --prefer-dist --optimize-autoloader
+          /usr/bin/php8.1 $(which composer) update --no-dev --prefer-dist --optimize-autoloader
           /usr/bin/php8.1 artisan optimize
           /usr/bin/php8.1 artisan optimize:clear
           /usr/bin/php8.1 artisan storage:link
