@@ -107,7 +107,7 @@
                                             </div>
                                             <div class="col-lg-4">
                                                 <button class="btn btn-primary" type="submit">Submit</button>
-                                                <button type="submit" class="btn btn-info">Refresh</button>
+                                                <a href="{{ route('driver.location') }}" class="btn btn-info">Refresh</a>
                                             </div>
                                         </div>
                                     </form>
@@ -133,7 +133,7 @@
                                 <ul>
                                     <li>
                                         <div class="color_boxhint perpal"></div>
-                                        <div class="location_status">Deliver Location</div>
+                                        <div class="location_status">Driver Location</div>
                                     </li>
                                     <li>
                                         <div class="color_boxhint redhint"></div>
@@ -209,9 +209,32 @@
     </style>
     <script>
         var storage_path = "{{ asset(env('STORAGE_URL')) }}";
+        function getAddress(lat, lng) {
+                const geocoder = new google.maps.Geocoder();
+                const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+                geocoder.geocode({ location: latlng }, (results, status) => {
+                    console.log(first)
+                    if (status === 'OK') {
+                    if (results[0]) {
+                        const address = results[0].formatted_address;
+                        return address;
+                    } else {
+                        return '';
+                    }
+                    } else {
+                    return '';
+                    }
+                });
+            }
     </script>
     @if (!$driverName)
         <script>
+
+            
+
+
+             var siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
             var markers = []; // Array to store all markers
 
             function initMap() {
@@ -254,9 +277,10 @@
 
                         marker2.addListener('click', function() {
                             var driverDetails = location; // Use the location directly
+                            let driverImg = driverDetails['driver']['profile_image'] ? storage_path+'/'+driverDetails['driver']['profile_image'] : siteLogo;
                             var contentString = `
                                 <div style="text-align: center;">
-                                    <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
+                                    <img src="${driverImg}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
                                     <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
                                     <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
                                     <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
@@ -268,6 +292,8 @@
                                     <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
                                     <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
                                     <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                                    <p class="black">Driver Lat/Long : Lat:${location.lat??''} | Long:${location.lng??''}</p>
+                                    <p class="black">Driver Address : </p>
                                 </div>
                             `;
                             infoWindow.setContent(contentString);
@@ -328,6 +354,7 @@
         </script>
     @else
         <script>
+             var siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
             var markers = []; // Array to store all markers
             let locations = @json($locations ?? []);
             let parcelLocation = @json($parcelLocation ?? []);
@@ -534,6 +561,7 @@
                 });
                 markers.push(endMarker);
 
+               
                 deliveryPoints.slice().reverse().forEach((point, ind) => {
                     let LatLong = {
                         lat: parseFloat(point.lat),
@@ -552,9 +580,8 @@
                         let receiverName = point.receiverName ? `<p><b>Receiver Name : ${point.receiverName}</b></p>` : '';
                         let deliveredTo = point.deliveredTo ? `<p><b>Received By : ${point.deliveredTo}</b></p>` : '';
                         let deliver_address = point.deliver_address ?? point.location;
-                        let beforeImage = '{{$beforeParcelImage}}';
-                        let beforeParselImage = beforeImage ? `<img style="width: 100%;" src="${storage_path}/${beforeImage}" />` : '';
-                        let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />` : '';
+                        let beforeParselImage = point.parcel_image.parcelImage ? `<img style="width: 100%;" src="${storage_path}/${point.parcel_image.parcelImage}" />`:`<img style="width: 100%;" src="${siteLogo}" />`;
+                        let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />` : `<img style="width: 100%;" src="${siteLogo}" />`;
                         let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
                         let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
 
@@ -640,8 +667,9 @@
                         title: 'Driver Location'
                     });
                     driverMarker.addListener('click', () => {
+                        let driverImg = driverDetails['driver']['profile_image'] ? storage_path+'/'+driverDetails['driver']['profile_image'] : siteLogo;
                         let htmlData = `<div style="text-align: center;">
-                            <img src="${storage_path}/${driverDetails['driver']['profile_image']}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
+                            <img src="${driverImg}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
                             <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
                             <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
                             <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
@@ -653,6 +681,10 @@
                             <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
                             <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
                             <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                            <p class="black">Driver Lat/Long : Lat:${driverLocation.lat??''} | Long:${driverLocation.lng??''}</p>
+                            <p class="black">Driver Address : </p>
+
+                            
                         </div>`;
                         infoWindow.setContent(htmlData);
                         infoWindow.open(map, driverMarker);

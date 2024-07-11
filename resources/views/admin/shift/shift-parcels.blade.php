@@ -107,7 +107,7 @@
                                                                 <img src="{{asset(env('STORAGE_URL').$allparcelsDetail['ParcelImage']->parcelImage)}}" alt="" />
                                                             </a>
                                                         @else
-                                                            <img src="{{ asset('assets/images/not-found.jpg') }}" alt="" />
+                                                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" alt="" />
                                                         @endif
                                                     </div>
                                                   </td>

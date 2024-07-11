@@ -309,7 +309,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <img src="{{ asset('assets/images/not-found.jpg') }}" alt="Image" style="max-width: 53%;" />
+                                                    <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" alt="Image" style="max-width: 53%;" />
                                                 </div>
                                             </div>
                                         @endif

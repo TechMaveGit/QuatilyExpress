@@ -214,13 +214,13 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                     <a href="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" target="_blank">
                                                         <img src="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
-                                                                                                                </div>
+                                                </div>
                                             </div>
                                             @else
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <img src="{{ asset('assets/images/not-found.jpg') }}" alt="Image" style="max-width: 53%;" />
+                                                    <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" alt="Image" style="max-width: 53%;" />
                                                 </div>
                                             </div>
                                         @endif

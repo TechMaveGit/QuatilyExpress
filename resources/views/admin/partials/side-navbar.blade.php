@@ -5,6 +5,9 @@
   background-color: #282618; /* Replace with your desired color code */
   /* You can also add other styles as needed */
 }
+#markerList li {
+    color: #e3e1e1 !important;
+} 
 .confirm{
             background-color: #4ecc48!important;
         }

@@ -45,18 +45,22 @@ class LiveTrackingController extends Controller
             $selected_driver['driver'] = Driver::whereId($driverName ?? '')->first()->toArray() ?? '';
             $selected_driver['shift'] = Shift::with('getRego')->where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
 
+            
             if ($shiftId) {
-                $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
+                $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
                 $parcelLocation->where('shiftid', $shiftId);
                 $parcelLocation = $parcelLocation->get()->toArray();
-
-                $beforeParcelImageData = (isset($parcelLocation[0]) && $parcelLocation[0]) ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
-                $beforeParcelImage =  $beforeParcelImageData ? $beforeParcelImageData->parcelImage : null;
             
+            }
+
+          
+            if(!$shiftData->endlatitude || !$endpoints['lat']){
+                $dataEnd = end($parcelLocation);
+                $endpoints = ['lat'=>$dataEnd['lat']??null,'lng'=>$dataEnd['lng']??null,'address'=>$dataEnd['location']??null];
             }
         }
 
-        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftId', 'parcelLocation','startpoints','endpoints','beforeParcelImage','selected_driver'));
+        return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftId', 'parcelLocation','startpoints','endpoints','selected_driver'));
     }
 
     public function getDriverLocation(Request $request)
@@ -89,11 +93,14 @@ class LiveTrackingController extends Controller
             $locations = $locations->get()->toArray();
 
             if ($shiftData->id) {
-                $parcelLocation = Parcels::select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
+                $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
                 $parcelLocation->where('shiftid', $shiftData->id);
                 $parcelLocation = $parcelLocation->get()->toArray();
-                $beforeParcelImageData = (isset($parcelLocation[0]) && $parcelLocation[0]) ? DB::table('addparcelimages')->where('parcelId',$parcelLocation[0]['id'])->first()??null : null;
-                $beforeParcelImage =  $beforeParcelImageData ? $beforeParcelImageData->parcelImage : null;
+            }
+
+            if(!$shiftData->endlatitude || !$endpoints['lat']){
+                $dataEnd = end($parcelLocation);
+                $endpoints = ['lat'=>$dataEnd['lat']??null,'lng'=>$dataEnd['lng']??null,'address'=>$dataEnd['location']??null];
             }
         }else{
             foreach ($driver as $alldriver) {
@@ -109,7 +116,7 @@ class LiveTrackingController extends Controller
             }
         }
         // dd($locations);
-        return view('admin.liveTracking.driverLocation', compact('locations','driver','driverName','parcelLocation','startpoints','endpoints','beforeParcelImage','selected_driver'));
+        return view('admin.liveTracking.driverLocation', compact('locations','driver','driverName','parcelLocation','startpoints','endpoints','selected_driver'));
     }
 
     public function getShift(Request $request)
