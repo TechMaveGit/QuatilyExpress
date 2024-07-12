@@ -439,6 +439,52 @@
 
         markers.push(startMarker)
 
+        // Add driver current location marker
+        let newdriverLocation = driverLocation && driverLocation.lat ? {
+                    lat : parseFloat(driverLocation.lat),lng:parseFloat(driverLocation.lng)
+                } : {
+                    lat : 0,lng:0
+                };
+
+        let driverDetails = @json($selected_driver??[]);
+        
+        if(driverDetails.driver){
+            const driverMarker = new google.maps.Marker({
+                position: newdriverLocation,
+                map: map,
+                icon: createSVGMarker('purple', 'D'),
+                title: 'Driver Current Location'
+            });
+            driverMarker.addListener('click', async () => {
+                let driverImg = driverDetails['driver']['profile_image'] ? storage_path+'/'+driverDetails['driver']['profile_image'] : siteLogo;
+
+                
+                let draddress = await getAddress(parseFloat(driverLocation.lat),parseFloat(driverLocation.lng));
+                infoWindow.setContent(
+                    `<div style="text-align: center;color:#000;">
+                                <img src="${driverImg}"  style="width: 120px; height: 120px; border-radius: 50%;" />
+                                <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
+                                <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
+                                <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
+                                <hr>
+                                <h4 class="black">Shift Details:</h4>
+                                <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
+                                <p class="black">Rego: ${driverDetails['shift']['get_rego']['rego']}</p>
+                                <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
+                                <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
+                                <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
+                                <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                                <h4 class="black">Driver Current Location</h4>
+                                <p class="black">Driver Latitude : ${driverLocation.lat??''} </p>
+                                <p class="black">Driver Longitude : ${driverLocation.lng??''}</p>
+                                <p class="black">Driver Address : ${draddress}</p>
+                            </div>`
+                );
+                infoWindow.open(map, driverMarker);
+            });
+            markers.push(driverMarker)
+        }
+
         
 
         // Add delivery point markers
@@ -535,50 +581,7 @@
         });
         
 
-        // Add driver current location marker
-        let newdriverLocation = driverLocation && driverLocation.lat ? {
-                    lat : parseFloat(driverLocation.lat),lng:parseFloat(driverLocation.lng)
-                } : {
-                    lat : 0,lng:0
-                };
-
-        let driverDetails = @json($selected_driver??[]);
         
-        if(driverDetails.driver){
-            const driverMarker = new google.maps.Marker({
-                position: newdriverLocation,
-                map: map,
-                icon: createSVGMarker('purple', 'D'),
-                title: 'Driver Location'
-            });
-            driverMarker.addListener('click', async () => {
-                let driverImg = driverDetails['driver']['profile_image'] ? storage_path+'/'+driverDetails['driver']['profile_image'] : siteLogo;
-
-                
-                let draddress = await getAddress(parseFloat(driverLocation.lat),parseFloat(driverLocation.lng));
-                infoWindow.setContent(
-                    `<div style="text-align: center;color:#000;">
-                                <img src="${driverImg}"  style="width: 120px; height: 120px; border-radius: 50%;" />
-                                <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
-                                <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
-                                <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
-                                <hr>
-                                <h4 class="black">Shift Details:</h4>
-                                <p class="black">Shift ID: QE${driverDetails['shift']['shiftRandId']}</p>
-                                <p class="black">Rego: ${driverDetails['shift']['get_rego']['rego']}</p>
-                                <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
-                                <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
-                                <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
-                                <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
-                                <p class="black">Driver Latitude : ${driverLocation.lat??''} </p>
-                                <p class="black">Driver Longitude : ${driverLocation.lng??''}</p>
-                                <p class="black">Driver Address : ${draddress}</p>
-                            </div>`
-                );
-                infoWindow.open(map, driverMarker);
-            });
-            markers.push(driverMarker)
-        }
 
         // Add end marker (green)
         const endMarker = new google.maps.Marker({
