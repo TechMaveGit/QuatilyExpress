@@ -1474,7 +1474,7 @@ class ShiftManagement extends Controller
 
     public function shiftparcels($id)
     {
-        $data['parcelsDetail'] = Parcels::where('shiftId', $id)->with('ParcelImage')->orderBy('sorting','ASC')->get();
+        $data['parcelsDetail'] = Parcels::where('shiftId', $id)->with('ParcelImage')->orderByRaw('IFNULL(sorting, id) ASC')->get();
         $data['shiftLocation'] = Shift::whereId($id)->first();
 
         // dd($data['parcelsDetail']);

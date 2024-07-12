@@ -47,7 +47,7 @@ class LiveTrackingController extends Controller
 
             
             if ($shiftId) {
-                $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
+                $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at','sorting')->orderByRaw('IFNULL(sorting, id) DESC');
                 $parcelLocation->where('shiftid', $shiftData->id);
                 $parcelLocation = $parcelLocation->get()->toArray();
             }
@@ -92,10 +92,12 @@ class LiveTrackingController extends Controller
             $locations = $locations->get()->toArray();
 
             if ($shiftData->id) {
-                $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at')->orderBy('sorting', 'DESC');
+                $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at','sorting')->orderByRaw('IFNULL(sorting, id) DESC');
                 $parcelLocation->where('shiftid', $shiftData->id);
                 $parcelLocation = $parcelLocation->get()->toArray();
             }
+
+            // dd($parcelLocation);
 
             if(!$shiftData->endlatitude || !$endpoints['lat']){
                 $dataEnd = end($parcelLocation);
