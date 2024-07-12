@@ -1390,7 +1390,6 @@ class ShiftManagement extends Controller
                             'startTime' => date('H:i:s',strtotime($start_date)),
                             'endTime' => date('H:i:s',strtotime($end_date)),
                             'parcelsTaken' => $request->input('parcelsToken'),
-                            'submitted_at' => 'submitted_at' ?? date('Y-m-d H:i:s'),
                             'parcelsDelivered' => $request->input('parcelsDelivered'),
                             'odometerStartReading' => $request->input('odometerStartReading'),
                             'odometerEndReading' => $request->input('odometerEndReading')
