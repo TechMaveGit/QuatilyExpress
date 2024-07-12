@@ -393,7 +393,7 @@
         new google.maps.Polyline({
             path: greenPath,
             geodesic: true,
-            strokeColor: 'black',
+            strokeColor: 'green',
             strokeOpacity: 1.0,
             strokeWeight: 5,
             map: map
@@ -439,19 +439,7 @@
 
         markers.push(startMarker)
 
-        // Add end marker (green)
-        const endMarker = new google.maps.Marker({
-            position: endPoint,
-            map: map,
-            icon: createSVGMarker('green', 'E'),
-            title: 'End Point'
-        });
-        endMarker.addListener('click', () => {
-            infoWindow.setContent(`<div class="info-window-content"><h2>End Point</h2>${end_address}</div>`);
-            infoWindow.open(map, endMarker);
-        });
-
-        markers.push(endMarker)
+        
 
         // Add delivery point markers
         deliveryPoints.slice().reverse().forEach((point, ind) => {
@@ -464,13 +452,14 @@
             let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />`:`<img style="width: 100%;" src="${siteLogo}" />`;
             let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
             let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
-            let LatLong = { lat: parseFloat(delivered_latitude), lng: parseFloat(delivered_longitude) };
+            // let LatLong = { lat: parseFloat(delivered_latitude), lng: parseFloat(delivered_longitude) };
+            let LatLong = { lat: parseFloat(point.lat), lng: parseFloat(point.lng)};
             const markerColor = point.status=="2" ? 'blue' : 'yellow';
             const marker = new google.maps.Marker({
                 position: LatLong,
                 map: map,
                 icon: createSVGMarker(markerColor, ind+1),
-                title: `Delivery Point ${ind+1}`
+                title: `P${ind+1} : ${point.location}`
             });
 
             let datetimeFormat = '';
@@ -590,6 +579,20 @@
             });
             markers.push(driverMarker)
         }
+
+        // Add end marker (green)
+        const endMarker = new google.maps.Marker({
+            position: endPoint,
+            map: map,
+            icon: createSVGMarker('green', 'E'),
+            title: 'End Point'
+        });
+        endMarker.addListener('click', () => {
+            infoWindow.setContent(`<div class="info-window-content"><h2>End Point</h2>${end_address}</div>`);
+            infoWindow.open(map, endMarker);
+        });
+
+        markers.push(endMarker)
     }
 
     function bringMarkerToFront(marker) {

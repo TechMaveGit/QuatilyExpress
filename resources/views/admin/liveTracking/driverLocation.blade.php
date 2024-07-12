@@ -531,7 +531,7 @@
                     position: startPoint,
                     map: map,
                     icon: createSVGMarker('red', 'S'),
-                    title: 'Start Point'
+                    title: `Start Point`
                 });
                 startMarker.addListener('click', () => {
                     infoWindow.setContent(
@@ -540,17 +540,7 @@
                 });
                 markers.push(startMarker);
 
-                const endMarker = new google.maps.Marker({
-                    position: endPoint,
-                    map: map,
-                    icon: createSVGMarker('green', 'E'),
-                    title: 'End Point'
-                });
-                endMarker.addListener('click', () => {
-                    infoWindow.setContent(`<div class="info-window-content"><h2>End Point</h2>${end_address}</div>`);
-                    infoWindow.open(map, endMarker);
-                });
-                markers.push(endMarker);
+                
 
                
                 deliveryPoints.slice().reverse().forEach((point, ind) => {
@@ -563,7 +553,7 @@
                         position: LatLong,
                         map: map,
                         icon: createSVGMarker(markerColor, ind + 1),
-                        title: `Delivery Point ${ind + 1}`
+                        title: `P${ind + 1} : ${point.location || '-'}`
                     });
 
                     marker.addListener('click', () => {
@@ -655,7 +645,7 @@
                         position: newdriverLocation,
                         map: map,
                         icon: createSVGMarker('purple', 'D'),
-                        title: 'Driver Location'
+                        title: `Driver Location`
                     });
                     
                     driverMarker.addListener('click', async () => {
@@ -686,12 +676,24 @@
                     });
                     markers.push(driverMarker);
                 }
+
+
+                const endMarker = new google.maps.Marker({
+                    position: endPoint,
+                    map: map,
+                    icon: createSVGMarker('green', 'E'),
+                    title: `End Point`
+                });
+                endMarker.addListener('click', () => {
+                    infoWindow.setContent(`<div class="info-window-content"><h2>End Point</h2>${end_address}</div>`);
+                    infoWindow.open(map, endMarker);
+                });
+                markers.push(endMarker);
             }
 
             function bringMarkerToFront(marker) {
                 // Remove the marker from the map
                 marker.setMap(null);
-
                 // Add the marker back to the map
                 marker.setMap(map);
             }
