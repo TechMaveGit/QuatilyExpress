@@ -20,7 +20,7 @@ jobs:
         tools: composer, php-cs-fixer
 
     - name: Install dependencies
-      run: composer update
+      run: composer update --no-dev --prefer-dist --optimize-autoloader
 
     - name: Prepare environment
       run: |
@@ -58,6 +58,7 @@ jobs:
           git reset --hard
           git clean -fd
           git pull origin production
+
           /usr/bin/php8.1 $(which composer) update --no-dev --prefer-dist --optimize-autoloader
           /usr/bin/php8.1 artisan optimize
           /usr/bin/php8.1 artisan optimize:clear
