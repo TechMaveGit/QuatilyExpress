@@ -209,32 +209,19 @@
     </style>
     <script>
         var storage_path = "{{ asset(env('STORAGE_URL')) }}";
-        function getAddress(lat, lng) {
-                const geocoder = new google.maps.Geocoder();
-                const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
-
-                geocoder.geocode({ location: latlng }, (results, status) => {
-                    console.log(first)
-                    if (status === 'OK') {
-                    if (results[0]) {
-                        const address = results[0].formatted_address;
-                        return address;
-                    } else {
-                        return '';
-                    }
-                    } else {
-                    return '';
-                    }
-                });
+        async function getAddress(lat, lng) {
+            const response = await fetch(`/geocode?lat=${lat}&lng=${lng}`);
+            const data = await response.json();
+            if (data.status === 'OK') {
+                return data.results[0].formatted_address;
+            } else {
+                return '';
             }
+        }
     </script>
     @if (!$driverName)
         <script>
-
-            
-
-
-             var siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
+            var siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
             var markers = []; // Array to store all markers
 
             function initMap() {
@@ -274,13 +261,15 @@
                                 scaledSize: new google.maps.Size(35, 35) // Set the width and height for resizing
                             }
                         });
+                       
 
-                        marker2.addListener('click', function() {
+                        marker2.addListener('click', async function() {
                             var driverDetails = location; // Use the location directly
                             let driverImg = driverDetails['driver']['profile_image'] ? storage_path+'/'+driverDetails['driver']['profile_image'] : siteLogo;
+                            let draddress = await getAddress(parseFloat(location.lat),parseFloat(location.lng));
                             var contentString = `
                                 <div style="text-align: center;">
-                                    <img src="${driverImg}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
+                                    <img src="${driverImg}" alt="${this.title}" style="width: 120px; height: 120px; border-radius: 50%;" />
                                     <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
                                     <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
                                     <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
@@ -292,8 +281,9 @@
                                     <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
                                     <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
                                     <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
-                                    <p class="black">Driver Lat/Long : Lat:${location.lat??''} | Long:${location.lng??''}</p>
-                                    <p class="black">Driver Address : </p>
+                                    <p class="black">Driver Latitude : ${location.lat??''} </p>
+                                    <p class="black">Driver Longitude : ${location.lng??''}</p>
+                                    <p class="black">Driver Address : ${draddress}</p>
                                 </div>
                             `;
                             infoWindow.setContent(contentString);
@@ -666,10 +656,13 @@
                         icon: createSVGMarker('purple', 'D'),
                         title: 'Driver Location'
                     });
-                    driverMarker.addListener('click', () => {
+                    
+                    driverMarker.addListener('click', async () => {
                         let driverImg = driverDetails['driver']['profile_image'] ? storage_path+'/'+driverDetails['driver']['profile_image'] : siteLogo;
+                        
+                        let draddress = await getAddress(parseFloat(driverLocation.lat),parseFloat(driverLocation.lng));
                         let htmlData = `<div style="text-align: center;">
-                            <img src="${driverImg}" alt="${this.title}" style="width: 150px; height: 150px; border-radius: 50%;" />
+                            <img src="${driverImg}" alt="${this.title}" style="width: 120px; height: 120px; border-radius: 50%;" />
                             <p class="black">Driver Name: ${driverDetails['driver']['fullName']}</p>
                             <p class="black">Driver Mobile No.: ${driverDetails['driver']['mobileNo']}</p>
                             <p class="black">Driver Email: ${driverDetails['driver']['email']}</p>
@@ -681,8 +674,9 @@
                             <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
                             <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
                             <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
-                            <p class="black">Driver Lat/Long : Lat:${driverLocation.lat??''} | Long:${driverLocation.lng??''}</p>
-                            <p class="black">Driver Address : </p>
+                            <p class="black">Driver Latitude : ${driverLocation.lat??''} </p>
+                            <p class="black">Driver Longitude : ${driverLocation.lng??''}</p>
+                            <p class="black">Driver Address : ${draddress}</p>
 
                             
                         </div>`;

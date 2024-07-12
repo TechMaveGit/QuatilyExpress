@@ -12,8 +12,10 @@ use App\Http\Controllers\Admin\LiveTrackingController;
 use App\Http\Controllers\Admin\Personcontroller;
 use App\Http\Controllers\Admin\ShiftManagement;
 use App\Http\Controllers\Admin\VehicleController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -198,3 +200,17 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
 Route::match(['get', 'post'], '/test-track', [LiveTrackingController ::class, 'liveTrack'])->name('liveTrack');
 Route::view('/test-tt', 'admin.test');
 // Route::view('URI', 'viewName');('/test-tt', [LiveTrackingController ::class, 'liveTrack'])->name('liveTrack');
+
+
+Route::get('/geocode', function (Request $request) {
+    $lat = $request->input('lat');
+    $lng = $request->input('lng');
+    $apiKey = config('services.google_maps.key'); // Store your API key in config/services.php
+
+    $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
+        'latlng' => "$lat,$lng",
+        'key' => $apiKey,
+    ]);
+
+    return $response->json();
+})->name('googlemap')->middleware('auth:adminLogin');
