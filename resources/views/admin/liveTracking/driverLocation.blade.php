@@ -209,8 +209,9 @@
     </style>
     <script>
         var storage_path = "{{ asset(env('STORAGE_URL')) }}";
+        let geourl = "{{route('googlemap')}}";
         async function getAddress(lat, lng) {
-            const response = await fetch(`/geocode?lat=${lat}&lng=${lng}`);
+            const response = await fetch(`${geourl}?lat=${lat}&lng=${lng}`);
             const data = await response.json();
             if (data.status === 'OK') {
                 return data.results[0].formatted_address;

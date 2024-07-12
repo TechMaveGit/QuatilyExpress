@@ -239,8 +239,9 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&libraries=places"></script>
 <script>
+    let geourl = "{{route('googlemap')}}";
     async function getAddress(lat, lng) {
-            const response = await fetch(`/geocode?lat=${lat}&lng=${lng}`);
+            const response = await fetch(`${geourl}?lat=${lat}&lng=${lng}`);
             const data = await response.json();
             if (data.status === 'OK') {
                 return data.results[0].formatted_address;
