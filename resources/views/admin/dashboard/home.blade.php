@@ -163,12 +163,12 @@ function yesstartShift()
                                                 <h4>Finish Shift</h4>
                                               </div>
                                             <label class="form-label" for="exampleInputEmail1">Odometer Start Reading  <span class="red">*</span></label>
-                                            <input type="number" name="odometerStartReading" id="odometer_start_reading" min="0" class="form-control" aria-describedby="emailHelp" placeholder="" fdprocessedid="enssm" required="">
+                                            <input type="number" name="odometerStartReading" id="odometer_start_reading" step="any" min="0" class="form-control" aria-describedby="emailHelp" placeholder="" fdprocessedid="enssm" required="">
                                             <input type="hidden" name="shiftId" value="" id="appendFinishShiftiId" />
                                     </div>
                                     <div class="col-lg-12">
                                             <label class="form-label" for="exampleInputEmail1">Odometer End Reading  <span class="red">*</span></label>
-                                            <input type="text" min="0" class="form-control" name="odometerEndReading" value="" id="odometer_finish_reading" aria-describedby="emailHelp" placeholder="" onkeypress="checkOdometerReading(event)" required="" fdprocessedid="kgw02c">
+                                            <input type="text" min="0" class="form-control" name="odometerEndReading" step="any" value="" id="odometer_finish_reading" aria-describedby="emailHelp" placeholder="" onkeypress="checkOdometerReading(event)" required="" fdprocessedid="kgw02c">
                                             <div id="message"></div>
                                     </div>
                                     <script>

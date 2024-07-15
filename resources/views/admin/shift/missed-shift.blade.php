@@ -401,7 +401,7 @@
                                                     <span class="red">*</span></label>
 
                                                 <input type="number" name="odometer_start_reading"
-                                                    id="odometer_start_reading" oninput="checkRego()" min="0"
+                                                    id="odometer_start_reading" oninput="checkRego()" step="any" min="0"
                                                     class="form-control" aria-describedby="emailHelp" placeholder=""
                                                     fdprocessedid="enssm" required>
 
@@ -418,7 +418,7 @@
 
 
                                                 <input type="number" min="0" class="form-control"
-                                                    name="odometer_finish_reading" value="{{ $odometer_finish_reading }}"
+                                                    name="odometer_finish_reading" step="any" value="{{ $odometer_finish_reading }}"
                                                     id="odometer_finish_reading" aria-describedby="emailHelp"
                                                     placeholder="" onkeypress="checkOdometerReading(event)" required>
 
