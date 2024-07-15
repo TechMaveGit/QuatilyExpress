@@ -140,7 +140,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                                 <option value="5" @if($shiftView->finishStatus =='5') selected @else @endif >Paid</option>
                                                             </select>
                                                             @else
-                                                            <select class="form-control select2 form-select" name="finishStatus">
+                                                            <select class="form-control select2 form-select" name="finishStatus" id="finishStatusDone">
                                                                 <option value="0" @if($shiftView->finishStatus =='0') selected @else @endif >Created</option>
                                                                 <option value="1" @if($shiftView->finishStatus =='1') selected @else @endif >In Progress</option>
                                                                 <option value="2" @if($shiftView->finishStatus =='2') selected @else @endif >To Be Approved</option>
@@ -961,7 +961,10 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
     $("#checkDataStatus").click(function(e){
         e.preventDefault();
 
-        if(finalStatus == "1"){
+        let finishStatusDone = $("#finishStatusDone").val()||0;
+
+        if(finalStatus == "1" && finishStatusDone != "1"){
+            
             let parcelsToken = parseInt($("#parcelsToken").val())||0;
             let parcelsDelivered = parseInt($("#parcelsDelivered").val()) || 0;
 
@@ -981,13 +984,15 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
             }
 
             if(parcelsDelivered <= 0){
-                $("#parcelsDelivered").addClass('is-invalid').attr('max',parcelsToken).attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                $("#parcelsDelivered").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
                 isValid = false;
             }
 
             if(parcelsDelivered>parcelsToken){
-                $("#parcelsDelivered").addClass('is-invalid').attr('max',parcelsToken).attr('required',true).after('<span class="custom_error text-danger">The parcel delivered must be less than or equal to parcel taken.</span>').focus();
+                $("#parcelsDelivered").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">The parcel delivered must be less than or equal to parcel taken.</span>').focus();
                 isValid = false;
+            }else{
+                $("#parcelsOutstanding").val(parseInt(parcelsToken)-parseInt(parcelsDelivered));
             }
 
             if(odometerStartReading <= 0){
@@ -995,13 +1000,15 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                 isValid = false;
             }
             if(odometerEndReading <= 0){
-                $("#odometerEndReading").addClass('is-invalid').attr('min',odometerStartReading+1).attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                $("#odometerEndReading").addClass('is-invalid').after('<span class="custom_error text-danger">This field is required.</span>').focus();
                 isValid = false;
             }
 
             if(odometerEndReading<odometerStartReading){
-                $("#odometerEndReading").addClass('is-invalid').attr('min',odometerStartReading+1).attr('required',true).after('<span class="custom_error text-danger">The odometer finish must be greater than or equal to odometer start.</span>').focus();
+                $("#odometerEndReading").addClass('is-invalid').after('<span class="custom_error text-danger">The odometer finish must be greater than or equal to odometer start.</span>').focus();
                 isValid = false;
+            }else{
+                $("#traveledKM").val(parseInt(odometerEndReading)-parseInt(odometerStartReading));
             }
 
             if(shiftDateFinish == '' || shiftDateFinish == undefined){
@@ -1009,8 +1016,8 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                 isValid = false;
             }
 
-            $("parcelsOutstanding").val(parseInt(parcelsToken)-parseInt(parcelsDelivered));
-            $("traveledKM").val(parseInt(odometerEndReading)-parseInt(odometerStartReading));
+           
+          
             if(isValid){
                 $("#shiftEditForm").submit();
             }
