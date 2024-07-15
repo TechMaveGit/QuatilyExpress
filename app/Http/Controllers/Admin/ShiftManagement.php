@@ -1192,6 +1192,7 @@ class ShiftManagement extends Controller
     public function shiftReportEdit(Request $request, $id)
     {
        
+       
         $query = Shift::where('id', $id);
         $shiftData = Shift::whereId($id)->first();
         $getClientID = $shiftData->client;
@@ -1210,6 +1211,7 @@ class ShiftManagement extends Controller
         $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
    
         if (request()->isMethod('post')) {
+            
             // dd($request->all(),$shiftData->finishStatus);
             if(in_array($shiftData->finishStatus,['0','1','2'])){
                 // dd("---");
@@ -1400,11 +1402,8 @@ class ShiftManagement extends Controller
                 } 
             }else{
                 $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
-                $totalPayShiftAmount = (
-                    ($shiftMonetize ? (float)$shiftMonetize->amountPayablePerService : $request->input('amountPayablePerService')
-                    )
-                    +(float)$request->input('fuelLevyPayable')
-                    +(float)$request->input('extraPayable'));
+                
+                $totalPayShiftAmount = (($shiftMonetize ? (float)$shiftMonetize->amountPayablePerService : $request->input('amountPayablePerService'))+(float)$request->input('fuelLevyPayable')+(float)$request->input('extraPayable'));
                 $totalChargeDay = (($shiftMonetize ? (float)$shiftMonetize->amountChargeablePerService:$request->input('amountChargeablePerService'))+(float)$request->input('fuelLevyChargeable')+(float)$request->input('fuelLevyChargeable250')+(float)$request->input('fuelLevyChargeable400')+(float)$request->input('extraChargeable'));
                 // dd($request->all());
                 Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount,'chageAmount'=>$totalChargeDay]);
