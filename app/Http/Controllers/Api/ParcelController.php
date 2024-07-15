@@ -493,7 +493,9 @@ class ParcelController extends Controller
         $saturdayShiftCharge = '0';
         $sundayShiftCharge = '0';
         $priceOverRideStatus = '0';
+        $clientRates = DB::table('clientrates')->where(['clientId'=>$data['shiftView']->client,'type'=>$data['shiftView']->vehicleType])->first();
         $priceCompare = DB::table('personrates')->where('type', $data['shiftView']->vehicleType)->where('personId', $data['shiftView']->driverId)->first();
+        $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
 
         $extra_per_hour_rate = $data['shiftView']->getDriverName->extra_per_hour_rate;
 
@@ -640,7 +642,7 @@ class ParcelController extends Controller
 
                 
                 if ($Parcel) {
-                    DB::table('shiftMonetizeInformation')->insert(['amountPayablePerService'=>$totalPayShiftAmount,'totalPayable'=>$totalPayShiftAmount,'amountChargeablePerService'=>$totalChargeDay,'totalChargeable'=>$totalChargeDay]);
+                    DB::table('shiftMonetizeInformation')->insert(['shiftId'=>$request->shiftId,'amountPayablePerService'=>$totalPayShiftAmount,'totalPayable'=>$totalPayShiftAmount,'amountChargeablePerService'=>$totalChargeDay,'totalChargeable'=>$totalChargeDay]);
                     return response()->json([
                         'status' => $this->successStatus,
                         'message' => 'Shift Finished Successfully',

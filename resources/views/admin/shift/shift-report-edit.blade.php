@@ -237,6 +237,7 @@ if(in_array($shiftView->finishStatus,["4","5","6"])){
                                                     <div class="form-group">
                                                         @php
                                                         $rego = DB::table('vehicals')->get();
+                                                        // dd($rego);
                                                         @endphp
                                                          @if($shiftView->finishStatus =='5')
                                                            <select class="form-control select2 form-select"   name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
@@ -248,7 +249,7 @@ if(in_array($shiftView->finishStatus,["4","5","6"])){
                                                             </select>
                                                         @else
                                                         
-                                                           <select class="form-control select2 form-select" name="rego" id="regoId" onchange="getDriverResponiable(this)" data-placeholder="Choose one" {{$readonlybtn}}>
+                                                           <select class="form-control select2 form-select" name="rego"  data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                @foreach ($rego as $allrego)
                                                                 <option value="{{ $allrego->id }}" @if($allrego->id == $shiftView->rego) selected @else @endif >{{ $allrego->rego }}
