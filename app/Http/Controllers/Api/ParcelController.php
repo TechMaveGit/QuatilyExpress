@@ -590,6 +590,7 @@ class ParcelController extends Controller
                 $Parcel->save();
 
                 if ($Parcel) {
+                    DB::table('shiftMonetizeInformation')->insert(['shiftId'=>$request->shiftId,'amountPayablePerService'=>$totalPayShiftAmount,'totalPayable'=>$totalPayShiftAmount,'amountChargeablePerService'=>$totalChargeDay,'totalChargeable'=>$totalChargeDay]);
                     return response()->json([
                         'status' => $this->successStatus,
                         'message' => 'Shift Finished Successfully',
