@@ -391,10 +391,12 @@
                                             class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
                                     @endif
                                 </div>
+                                 @if ($driverRole != 33)
                                 <button class="btn btn-green" style="color: white; margin: 4px;"
                                     onclick="window.location='{{ route('export.shifts', request()->input()) }}'">
                                     <i class="fa fa-file-excel-o"></i> Download Data
                                 </button>
+                                @endif
                                 </div>
                                 </div>
                                 

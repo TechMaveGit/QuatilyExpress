@@ -11,6 +11,7 @@
    }
 //   echo "<pre>";
 //   print_r($arr); die;
+$driverRole = Auth::guard('adminLogin')->user()->role_id;
    ?>
 
 <style>
@@ -159,7 +160,9 @@
                             @if(in_array("71", $arr))
                             <a href="{{ route('induction.add') }}"  style="margin: 2px" class="btn btn-primary">+ Add New Induction</a>
                             @endif
+                            @if ($driverRole != 33)
                             <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                            @endif
                             </div>
                     </div>
                             
@@ -237,8 +240,7 @@
 
                                                     @if(in_array("88", $arr))
                                                     <?php
-                                                    $driverRole=  Auth::guard('adminLogin')->user();
-                                                    if($driverRole->role_id=='33') { ?>
+                                                    if($driverRole=='33') { ?>
                                                     <a class="btn btn-info" href="{{ route('induction.upload.signature', ['id' => $allinduction->id]) }}"
                                                     data-bs-toggle="tooltip" data-bs-original-title="Add Signature"><span class="fa-regular fa-signature">Add Signature</span></a>
                                                     <?php } ?>

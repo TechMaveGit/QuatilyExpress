@@ -6,6 +6,7 @@
     foreach ($D as $v) {
         $arr[] = $v['permission_id'];
     }
+    $driverRole = Auth::guard('adminLogin')->user()->role_id;
     ?>
 
 
@@ -373,10 +374,11 @@
                                                             <div class="search_btn import_btn_box text-end">
                                                                 <button type="submit" class="btn btn-primary srch_btn">+
                                                                     Add Expense </button>
-
+                                                                    @if ($driverRole != 33)
                                                                 <a class="btn btn-green srch_btn ms-3" id="exportBtn1"
                                                                     style="color: white;"> <i
                                                                         class="fa fa-file-excel-o"></i> Download Excel</a>
+                                                                        @endif
                                                             </div>
                                                         </div>
                                                     </form>
@@ -610,9 +612,11 @@
                                                             <div class="search_btn import_btn_box text-end">
                                                                 <button type="submit" class="btn btn-primary srch_btn">+
                                                                     Add Expense </button>
+                                                                    @if ($driverRole != 33)
                                                                 <a class="btn btn-green srch_btn ms-3" id="exportBtn3"
                                                                     style="color: white;"> <i
                                                                         class="fa fa-file-excel-o"></i> Download Excel</a>
+                                                                        @endif
                                                             </div>
                                                         </div>
                                                 </form>

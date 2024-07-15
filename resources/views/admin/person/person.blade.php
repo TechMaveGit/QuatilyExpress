@@ -60,6 +60,7 @@
    {
      $arr[] = $v['permission_id'];
    }
+   $driverRole = Auth::guard('adminLogin')->user()->role_id;
    ?>
 <style>
     .dt-buttons{
@@ -138,9 +139,11 @@
                        <a href="{{ route('person.add') }}" class="btn btn-primary" style="margin: 3px ">+ Add New Person</a>
                        @endif
                     </div>
+                    @if ($driverRole != 33)
                     <button class="btn btn-green" style="color: white; margin: 4px;"
                     onclick="window.location='{{ route('export.person', request()->input()) }}'"><i
                         class="fa fa-file-excel-o"></i>Download Excel</button>
+                    @endif
                     
                 </div>
                         <div class="card-body">

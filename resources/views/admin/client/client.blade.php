@@ -6,6 +6,7 @@
     foreach ($D as $v) {
         $arr[] = $v['permission_id'];
     }
+    $driverRole = Auth::guard('adminLogin')->user()->role_id;
     ?>
 
 
@@ -212,10 +213,11 @@
                                 </div>
                                 <br>
                                 {{-- <a class="btn btn-green" style="color: white; margin: 4px;" id="clientexportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a> --}}
+                                @if ($driverRole != 33)
                                 <button class="btn btn-green" style="color: white; margin: 4px;"
                                     onclick="window.location='{{ route('export.clients', request()->input()) }}'"><i
                                         class="fa fa-file-excel-o"></i>Download Excel</button>
-
+                                @endif
 
 
 

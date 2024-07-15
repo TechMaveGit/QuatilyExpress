@@ -44,6 +44,9 @@ margin-left: 20px;
      } */
  </style>
 <!-- delete Modal -->
+@php
+    $driverRole =  Auth::guard('adminLogin')->user()->role_id;
+@endphp
 
 <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1" aria-hidden="true">
 
@@ -243,8 +246,9 @@ margin-left: 20px;
 
 
                             </div>
+                            @if($driverRole!=33)
                             <a class="btn btn-green" style="color: white; margin: 3px;"  id="exportBtn" > <i class="fa fa-file-excel-o"></i> Download Excel</a>
-
+@endif
 
 
 

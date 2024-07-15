@@ -1691,6 +1691,11 @@ class ShiftManagement extends Controller
 
     public function exportShiftReport(Request $request)
     {
+        $driverRole = Auth::guard('adminLogin')->user()->role_id;
+        if ($driverRole == '33') {
+            return abort(404);
+        }
+
         // dd($request->input('status'));
         $query = Shift::orderBy('id', 'DESC');
         // Apply default status filter if no filter input is found

@@ -10,6 +10,8 @@
    {
      $arr[] = $v['permission_id'];
    }
+
+   $driverRole = Auth::guard('adminLogin')->user()->role_id;
    ?>
 
 
@@ -93,7 +95,9 @@
                        <a href="{{ route('administration.role.add') }}" class="btn btn-primary" style="margin: 3px">+ Add New Role</a>
                        @endif
                     </div>
+                    @if ($driverRole != 33)
                     <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                    @endif
 
 
                 </div>

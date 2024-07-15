@@ -13,6 +13,7 @@ use App\Models\Clientrate;
 use App\Models\States;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
@@ -64,6 +65,10 @@ class ClientController extends Controller
 
     public function exportClients(Request $request)
     {
+        $driverRole = Auth::guard('adminLogin')->user()->role_id;
+        if ($driverRole == '33') {
+            return abort(404);
+        }
         $query = Client::query();
         // Check if any filter input is provided
         if ($request->filled('clientStatus') || $request->filled('name') || $request->filled('mobileNo') || $request->filled('state')) {

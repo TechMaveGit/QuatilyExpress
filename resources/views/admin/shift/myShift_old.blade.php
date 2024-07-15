@@ -8,6 +8,8 @@
    {
      $arr[] = $v['permission_id'];
    }
+
+   $driverRole =  Auth::guard('adminLogin')->user()->role_id;
    ?>
 <style>
     .relative{
@@ -443,7 +445,9 @@
                                            <div class="search_btn btnsflexflt_group">
                                                 <button type="submit" class="btn btn-primary "><i class="fe fe-search"></i> Search</button>
                                                 <a href="{{ route('admin.shift.report',['id'=>'10']) }}" class="btn btn-info "><i class="fe fe-refresh-ccw"></i> Clear Filter</a>
+                                                @if($driverRole!=33)
                                                 <a class="btn btn-green" style="color: white;" id="customDownloadButton"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                                                @endif
 
                                                 @if(in_array("54", $arr))
                                                 <a  onclick="showImportForm()" class="btn btn-green "><i class="fa fa-file-excel-o"></i> Import Excel</a>
@@ -673,10 +677,9 @@
                                     <th class="bg-transparent border-bottom-0 column-vehicleType">Vehicle Type</th>
                                     <th class="bg-transparent border-bottom-0 column-state">State</th>
 
-                                    @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
+                                    
                                         @if($driverRole!=33)
                                         <th  class="bg-transparent border-bottom-0 column-created_at">Created Date</th>
-                                      @endif
                                     @endif
 
 
@@ -690,13 +693,12 @@
                                     <th class="bg-transparent border-bottom-0 column-status">Status</th>
                                     <th  class="bg-transparent border-bottom-0">Total Hours</th>
 
-                                    @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
+                                    
                                       @if($driverRole==33)
                                           <th  class="bg-transparent border-bottom-0">Total Hours Day Shift</th>
                                           <th  class="bg-transparent border-bottom-0">Total Hours Night Shift</th>
                                          <th  class="bg-transparent border-bottom-0">Total Hours Weekend Shift</th>
                                         @endif
-                                    @endif
 
 
 
