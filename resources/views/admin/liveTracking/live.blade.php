@@ -472,8 +472,8 @@
                                 <p class="black">Rego: ${driverDetails['shift']['get_rego']['rego']}</p>
                                 <p class="black">Odometer: ${driverDetails['shift']['odometer']}</p>
                                 <p class="black">Shift Start: ${driverDetails['shift']['shiftStartDate']}</p>
-                                <p class="black">Start Address: ${driverDetails['shift']['startaddress']}</p>
-                                <p class="black">End Address: ${driverDetails['shift']['endaddress']}</p>
+                                <p class="black">Start Address: ${driverDetails['shift']['startaddress']||'-'}</p>
+                                <p class="black">End Address: ${driverDetails['shift']['endaddress']||'-'}</p>
                                 <h4 class="black">Driver Current Location</h4>
                                 <p class="black">Driver Latitude : ${driverLocation.lat??''} </p>
                                 <p class="black">Driver Longitude : ${driverLocation.lng??''}</p>
