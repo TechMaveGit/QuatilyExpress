@@ -1418,27 +1418,29 @@ class ShiftManagement extends Controller
                 // return Redirect::back()->with('message', ' Shift Hr. Management Updated Successfully!');
                 // }
                 // if ($managementId == '3') {
-                $shiftMonetizeInformation['amountPayablePerService'] = $request->input('amountPayablePerService');
-                $shiftMonetizeInformation['fuelLevyPayable'] = $request->input('fuelLevyPayable');
-                $shiftMonetizeInformation['extraPayable'] = $request->input('extraPayable');
-                $shiftMonetizeInformation['totalPayable'] = $totalPayShiftAmount;
-                $shiftMonetizeInformation['comments'] = $request->input('comments');
-                $shiftMonetizeInformation['approvedReason'] = $request->input('approvedReason');
-                $shiftMonetizeInformation['amountChargeablePerService'] = $request->input('amountChargeablePerService');
-                $shiftMonetizeInformation['fuelLevyChargeable250'] = $request->input('fuelLevyChargeable250');
-                $shiftMonetizeInformation['fuelLevyChargeable'] = $request->input('fuelLevyChargeable');
-                $shiftMonetizeInformation['fuelLevyChargeable400'] = $request->input('fuelLevyChargeable400');
-                $shiftMonetizeInformation['extraChargeable'] = $request->input('extraChargeable');
-                $shiftMonetizeInformation['totalChargeable'] = $totalChargeDay;
-                
-               
-                if ($shiftMonetize) {
-                    $shiftMonetizeInformation['shiftId'] = $id;
-                    DB::table('shiftMonetizeInformation')->where('shiftId', $id)->update($shiftMonetizeInformation);
-                } else {
-                    $shiftMonetizeInformation['shiftId'] = $id;
-                    DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
-                }
+                    if($request->amountPayablePerService && $shiftMonetize){
+                        $shiftMonetizeInformation['amountPayablePerService'] = $request->input('amountPayablePerService');
+                        $shiftMonetizeInformation['fuelLevyPayable'] = $request->input('fuelLevyPayable');
+                        $shiftMonetizeInformation['extraPayable'] = $request->input('extraPayable');
+                        $shiftMonetizeInformation['totalPayable'] = $totalPayShiftAmount;
+                        $shiftMonetizeInformation['comments'] = $request->input('comments');
+                        $shiftMonetizeInformation['approvedReason'] = $request->input('approvedReason');
+                        $shiftMonetizeInformation['amountChargeablePerService'] = $request->input('amountChargeablePerService');
+                        $shiftMonetizeInformation['fuelLevyChargeable250'] = $request->input('fuelLevyChargeable250');
+                        $shiftMonetizeInformation['fuelLevyChargeable'] = $request->input('fuelLevyChargeable');
+                        $shiftMonetizeInformation['fuelLevyChargeable400'] = $request->input('fuelLevyChargeable400');
+                        $shiftMonetizeInformation['extraChargeable'] = $request->input('extraChargeable');
+                        $shiftMonetizeInformation['totalChargeable'] = $totalChargeDay;
+                        
+                    
+                        if ($shiftMonetize) {
+                            $shiftMonetizeInformation['shiftId'] = $id;
+                            DB::table('shiftMonetizeInformation')->where('shiftId', $id)->update($shiftMonetizeInformation);
+                        } else {
+                            $shiftMonetizeInformation['shiftId'] = $id;
+                            DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
+                        }
+                    }
             
                 // DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
                 // DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
