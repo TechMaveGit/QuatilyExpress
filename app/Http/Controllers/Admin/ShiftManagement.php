@@ -1406,10 +1406,11 @@ class ShiftManagement extends Controller
             }else{
                 $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
                 
-                $totalPayShiftAmount = (($shiftMonetize ? (float)$shiftMonetize->amountPayablePerService : $request->input('amountPayablePerService'))+(float)$request->input('fuelLevyPayable')+(float)$request->input('extraPayable'));
-                $totalChargeDay = (($shiftMonetize ? (float)$shiftMonetize->amountChargeablePerService:$request->input('amountChargeablePerService'))+(float)$request->input('fuelLevyChargeable')+(float)$request->input('fuelLevyChargeable250')+(float)$request->input('fuelLevyChargeable400')+(float)$request->input('extraChargeable'));
-                // dd($request->all());
-                Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount,'chageAmount'=>$totalChargeDay]);
+                if($shiftMonetize){
+                    $totalPayShiftAmount = (($shiftMonetize ? (float)$shiftMonetize->amountPayablePerService : $request->input('amountPayablePerService'))+(float)$request->input('fuelLevyPayable')+(float)$request->input('extraPayable'));
+                    $totalChargeDay = (($shiftMonetize ? (float)$shiftMonetize->amountChargeablePerService:$request->input('amountChargeablePerService'))+(float)$request->input('fuelLevyChargeable')+(float)$request->input('fuelLevyChargeable250')+(float)$request->input('fuelLevyChargeable400')+(float)$request->input('extraChargeable'));
+                    Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount,'chageAmount'=>$totalChargeDay]);
+                }
             }
 
             $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
