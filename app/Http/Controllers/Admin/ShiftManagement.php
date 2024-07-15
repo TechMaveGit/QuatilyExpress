@@ -1724,6 +1724,13 @@ class ShiftManagement extends Controller
                 $query->where('endDate', '>=', $request->input('finish'));
             });
         }
+
+        $userId = Auth::guard('adminLogin')->user();
+        if ($userId->role_id == '33') {
+            $driverId = Driver::where('email', $userId->email)->first()->id;
+            $query = $query->where('driverId', $driverId);
+            $query = $query->whereNotIn('finishStatus', [0, 1]);
+        }
         // Fetch data
         $shifts = $query->orderBy('id', 'DESC')
             ->with(['getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])

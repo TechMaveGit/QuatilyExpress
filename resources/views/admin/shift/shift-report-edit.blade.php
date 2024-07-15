@@ -138,7 +138,6 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                             @if($shiftView->finishStatus =='5')
                                                             <select class="form-control select2 form-select"  name="finishStatus">
                                                                 <option value="5" @if($shiftView->finishStatus =='5') selected @else @endif >Paid</option>
-                                                                <option value="6" @if($shiftView->finishStatus =='6') selected @else @endif >Already Paid</option>
                                                             </select>
                                                             @else
                                                             <select class="form-control select2 form-select" name="finishStatus">
@@ -148,7 +147,6 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                                 <option value="3" @if($shiftView->finishStatus =='3') selected @else @endif >Approved</option>
                                                                 <option value="4" @if($shiftView->finishStatus =='4') selected @else @endif >Rejected</option>
                                                                 <option value="5" @if($shiftView->finishStatus =='5') selected @else @endif >Paid</option>
-                                                                <option value="6" @if($shiftView->finishStatus =='6') selected @else @endif >Already Paid</option>
                                                             </select>
                                                             @endif
                                                         </div>

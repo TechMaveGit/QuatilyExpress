@@ -299,9 +299,6 @@
                                                         <option value="5"
                                                             {{ in_array('5', $statusData) ? 'selected="selected"' : '' }}>
                                                             Paid</option>
-                                                        <option value="6"
-                                                            {{ in_array('6', $statusData) ? 'selected="selected"' : '' }}>
-                                                            Already Paid</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -782,9 +779,7 @@
                                                         <span class="light status-ToBeApr">Rejected</span>
                                                         <?php } elseif ($allshift->finishStatus=='5')  { ?>
                                                         <span class="light status-Paid">Paid</span>
-                                                        <?php }elseif ($allshift->finishStatus=='6')  { ?>
-                                                            <span class="light status-Paid">Already Paid</span>
-                                                            <?php } else { ?>
+                                                        <?php } else { ?>
                                                         <?php } ?>
                                                     </td>
                                                     @php

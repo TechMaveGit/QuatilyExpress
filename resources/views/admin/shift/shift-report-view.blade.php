@@ -109,13 +109,12 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                     <div class="form-group">
                                                     <select class="form-control select2 form-select" disabled>
                                                            <option value="">Select any one</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='0') selected @else @endif >Created</option>
+                                                            <option value="0" @if($shiftView['finishStatus'] =='0') selected @else @endif >Created</option>
                                                             <option value="1" @if($shiftView['finishStatus'] =='1') selected @else @endif >In Progress</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='2') selected @else @endif >To Be Approved</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='3') selected @else @endif >Approved</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='4') selected @else @endif >Rejected</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='5') selected @else @endif >Paid</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='6') selected @else @endif >Already Paid</option>
+                                                            <option value="2" @if($shiftView['finishStatus'] =='2') selected @else @endif >To Be Approved</option>
+                                                            <option value="3" @if($shiftView['finishStatus'] =='3') selected @else @endif >Approved</option>
+                                                            <option value="4" @if($shiftView['finishStatus'] =='4') selected @else @endif >Rejected</option>
+                                                            <option value="5" @if($shiftView['finishStatus'] =='5') selected @else @endif >Paid</option>
                                                         </select>
 
                                                 </div>

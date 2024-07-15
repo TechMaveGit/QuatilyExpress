@@ -135,8 +135,8 @@ class Homecontroller extends Controller
         $data['driverFilter'] = Driver::where('status', '1')->get();
         $data['totalRego'] = Vehical::select('id', 'rego')->get();
         // new design Box count section
-        $data['driverPay'] = Client::sum('driverPay');
-        $data['clientPay'] = Client::sum('adminCharge');
+        $data['driverPay'] = DB::table('shiftMonetizeInformation')->sum('totalPayable');
+        $data['clientPay'] = DB::table('shiftMonetizeInformation')->sum('totalChargeable');
         $data['tollexpense'] = $tollexpense;
         // end box design section
         $data['check'] = '';
