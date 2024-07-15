@@ -51,7 +51,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                         <span><i class="ti-light-bulb"></i></span>
                                         <span> Show Shift</span>
                                     </h2>
-                                     <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
+                                     <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" id="shiftEditForm" method="post">@csrf
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
@@ -461,7 +461,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                   <div class="col-lg-3">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="exampleInputEmail1">Parcel Outstanding</label>
-                                                        <input type="text" class="form-control" disabled id="exampleInputEmail1" value="{{ ($shiftView->parcelsToken??0)-($shiftView->getFinishShifts->parcelsDelivered??0) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="text" class="form-control" disabled id="parcelsOutstanding" value="{{ ($shiftView->parcelsToken??0)-($shiftView->getFinishShifts->parcelsDelivered??0) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                     </div>
                                                    </div>
                                                   <div class="col-lg-3">
@@ -482,7 +482,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Traveled KM</label>
-                                                       <input type="text" value="{{ $km }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <input type="text" value="{{ $km }}" class="form-control" id="traveledKM" aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
@@ -503,9 +503,9 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish</label>
                                                        @if ($finishshifts)
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" {{$readonlybtn}} value="{{ date('Y/m/d', strtotime($finishshifts->endDate))??'N/A' }} {{  date('H:i', strtotime($finishshifts->endTime))??'N/A' }}" aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker shiftDateFinish" id="#basicDate1" {{$readonlybtn}} value="{{ date('Y/m/d', strtotime($finishshifts->endDate))??'N/A' }} {{  date('H:i', strtotime($finishshifts->endTime))??'N/A' }}" aria-describedby="emailHelp">
                                                        @else
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate2" value="" {{$readonlybtn}} aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker shiftDateFinish" id="#basicDate2" value="" {{$readonlybtn}} aria-describedby="emailHelp">
                                                        @endif
                                                    </div>
                                                </div>
@@ -646,7 +646,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="action_btns text-end">
-                                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
+                                            <button type="submit" id="checkDataStatus" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
                                              <a href="{{ route('admin.shift.report') }}" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a>
                                         </div>
                                     </div>
@@ -954,5 +954,69 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
         }
     });
 
+</script>
+
+<script>
+    let finalStatus = "{{$shiftView->finishStatus}}";
+    $("#checkDataStatus").click(function(e){
+        e.preventDefault();
+
+        if(finalStatus == "1"){
+            let parcelsToken = parseInt($("#parcelsToken").val())||0;
+            let parcelsDelivered = parseInt($("#parcelsDelivered").val()) || 0;
+
+            let odometerStartReading = parseInt($("#odometerStartReading").val())||0;
+            let odometerEndReading = parseInt($("#odometerEndReading").val())||0;
+
+            let shiftDateFinish = $(".shiftDateFinish").val();
+
+            let isValid = true;
+
+            $("#parcelsToken, #parcelsDelivered, #odometerStartReading, #odometerEndReading, .shiftDateFinish").removeClass("is-invalid");
+            $(".custom_error").remove();
+
+            if(parcelsToken <= 0){
+                $("#parcelsToken").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+
+            if(parcelsDelivered <= 0){
+                $("#parcelsDelivered").addClass('is-invalid').attr('max',parcelsToken).attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+
+            if(parcelsDelivered>parcelsToken){
+                $("#parcelsDelivered").addClass('is-invalid').attr('max',parcelsToken).attr('required',true).after('<span class="custom_error text-danger">The parcel delivered must be less than or equal to parcel taken.</span>').focus();
+                isValid = false;
+            }
+
+            if(odometerStartReading <= 0){
+                $("#odometerStartReading").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+            if(odometerEndReading <= 0){
+                $("#odometerEndReading").addClass('is-invalid').attr('min',odometerStartReading+1).attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+
+            if(odometerEndReading<odometerStartReading){
+                $("#odometerEndReading").addClass('is-invalid').attr('min',odometerStartReading+1).attr('required',true).after('<span class="custom_error text-danger">The odometer finish must be greater than or equal to odometer start.</span>').focus();
+                isValid = false;
+            }
+
+            if(shiftDateFinish == '' || shiftDateFinish == undefined){
+                $(".shiftDateFinish").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>');
+                isValid = false;
+            }
+
+            $("parcelsOutstanding").val(parseInt(parcelsToken)-parseInt(parcelsDelivered));
+            $("traveledKM").val(parseInt(odometerEndReading)-parseInt(odometerStartReading));
+            if(isValid){
+                $("#shiftEditForm").submit();
+            }
+        }else{
+            $("#shiftEditForm").submit();
+        }
+    })
 </script>
 @endsection
