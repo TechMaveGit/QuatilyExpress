@@ -9,7 +9,7 @@ foreach($D as $v)
 }
 
 $readonlybtn = null;
-if(in_array($shiftView->finishStatus,["3","4","5","6"])){
+if(in_array($shiftView->finishStatus,["4","5","6"])){
     $readonlybtn = 'disabled';
 }
 
@@ -112,7 +112,7 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                         <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                 @foreach ($costCenter as $allcostCenter)
-                                                                <option value="{{ $allcostCenter->id }}">{{ $allcostCenter->name }}
+                                                                <option @if($allcostCenter->id ==$shiftView->costCenter) selected @else @endif value="{{ $allcostCenter->id }}">{{ $allcostCenter->name }}
                                                                </option>
                                                               @endforeach
                                                         </select>
@@ -235,19 +235,20 @@ if(in_array($shiftView->finishStatus,["3","4","5","6"])){
                                                   <div class="check_box">
                                                     <label class="form-label" for="exampleInputEmail1">Rego <span class="red">*</span></label>
                                                     <div class="form-group">
+                                                        @php
+                                                        $rego = DB::table('vehicals')->get();
+                                                        @endphp
                                                          @if($shiftView->finishStatus =='5')
-                                                           <select class="form-control select2 form-select" id="regoId"  onchange="getDriverResponiable(this)"  name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
+                                                           <select class="form-control select2 form-select"   name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
-                                                            @foreach ($types as $alltypes)
-                                                               <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
+                                                            @foreach ($rego as $allrego)
+                                                               <option value="{{ $allrego->id }}" @if($allrego->id ==$shiftView->rego) selected @else @endif >{{ $allrego->rego }}
                                                                </option>
                                                           @endforeach
                                                             </select>
                                                         @else
-                                                        @php
-                                                        $rego = DB::table('vehicals')->get();
-                                                        @endphp
-                                                           <select class="form-control select2 form-select" name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
+                                                        
+                                                           <select class="form-control select2 form-select" name="rego" id="regoId" onchange="getDriverResponiable(this)" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                @foreach ($rego as $allrego)
                                                                 <option value="{{ $allrego->id }}" @if($allrego->id == $shiftView->rego) selected @else @endif >{{ $allrego->rego }}

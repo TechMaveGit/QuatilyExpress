@@ -1210,12 +1210,14 @@ class ShiftManagement extends Controller
         $clientRates = DB::table('clientrates')->where(['clientId'=>$data['shiftView']->client,'type'=>$data['shiftView']->vehicleType])->first();
         $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
    
+        // dd($data);
+
         if (request()->isMethod('post')) {
             
             // dd($request->all(),$shiftData->finishStatus);
-            if(in_array($shiftData->finishStatus,['0','1','2'])){
+            if(in_array($shiftData->finishStatus,['0','1','2','3'])){
                 // dd("---");
-                $ss = Shift::where('id', $id)->update([
+                Shift::where('id', $id)->update([
                     'state'    => $request->input('state'),
                     'client'     => $request->input('client'),
                     'costCenter'        => $request->input('costCenter'),
@@ -1239,7 +1241,7 @@ class ShiftManagement extends Controller
                 // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
             // }
             // if (!in_array($request->input('finishStatus'),[0,1])) {
-            if(in_array($shiftData->finishStatus,['0','1','2'])){
+            if(in_array($shiftData->finishStatus,['0','1','2','3'])){
                 
                 $startDate = $request->shiftStartDate;
                 $endDate = $request->finishDate;
@@ -1248,6 +1250,7 @@ class ShiftManagement extends Controller
                 // dd($start_date,$end_date);
                 $startDate = strtotime($start_date);
                 $endDate = strtotime($end_date);
+                // dd($startDate, $endDate);
                 $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
                 $dayHr = $result['dayTotal'];
                 $nightHr = $result['nightTotal'];

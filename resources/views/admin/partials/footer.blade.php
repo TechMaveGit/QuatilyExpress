@@ -748,7 +748,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85KpTqFdcQZH6x7tnzu6tjQRlqyzAn-s&libraries=places"
    defer></script>
 <script src="{{ asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-<!-- DATA TABLE JS-->x`
+<!-- DATA TABLE JS-->
 <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.js')}}"></script>
 <script src="{{ asset('assets/plugins/datatable/js/dataTables.buttons.min.js')}}"></script>
