@@ -404,7 +404,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
    
                                            @if(!empty($shiftView->getFinishShifts->sundayHours))
                                            @php
-                                           $sunday = $shiftView->getClientCharge->hourlyRateChargeableSunday??1 * $shiftView->getFinishShifts->sundayHours;
+                                           $sunday = ($shiftView->getClientCharge->hourlyRateChargeableSunday??0) * $shiftView->getFinishShifts->sundayHours ;
                                            @endphp
                                            @else
                                            @php
