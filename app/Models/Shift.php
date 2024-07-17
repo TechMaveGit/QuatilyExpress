@@ -54,7 +54,12 @@ class Shift extends Model
 
     public function getClientCharge()
     {
-        return $this->hasOne(Clientrate::class, 'type', 'vehicleType')->latest('id');
+        return $this->hasOne(Clientrate::class, 'type', 'vehicleType');
+    }
+
+    public function getClientCharges()
+    {
+        return $this->hasMany(Clientrate::class, 'type', 'vehicleType');
     }
 
     public function getClientReportCharge()
