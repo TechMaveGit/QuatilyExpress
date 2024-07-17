@@ -1743,24 +1743,9 @@ class ShiftManagement extends Controller
         }
         // Fetch data
         $shifts = $query->orderBy('id', 'DESC')
-            ->with(['getbase','getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
+            ->with(['getbase','getClientCharge','getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
             ->get();
 
-
-        // $shiftsExport = new ShiftReportsExport($shifts);
-
-        // // Define the filename
-        // $filename = 'shift_report.csv';
-
-        // // Get the CSV content
-        // $content = $shiftsExport->exportToCsv();
-
-        // // Serve the file as a download response
-        // return response($content)
-        //     ->header('Content-Type', 'text/csv')
-        //     ->header('Content-Disposition', 'attachment; filename=' . $filename)
-        //     ->header('Pragma', 'no-cache')
-        //     ->header('Expires', '0');
 
 
         $export = new ShiftReportsExport($shifts);

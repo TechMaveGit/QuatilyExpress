@@ -268,21 +268,33 @@ class ShiftReportsExport
 
             $clientCharge = $clientRate;
 
-            $dayPy = ($clientCharge->hourlyRatePayableDay ?? 0) + $extra_per_hour_rate;
-            $nightPy = ($clientRate->hourlyRatePayableNight ?? 0) + $extra_per_hour_rate;
+            // $dayPy = ($clientCharge->hourlyRatePayableDay ?? 0) + $extra_per_hour_rate;
+            // $nightPy = ($clientRate->hourlyRatePayableNight ?? 0) + $extra_per_hour_rate;
 
-            $day = (string)$clientCharge ? $dayPy * optional($shift->getFinishShifts)->dayHours ?? 0 : "0";
-            $night = (string)$clientCharge ? $nightPy * optional($shift->getFinishShifts)->nightHours ?? 0 : "0";
+            $day = ($shift->getFinishShifts && $shift->getFinishShifts->dayHours)?(($shift->getClientCharge->hourlyRatePayableDay??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->dayHours ?? 0):'0';
+            $night = ($shift->getFinishShifts && $shift->getFinishShifts->nightHours) ?(($shift->getClientCharge->hourlyRatePayableNight??0) + $extra_per_hour_rate  ?? 0) * ($shift->getFinishShifts->nightHours ?? 0) : '0';
 
-            // dd($day);
+            // dd($shift->getClientCharge->hourlyRatePayableDay, $extra_per_hour_rate,$shift->getFinishShifts->dayHours??0,$day);
+            
 
-            $saturdayCh = $clientRate->hourlyRateChargeableSaturday ?? 0 + $extra_per_hour_rate;
-            $sundayCh = $clientRate->hourlyRateChargeableSunday ?? 0 + $extra_per_hour_rate;
+            $saturday = 0;
+            $sunday = 0;
+            if ($shift->getFinishShifts && $shift->getFinishShifts->saturdayHours != '0') {
+                $saturday = (($shift->getClientCharge->hourlyRatePayableSaturday??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->saturdayHours ?? 0);
+            }
+            if ($shift->getFinishShifts && $shift->getFinishShifts->sundayHours != '0') {
+                $sunday = (($shift->getClientCharge->hourlyRatePayableSunday??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->sundayHours ?? 0);
+            }
+            $chargeDayShift = ($shift->getClientCharge->hourlyRateChargeableDays??0) * ($shift->getFinishShifts->dayHours ?? 0);
 
-            $saturdayCharge = $clientCharge ? $saturdayCh * optional($shift->getFinishShifts)->saturdayHours ?? 0 : 0;
-            $sundayCharge = $clientCharge ? $sundayCh * optional($shift->getFinishShifts)->sundayHours ?? 0 : 0;
+            $chargeDayShift = ($shift->getClientCharge->hourlyRateChargeableDays??0) * ($shift->getFinishShifts->dayHours ?? 0);
+            $chargeNight = ($shift->getClientCharge->ourlyRateChargeableNight??0) * ($shift->getFinishShifts->nightHours ?? 0);
 
             $km = ((int) $shift?->getFinishShift?->odometerEndReading ?? 0) - ((int) $shift?->getFinishShift?->odometerStartReading ?? 0);
+
+            $saturdayCharge = ($shift->getFinishShifts && $shift->getFinishShifts->saturdayHours) ? ($shift->getClientCharge->hourlyRateChargeableSaturday??0) * $shift->getFinishShifts->saturdayHours : 0;
+
+            $sundayCharge = ($shift->getFinishShifts && $shift->getFinishShifts->sundayHours) ? ($shift->getClientCharge->hourlyRateChargeableSunday??0) * $shift->getFinishShifts->sundayHours : 0;
 
             if ($driverRole == 33) {
                 return [
@@ -336,7 +348,7 @@ class ShiftReportsExport
                     'Amount Chargeable Day Shift' => (string)$chargeDayShift??"0",
                     'Amount Payable Night Shift' => (string)$night??"0",
                     'Amount Chargeable Night Shift' => (string)$chargeNight??"0",
-                    'Amount Payable Weekend Shift' => (string)($saturday ?? 0 + $sunday ?? 0),
+                    'Amount Payable Weekend Shift' => (string)($saturday+$sunday),
                     'Amount Chargeable Weekend Shift' => (string)(($saturdayCharge ?? 0) + ($sundayCharge ?? 0)),
                     'Fuel Levy Payable' => $shift->getShiftMonetizeInformation->fuelLevyPayable ?? "0",
                     'Fuel Levy Chargeable Fixed' => $shift->getShiftMonetizeInformation->fuelLevyChargeable ?? "0",
@@ -344,7 +356,7 @@ class ShiftReportsExport
                     'Fuel Levy Chargeable 400+' => $shift->getShiftMonetizeInformation->fuelLevyChargeable400 ?? "0",
                     'Extra Payable' => $shift->getShiftMonetizeInformation->extraPayable ?? "0",
                     'Extra Chargeable' => $shift->getShiftMonetizeInformation->extraChargeable ?? "0",
-                    'Total Payable' => (string)round(((float)$day+(float)$night+((float)$saturday ?? 0.0 + (float)$sunday ?? 0.0)+($shift->getShiftMonetizeInformation->fuelLevyPayable??0.0)+($shift->getShiftMonetizeInformation->extraPayable??0.0)), 2) ?? "0",
+                    'Total Payable' => (string)round(((float)$day+(float)$night+((float)$saturday+$sunday)+($shift->getShiftMonetizeInformation->fuelLevyPayable??0.0)+($shift->getShiftMonetizeInformation->extraPayable??0.0)), 2) ?? "0",
                     'Total Chargeable' => $shift->getShiftMonetizeInformation->totalChargeable ?? "0",
                     'Odometer Start' => $shift->getFinishShift->odometerStartReading ?? "0",
                     'Odometer End' => $shift->getFinishShift->odometerEndReading ?? "0",
