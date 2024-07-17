@@ -349,7 +349,7 @@ class ShiftReportsExport
                     'Odometer Start' => $shift->getFinishShift->odometerStartReading ?? "0",
                     'Odometer End' => $shift->getFinishShift->odometerEndReading ?? "0",
                     'Traveled KM' => (string)$km ?? "0",
-                    'Comment' => $shift->getFinishShift->comments ?? 'N/A',
+                    'Comment' => $shift->getShiftMonetizeInformation->comments ?? 'N/A',
                     'Approved Reason' => $shift->approval_reason ?? 'N/A',
                     'Driver Rate' => (string)$extra_per_hour_rate ?? '0',
                     'Mobile Date Start' => $shift->createdDate ? date('d-m-Y H:i:s', strtotime($shift->createdDate)) : 'N/A',

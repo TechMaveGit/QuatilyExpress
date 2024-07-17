@@ -94,7 +94,7 @@ class Shift extends Model
 
     public function getbase()
     {
-        return $this->hasOne(Clientbase::class, 'clientId', 'id');
+        return $this->hasOne(Clientbase::class, 'id', 'base');
     }
 
     public function getShiftMonetizeInformation()
