@@ -18,23 +18,23 @@ class ShiftReportsExport
 
     public function exportToXls()
     {
-        // $spreadsheet = new Spreadsheet();
-        // $sheet = $spreadsheet->getActiveSheet();
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
        
-        // $headers = $this->generateHeaders();
-        // $sheet->fromArray($headers, NULL, 'A1');
+        $headers = $this->generateHeaders();
+        $sheet->fromArray($headers, NULL, 'A1');
 
         $data = $this->collection();
-        dd($data);
-        // $sheet->fromArray($data, NULL, 'A2');
+        // dd($data);
+        $sheet->fromArray($data, NULL, 'A2');
 
-        // $writer = new Xls($spreadsheet);
+        $writer = new Xls($spreadsheet);
 
-        // $tempFile = tempnam(sys_get_temp_dir(), 'shift_report');
-        // $writer->save($tempFile);
+        $tempFile = tempnam(sys_get_temp_dir(), 'shift_report');
+        $writer->save($tempFile);
 
-        // return $tempFile;
+        return $tempFile;
     }
 
     protected function generateHeaders()
