@@ -478,6 +478,7 @@
                                 <p class="black">Driver Latitude : ${driverLocation.lat??''} </p>
                                 <p class="black">Driver Longitude : ${driverLocation.lng??''}</p>
                                 <p class="black">Driver Address : ${draddress}</p>
+                                <p class="black">Last Update : ${driverLocation.created_at??''}</p>
                             </div>`
                 );
                 infoWindow.open(map, driverMarker);
@@ -673,10 +674,16 @@
                     $('#shiftId').empty();
                     var html4 = '<option value="" >Choose one</option>';
                     $.each(data.vehicleData, function(index, items) {
+
+                        let missShift='';
+                        if(items.is_missed_shift == 1){
+                            missShift = '(missed-shift)'
+                        }
+
                         if (shiftData == items.id) {
-                            html4 += '<option value="' + items.id + '" selected>' + 'QE' + items.shiftRandId + '  (' + items.shiftStartDate + ')</option>';
+                            html4 += '<option value="' + items.id + '" selected>' + 'QE' + items.shiftRandId + '  (' + items.shiftStartDate + ') '+missShift+'</option>';
                         } else {
-                            html4 += '<option value="' + items.id + '">' + 'QE' + items.shiftRandId + '  (' + items.shiftStartDate + ')</option>';
+                            html4 += '<option value="' + items.id + '">' + 'QE' + items.shiftRandId + '  (' + items.shiftStartDate + ') '+missShift+'</option>';
                         }
                     });
                     $('#shiftId').append(html4);

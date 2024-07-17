@@ -8,6 +8,7 @@ use App\Models\Parcels;
 use App\Models\Shift;
 use App\Models\State;
 use App\Models\TrackLocation;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,7 @@ class LiveTrackingController extends Controller
         if (request()->isMethod('post')) {
             $driverName = $request->input('driverName');
             $shiftId = $request->input('shiftName');
-            $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng')->orderBy('id', 'DESC');
+            $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng','created_at')->orderBy('id', 'DESC');
 
             if ($driverName) {
                 $locations->where('driver_id', $driverName);
@@ -41,7 +42,13 @@ class LiveTrackingController extends Controller
             
             $startpoints = ['lat'=>$shiftData->startlatitude??null,'lng'=>$shiftData->startlongitude??null,'address'=>$shiftData->startaddress??null];
             $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
-            $locations = $locations->get()->toArray();
+            $locations = $locations->get()->map(function ($location) {
+                $location->created_at = Carbon::parse($location->created_at)
+                    ->setTimezone('Australia/Sydney')
+                    ->format('Y-m-d H:i:s');
+                return $location;
+            })
+            ->toArray();
             $selected_driver['driver'] = Driver::whereId($driverName ?? '')->first()->toArray() ?? '';
             $selected_driver['shift'] = Shift::with('getRego')->where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
 
@@ -76,7 +83,7 @@ class LiveTrackingController extends Controller
         
         if (request()->isMethod('post')) {
             $driverName = $request->input('driverName');
-            $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng')->orderBy('id', 'DESC');
+            $locations = DB::table('track_location')->select('latitude as lat', 'longitude as lng','created_at');
             $shiftData = Shift::where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first();
             // $selected_driver = Driver::whereId($driverName ?? '')->first()->toArray();
 
@@ -84,12 +91,19 @@ class LiveTrackingController extends Controller
             $selected_driver['shift'] = Shift::with('getRego')->where(['driverId'=>$driverName,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
            
             if ($driverName) {
-                $locations->where('driver_id', $driverName);
+                $locations->where(['driver_id'=> $driverName,'shiftid'=>$shiftData->id]);
             }
             
             $startpoints = ['lat'=>$shiftData->startlatitude??null,'lng'=>$shiftData->startlongitude??null,'address'=>$shiftData->startaddress??null];
             $endpoints = ['lat'=>$shiftData->endlatitude??null,'lng'=>$shiftData->endlongitude??null,'address'=>$shiftData->endaddress??null];
-            $locations = $locations->get()->toArray();
+            $locations = $locations->orderBy('id', 'ASC')->get()->map(function ($location) {
+                $location->created_at = Carbon::parse($location->created_at)
+                    ->setTimezone('Australia/Sydney')
+                    ->format('Y-m-d H:i:s');
+                return $location;
+            })
+            ->toArray();
+
 
             if ($shiftData->id) {
                 $parcelLocation = Parcels::with('ParcelImage')->select('id','latitude as lat', 'longitude as lng', 'location', 'scanParcel', 'receiverName','deliveredTo','parcelphoto','deliver_address','parcelDeliverdDate','delivered_latitude','delivered_longitude','status','created_at','sorting')->orderByRaw('IFNULL(sorting, id) DESC');
@@ -105,12 +119,15 @@ class LiveTrackingController extends Controller
             }
         }else{
             foreach ($driver as $alldriver) {
-                $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng')->orderBy('id', 'DESC')->where('driver_id', $alldriver->id)->first();
+                $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng','created_at')->orderBy('id', 'DESC')->where('driver_id', $alldriver->id)->first();
                     if (isset($location->driver_id)) {
                         $location->driver = Driver::whereId($location->driver_id ?? '')->first()->toArray() ?? '';
                         $location->shift = Shift::with('getRego')->where(['driverId'=>$location->driver_id,'shiftStatus'=>'2'])->orderBy('id','DESC')->first()->toArray() ?? '';
                     }
                     if ($location) {
+                        $location->sydney_time = Carbon::parse($location->created_at)
+                        ->setTimezone('Australia/Sydney')
+                        ->format('Y-m-d H:i:s');
                         $locations[] = $location->toArray();
                     } else {
                 }

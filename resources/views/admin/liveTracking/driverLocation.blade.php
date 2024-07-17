@@ -286,6 +286,7 @@
                                     <p class="black">Driver Latitude : ${location.lat??''} </p>
                                     <p class="black">Driver Longitude : ${location.lng??''}</p>
                                     <p class="black">Driver Address : ${draddress}</p>
+                                    <p class="black">Last Update : ${location.sydney_time??''}</p>
                                 </div>
                             `;
                             infoWindow.setContent(contentString);
@@ -355,7 +356,7 @@
             let directionsRenderers = [];
             let deliveryPoints = parcelLocation.length ? parcelLocation : [];
             let driverRoute = locations.length ? locations : [];
-            let driverLocation = driverRoute[driverRoute.length - 1]; // Last point in driverRoute is current location
+            let driverLocation = driverRoute[driverRoute.length - 1];
             let startPoint = @json($startpoints ?? []); // Start point (red)
             let start_address = startPoint.address != undefined ? `<p><b>Location :</b> ${startPoint.address}</p>` : '';
             if (startPoint != undefined && startPoint.lat) startPoint = {
@@ -543,14 +544,11 @@
                 let newdriverLocation = driverLocation && driverLocation.lat ? {
                     lat: parseFloat(driverLocation.lat),
                     lng: parseFloat(driverLocation.lng)
-                } : {
-                    lat: 0,
-                    lng: 0
-                };
+                } : false;
 
                 let driverDetails = @json($selected_driver ?? []);
                 
-                if(driverDetails.driver){
+                if(driverDetails.driver && newdriverLocation){
                     const driverMarker = new google.maps.Marker({
                         position: newdriverLocation,
                         map: map,
@@ -579,6 +577,7 @@
                             <p class="black">Driver Latitude : ${driverLocation.lat??''} </p>
                             <p class="black">Driver Longitude : ${driverLocation.lng??''}</p>
                             <p class="black">Driver Address : ${draddress}</p>
+                            <p class="black">Last Update : ${driverLocation.created_at??''}</p>
 
                             
                         </div>`;
