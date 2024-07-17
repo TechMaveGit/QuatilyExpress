@@ -26,7 +26,7 @@ class ShiftReportsExport
         $sheet->fromArray($headers, NULL, 'A1');
 
         $data = $this->collection();
-        // dd($data);
+        //  dd($data);
         $sheet->fromArray($data, NULL, 'A2');
 
         $writer = new Xls($spreadsheet);
@@ -247,10 +247,10 @@ class ShiftReportsExport
             $clientRate = Clientrate::where('type', $shift->vehicleType)->where('clientId', $shift->client)->first();
 
             $dayCharge = $clientRate->hourlyRateChargeableDays ?? 0 + $extra_per_hour_rate;
-            $chargeDayShift = ($dayCharge ?? 0) * ($daySum ?? 0);
+            $chargeDayShift = (string)($dayCharge ?? 0) * ($daySum ?? 0);
 
             $nightCharge = $clientRate->hourlyRateChargeableNight ?? 0 + $extra_per_hour_rate;
-            $chargeNight = ($nightCharge ?? 0) * ($nightHours ?? 0);
+            $chargeNight = (string)($nightCharge ?? 0) * ($nightHours ?? 0);
 
             $saturday = 0;
             $sunday = 0;
@@ -271,8 +271,8 @@ class ShiftReportsExport
             $dayPy = ($clientCharge->hourlyRatePayableDay ?? 0) + $extra_per_hour_rate;
             $nightPy = ($clientRate->hourlyRatePayableNight ?? 0) + $extra_per_hour_rate;
 
-            $day = $clientCharge ? $dayPy * optional($shift->getFinishShifts)->dayHours ?? 0 : 0;
-            $night = $clientCharge ? $nightPy * optional($shift->getFinishShifts)->nightHours ?? 0 : 0;
+            $day = (string)$clientCharge ? $dayPy * optional($shift->getFinishShifts)->dayHours ?? 0 : "0";
+            $night = (string)$clientCharge ? $nightPy * optional($shift->getFinishShifts)->nightHours ?? 0 : "0";
 
             // dd($day);
 
@@ -292,9 +292,9 @@ class ShiftReportsExport
                     'Driver' => $shift->getDriverName->fullName ?? 'N/A',
                     'Scanner ID' => $shift->scanner_id ?? 'N/A',
                     'Base' => $shift->getbase->base ?? 'N/A',
-                    'Parcels Taken' => $shift->parcelsToken ?? 0,
-                    'Parcels Delivered' => $shift->getFinishShift->parcelsDelivered ?? 0,
-                    'Outstanding Parcels' => (($shift->parcelsToken ?? 0) - ($shift->getFinishShift->parcelsDelivered ?? 0)),
+                    'Parcels Taken' => $shift->parcelsToken ?? "0",
+                    'Parcels Delivered' => $shift->getFinishShift->parcelsDelivered ?? "0",
+                    'Outstanding Parcels' => (string)(($shift->parcelsToken ?? 0) - ($shift->getFinishShift->parcelsDelivered ?? 0)),
                     'Vehicle' => $shift->getRego->rego ?? 'N/A',
                     'Vehicle Type' => $shift->getVehicleType->name ?? 'N/A',
                     'State' => $shift->getStateName->name ?? 'N/A',
@@ -303,11 +303,11 @@ class ShiftReportsExport
                     'Date Finish' => ($shift->getFinishShift && $shift->getFinishShift->endDate) ? date('d-m-Y', strtotime($shift->getFinishShift->endDate)) : 'N/A',
                     'Time Finish' => $shift->getFinishShift->endTime ?? 'N/A',
                     'Status' => $this->getStatusText($shift->finishStatus),
-                    'Total Hours Morning Shift' => $shift->getFinishShifts->dayHours ?? 0.0,
-                    'Total Hours Night Shift' => $shift->getFinishShifts->nightHours ?? 0.0,
-                    'Total Hours Weekend Shift' => ($shift->getFinishShifts->dayHours ?? 0.0) + ($shift->getFinishShifts->nightHours ?? 0),
-                    'Total Payable' => round(($day+$night+($saturday ?? 0.0 + $sunday ?? 0)+($shift->getShiftMonetizeInformation->fuelLevyPayable??0)+($shift->getShiftMonetizeInformation->extraPayable??0)), 2) ?? 0,
-                    'Traveled KM' => $km ?? 0.0
+                    'Total Hours Morning Shift' => (string)$shift->getFinishShifts->dayHours ?? "0",
+                    'Total Hours Night Shift' => $shift->getFinishShifts->nightHours ?? "0",
+                    'Total Hours Weekend Shift' => (string)($shift->getFinishShifts->dayHours ?? 0) + ($shift->getFinishShifts->nightHours ?? 0),
+                    'Total Payable' => (string)round(($day+$night+($saturday ?? 0.0 + $sunday ?? 0)+($shift->getShiftMonetizeInformation->fuelLevyPayable??0)+($shift->getShiftMonetizeInformation->extraPayable??0)), 2) ?? "0",
+                    'Traveled KM' => $km ?? "0"
                 ];
             } else {
                 return [
@@ -317,9 +317,9 @@ class ShiftReportsExport
                     'Driver' => $shift->getDriverName->fullName ?? 'N/A',
                     'Scanner Id' => $shift->scanner_id ?? 'N/A',
                     'Base' => $shift->getbase->base ?? 'N/A',
-                    'Parcels Taken' => $shift->parcelsToken ?? 0.0,
-                    'Parcels Delivered' => $shift->getFinishShift->parcelsDelivered ?? 0.0,
-                    'Outstanding Parcels' => (($shift->parcelsToken ?? 0.0) - ($shift->getFinishShift->parcelsDelivered ?? 0.0)),
+                    'Parcels Taken' => $shift->parcelsToken ?? "0",
+                    'Parcels Delivered' => $shift->getFinishShift->parcelsDelivered ?? "0",
+                    'Outstanding Parcels' => (string)(($shift->parcelsToken ?? 0.0) - ($shift->getFinishShift->parcelsDelivered ?? 0.0)),
                     'REGO' => $shift->getRego->rego ?? 'N/A',
                     'Vehicle Type' => $shift->getVehicleType->name ?? 'N/A',
                     'State' => $shift->getStateName->name ?? 'N/A',
@@ -328,30 +328,30 @@ class ShiftReportsExport
                     'Date Finish' => ($shift->getFinishShift && $shift->getFinishShift->endDate) ? date('d-m-Y', strtotime($shift->getFinishShift->endDate)) : 'N/A',
                     'Time Finish' => $shift->getFinishShift->endTime ?? 'N/A',
                     'Status' => $this->getStatusText($shift->finishStatus),
-                    'Total Hours' => $totalHours ?? 0.0,
-                    'Hours Morning Shift' => $shift->getFinishShifts->dayHours ?? 0.0,
-                    'Hours Night Shift' => $shift->getFinishShifts->nightHours ?? 0.0,
-                    'Hours Weekend Shift' => ($shift->getFinishShifts->weekendHours ?? 0.0),
-                    'Amount Payable Day Shift' => $day??0.0,
-                    'Amount Chargeable Day Shift' => $chargeDayShift,
-                    'Amount Payable Night Shift' => $night??0.0,
-                    'Amount Chargeable Night Shift' => $chargeNight??0.0,
-                    'Amount Payable Weekend Shift' => $saturday ?? 0.0 + $sunday ?? 0.0,
-                    'Amount Chargeable Weekend Shift' => $saturdayCharge ?? 0.0 + $sundayCharge ?? 0.0,
-                    'Fuel Levy Payable' => $shift->getShiftMonetizeInformation->fuelLevyPayable ?? 0.0,
-                    'Fuel Levy Chargeable Fixed' => $shift->getShiftMonetizeInformation->fuelLevyChargeable ?? 0.0,
-                    'Fuel Levy Chargeable 250+' => $shift->getShiftMonetizeInformation->fuelLevyChargeable250 ?? 0.0,
-                    'Fuel Levy Chargeable 400+' => $shift->getShiftMonetizeInformation->fuelLevyChargeable400 ?? 0.0,
-                    'Extra Payable' => $shift->getShiftMonetizeInformation->extraPayable ?? 0.0,
-                    'Extra Chargeable' => $shift->getShiftMonetizeInformation->extraChargeable ?? 0.0,
-                    'Total Payable' => round(($day+$night+($saturday ?? 0.0 + $sunday ?? 0.0)+($shift->getShiftMonetizeInformation->fuelLevyPayable??0.0)+($shift->getShiftMonetizeInformation->extraPayable??0.0)), 2) ?? 0.0,
-                    'Total Chargeable' => $shift->getShiftMonetizeInformation->totalChargeable ?? 0.0,
-                    'Odometer Start' => $shift->getFinishShift->odometerStartReading ?? 0.0,
-                    'Odometer End' => $shift->getFinishShift->odometerEndReading ?? 0.0,
-                    'Traveled KM' => $km ?? 0.0,
+                    'Total Hours' => (string)$totalHours ?? "0",
+                    'Hours Morning Shift' => $shift->getFinishShifts->dayHours ?? "0",
+                    'Hours Night Shift' => $shift->getFinishShifts->nightHours ?? "0",
+                    'Hours Weekend Shift' => ($shift->getFinishShifts->weekendHours ?? "0"),
+                    'Amount Payable Day Shift' => (string)$day??"0",
+                    'Amount Chargeable Day Shift' => (string)$chargeDayShift??"0",
+                    'Amount Payable Night Shift' => (string)$night??"0",
+                    'Amount Chargeable Night Shift' => (string)$chargeNight??"0",
+                    'Amount Payable Weekend Shift' => (string)($saturday ?? 0 + $sunday ?? 0),
+                    'Amount Chargeable Weekend Shift' => (string)(($saturdayCharge ?? 0) + ($sundayCharge ?? 0)),
+                    'Fuel Levy Payable' => $shift->getShiftMonetizeInformation->fuelLevyPayable ?? "0",
+                    'Fuel Levy Chargeable Fixed' => $shift->getShiftMonetizeInformation->fuelLevyChargeable ?? "0",
+                    'Fuel Levy Chargeable 250+' => $shift->getShiftMonetizeInformation->fuelLevyChargeable250 ?? "0",
+                    'Fuel Levy Chargeable 400+' => $shift->getShiftMonetizeInformation->fuelLevyChargeable400 ?? "0",
+                    'Extra Payable' => $shift->getShiftMonetizeInformation->extraPayable ?? "0",
+                    'Extra Chargeable' => $shift->getShiftMonetizeInformation->extraChargeable ?? "0",
+                    'Total Payable' => (string)round(((float)$day+(float)$night+((float)$saturday ?? 0.0 + (float)$sunday ?? 0.0)+($shift->getShiftMonetizeInformation->fuelLevyPayable??0.0)+($shift->getShiftMonetizeInformation->extraPayable??0.0)), 2) ?? "0",
+                    'Total Chargeable' => $shift->getShiftMonetizeInformation->totalChargeable ?? "0",
+                    'Odometer Start' => $shift->getFinishShift->odometerStartReading ?? "0",
+                    'Odometer End' => $shift->getFinishShift->odometerEndReading ?? "0",
+                    'Traveled KM' => (string)$km ?? "0",
                     'Comment' => $shift->getFinishShift->comments ?? 'N/A',
                     'Approved Reason' => $shift->approval_reason ?? 'N/A',
-                    'Driver Rate' => $extra_per_hour_rate ?? '0.0',
+                    'Driver Rate' => (string)$extra_per_hour_rate ?? '0',
                     'Mobile Date Start' => $shift->createdDate ? date('d-m-Y H:i:s', strtotime($shift->createdDate)) : 'N/A',
                     'Mobile Date Finish' => ($shift->getFinishShift && $shift->getFinishShift->submitted_at) ? date('d-m-Y H:i:s', strtotime($shift->getFinishShift->submitted_at)) : 'N/A',
                 ];
