@@ -92,6 +92,11 @@ class Shift extends Model
         return $this->hasOne(Client::class, 'id', 'client')->select('id', 'name', 'adminCharge', 'driverPay');
     }
 
+    public function getbase()
+    {
+        return $this->hasOne(ClientBase::class, 'clientId', 'id');
+    }
+
     public function getShiftMonetizeInformation()
     {
         return $this->hasOne(shiftMonetizeInformation::class, 'shiftId', 'id');
