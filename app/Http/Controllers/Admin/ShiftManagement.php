@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\ShiftReportsExport;
 use App\Helpers\DataTableHelper;
 use App\Helpers\DataTableShiftHelper;
+use App\Helpers\ShiftManageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Clientbase;
@@ -494,46 +495,6 @@ class ShiftManagement extends Controller
         return view('admin.shift.shift-add', $data);
     }
 
-    public function calculateShiftHoursWithMinutes($startDate, $endDate)
-    {
-        $dayMinutes = 0;
-        $nightMinutes = 0;
-        $saturdayMinutes = 0;
-        $sundayMinutes = 0;
-        while ($startDate < $endDate) {
-            $currentHour = date('H', $startDate);
-            $currentMinute = date('i', $startDate);
-            if (date('N', $startDate) < 6 && ($currentHour >= 4 && $currentHour < 18)) {
-                $dayMinutes++;
-            } elseif (date('N', $startDate) < 6 && ($currentHour >= 18 || $currentHour < 4)) {
-                $nightMinutes++;
-            } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 6) { // Saturday
-                $saturdayMinutes++;
-            } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 7) { // Sunday
-                $sundayMinutes++;
-            }
-            $startDate = strtotime('+1 minute', $startDate);
-        }
-
-        return [
-            'dayHours' => floor($dayMinutes / 60),
-            'dayMinutes' => $dayMinutes % 60 < 10 ? '0' . ($dayMinutes % 60) : $dayMinutes % 60,
-            'dayMinutesNew' => round(floor($dayMinutes % 60) / 60, 2),
-            'dayTotal' => number_format(floor($dayMinutes / 60) + round(floor($dayMinutes % 60) / 60, 2), 2),
-            'nightHours' => floor($nightMinutes / 60),
-            'nightMinutes' => $nightMinutes % 60 < 10 ? '0' . ($nightMinutes % 60) : $nightMinutes % 60,
-            'nightMinutesNew' => round(floor($nightMinutes % 60) / 60, 2),
-            'nightTotal' => number_format(floor($nightMinutes / 60) + round(floor($nightMinutes % 60) / 60, 2), 2),
-            'saturdayHours' => floor($saturdayMinutes / 60),
-            'saturdaMinutes' => $saturdayMinutes % 60,
-            'saturdayMinutesNew' => round(floor($saturdayMinutes % 60) / 60, 2),
-            'totalSaturdayHours' => number_format(floor($saturdayMinutes / 60) + round(floor($saturdayMinutes % 60) / 60, 2), 2),
-            'sundayHours' => floor($sundayMinutes / 60),
-            'sundayMinutes' => $sundayMinutes % 60,
-            'sundayMinutesNew' => round(floor($sundayMinutes % 60) / 60, 2),
-            'totalSundayHours' => number_format(floor($sundayMinutes / 60) + round(floor($sundayMinutes % 60) / 60, 2), 2),
-        ];
-    }
 
     public function shiftMissedAdd(Request $request)
     {
@@ -572,6 +533,8 @@ class ShiftManagement extends Controller
             $shiftAdd['is_missed_shift'] = 1;
             $odometerStart = $request->input('odometer_start_reading') ?? '0';
             $odometerFinish = $request->input('odometer_finish_reading') ?? '0';
+            
+            
             $start_date =  Carbon::parse($request->input('start_date'))->format('Y-m-d H:i:s');
             $end_date = Carbon::parse($request->input('end_date'))->format('Y-m-d H:i:s');
             if (is_numeric($odometerStart) && is_numeric($odometerFinish)) {
@@ -607,7 +570,7 @@ class ShiftManagement extends Controller
             $endDate = strtotime($request->end_date);
             $dayStartTime = Carbon::parse($startDate);
             $nightEndTime = Carbon::parse($endDate);
-            $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
+            $result = ShiftManageHelper::calculateShiftHoursWithMinutes($startDate, $endDate);
             $dayHr = $result['dayTotal'];
             $nightHr = $result['nightTotal'];
             $saturdayHrs = $result['totalSaturdayHours'];
@@ -720,7 +683,11 @@ class ShiftManagement extends Controller
             Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
             $start_date = date('Y-m-d', strtotime($request->start_date));
             $end_date = date('Y-m-d', strtotime($request->end_date));
+            
+            
             Shift::whereId($shify->id)->update(['finishStatus' => '2']);
+            
+            
             $Parcel = new Finishshift();
             $Parcel->driverId = $request->input('driverId');
             $Parcel->shiftId = $shify->id;
@@ -1191,8 +1158,6 @@ class ShiftManagement extends Controller
 
     public function shiftReportEdit(Request $request, $id)
     {
-       
-       
         $query = Shift::where('id', $id);
         $shiftData = Shift::whereId($id)->first();
         $getClientID = $shiftData->client;
@@ -1202,21 +1167,16 @@ class ShiftManagement extends Controller
                 $query->where('clientId', $getClientID);
             },
         ])->first();
+        $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+       
         //    dd( $data['shiftView']);
         $data['allstate'] = States::where('status', '1')->get();
         $data['costCenter'] = DB::table('clientcenters')->select('id', 'name')->where(['status' => '1', 'clientId' => $getClientID])->get();
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
-        $clientRates = DB::table('clientrates')->where(['clientId'=>$data['shiftView']->client,'type'=>$data['shiftView']->vehicleType])->first();
-        $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
-   
-        // dd($data);
-
+        
         if (request()->isMethod('post')) {
-            
-            // dd($request->all(),$shiftData->finishStatus);
-            if(in_array($shiftData->finishStatus,['0','1','2','3'])){
-                // dd("---");
+            if (in_array($shiftData->finishStatus, ['1', '2', '3']) || in_array($request->finishStatus, ['1', '2', '3'])) {
                 Shift::where('id', $id)->update([
                     'state'    => $request->input('state'),
                     'client'     => $request->input('client'),
@@ -1233,230 +1193,17 @@ class ShiftManagement extends Controller
                     'odometer' => $request->input('odometerStartReading'),
                     'driverId'=> $request->input('driverId')??$shiftData->driverId
                 ]);
-                // dd($ss);
             }else{
                 Shift::where('id', $id)->update(['finishStatus' => $request->input('finishStatus'),'comment'=> $request->input('comments'),'approval_reason'=> $request->input('approvedReason')]);
             }
 
-                // return Redirect::back()->with('message', 'Shift  Updated Successfully!');
-            // }
-            // if (!in_array($request->input('finishStatus'),[0,1])) {
-            if(in_array($shiftData->finishStatus,['0','1','2','3'])){
-                
-                $startDate = $request->shiftStartDate;
-                $endDate = $request->finishDate;
-                $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
-                $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
-                // dd($start_date,$end_date);
-                $startDate = strtotime($start_date);
-                $endDate = strtotime($end_date);
-                // dd($startDate, $endDate);
-                $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
-                $dayHr = $result['dayTotal'];
-                $nightHr = $result['nightTotal'];
-                $saturdayHrs = $result['totalSaturdayHours'];
-                $sundayHrs = $result['totalSundayHours'];
-                $weekend = $saturdayHrs + $sundayHrs;
-                $dayShift = '0';
-                $nightShift = '0';
-                $sundayHr = '0';
-                $saturdayHr = '0';
-                $dayShiftCharge = '0';
-                $nightShiftCharge = '0';
-                $saturdayShiftCharge = '0';
-                $sundayShiftCharge = '0';
-                $priceOverRideStatus = '0';
-                $priceCompare = DB::table('personrates')->where('type', $data['shiftView']->vehicleType)->where('personId', $data['shiftView']->driverId)->first();
-                // dd($request->all());
-                if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
-                    if (!empty($dayHr)) {
-                        if (empty($priceCompare)) {
-                            $dayShift = (($clientRates->hourlyRatePayableDay??0)+$extra_rate_per_hour) * $dayHr;
-                            $priceOverRideStatus = '0';
-                            $dayShiftCharge = ($clientRates->hourlyRateChargeableDays??0) * $dayHr ?? 0;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $clientRates->hourlyRatePayableDay) {
-                                $dayShift = (($clientRates->hourlyRatePayableDay??0)+$extra_rate_per_hour) * $dayHr ?? 0;
-                                $priceOverRideStatus = '0';
-                                $dayShiftCharge = ($clientRates->hourlyRateChargeableDays??0) * $dayHr ?? 0;
-                            } else {
-                                $priceComparehourlyRatePayableDays = !empty($priceCompare->hourlyRatePayableDays) ? $priceCompare->hourlyRatePayableDays : 1;
-                                $dayShift = $priceComparehourlyRatePayableDays * $dayHr;
-                                $priceOverRideStatus = '1';
-                                $dayShiftCharge = ($clientRates->hourlyRateChargeableDays??0) * $dayHr ?? 0;
-                            }
-                        }
-                    }
-                    if (!empty($nightHr)) {
-                        if (empty($priceCompare)) {
-                            $nightShift = (($clientRates->hourlyRatePayableNight??0)+$extra_rate_per_hour) * $nightHr ?? 0;
-                            $priceOverRideStatus = '0';
-                            $nightShiftCharge = ($clientRates->ourlyRateChargeableNight??0) * $nightHr;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $clientRates->hourlyRatePayableNight) {
-                                $nightShift = (($clientRates->hourlyRatePayableNight??0)+$extra_rate_per_hour) * $nightHr ?? 0;
-                                $priceOverRideStatus = '0';
-                                $nightShiftCharge = ($clientRates->ourlyRateChargeableNight??0) * $nightHr;
-                            } else {
-                                $priceComparehourlyRatePayableNight = !empty($priceCompare->hourlyRatePayableNight) ? $priceCompare->hourlyRatePayableNight : '1';
-                                $nightShift = ($priceComparehourlyRatePayableNight+$extra_rate_per_hour) * $nightHr;
-                                $priceOverRideStatus = '1';
-                                $nightShiftCharge = ($clientRates->ourlyRateChargeableNight??0) * $nightHr;
-                            }
-                        }
-                    }
-                    if (!empty($saturdayHrs)) {
-                        if (empty($priceCompare)) {
-                            $saturdayHr = (($clientRates->hourlyRatePayableSaturday??0)+$extra_rate_per_hour) * $saturdayHrs ?? 0;
-                            $priceOverRideStatus = '0';
-                            $saturdayShiftCharge = ($clientRates->hourlyRateChargeableSaturday??0) * $saturdayHrs;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $clientRates->hourlyRatePayableDay) {
-                                $saturdayHr = (($clientRates->hourlyRatePayableSaturday??0)+$extra_rate_per_hour) * $saturdayHrs ?? 0;
-                                $priceOverRideStatus = '0';
-                                $saturdayShiftCharge = ($clientRates->hourlyRateChargeableSaturday??0) * $saturdayHrs;
-                            } else {
-                                $saturdayHr = ($priceCompare->hourlyRatePayableSaturday+$extra_rate_per_hour) * $saturdayHrs;
-                                $priceOverRideStatus = '1';
-                                $saturdayShiftCharge = ($clientRates->hourlyRateChargeableSaturday??0) * $saturdayHrs;
-                            }
-                        }
-                    }
-                    $floatValue = $sundayHrs;
-                    $intValue = (int) $floatValue;
-                    if (!empty($intValue)) {
-                        if (empty($priceCompare)) {
-                            $sundayHr = (($clientRates->hourlyRatePayableSunday??0)+$extra_rate_per_hour) * $sundayHrs ?? 0;
-                            $priceOverRideStatus = '0';
-                            $sundayShiftCharge = ($clientRates->hourlyRateChargeableSunday??0) * $sundayHrs;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $clientRates->hourlyRatePayableDay) {
-                                $sundayHr = (($clientRates->hourlyRatePayableSunday??0)+$extra_rate_per_hour) * $sundayHrs ?? 0;
-                                $priceOverRideStatus = '0';
-                                $sundayShiftCharge = ($clientRates->hourlyRateChargeableSunday??0) * $sundayHrs;
-                            } else {
-                                $sundayHr = ($priceCompare->hourlyRatepayableSunday+$extra_rate_per_hour) * $sundayHrs;
-                                $priceOverRideStatus = '1';
-                                $sundayShiftCharge = ($clientRates->hourlyRateChargeableSunday??0) * $sundayHrs;
-                            }
-                        }
-                    }
-                }
-
-                $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr+(float)$request->input('fuelLevyPayable',0)+(float)$request->input('extraPayable',0);
-                
-                Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
-                $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge+(float)$request->input('fuelLevyChargeable250',0)+(float)$request->input('fuelLevyChargeable',0)+(float)$request->input('fuelLevyChargeable400',0)+(float)$request->input('extraChargeable',0);
-                // dd($dayShiftCharge , $nightShiftCharge , $saturdayShiftCharge , $sundayShiftCharge,(float)$request->input('fuelLevyChargeable250',0),(float)$request->input('amountChargeablePerService',0),(float)$request->input('fuelLevyChargeable',0),(float)$request->input('fuelLevyChargeable400',0),(float)$request->input('extraChargeable',0));
-                Shift::where('id', $id)->update(['chageAmount' => $totalChargeDay]);
-                $totalHr = $data = $dayHr + $nightHr;
-                $driverPay = Client::where('id', $getClientID)->first();
-                $driverIncome = $totalPayShiftAmount ?? '0' + $driverPay->driverPay ?? '0';
-                Client::where('id', $getClientID)->update(['driverPay' => $driverIncome]);
-                $adminCharge = Client::where('id', $getClientID)->first();
-                $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
-                Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
-                $existingFinishshiftId = $id;
-                if ($existingFinishshiftId) {
-                
-                    // return Carbon::parse($endDate)->format('Y-m-d');
-                    
-                    $Parcel = Finishshift::where('shiftId', $existingFinishshiftId)->first();
-                    // dd('--',$Parcel);
-                    if ($Parcel) {
-                        $Parcel->dayHours = $dayHr;
-                        $Parcel->nightHours = $nightHr;
-                        $Parcel->totalHours = $totalHr;
-                        $Parcel->saturdayHours = $saturdayHrs;
-                        $Parcel->sundayHours = $sundayHrs;
-                        $Parcel->weekendHours = $weekend;
-                        $Parcel->startDate = date('Y-m-d',strtotime($start_date));
-                        $Parcel->endDate = date('Y-m-d',strtotime($end_date));
-                        $Parcel->startTime = date('H:i:s',strtotime($start_date));
-                        $Parcel->endTime = date('H:i:s',strtotime($end_date));
-                        $Parcel->parcelsTaken = $request->input('parcelsToken');
-                        $Parcel->submitted_at = $Parcel->submitted_at ?? date('Y-m-d H:i:s');
-                        $Parcel->parcelsDelivered = $request->input('parcelsDelivered');
-                        $Parcel->odometerStartReading = $request->input('odometerStartReading');
-                        $Parcel->odometerEndReading = $request->input('odometerEndReading');
-                        $Parcel->save();
-                    }else {
-
-                        $finishshift_data = [
-                            'shiftId'=>$existingFinishshiftId,
-                            'dayHours' => $dayHr,
-                            'nightHours' => $nightHr,
-                            'totalHours' => $totalHr,
-                            'saturdayHours' => $saturdayHrs,
-                            'sundayHours' => $sundayHrs,
-                            'weekendHours' => $weekend,
-                            'startDate' => date('Y-m-d',strtotime($start_date)),
-                            'endDate' => date('Y-m-d',strtotime($end_date)),
-                            'startTime' => date('H:i:s',strtotime($start_date)),
-                            'endTime' => date('H:i:s',strtotime($end_date)),
-                            'parcelsTaken' => $request->input('parcelsToken'),
-                            'parcelsDelivered' => $request->input('parcelsDelivered'),
-                            'odometerStartReading' => $request->input('odometerStartReading'),
-                            'odometerEndReading' => $request->input('odometerEndReading')
-                        ];
-                        Finishshift::create($finishshift_data);
-                        // return Redirect::back()->with('error', ' Shift Id Not Exist!');
-                    }
-                } 
-            }else{
-                $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
-                
-                if($shiftMonetize){
-                    $totalPayShiftAmount = (($shiftMonetize ? (float)$shiftMonetize->amountPayablePerService : $request->input('amountPayablePerService'))+(float)$request->input('fuelLevyPayable')+(float)$request->input('extraPayable'));
-                    $totalChargeDay = (($shiftMonetize ? (float)$shiftMonetize->amountChargeablePerService:$request->input('amountChargeablePerService'))+(float)$request->input('fuelLevyChargeable')+(float)$request->input('fuelLevyChargeable250')+(float)$request->input('fuelLevyChargeable400')+(float)$request->input('extraChargeable'));
-                    Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount,'chageAmount'=>$totalChargeDay]);
-                }
-            }
-
-            $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
-
-                // return Redirect::back()->with('message', ' Shift Hr. Management Updated Successfully!');
-                // }
-                // if ($managementId == '3') {
-                    if($request->amountPayablePerService && $shiftMonetize){
-                        $shiftMonetizeInformation['amountPayablePerService'] = $request->input('amountPayablePerService');
-                        $shiftMonetizeInformation['fuelLevyPayable'] = $request->input('fuelLevyPayable');
-                        $shiftMonetizeInformation['extraPayable'] = $request->input('extraPayable');
-                        $shiftMonetizeInformation['totalPayable'] = $totalPayShiftAmount;
-                        $shiftMonetizeInformation['comments'] = $request->input('comments');
-                        $shiftMonetizeInformation['approvedReason'] = $request->input('approvedReason');
-                        $shiftMonetizeInformation['amountChargeablePerService'] = $request->input('amountChargeablePerService');
-                        $shiftMonetizeInformation['fuelLevyChargeable250'] = $request->input('fuelLevyChargeable250');
-                        $shiftMonetizeInformation['fuelLevyChargeable'] = $request->input('fuelLevyChargeable');
-                        $shiftMonetizeInformation['fuelLevyChargeable400'] = $request->input('fuelLevyChargeable400');
-                        $shiftMonetizeInformation['extraChargeable'] = $request->input('extraChargeable');
-                        $shiftMonetizeInformation['totalChargeable'] = $totalChargeDay;
-                        
-                    
-                        if ($shiftMonetize) {
-                            $shiftMonetizeInformation['shiftId'] = $id;
-                            DB::table('shiftMonetizeInformation')->where('shiftId', $id)->update($shiftMonetizeInformation);
-                        } else {
-                            $shiftMonetizeInformation['shiftId'] = $id;
-                            DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
-                        }
-                    }
-            
-                // DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
-                // DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
-            // }
+            ShiftManageHelper::calculateShiftAmount($request,$data['shiftView'],$extra_rate_per_hour);
 
             return Redirect::back()->with('message', 'Shift Updated Successfully!');
         }
         $data['driverAdd'] = Driver::get();
-        // if ($data['shiftView']->finishStatus == '2') {
-            $data['extra_rate_per_hour'] = $extra_rate_per_hour ?? '0';
-        // } else {
-        //     $data['extra_rate_per_hour'] = 0;
-        // }
-        // dd($data);
-        // dd($data);
-        // $data['extra_rate_per_hour'] = + $shiftView->getDriverName->extra_rate_per_hour
+        $data['extra_rate_per_hour'] = $extra_rate_per_hour ?? '0';
+       
         return view('admin.shift.shift-report-edit', $data);
     }
 
