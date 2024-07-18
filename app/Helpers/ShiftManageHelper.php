@@ -30,7 +30,7 @@ class ShiftManageHelper
 
             $result = self::calculateShiftHoursWithMinutes($startDate, $endDate);
 
-            // dd($result);
+            
 
             $dayHr = $result['dayTotal'];
             $nightHr = $result['nightTotal'];
@@ -132,7 +132,6 @@ class ShiftManageHelper
                 $amount_Amount_Chargeable_Per_Service = (float)($chargeable_dayShift + $chargeable_nightShift + $chargeable_saturdayShift + $chargeable_sundayShift);
 
                 
-
                 $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $shift->id)->first();
 
                 $fuelLevyPayable = (float)$request->input('fuelLevyPayable', $shiftMonetize->fuelLevyPayable ?? 0);
@@ -173,7 +172,9 @@ class ShiftManageHelper
                         "odometerStartReading" => $request->input('odometerStartReading',$finishShifts->odometerStartReading),
                         "odometerEndReading" => $request->input('odometerEndReading',$finishShifts->odometerEndReading)
                     ];
+                    // dd($shift->id);
                     DB::table('finishshifts')->where(['shiftId'=>$shift->id])->update($finishShiftsData);
+                    // dd($finishShiftsData);
                 }else {
                     $finishshift_data = [
                         'shiftId'=>$shift->id,
@@ -210,6 +211,8 @@ class ShiftManageHelper
                     'extraChargeable' => $extraChargeable,
                     'totalChargeable' => $totalShiftChargeable
                 ];
+
+                // dd($shiftMonetizeInformation);
 
 
                 if ($shiftMonetize) {

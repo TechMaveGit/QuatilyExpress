@@ -1491,10 +1491,7 @@ class ShiftManagement extends Controller
         // Fetch data
         $shifts = $query->orderBy('id', 'DESC')
             ->with(['getbase','getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
-            ->get()->map(function($shift) {
-                $shift->setRelation('getClientCharges', $shift->getClientCharges()->where('clientId', $shift->client)->first());
-                return $shift;
-            });
+            ->get();
 
 
 

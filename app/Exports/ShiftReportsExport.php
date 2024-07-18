@@ -236,16 +236,12 @@ class ShiftReportsExport
                 $weekendHours = floatval($shift->getFinishShift->weekendHours) ?? 0;
                 $totalHours = $daySum + $nightHours + $weekendHours;
             }
-
-            // if ($shift->finishStatus == '2') {
-                $extra_per_hour_rate = $shift->getDriverName->extra_rate_per_hour ?? 0;
-                // dd($shift,$shift->getDriverName);
-            // } else {
-            //     $extra_per_hour_rate = 0;
-            // }
+        
+            $extra_per_hour_rate = $shift->getDriverName->extra_rate_per_hour ?? 0;
+              
 
             $clientRate = Clientrate::where('type', $shift->vehicleType)->where('clientId', $shift->client)->first();
-
+            // dd($shift,$clientRate);
             $dayCharge = $clientRate->hourlyRateChargeableDays ?? 0 + $extra_per_hour_rate;
             $chargeDayShift = (string)($dayCharge ?? 0) * ($daySum ?? 0);
 
@@ -264,37 +260,31 @@ class ShiftReportsExport
                 $sunday = floatval($sundayPy) * floatval($shift->getFinishShifts->sundayHours);
             }
 
-            // dd($shift);
 
-            $clientCharge = $clientRate;
+            $day = ($shift->getFinishShifts && $shift->getFinishShifts->dayHours)?(($clientRate->hourlyRatePayableDay??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->dayHours ?? 0):'0';
+            $night = ($shift->getFinishShifts && $shift->getFinishShifts->nightHours) ?(($clientRate->hourlyRatePayableNight??0) + $extra_per_hour_rate  ?? 0) * ($shift->getFinishShifts->nightHours ?? 0) : '0';
 
-            // $dayPy = ($clientCharge->hourlyRatePayableDay ?? 0) + $extra_per_hour_rate;
-            // $nightPy = ($clientRate->hourlyRatePayableNight ?? 0) + $extra_per_hour_rate;
-
-            $day = ($shift->getFinishShifts && $shift->getFinishShifts->dayHours)?(($shift->getClientCharge->hourlyRatePayableDay??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->dayHours ?? 0):'0';
-            $night = ($shift->getFinishShifts && $shift->getFinishShifts->nightHours) ?(($shift->getClientCharge->hourlyRatePayableNight??0) + $extra_per_hour_rate  ?? 0) * ($shift->getFinishShifts->nightHours ?? 0) : '0';
-
-            // dd($shift->getClientCharge->hourlyRatePayableDay, $extra_per_hour_rate,$shift->getFinishShifts->dayHours??0,$day);
+            // dd($clientRate->hourlyRatePayableDay, $extra_per_hour_rate,$shift->getFinishShifts->dayHours??0,$day);
             
 
             $saturday = 0;
             $sunday = 0;
             if ($shift->getFinishShifts && $shift->getFinishShifts->saturdayHours != '0') {
-                $saturday = (($shift->getClientCharge->hourlyRatePayableSaturday??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->saturdayHours ?? 0);
+                $saturday = (($clientRate->hourlyRatePayableSaturday??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->saturdayHours ?? 0);
             }
             if ($shift->getFinishShifts && $shift->getFinishShifts->sundayHours != '0') {
-                $sunday = (($shift->getClientCharge->hourlyRatePayableSunday??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->sundayHours ?? 0);
+                $sunday = (($clientRate->hourlyRatePayableSunday??0) + $extra_per_hour_rate ?? 0) * ($shift->getFinishShifts->sundayHours ?? 0);
             }
-            $chargeDayShift = ($shift->getClientCharge->hourlyRateChargeableDays??0) * ($shift->getFinishShifts->dayHours ?? 0);
+            $chargeDayShift = ($clientRate->hourlyRateChargeableDays??0) * ($shift->getFinishShifts->dayHours ?? 0);
 
-            $chargeDayShift = ($shift->getClientCharge->hourlyRateChargeableDays??0) * ($shift->getFinishShifts->dayHours ?? 0);
-            $chargeNight = ($shift->getClientCharge->ourlyRateChargeableNight??0) * ($shift->getFinishShifts->nightHours ?? 0);
+            $chargeDayShift = ($clientRate->hourlyRateChargeableDays??0) * ($shift->getFinishShifts->dayHours ?? 0);
+            $chargeNight = ($clientRate->ourlyRateChargeableNight??0) * ($shift->getFinishShifts->nightHours ?? 0);
 
             $km = ((int) $shift?->getFinishShift?->odometerEndReading ?? 0) - ((int) $shift?->getFinishShift?->odometerStartReading ?? 0);
 
-            $saturdayCharge = ($shift->getFinishShifts && $shift->getFinishShifts->saturdayHours) ? ($shift->getClientCharge->hourlyRateChargeableSaturday??0) * $shift->getFinishShifts->saturdayHours : 0;
+            $saturdayCharge = ($shift->getFinishShifts && $shift->getFinishShifts->saturdayHours) ? ($clientRate->hourlyRateChargeableSaturday??0) * $shift->getFinishShifts->saturdayHours : 0;
 
-            $sundayCharge = ($shift->getFinishShifts && $shift->getFinishShifts->sundayHours) ? ($shift->getClientCharge->hourlyRateChargeableSunday??0) * $shift->getFinishShifts->sundayHours : 0;
+            $sundayCharge = ($shift->getFinishShifts && $shift->getFinishShifts->sundayHours) ? ($clientRate->hourlyRateChargeableSunday??0) * $shift->getFinishShifts->sundayHours : 0;
 
             if ($driverRole == 33) {
                 return [
