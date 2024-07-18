@@ -66,7 +66,7 @@ if(in_array($shiftView->finishStatus,["4","5","6"])){
                                                     @if($shiftView->finishStatus =='5')
                                                        <select class="form-control select2 form-select" name="state" {{$readonlybtn}}>
                                                            @foreach ($allstate as $allstate)
-                                                                <option value="{{ $allstate->id }}">{{ $allstate->name }} </option>
+                                                                <option  @if($allstate->id ==$shiftView->state) selected @else @endif value="{{ $allstate->id }}">{{ $allstate->name }} </option>
                                                             @endforeach
                                                         </select>
                                                         @else
