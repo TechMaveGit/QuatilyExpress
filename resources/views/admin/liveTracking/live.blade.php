@@ -488,6 +488,7 @@
 
         
 
+        console.log("===========================================================================",deliveryPoints);
         // Add delivery point markers
         deliveryPoints.slice().reverse().forEach((point, ind) => {
             
@@ -495,7 +496,7 @@
             let receiverName = point.receiverName?`<p><b>Receiver Name : ${point.receiverName}</b></p>`:'';
             let deliveredTo = point.deliveredTo?`<p><b>Received By : ${point.deliveredTo}</b></p>`:'';
             let deliver_address = point.deliver_address ?? point.location;
-            let beforeParselImage = point.parcel_image.parcelImage ? `<img style="width: 100%;" src="${storage_path}/${point.parcel_image.parcelImage}" />`:`<img style="width: 100%;" src="${siteLogo}" />`;
+            let beforeParselImage = (point.parcel_image && point.parcel_image.parcelImage) ? `<img style="width: 100%;" src="${storage_path}/${point.parcel_image.parcelImage}" />`:`<img style="width: 100%;" src="${siteLogo}" />`;
             let parselImage = point.parcelphoto ? `<img style="width: 100%;" src="${storage_path}/${point.parcelphoto}" />`:`<img style="width: 100%;" src="${siteLogo}" />`;
             let delivered_latitude = (point.delivered_latitude && point.delivered_latitude != "") ? point.delivered_latitude : point.lat;
             let delivered_longitude = (point.delivered_longitude && point.delivered_longitude != "") ? point.delivered_longitude : point.lng;
