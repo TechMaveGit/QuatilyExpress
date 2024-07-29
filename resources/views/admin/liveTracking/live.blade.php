@@ -487,8 +487,6 @@
         }
 
         
-
-        console.log("===========================================================================",deliveryPoints);
         // Add delivery point markers
         deliveryPoints.slice().reverse().forEach((point, ind) => {
             
