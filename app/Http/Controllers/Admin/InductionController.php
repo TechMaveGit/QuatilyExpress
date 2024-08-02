@@ -105,7 +105,7 @@ class InductionController extends Controller
 
     public function inductionDriver(Request $req, $id)
     {
-        $data['inductiondriver'] = Inductiondriver::where('induction_id', $id)->with(['getDriver:id,userName,email,mobileNo'])->get();
+        $data['inductiondriver'] = Inductiondriver::where('induction_id', $id)->with(['getDriver:id,fullName,surname,userName,email,mobileNo'])->get();
 
         return view('admin.induction.induction-driver-signature', $data);
     }
