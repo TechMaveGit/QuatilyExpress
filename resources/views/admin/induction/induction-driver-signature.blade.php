@@ -52,7 +52,7 @@
                                     <td class="td sorting_1">
                                     <a href="{{asset(env('STORAGE_URL').$allinductiondriver->signature.'')}}" target="_blank" title="Read PDF">View Signature</a>
                                     </td>
-                                    <td class="td sorting_1">{{ date('Y-m-d', strtotime($allinductiondriver->created_at))}}</td>
+                                    <td class="td sorting_1">{{ date('Y-m-d h:i A', strtotime($allinductiondriver->created_at))}}</td>
                                 </tr>
                             @endforeach
 

@@ -112,13 +112,13 @@ class Homecontroller extends Controller
             $clientNameQuery->where('shifts.rego',$rego);   
         }
 
-        $clientName = $clientNameQuery->groupBy('clients.id')->limit(3)->get();
+        $clientName = $clientNameQuery->groupBy('clients.id')->get();
         $name = [];
         $adminCharge = [];
         $driverPay = [];
         // dd($clientName);
         foreach ($clientName as $allClient) {
-            $name[] = $allClient->name.' ('.$allClient->getState->name.')';
+            $name[] = ($allClient->name??'-').' ('.($allClient->getState->name??'-').')';
             $adminCharge[] = $allClient->total_chageAmount;
             $driverPay[] = $allClient->total_payAmount;
         }
