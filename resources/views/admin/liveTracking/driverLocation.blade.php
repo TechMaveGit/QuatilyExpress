@@ -236,6 +236,7 @@
 
                 // Assuming you have only one map
                 var locations = @json($locations);
+                
 
                 if (locations && locations.length > 0) {
                     var lastLocation = locations[locations.length - 1];
@@ -347,13 +348,14 @@
         </script>
     @else
         <script>
-             var siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
+             zvar siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
             var markers = []; // Array to store all markers
             let locations = @json($locations ?? []);
             let parcelLocation = @json($parcelLocation ?? []);
             let map;
             let directionsService;
             let directionsRenderers = [];
+            let driverDirectionsRenderers = [];
             let deliveryPoints = parcelLocation.length ? parcelLocation : [];
             let driverRoute = locations.length ? locations : [];
             let driverLocation = driverRoute[driverRoute.length - 1];
@@ -363,6 +365,7 @@
                 lat: parseFloat(startPoint.lat),
                 lng: parseFloat(startPoint.lng)
             };
+            // console.log(locations);
             let endPoint = @json($endpoints ?? []); // End point (green)
             let end_address = endPoint.address != undefined ? `<p><b>Location :</b> ${endPoint.address}</p>` : '';
             if (endPoint != undefined && endPoint.lat) endPoint = {
@@ -425,7 +428,7 @@
                             directionsRenderer.setDirections(response);
                             renderPaths(response.routes[0]);
                         } else {
-                            window.alert('Directions request failed due to ' + status);
+                            // window.alert('Directions request failed due to ' + status);
                         }
                     });
                     return;
@@ -435,6 +438,12 @@
                 for (let i = 0; i < deliveryPoints.length; i += 23) {
                     waypointsChunks.push(deliveryPoints.slice(i, i + 23));
                 }
+
+                let driverWaypointsChunks = [];
+                for (let i = 0; i < locations.length; i += 23) {
+                    driverWaypointsChunks.push(locations.slice(i, i + 23));
+                }
+                
 
                 let previousEndPoint = startPoint;
                 waypointsChunks.forEach((chunk, index) => {
@@ -469,7 +478,48 @@
                             }
                             previousEndPoint = route.legs[route.legs.length - 1].end_location;
                         } else {
-                            window.alert('Directions request failed due to ' + status);
+                            // window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+                });
+
+                driverWaypointsChunks.forEach((chunk, index) => {
+                    let dendPoint = driverLocation && driverLocation.lat ? {
+                    lat: parseFloat(driverLocation.lat),
+                    lng: parseFloat(driverLocation.lng)
+                } : false;
+                    let directionsRenderer = new google.maps.DirectionsRenderer({
+                        map: map,
+                        suppressMarkers: true,
+                        polylineOptions: {
+                            strokeColor: 'red'
+                        }
+                    });
+                    driverDirectionsRenderers.push(directionsRenderer);
+
+                    let waypoints = chunk.map(point => ({
+                        location: new google.maps.LatLng(point.lat, point.lng),
+                        stopover: true
+                    }));
+
+                    let request = {
+                        origin: previousEndPoint,
+                        destination: dendPoint,
+                        waypoints: waypoints,
+                        optimizeWaypoints: true,
+                        travelMode: google.maps.TravelMode.DRIVING
+                    };
+
+                    directionsService.route(request, (response, status) => {
+                        if (status === 'OK') {
+                            directionsRenderer.setDirections(response);
+                            let route = response.routes[0];
+                            if (index === waypointsChunks.length - 1) {
+                                renderPaths(route);
+                            }
+                            previousEndPoint = route.legs[route.legs.length - 1].end_location;
+                        } else {
+                            // window.alert('Directions request failed due to ' + status);
                         }
                     });
                 });

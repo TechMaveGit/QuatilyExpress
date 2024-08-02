@@ -64,6 +64,7 @@ class LiveTrackingController extends Controller
                 $dataEnd = $parcelLocation[0];
                 $endpoints = ['lat'=>$dataEnd['lat']??null,'lng'=>$dataEnd['lng']??null,'address'=>$dataEnd['location']??null];
             }
+            
         }
 
         return view('admin.liveTracking.live', compact('locations', 'driver', 'driverName', 'shiftId', 'parcelLocation','startpoints','endpoints','selected_driver'));
@@ -117,6 +118,7 @@ class LiveTrackingController extends Controller
                 $dataEnd = $parcelLocation[0];
                 $endpoints = ['lat'=>$dataEnd['lat']??null,'lng'=>$dataEnd['lng']??null,'address'=>$dataEnd['location']??null];
             }
+            // dd($locations);
         }else{
             foreach ($driver as $alldriver) {
                 $location = TrackLocation::select('id', 'driver_id', 'latitude as lat', 'longitude as lng','created_at')->orderBy('id', 'DESC')->where('driver_id', $alldriver->id)->first();

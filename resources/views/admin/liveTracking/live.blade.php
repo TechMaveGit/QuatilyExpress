@@ -258,6 +258,7 @@
     let map;
     let directionsService;
     let directionsRenderers = [];
+    let driverDirectionsRenderers = [];
     let deliveryPoints =  parcelLocation.length ? parcelLocation : [];
     let driverRoute = locations.length ? locations : [];
     let driverLocation = driverRoute[driverRoute.length - 1]; // Last point in driverRoute is current location
@@ -319,16 +320,25 @@
                     directionsRenderer.setDirections(response);
                     renderPaths(response.routes[0]);
                 } else {
-                    window.alert('Directions request failed due to ' + status);
+                    // window.alert('Directions request failed due to ' + status);
                 }
             });
             return;
         }
 
         let waypointsChunks = [];
+        let driverWaypointsChunks = [];
         for (let i = 0; i < deliveryPoints.length; i += 23) {
             waypointsChunks.push(deliveryPoints.slice(i, i + 23));
         }
+
+        if(locations.length > 0){
+            for (let i = 0; i < locations.length; i += 23) {
+                driverWaypointsChunks.push(locations.slice(i, i + 23));
+            }
+        }
+
+        // console.log(locations,locations.length,driverWaypointsChunks);
 
         let previousEndPoint = startPoint;
         waypointsChunks.forEach((chunk, index) => {
@@ -363,7 +373,48 @@
                     }
                     previousEndPoint = route.legs[route.legs.length - 1].end_location;
                 } else {
-                    window.alert('Directions request failed due to ' + status);
+                    // window.alert('Directions request failed due to ' + status);
+                }
+            });
+        });
+
+        driverWaypointsChunks.forEach((chunk, index) => {
+                let dendPoint = driverLocation && driverLocation.lat ? {
+                lat: parseFloat(driverLocation.lat),
+                lng: parseFloat(driverLocation.lng)
+            } : false;
+            let directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true,
+                polylineOptions: {
+                    strokeColor: 'red'
+                }
+            });
+            driverDirectionsRenderers.push(directionsRenderer);
+
+            let waypoints = chunk.map(point => ({
+                location: new google.maps.LatLng(point.lat, point.lng),
+                stopover: true
+            }));
+
+            let request = {
+                origin: previousEndPoint,
+                destination: dendPoint,
+                waypoints: waypoints,
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+
+            directionsService.route(request, (response, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+                    let route = response.routes[0];
+                    if (index === waypointsChunks.length - 1) {
+                        renderPaths(route);
+                    }
+                    previousEndPoint = route.legs[route.legs.length - 1].end_location;
+                } else {
+                    // window.alert('Directions request failed due to ' + status);
                 }
             });
         });
@@ -506,7 +557,7 @@
                 position: LatLong,
                 map: map,
                 icon: createSVGMarker(markerColor, ind+1),
-                title: `P${ind+1} : ${point.location}`
+                title: `P${ind+1} : ${point.location}` 
             });
 
             let datetimeFormat = '';
