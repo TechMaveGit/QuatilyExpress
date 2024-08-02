@@ -348,7 +348,7 @@
         </script>
     @else
         <script>
-             zvar siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
+            var siteLogo = "{{ asset('assets/images/newimages/logo-qe.png')}}";
             var markers = []; // Array to store all markers
             let locations = @json($locations ?? []);
             let parcelLocation = @json($parcelLocation ?? []);
@@ -443,7 +443,6 @@
                 for (let i = 0; i < locations.length; i += 23) {
                     driverWaypointsChunks.push(locations.slice(i, i + 23));
                 }
-                
 
                 let previousEndPoint = startPoint;
                 waypointsChunks.forEach((chunk, index) => {
