@@ -60,7 +60,7 @@ class LiveTrackingController extends Controller
             }
 
           
-            if(!$shiftData->endlatitude || !$endpoints['lat']){
+            if((!$shiftData->endlatitude || !$endpoints['lat']) && $parcelLocation){
                 $dataEnd = $parcelLocation[0];
                 $endpoints = ['lat'=>$dataEnd['lat']??null,'lng'=>$dataEnd['lng']??null,'address'=>$dataEnd['location']??null];
             }
