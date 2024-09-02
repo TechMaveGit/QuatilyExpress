@@ -12,8 +12,10 @@ use App\Http\Controllers\Admin\LiveTrackingController;
 use App\Http\Controllers\Admin\Personcontroller;
 use App\Http\Controllers\Admin\ShiftManagement;
 use App\Http\Controllers\Admin\VehicleController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +33,7 @@ Route::get('/', function () {
     $data['pageTitle'] = 'Dashboard';
 
     return view('admin.login', $data);
-});
+})->name('home_page');
 Route::get('/testing', [AdminLoginController::class, 'testing'])->name('testing');
 Route::get('/admin', [AdminLoginController::class, 'index'])->name('admin');
 Route::post('login', [AdminLoginController::class, 'login'])->name('admin.login');
@@ -53,6 +55,9 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
     Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
     Route::match(['get', 'post'], '/profile', [AdminLoginController::class, 'profile'])->name('admin.profile');
     Route::match(['get', 'post'], '/updatePassword', [AdminLoginController::class, 'updatePassword'])->name('admin.updatePassword');
+
+    Route::match(['get', 'post'], '/ajax-table-person', [Personcontroller::class, 'personAjaxTable'])->name('person.ajax.table');
+    
     Route::group(['prefix' => 'administration'], function () {
         Route::match(['get', 'post'], '/role', [Administration::class, 'index'])->name('administration.role');
         Route::match(['get', 'post'], '/role-add', [Administration::class, 'roleAdd'])->name('administration.role.add');
@@ -125,6 +130,9 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
         Route::match(['get', 'post'], '/delete/rates', [Personcontroller::class, 'deleteRate'])->name('deleteRate');
         // Route::match(['get','post'],'/edit/{id}', [Personcontroller::class, 'reminderedit'])->name('reminder.edit');
         Route::match(['get', 'post'], '/person/status', [Personcontroller::class, 'personStatus'])->name('personStatus');
+        Route::match(['get', 'post'], '/export-person', [Personcontroller::class, 'exportPersons'])->name('export.person');
+
+       
     });
     Route::group(['prefix' => 'clients'], function () {
         Route::match(['get', 'post'], '/', [ClientController::class, 'clients'])->name('clients');
@@ -192,3 +200,17 @@ Route::prefix('admin')->middleware('auth:adminLogin')->namespace('admin')->group
 Route::match(['get', 'post'], '/test-track', [LiveTrackingController ::class, 'liveTrack'])->name('liveTrack');
 Route::view('/test-tt', 'admin.test');
 // Route::view('URI', 'viewName');('/test-tt', [LiveTrackingController ::class, 'liveTrack'])->name('liveTrack');
+
+
+Route::get('/geocode', function (Request $request) {
+    $lat = $request->input('lat');
+    $lng = $request->input('lng');
+    $apiKey = config('services.google_maps.key'); // Store your API key in config/services.php
+
+    $response = Http::get("https://maps.googleapis.com/maps/api/geocode/json", [
+        'latlng' => "$lat,$lng",
+        'key' => $apiKey,
+    ]);
+
+    return $response->json();
+})->name('googlemap')->middleware('auth:adminLogin');

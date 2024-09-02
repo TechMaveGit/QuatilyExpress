@@ -14,7 +14,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
     <h1 class="page-title">Shift View</h1>
         <div>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                 <li class="breadcrumb-item " aria-current="page">Shift Report</li>
                 <li class="breadcrumb-item active" aria-current="page">Shift View</li>
             </ol>
@@ -37,10 +37,8 @@ $driverRole=  Auth::guard('adminLogin')->user();
                             
                             <div class="tab-pane show active" id="home">
                                
-                                  @php
-
+                                @php
                                    $finishshifts=DB::table('finishshifts')->where('shiftId',$shiftView->id)->first();
-
                                    $clientbase=  DB::table('clientbases')->where('id',$shiftView->base)->first();
                                    $rego=  DB::table('vehicals')->where('id',$shiftView->rego)->first();
                                 @endphp
@@ -111,13 +109,12 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                     <div class="form-group">
                                                     <select class="form-control select2 form-select" disabled>
                                                            <option value="">Select any one</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='0') selected @else @endif >Created</option>
+                                                            <option value="0" @if($shiftView['finishStatus'] =='0') selected @else @endif >Created</option>
                                                             <option value="1" @if($shiftView['finishStatus'] =='1') selected @else @endif >In Progress</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='2') selected @else @endif >To Be Approved</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='3') selected @else @endif >Approved</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='4') selected @else @endif >Rejected</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='5') selected @else @endif >Paid</option>
-                                                            <option value="1" @if($shiftView['finishStatus'] =='6') selected @else @endif >Already Paid</option>
+                                                            <option value="2" @if($shiftView['finishStatus'] =='2') selected @else @endif >To Be Approved</option>
+                                                            <option value="3" @if($shiftView['finishStatus'] =='3') selected @else @endif >Approved</option>
+                                                            <option value="4" @if($shiftView['finishStatus'] =='4') selected @else @endif >Rejected</option>
+                                                            <option value="5" @if($shiftView['finishStatus'] =='5') selected @else @endif >Paid</option>
                                                         </select>
 
                                                 </div>
@@ -129,6 +126,20 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Base <span class="red">*</span></label>
                                                     <input type="text" class="form-control" value="{{ $clientbase->base??'N/A' }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="check_box">
+                                                    <label class="form-label" for="exampleInputEmail1">Driver </label>
+                                                    <div class="form-group">
+                                                        <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one" disabled>
+                                                                <option value="">Select Any One</option>
+                                                                    @forelse ($driverAdd as $AdddriverAdd)
+                                                                    <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif">{{ $AdddriverAdd->userName }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
+                                                                    @empty
+                                                                    @endforelse
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -155,71 +166,61 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-3">
-                                                <div class="check_box">
-                                                    <label class="form-label" for="exampleInputEmail1">Driver </label>
-                                                    <div class="form-group">
-                                                        <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one" disabled>
-                                                                <option value="">Select Any One</option>
-                                                                    @forelse ($driverAdd as $AdddriverAdd)
-                                                                    <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif">{{ $AdddriverAdd->userName }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
-                                                                    @empty
-                                                                    @endforelse
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
 
 
-                                            <div class="col-lg-3">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="exampleInputEmail1">Odometer  <span class="red">*</span></label>
-                                                    <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->odometer }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                </div>
-                                            </div>
+                                            
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1"> Scanner ID <span class="red">*</span></label>
                                                     <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3">
+                                            {{-- <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
                                                     <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
-                                            </div>
-
+                                            </div> --}}
+                                            @if ($driverRole->role_id != 33)
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i',strtotime($shiftView->shiftStartDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ date('Y-m-d H:i',strtotime($shiftView->createdDate)) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
-                                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i') }}" placeholder="" readonly>
+                                                    <input type="text" class="form-control" value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i') : '' }}" placeholder="" readonly>
                                                 </div>
                                             </div>
+                                            @endif
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Driver Rate</label>
                                                     <input type="text" class="form-control "
                                                     value="{{ $extra_rate_per_hour }}"
                                                     aria-describedby="emailHelp" placeholder="" readonly>
-                                                                                             </div>
+                                                </div>
                                             </div>
 
                                             @if (isset($finishshifts->addPhoto))
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <a href="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" target="_blank">
-                                                        <img src="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
+                                                    <a href="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" target="_blank">
+                                                        <img src="{{ asset(env('STORAGE_URL') . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
-                                                                                                                </div>
+                                                </div>
+                                            </div>
+                                            @else
+                                            <div class="col-lg-3">
+                                                <div class="mb-3" style="width: 116px;">
+                                                    <label class="form-label" for="exampleInputEmail1">Shift Image</label>
+                                                    <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" alt="Image" style="max-width: 53%;" />
+                                                </div>
                                             </div>
                                         @endif
 
@@ -277,26 +278,58 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                   @php
                                                       $finalAmount='';
                                                   @endphp
-   
+
+                                                    @php
+                                                    $day='0';
+                                                    @endphp
+                                                    @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
+                                                        @php
+                                                            $day = (($shiftView->getClientCharge->hourlyRatePayableDay??0) + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $day = 0
+                                                        @endphp
+                                                    @endif
+
+                                                    @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
+                                                        @php
+                                                             $night = (($shiftView->getClientCharge->hourlyRatePayableNight??0) + $extra_rate_per_hour  ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                        $night = 0
+                                                        @endphp
+                                                    @endif
+
+                                                    @php
+                                                        $saturday = 0;
+                                                        $sunday = 0;
+
+                                                        if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
+                                                            $saturday = (($shiftView->getClientCharge->hourlyRatePayableSaturday??0) + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
+                                                        }
+
+                                                        if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
+                                                            $sunday = (($shiftView->getClientCharge->hourlyRatePayableSunday??0) + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
+                                                        }
+                                                        $finalAmount=$saturday +  $sunday;
+                                                    @endphp
+
+                                                    @php
+                                                    $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays??0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                       $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight??0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                    @endphp
                                                   @if ($driverRole->role_id!='33')
    
                                                   <div class="col-lg-3">
    
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Day Shift</label>
+                                                       
    
-                                                       @php
-                                                           $day='0';
-                                                       @endphp
-                                                       @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
-                                                        @php
-                                                           $day = ($shiftView->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
-                                                        @endphp
-                                                        @else
-                                                        @php
-                                                        $day = 0
-                                                        @endphp
-                                                           @endif
+                                                       
+                                                           
                                                        <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $day ??'0' }}"  aria-describedby="emailHelp" placeholder="" readonly>
    
    
@@ -315,15 +348,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Night Shift</label>
    
-                                                       @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
-                                                        @php
-                                                             $night = ($shiftView->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
-                                                        @endphp
-                                                        @else
-                                                        @php
-                                                        $night = 0
-                                                        @endphp
-                                                       @endif
+                                                       
                                                        <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $night ??'0' }}" aria-describedby="emailHelp" placeholder="" readonly>
    
    
@@ -338,22 +363,6 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Weekend Shift</label>
-   
-   
-                                                           @php
-                                                               $saturday = 0;
-                                                               $sunday = 0;
-   
-                                                               if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
-                                                                   $saturday = ($shiftView->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
-                                                               }
-   
-                                                               if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
-                                                                   $sunday = ($shiftView->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
-                                                               }
-                                                               $finalAmount=$saturday +  $sunday;
-                                                           @endphp
-   
                                                            <input type="text" class="form-control secondcls" id="exampleInputEmail1" value="{{ $saturday + $sunday }}" aria-describedby="emailHelp" placeholder="" readonly>
    
                                                    </div>
@@ -363,10 +372,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Amount Chargeable Day Shift</label>
-                                                   @php
-                                                       $chargeDayShift = ($shiftView->getClientCharge->hourlyRateChargeableDays??0) * ($shiftView->getFinishShifts->dayHours ?? 0);
-                                                       $chargeNight = ($shiftView->getClientCharge->ourlyRateChargeableNight??0) * ($shiftView->getFinishShifts->nightHours ?? 0);
-                                                   @endphp
+                                                  
    
                                                        <input type="text" class="form-control thirdcls" id="exampleInputEmail1" value="{{ round($chargeDayShift,2) }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
@@ -386,7 +392,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
    
                                            @if(!empty($shiftView->getFinishShifts->saturdayHours))
                                            @php
-                                               $saturday = ($shiftView->getClientCharge->hourlyRateChargeableSaturday )  * ($shiftView->getFinishShifts->saturdayHours ?? 0) ;
+                                               $saturday = ($shiftView->getClientCharge->hourlyRateChargeableSaturday??1 )  * ($shiftView->getFinishShifts->saturdayHours ?? 0) ;
                                            @endphp
                                            @else
                                            @php
@@ -398,7 +404,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
    
                                            @if(!empty($shiftView->getFinishShifts->sundayHours))
                                            @php
-                                           $sunday = $shiftView->getClientCharge->hourlyRateChargeableSunday * $shiftView->getFinishShifts->sundayHours;
+                                           $sunday = ($shiftView->getClientCharge->hourlyRateChargeableSunday??0) * $shiftView->getFinishShifts->sundayHours ;
                                            @endphp
                                            @else
                                            @php
@@ -438,11 +444,18 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                   </div>
+                                                  <div class="col-lg-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Parcel Outstanding</label>
+                                                        <input type="text" disabled class="form-control" id="exampleInputEmail1" value="{{ ($shiftView->parcelsToken??0) - ($shiftView->getFinishShifts->parcelsDelivered??0)  ??''}}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    </div>
+    
+                                                   </div>
    
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Odometer Start</label>
-                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerStartReading??''}}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->odometer??''}}" aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
    
                                                   </div>
@@ -453,7 +466,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                    @php
-                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
+                                                   $km = (isset($shiftView->getFinishShift->odometerEndReading) && $shiftView->getFinishShift->odometerEndReading != 0 && $shiftView->getFinishShift->odometerEndReading != '' && isset($shiftView->odometer)) ?  ((float)$shiftView->getFinishShift->odometerEndReading -  (float)$shiftView->odometer) : '';
                                                    @endphp
    
                                                   </div>
@@ -464,26 +477,21 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                    </div>
    
                                                   </div>
-   
-   
-   
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
-   
                                                        <label class="form-label" for="exampleInputEmail1">Date Start</label>
-                                                       @if ($finishshifts)
-                                                       <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       @if ($shiftView->shiftStartDate)
+                                                        <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate ? date('Y-m-d H:i',strtotime($shiftView->shiftStartDate)) : '' }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @else
-                                                       <input type="text" class="form-control" id="#basicDate" value="" aria-describedby="emailHelp" placeholder="" readonly>
+                                                        <input type="text" class="form-control" id="#basicDate" value="" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @endif
-   
                                                    </div>
                                                </div>
                                                <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish </label>
                                                        @if ($finishshifts)
-                                                       <input type="text" class="form-control" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <input type="text" class="form-control" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime ? date('H:i',strtotime($finishshifts->endTime)) : 'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @else
                                                        <input type="text" class="form-control" id="#basicDate1" value="" aria-describedby="emailHelp" placeholder="" readonly>
                                                        @endif
@@ -498,6 +506,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                            </div>
                                         </div>
 
+                                        @if ($driverRole->role_id!='33')
                                         <hr>
                                         <hr>
                                         <h2>
@@ -558,7 +567,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                             <div class="col-lg-12">
                                                                 <div class="mb-3">
                                                                     <label class="form-label" for="exampleInputEmail1">Total Payable</label>
-                                                                    <input type="text" class="form-control secondcls" name="totalPayable" value="{{ $finalpayamnnt}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                                    <input type="text" class="form-control secondcls" name="totalPayable" value="{{ round($day,2) + round($night,2) + round($finalAmount,2) + ($shiftView->getShiftMonetizeInformation->fuelLevyPayable??0)+($shiftView->getShiftMonetizeInformation->extraPayable??0) }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -621,8 +630,8 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                         </div>
                                                         <div class="col-lg-6">
                                                             <div class="mb-3">
-                                                            <label class="form-label" for="exampleInputEmail1">Approved Reason</label>
-                                                            <textarea class="form-control mb-4" name="approvedReason" placeholder="Please Enter Your Comment" readonly rows="4">{{ $shiftView->getShiftMonetizeInformation->approvedReason	??'' }}</textarea>
+                                                            <label class="form-label" for="exampleInputEmail1">Approved/Reject Reason</label>
+                                                            <textarea class="form-control mb-4" name="approvedReason" placeholder="Please Enter Your Comment" readonly rows="4">{{ $shiftView->approval_reason	??'' }}</textarea>
             
                                                             </div>
                                                         </div>
@@ -644,6 +653,7 @@ $driverRole=  Auth::guard('adminLogin')->user();
                                                 </div>
                                             </div> --}}
                                             <!-- main_bx_dt -->
+                                            @endif
                                         </div>
                                             </form>
                                     </div>

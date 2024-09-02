@@ -8,7 +8,7 @@
         <h1 class="page-title">Parcels</h1>
         <div>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page">Shift</li>
                 <li class="breadcrumb-item active" aria-current="page">Parcel Detail</li>
 
@@ -74,8 +74,8 @@
                                             <thead class="border-top">
 
                                                 <tr>
-                                                    <th class="th_highlight parcel_in" colspan="4">Parcel In</th>
-                                                    <th class="th_highlight parcel_out" colspan="5">Parcel Out / Delivered</th>
+                                                    <th class="th_highlight parcel_in" colspan="5">Parcel In</th>
+                                                    <th class="th_highlight parcel_out" colspan="4">Parcel Out / Delivered</th>
                                                 </tr>
 
                                                 <tr>
@@ -83,8 +83,8 @@
                                                     <th class="parcel_in">Receiver Name</th>
                                                     <th class="parcel_in">Parcel Image</th>
                                                     <th class="parcel_in">Date</th>
+                                                    <th class="parcel_in drop_location_lkj">Drop Location</th>
 
-                                                    <th class="parcel_out drop_location_lkj">Drop Location</th>
                                                     <th class="parcel_out">Receiver Name</th>
                                                     <th class="parcel_out">longitude/latitude</th>
                                                     <th class="parcel_out">Delivered Image</th>
@@ -102,10 +102,12 @@
 
                                                    <td class="parcel_in">
                                                     <div class="magnific-img">
-                                                        @if(!empty($allparcelsDetail['ParcelImage']->parcelImage))
-                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}">
-                                                                <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail['ParcelImage']->parcelImage) }}" alt="" />
+                                                        @if($allparcelsDetail['ParcelImage'] && $allparcelsDetail['ParcelImage']->parcelImage && !empty($allparcelsDetail['ParcelImage']->parcelImage))
+                                                            <a target="_blank" class="image-popup-vertical-fit" href="{{asset(env('STORAGE_URL').$allparcelsDetail['ParcelImage']->parcelImage)}}">
+                                                                <img src="{{asset(env('STORAGE_URL').$allparcelsDetail['ParcelImage']->parcelImage)}}" alt="" />
                                                             </a>
+                                                        @else
+                                                            <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" alt="" />
                                                         @endif
                                                     </div>
                                                   </td>
@@ -114,7 +116,7 @@
                                                    <td class="date parcel_in">
                                                     {{ $allparcelsDetail->created_at }}
                                                    </td>
-                                                   <td class="parcel_out">
+                                                   <td class="parcel_in">
 
                                                     <p class="adress_ppmn">{{ $allparcelsDetail->location }}</p>
 
@@ -130,10 +132,8 @@
                                                    <td class="parcel_out">
                                                    <div class="magnific-img">
                                                     @if(!empty($allparcelsDetail->parcelphoto))
-                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}">
-                                                        <img src="{{ url('/assets/driver/parcel/'.$allparcelsDetail->parcelphoto.'')}}" style="margin-left: 39px;
-                                                    }" alt="9.jpg" />
-                                                        <!-- <i class="fa fa-search-plus" aria-hidden="true"></i> -->
+                                                    <a target="_blank" class="image-popup-vertical-fit" href="{{asset(env('STORAGE_URL').$allparcelsDetail->parcelphoto)}}">
+                                                        <img src="{{asset(env('STORAGE_URL').$allparcelsDetail->parcelphoto)}}" style="margin-left: 39px; }" alt="9.jpg" />
                                                     </a>
                                                     @else
 

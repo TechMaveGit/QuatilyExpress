@@ -149,7 +149,7 @@ function yesstartShift()
     }
 </script>
    <!-- delete Modal -->
-   <div class="modal fade zoomIn" id="finishShift" tabindex="-1" aria-hidden="true">
+   <div class="modal fade zoomIn" id="finishShift" tabindex="-1" aria-hidden="true" data-bs-focus="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -163,12 +163,12 @@ function yesstartShift()
                                                 <h4>Finish Shift</h4>
                                               </div>
                                             <label class="form-label" for="exampleInputEmail1">Odometer Start Reading  <span class="red">*</span></label>
-                                            <input type="number" name="odometerStartReading" id="odometer_start_reading" min="0" class="form-control" aria-describedby="emailHelp" placeholder="" fdprocessedid="enssm" required="">
+                                            <input type="number" name="odometerStartReading" id="odometer_start_reading" step="any" min="0" class="form-control" aria-describedby="emailHelp" placeholder="" fdprocessedid="enssm" required="">
                                             <input type="hidden" name="shiftId" value="" id="appendFinishShiftiId" />
                                     </div>
                                     <div class="col-lg-12">
                                             <label class="form-label" for="exampleInputEmail1">Odometer End Reading  <span class="red">*</span></label>
-                                            <input type="text" min="0" class="form-control" name="odometerEndReading" value="" id="odometer_finish_reading" aria-describedby="emailHelp" placeholder="" onkeypress="checkOdometerReading(event)" required="" fdprocessedid="kgw02c">
+                                            <input type="text" min="0" class="form-control" name="odometerEndReading" step="any" value="" id="odometer_finish_reading" aria-describedby="emailHelp" placeholder="" onkeypress="checkOdometerReading(event)" required="" fdprocessedid="kgw02c">
                                             <div id="message"></div>
                                     </div>
                                     <script>
@@ -193,48 +193,48 @@ function yesstartShift()
                                         }
                                     </script>
                                         <div class="col-lg-6">
-                                            <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
-                                            <input type="text" name="startDate" class="form-control"  id="start-date" aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" disabled>
+                                            <label class="form-label" for="shiftStartDate">Start Date <span class="red">*</span></label>
+                                            <input type="text" name="startDate" id="shiftStartDate" class="form-control datetime_picker_start"   aria-describedby="emailHelp" data-input=""  fdprocessedid="q627ek" required>
                                         </div>
                                         <div class="col-lg-6">
-                                            <label class="form-label" for="exampleInputEmail1">End date <span class="red">*</span></label>
-                                            <input type="datetime-local" id="endTm" name="endDate" min="1000-01-01" max="9999-12-31" class="form-control flatpickr-input" required="">
+                                            <label class="form-label" for="shiftEndDate">End date <span class="red">*</span></label>
+                                            <input type="text"  name="endDate" id="shiftEndDate" min="1000-01-01" max="9999-12-31" class="form-control datetime_picker_end" required="">
                                         </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
-                                    <input type="text" class="form-control" name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" readonly>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="form-label" for="exampleInputEmail1">Parcels Delivered <span class="red">*</span></label>
-                                    <input type="text" class="form-control" value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
-                                    <div id="message_"></div>
-                                </div>
-                            </div>
-                            <script>
-                                function parcelDelivered(event)
-                                       {
-                                           var ParcelsTaken = parseFloat(document.getElementById('ParcelsTaken').value) || 0;
-                                           var parcelDelivered = parseFloat(document.getElementById('parcel_delivered').value + event.key) || 0;
-                                           var addButton = document.querySelector('.btn.btn-primary');
-                                           const key = event.key;
-                                           if (/^[a-zA-Z]$/.test(key))
-                                           {
-                                           event.preventDefault();
-                                           }
-                                           var messageElement = document.getElementById('message_');
-                                           if (parcelDelivered > ParcelsTaken) {
-                                               messageElement.textContent = 'The parcel delivered must be less than or equal to parcels taken ';
-                                               messageElement.style.color = 'red';
-                                               addButton.style.display = 'none';
-                                           } else {
-                                               messageElement.textContent = '';
-                                               addButton.style.display = '';
-                                           }
-                                       }
-                                </script>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="ParcelsTaken">Parcels Taken  <span class="red">*</span></label>
+                                                <input type="text" class="form-control"  name="parcelsToken"  id="ParcelsTaken" min="0" aria-describedby="emailHelp" placeholder=""  fdprocessedid="63uoa3" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="parcel_delivered">Parcels Delivered <span class="red">*</span></label>
+                                                <input type="text" class="form-control"  value="" name="parcel_delivered" onkeypress="parcelDelivered(event)" id="parcel_delivered" min="0"  placeholder="" required="">
+                                                <div id="message_"></div>
+                                            </div>
+                                        </div>
+                                    <script>
+                                        function parcelDelivered(event)
+                                        {
+                                            var ParcelsTaken = parseFloat(document.getElementById('ParcelsTaken').value) || 0;
+                                            var parcelDelivered = parseFloat(document.getElementById('parcel_delivered').value + event.key) || 0;
+                                            var addButton = document.querySelector('.btn.btn-primary');
+                                            const key = event.key;
+                                            if (/^[a-zA-Z]$/.test(key))
+                                            {
+                                                event.preventDefault();
+                                            }
+                                            var messageElement = document.getElementById('message_');
+                                            if (parcelDelivered > ParcelsTaken) {
+                                                messageElement.textContent = 'The parcel delivered must be less than or equal to parcels taken ';
+                                                messageElement.style.color = 'red';
+                                                addButton.style.display = 'none';
+                                            } else {
+                                                messageElement.textContent = '';
+                                                addButton.style.display = '';
+                                            }
+                                        }
+                                        </script>
                             <div class="col-lg-12">
                                 <div class="mb-6">
                                     <label class="form-label" for="exampleInputEmail1">Image <span class="red">*</span></label>
@@ -261,6 +261,57 @@ function yesstartShift()
     </div>
 </div>
 <!--end modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
+<script>
+    // Initialize the start date picker
+    var startPicker = $(".datetime_picker_start").flatpickr({
+            enableTime: true,
+            altFormat: "Y-m-d H:i",
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            appendTo: document.body,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Update the minDate of the end date picker
+                endPicker.set('minDate', dateStr);
+                if (endPicker.selectedDates[0] && endPicker.selectedDates[0] <= selectedDates[0]) {
+                    endPicker.setDate(new Date(selectedDates[0].getTime() + 3600000)); // Add 1 hour to start date
+                }
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                var setButton = document.createElement('button');
+                setButton.className = 'flatpickr-set-button';
+                setButton.innerHTML = 'Ok';
+                setButton.onclick = function() {
+                    instance.close();
+                };
+                instance.calendarContainer.querySelector('.flatpickr-time').appendChild(setButton);
+            }
+        });
+
+        // Initialize the end date picker
+        var endPicker = $(".datetime_picker_end").flatpickr({
+            enableTime: true,
+            altFormat: "Y-m-d H:i",
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            appendTo: document.body,
+            defaultDate: "{{date('Y-m-d H:i')}}",
+            onChange: function(selectedDates, dateStr, instance) {
+                if (selectedDates[0] && startPicker.selectedDates[0] && selectedDates[0] <= startPicker.selectedDates[0]) {
+                    instance.setDate(new Date(startPicker.selectedDates[0].getTime() + 3600000)); // Add 1 hour to start date
+                }
+            },
+            onReady: function(selectedDates, dateStr, instance) {
+                var setButton = document.createElement('button');
+                setButton.className = 'flatpickr-set-button';
+                setButton.innerHTML = 'Ok';
+                setButton.onclick = function() {
+                    instance.close();
+                };
+                instance.calendarContainer.querySelector('.flatpickr-time').appendChild(setButton);
+            }
+        });
+</script>
 <script>
     // Get the current date and time
     var now = new Date();
@@ -483,7 +534,7 @@ function yesstartShift()
                                     </div>
                                 </div>
                             <div class="card-body pb-0">
-                                <form action="{{ route('admin.dashboard') }}" method="post"/> @csrf
+                                <form action="{{ route('admin.dashboard') }}" method="post"> @csrf
                                 <div class="row align-items-center">
                                         <div class="col-lg-4">
                                         <div class="check_box">
@@ -522,7 +573,7 @@ function yesstartShift()
                                             <select class="form-control select2 form-select" name="vehicleRego">
                                                     <option value="">Select Any One</option>
                                                     @forelse ($totalRego as $alltotalRego)
-                                                    <option value="{{ $alltotalRego->rego }}" {{ $alltotalRego->rego == $vehicleRego ? 'selected="selected"' : '' }}>{{ $alltotalRego->rego }}</option>
+                                                    <option value="{{ $alltotalRego->id }}" {{ $alltotalRego->id == $vehicleRego ? 'selected="selected"' : '' }}>{{ $alltotalRego->rego }}</option>
                                                     @empty
                                                     @endforelse
                                                 </select>
@@ -594,24 +645,11 @@ function yesstartShift()
                                     @forelse ($allRego as $allRego)
                                     <tr class="border-bottom">
                                         <td class="td sorting_1">{{ $allRego->rego }}</td>
-                                           @if(isset($allRego->getShiftRego))
-                                               @if(isset($allRego->getShiftRego->getClientNm))
-                                                <td class="td">{{ round($allRego->getShiftRego->getClientNm->adminCharge?? 0 ,2)  }}</td>
-                                                @else
-                                                <td class="td">0</td>
-                                                @endif
-                                            @else
-                                            <td class="td">0</td>
-                                            @endif
-                                               @if(isset($allRego->getShiftRego))
-                                                   @if(isset($allRego->getShiftRego->getClientNm))
-                                                    <td class="td">{{ round($allRego->getShiftRego->getClientNm->driverPay?? 0 ,2) }}</td>
-                                                    @else
-                                                    <td class="td">0</td>
-                                                    @endif
-                                                @else
-                                               <td class="td">0</td>
-                                               @endif
+                                           
+                                                <td class="td">{{ round($allRego->total_chageAmount?? 0 ,2)  }}</td>
+                                              
+                                                    <td class="td">{{ round($allRego->total_payAmount?? 0 ,2) }}</td>
+                                                    
                                             @php
                                              $trip_cost = DB::table('tollexpenses')->where('rego',$allRego->id)->sum('trip_cost')??'0';
                                              $cost = DB::table('expenses')->where('rego',$allRego->id)->sum('cost')??'0';
@@ -810,20 +848,27 @@ function yesstartShift()
       <div class="col-lg-12">
         <div class="card brdcls">
         <div class="card-header">
-        <div class="top_section_title">
-           <h5>All Driver Report</h5>
-           <!-- <a href="person-add.php" class="btn btn-primary">+ Add New Person</a> -->
-        </div>
-        <div class="search_btn m-0">
-            @if(in_array("48", $arr))
-               <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add New Shift</a>
-            @endif
-         </div>
-         <div class="search_btn m-2">
-            @if(in_array("49", $arr))
-            <a href="{{ route('admin.shift.missed.shift') }}" class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
-            @endif
-         </div>
+            <div class="flexMobile">
+                <div class="top_section_title">
+                    <h5>All Driver Report</h5>
+                    <!-- <a href="person-add.php" class="btn btn-primary">+ Add New Person</a> -->
+                </div>
+                <div class="ActionBtn">
+                <div class="search_btn m-0">
+                    @if(in_array("48", $arr))
+                    <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add New Shift</a>
+                    @endif
+                </div>
+                <div class="search_btn m-2">
+                    @if(in_array("49", $arr))
+                    <a href="{{ route('admin.shift.missed.shift') }}" class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
+                    @endif
+                </div>
+                </div>
+
+            </div>
+       
+        
     </div>
       <div class="card-body">
         <div class="table_box" is="shiftTable_Container">
@@ -900,14 +945,14 @@ function yesstartShift()
                 <td class="td">{{ $allshift->getStateName->name??'N/A' }}</td>
                 @if($driverRole =  Auth::guard('adminLogin')->user()->role_id)
                 @if($driverRole!=33)
-                <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift['created_at'])) }} </td>
+                <td class="td">{{ date("Y/m/d H:i", strtotime($allshift['created_at'])) }} </td>
                 @endif
               @endif
                 @php
                 $finishshifts=DB::table('finishshifts')->where('shiftId',$allshift->id)->first()??'0';
                 @endphp
                @if($allshift['shiftStartDate'])
-                <td class="td">{{ date("Y/m/d H:i:s", strtotime($allshift['shiftStartDate'])) }}</td>
+                <td class="td">{{ date("Y/m/d H:i", strtotime($allshift['shiftStartDate'])) }}</td>
                 @else
                 <td class="td">N/A</td>
                 @endif
@@ -1010,15 +1055,13 @@ function yesstartShift()
                  <td hidden class="td"><span id="span_status_31240">{{ $allshift->getFinishShift->comments??'N/A' }}</span>
                 </td>
                 @php
-                    $carbonDateTime = \Carbon\Carbon::parse($allshift->shiftStartDate);
-                    $formattedDate = $carbonDateTime->format('d/m/Y');
-                    $formattedTime = $carbonDateTime->format('h:i A');
+                    $carbonDateTime = date('Y-m-d H:i',strtotime($allshift->shiftStartDate));
                @endphp
                  @if(in_array("53", $arr) || in_array("52", $arr) || in_array("54", $arr) || in_array("70", $arr))
                     <td>
                         <div class="d-flex">
                             @if($allshift->finishStatus=='1')
-                            <a  onclick="finishShift(`{{ $allshift->id }}`,`{{ $allshift->odometer }}`,`{{ $allshift->parcelsToken }}`,`{{ $formattedDate }} {{ $formattedTime }}`)" class="btn text-primary btn-sm btncls"
+                            <a  onclick="finishShift(`{{ $allshift->id }}`,`{{ $allshift->odometer }}`,`{{ $allshift->parcelsToken }}`,`{{ $carbonDateTime }}`)" class="btn text-primary btn-sm btncls"
                                 data-bs-toggle="tooltip"
                                 data-bs-original-title="Finish Shift"><iconify-icon class="finishshift_icon" icon="mdi:stopwatch-start-outline"></iconify-icon>
                             </a>
@@ -1034,12 +1077,14 @@ function yesstartShift()
                                                     data-bs-toggle="tooltip" data-bs-original-title="View"><span class="fe fe-eye fs-14"></span>
                                         </a>
                                             @endif
+                                            @if ($driverRole != 33)
                                         @if(in_array("53", $arr))
                                             <a class="btn text-primary btn-sm btncls" href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-original-title="Edit"><span
                                                     class="fe fe-edit fs-14"></span>
                                             </a>
+                                        @endif
                                         @endif
                                         @if(in_array("51", $arr))
                                         <a class="btn text-primary btn-sm btncls" href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}"
@@ -1317,13 +1362,12 @@ var myChart = new Chart(ctx, {
     });
 </script>
 <script>
-        function finishShift(shiftId,obometer,parcelsToken,formattedDate,formattedTime)
+        function finishShift(shiftId,obometer,parcelsToken,formattedDate)
         {
             $("#appendFinishShiftiId").val(shiftId);
             $("#odometer_start_reading").val(obometer);
             $("#ParcelsTaken").val(parcelsToken);
-            $("#start-date").val(formattedDate);
-            $("#start-time").val(formattedTime);
+            $("#shiftStartDate").val(formattedDate);
             $("#finishShift").modal('show');
         }
         function startShift(shiftId)
@@ -1333,4 +1377,6 @@ var myChart = new Chart(ctx, {
             $("#startShift").modal('show');
         }
 </script>
+
+
 @endsection

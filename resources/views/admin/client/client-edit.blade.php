@@ -103,49 +103,49 @@
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Day </label>
-                                 <input type="text" class="form-control" name="hourlyRate" min="0"  id="hourlyRateChargeableDays" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" name="hourlyRate" step="any" min="0"  id="hourlyRateChargeableDays" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Night</label>
-                                 <input type="text" class="form-control" name="hourlyRateChargeable" min="0"  id="ourlyRateChargeableNight" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" name="hourlyRateChargeable" min="0"  id="ourlyRateChargeableNight" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Saturday</label>
-                                 <input type="text" class="form-control" name="HourlyRateChargeableSaturday" min="0"  id="hourlyRateChargeableSaturday" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" name="HourlyRateChargeableSaturday" min="0"  id="hourlyRateChargeableSaturday" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Sunday</label>
-                                 <input type="text" class="form-control" name="HourlyRateChargeableSunday" min="0"  id="hourlyRateChargeableSunday" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" name="HourlyRateChargeableSunday" min="0"  id="hourlyRateChargeableSunday" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Day</label>
-                                 <input type="text" class="form-control" name="HourlyRatePayableDay" min="0"  id="hourlyRatePayableDay" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" name="HourlyRatePayableDay" min="0"  id="hourlyRatePayableDay" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Night</label>
-                                 <input type="text" class="form-control" id="hourlyRatePayableNight" name="hourlyRatePayableNight1" id="exampleInputEmail1" min="0"  aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" id="hourlyRatePayableNight" name="hourlyRatePayableNight1" id="exampleInputEmail1" min="0"  aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Saturday</label>
-                                 <input type="text" class="form-control" id="hourlyRatePayableSaturday" name="HourlyRatePayableSaturday" min="0"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" id="hourlyRatePayableSaturday" name="HourlyRatePayableSaturday" min="0"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-3">
                               <div class="mb-3">
                                  <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Sunday</label>
-                                 <input type="text" class="form-control" id="hourlyRatePayableSunday" name="HourlyRatePayableSunday" min="0"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
+                                 <input type="number" class="form-control" step="any" id="hourlyRatePayableSunday" name="HourlyRatePayableSunday" min="0"  id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
                               </div>
                            </div>
                            <div class="col-lg-12">
@@ -161,22 +161,6 @@
 
                     </div>
                 </div>
-            {{-- <form action="{{route('admin.delete.cleaners')}}" method="post"/>@csrf --}}
-            {{-- <div class="modal-body">
-                <div class="mt-2 text-center">
-                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
-                    <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                        <h4>Are you Sure ?</h4>
-                        <p class="text-muted mx-4 mb-0">Are you Sure You want to Remove this Record ?</p>
-                    </div>
-                    <input type="hidden" name="common" id="hidden_class" value=""/>
-
-                </div>
-                <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="sumit" class="btn w-sm btn-danger " id="delete-record">Yes, Delete It!</button>
-                </div> --}}
-            {{-- </div> --}}
         </div>
     </div>
 </div>
@@ -476,7 +460,9 @@
                                              </div>
                                              <input type="hidden" name="addressValue"  value="3"/>
                                              <input type="hidden" name="clientId"  value="{{ $clientId }}"/>
-                                             <div class="col-lg-3">
+                                             <div class="col-lg-12">
+                                                <div class="row">
+                                                <div class="col-lg-3">
                                                 <div class="check_box">
                                                    <label class="form-label" for="exampleInputEmail1">Vehicle Type</label>
                                                    <div class="form-group">
@@ -491,6 +477,9 @@
 
                                                 </div>
                                              </div>
+                                                </div>
+                                             </div>
+                                             
 
 
                                              <div class="col-lg-3">
@@ -503,31 +492,31 @@
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Night</label>
-                                                   <input type="number" class="form-control chargeClr" name="hourlyRateChargeable" min="0" id="ourlyRateChargeableNight" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargeClr" step="any" name="hourlyRateChargeable" min="0" id="ourlyRateChargeableNight" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Saturday</label>
-                                                   <input type="number" class="form-control chargeClr" name="HourlyRateChargeableSaturday" min="0" id="hourlyRateChargeableSaturday" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargeClr" step="any" name="HourlyRateChargeableSaturday" min="0" id="hourlyRateChargeableSaturday" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Chargeable Sunday</label>
-                                                   <input type="number" class="form-control chargeClr" name="HourlyRateChargeableSunday" min="0" id="hourlyRateChargeableSunday" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargeClr" step="any" name="HourlyRateChargeableSunday" min="0" id="hourlyRateChargeableSunday" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Day</label>
-                                                   <input type="number" class="form-control chargePay" name="HourlyRatePayableDay" min="0" id="hourlyRatePayableDay" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargePay" step="any" name="HourlyRatePayableDay" min="0" id="hourlyRatePayableDay" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Night</label>
-                                                   <input type="number" class="form-control chargePay" name="HourlyRatePayableNight" id="hourlyRateChargeable" min="0" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargePay" step="any" name="HourlyRatePayableNight" id="hourlyRateChargeable" min="0" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
 
@@ -535,13 +524,13 @@
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Saturday</label>
-                                                   <input type="number" class="form-control chargePay" name="HourlyRatePayableSaturday" min="0" id="HourlyRatePayableSaturday" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargePay" step="any" name="HourlyRatePayableSaturday" min="0" id="HourlyRatePayableSaturday" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
                                              <div class="col-lg-3">
                                                 <div class="mb-3">
                                                    <label class="form-label" for="exampleInputEmail1">Hourly Rate Payable Sunday</label>
-                                                   <input type="number" class="form-control chargePay" name="HourlyRatePayableSunday" min="0" id="HourlyRatePayableSunday" aria-describedby="emailHelp" placeholder="">
+                                                   <input type="number" class="form-control chargePay" step="any" name="HourlyRatePayableSunday" min="0" id="HourlyRatePayableSunday" aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                              </div>
                                              <div class="col-lg-12">

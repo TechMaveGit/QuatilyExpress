@@ -11,6 +11,7 @@
    }
 //   echo "<pre>";
 //   print_r($arr); die;
+$driverRole = Auth::guard('adminLogin')->user()->role_id;
    ?>
 
 <style>
@@ -35,7 +36,7 @@
 
             </div>
 
-            <form action="{{route('induction.delete')}}" method="post" />@csrf
+            <form action="{{route('induction.delete')}}" method="post" >@csrf
 
             <div class="modal-body">
 
@@ -150,22 +151,28 @@
                 <div class="col-lg-12">
                     <div class="card">
                     <div class="card-header">
-                            <div class="top_section_title">
+                    <div class="flexMobile">
+                    <div class="top_section_title">
                             <h5>  All Induction Document</h5>
 
-
+                            </div>
+                            <div class="ActionBtn scrollBtn">
                             @if(in_array("71", $arr))
                             <a href="{{ route('induction.add') }}"  style="margin: 2px" class="btn btn-primary">+ Add New Induction</a>
                             @endif
-
-                            </div>
-
+                            @if ($driverRole != 33)
                             <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                            @endif
+                            </div>
+                    </div>
+                            
+
+                          
 
                         </div>
 
                         <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="">
                         <table id="custom_table"  class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
                                 <tr>
@@ -199,10 +206,10 @@
                                         $whole = $whole1[1];
                                     @endphp
                                     @if($whole=='pdf')
-                                    <a href="{{ asset('assets/Induction/image/'.$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open PDF</a>
+                                    <a href="{{asset(env('STORAGE_URL').$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open PDF</a>
 
                                     @else
-                                    <a href="{{ asset('assets/Induction/image/'.$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open Image</a>
+                                    <a href="{{asset(env('STORAGE_URL').$allinduction->uploadFile.'')}}" target="_blank" title="Read PDF">Open Image</a>
 
                                     @endif
                                </td>
@@ -233,8 +240,7 @@
 
                                                     @if(in_array("88", $arr))
                                                     <?php
-                                                    $driverRole=  Auth::guard('adminLogin')->user();
-                                                    if($driverRole->role_id=='33') { ?>
+                                                    if($driverRole=='33') { ?>
                                                     <a class="btn btn-info" href="{{ route('induction.upload.signature', ['id' => $allinduction->id]) }}"
                                                     data-bs-toggle="tooltip" data-bs-original-title="Add Signature"><span class="fa-regular fa-signature">Add Signature</span></a>
                                                     <?php } ?>

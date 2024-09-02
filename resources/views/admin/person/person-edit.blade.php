@@ -226,75 +226,52 @@
                                                     <div class="row">
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <input type="hidden" name="personValue1"
-                                                                    id="personValue1" value="1" />
-                                                                <label class="form-label" for="exampleInputEmail1">Name
-                                                                    <span class="red">*</span></label>
-                                                                <input type="text" class="form-control" name="name"
-                                                                    value="{{ $editPerson->userName ?? 'N/A' }}"
-                                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <input type="hidden" name="personValue1" id="personValue1" value="1" />
+                                                                <label class="form-label" for="exampleInputEmail1">Name <span class="red">*</span></label>
+                                                                <input type="text" class="form-control" name="name" value="{{ old('name')??($editPerson->userName ?? '') }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
+                                                                @error('name')
+                                                                    <span class="text-danger">{{$message}}</span>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label"
-                                                                    for="exampleInputEmail1">Surname</label>
-                                                                <input type="text" class="form-control" name="surname"
-                                                                    value="{{ $editPerson->surname ?? 'N/A' }}"
-                                                                    id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                                    placeholder="">
-
+                                                                <label class="form-label" for="exampleInputEmail1">Surname</label>
+                                                                <input type="text" class="form-control" name="surname"  value="{{ $editPerson->surname ?? 'N/A' }}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Email
-                                                                    <span class="red">*</span></label>
-                                                                <input type="text" class="form-control" name="email"
-                                                                    value="{{ $editPerson->email ?? 'N/A' }}"
-                                                                    aria-describedby="emailHelp" placeholder="" readonly>
+                                                                <label class="form-label" for="exampleInputEmail1">Email <span class="red">*</span></label>
+                                                                <input type="text" class="form-control" name="email" value="{{ old('email') ?? ($editPerson->email??'') }}" aria-describedby="emailHelp" placeholder="">
+                                                                @error('email')
+                                                                    <span class="text-danger">{{$message}}</span>
+                                                                @enderror
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-lg-3">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Date Of
-                                                                    Birth</label>
-
-                                                                <input type="text"
-                                                                    class="form-control onlydate dob_valid"
-                                                                    value="{{ $editPerson->dob ?? 'N/A' }}" id="basicDate"
-                                                                    name="dob" aria-describedby="emailHelp"
-                                                                    placeholder="">
-
+                                                                <label class="form-label" for="exampleInputEmail1">Date Of Birth</label>
+                                                                <input type="text" class="form-control dob_valid dobDate" value="{{ $editPerson->dob ?? '' }}"  name="dob" aria-describedby="emailHelp" placeholder="">
                                                             </div>
-
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <label for="simpleinput" class="form-label">Mobile No. <span class="red">*</span></label>
                                                             <div class="input-group ">
                                                                 <div class="input-group-prepend">
-                                                                    <select id="country" class="form-control select2"
-                                                                        name="country_code"
-                                                                        data-placeholder="Select a country"
-                                                                        data-dynamic-select required>
-
+                                                                    <select id="country" class="form-control select2" name="country_code" data-placeholder="Select a country" data-dynamic-select required>
                                                                         @foreach ($countryCode as $countryCodes)
-                                                                            <option value={{ $countryCodes->dial_code }}     {{ $countryCodes->dial_code == $editPerson->dialCode ? 'selected' : '' }}                                                                             data-img="{{ $countryCodes->flag }}">
+                                                                            <option value="{{ $countryCodes->dial_code }}"  {{ $countryCodes->dial_code == $editPerson->dialCode ? 'selected' : '' }}                                                                   data-img="{{ $countryCodes->flag }}">
                                                                                 {{ isset($countryCodes->dial_code) ? $countryCodes->dial_code : '' }}
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
-                                                                <input type="text"
-                                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                                                    value="{{ old('mobile_number') ?? $editPerson->mobileNo }}"
-                                                                    name="mobile_number" minlength="8" maxlength="13"
-                                                                    class="form-control " required>
+                                                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ old('mobile_number') ?? $editPerson->mobileNo }}" name="mobile_number" minlength="8" maxlength="13" class="form-control " required>
                                                                 @error('mobile_number')
                                                                     <span class="text-danger">{{ $message }}</span>
                                                                 @enderror
@@ -302,33 +279,23 @@
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Phone Principal </label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->phonePrincipal ?? 'N/A' }}" 
-                                                                    name="phoneprinciple" aria-describedby="emailHelp"
-                                                                    placeholder="" >
+                                                                <label class="form-label" for="exampleInputEmail1">Phone
+                                                                    Principal <span class="red">*</span></label>
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->phonePrincipal ?? 'N/A' }}" name="phoneprinciple" aria-describedby="emailHelp" placeholder="" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Phone
                                                                     Aux</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->phoneAux ?? 'N/A' }}"
-                                                                    name="phoneaux" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->phoneAux ?? 'N/A' }}" name="phoneaux" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label"
                                                                     for="exampleInputEmail1">TFN</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->tfn ?? 'N/A' }}" name="tfn"
-                                                                    aria-describedby="emailHelp" placeholder="">
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->tfn ?? 'N/A' }}" name="tfn" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
@@ -337,54 +304,32 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label"
                                                                     for="exampleInputEmail1">ABN</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="exampleInputEmail1"
-                                                                    value="{{ $editPerson->abn ?? 'N/A' }}" name="abn"
-                                                                    aria-describedby="emailHelp" placeholder="">
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $editPerson->abn ?? 'N/A' }}" name="abn" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
 
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
-                                                                <label class="form-label"
-                                                                    for="exampleInputEmail1">Password</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="password" aria-describedby="emailHelp"
-                                                                    placeholder="">
+                                                                <label class="form-label" for="exampleInputEmail1">Password</label>
+                                                                <input type="text" class="form-control" name="password" aria-describedby="emailHelp" placeholder="">
                                                             </div>
                                                         </div>
 
-
-
-
                                                         @php
-                                                            $roles = DB::table('roles')
-                                                                ->where('name', '!=', 'my permission')
-                                                                ->orderBy('id', 'DESC')
-                                                                ->get();
-                                                            $adminRoleId =
-                                                                DB::table('admins')
-                                                                    ->where('email', $editPerson->email)
-                                                                    ->orderBy('id', 'DESC')
-                                                                    ->first()->role_id ?? '';
+                                                            $roles = DB::table('roles')->where('name', '!=', 'my permission')->orderBy('id', 'DESC')->get();
+                                                            $adminRoleId = DB::table('admins')->where('email', $editPerson->email)->orderBy('id', 'DESC')->first()->role_id ?? '';
                                                         @endphp
 
                                                         <div class="col-lg-4">
                                                             <div class="check_box">
-                                                                <label class="form-label">Select Role <span
-                                                                        class="red">*</span></label>
+                                                                <label class="form-label">Select Role <span class="red">*</span></label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2 form-select"
-                                                                        name="roles" data-placeholder="Choose one"
-                                                                        required>
+                                                                    <select class="form-control select2 form-select" name="roles" data-placeholder="Choose one" required>
                                                                         <option value="">Select any one</option>
                                                                         @foreach ($roles as $allrole)
-                                                                            <option value="{{ $allrole->id }}"
-                                                                                {{ $allrole->id == $editPerson->role_id ? 'selected' : '' }}>
-                                                                                {{ $allrole->name }}</option>
+                                                                            <option value="{{ $allrole->id }}" {{ $allrole->id == $editPerson->role_id ? 'selected' : '' }}>{{ $allrole->name }}</option>
                                                                         @endforeach
-
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -393,7 +338,7 @@
                                                         <div class="col-lg-4">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Extra Rate (Per Hour) <span class="red">*</span></label>
-                                                                <input type="number" class="form-control" min="0" id="exampleInputEmail1" step="any" value="{{old('extra_rate_per_hour') ?? $editPerson->extra_rate_per_hour}}" autocomplete="off" name="extra_rate_per_hour" aria-describedby="emailHelp" placeholder="" required>
+                                                                <input type="number" step="any" class="form-control" min="0" id="exampleInputEmail1" value="{{old('extra_rate_per_hour') ?? $editPerson->extra_rate_per_hour}}" autocomplete="off" name="extra_rate_per_hour" aria-describedby="emailHelp" placeholder="" required>
                                                             </div>
                                                         </div>
 
@@ -405,9 +350,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="action_btns text-end">
-                                                                <button type="submit" value="Submit"
-                                                                    class="btn btn-primary"><i class="bi bi-save"></i>
-                                                                    Save</button>
+                                                                <button type="submit" value="Submit" class="btn btn-primary"><i class="bi bi-save"></i>Save</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -517,7 +460,7 @@
 
                                                 <div class="col-lg-12 mt-4">
                                                     <div class="table-responsive">
-                                                        <table class="table table-bordered text-nowrap mb-0">
+                                                        <table  class="table table-bordered text-nowrap mb-0">
                                                             <thead class="border-top">
                                                                 <tr>
 
@@ -587,30 +530,20 @@
                                                     <div class="col-lg-12">
 
                                                         <form class="saveclass" id="saveReminder">
-                                                            <input type="hidden" name="personValue3" id="personValue3"
-                                                                value="3" />
-                                                            <input type="hidden" name="personId"
-                                                                value="{{ $person }}" />
+                                                            <input type="hidden" name="personValue3" id="personValue3" value="3" />
+                                                            <input type="hidden" name="personId"  value="{{ $person }}" />
                                                             <div class="row align-items-center">
                                                                 <div class="col-lg-4">
                                                                     <div class="check_box">
-                                                                        <label class="form-label"
-                                                                            for="exampleInputEmail1">Email Reminder
-                                                                            Type</label>
+                                                                        <label class="form-label" for="exampleInputEmail1">Email Reminder Type</label>
                                                                         <div class="form-group">
-
-                                                                            <select class="form-control select2 form-select"
-                                                                                name="reminderType"
-                                                                                data-placeholder="Choose one">
-
+                                                                            <select class="form-control select2 form-select" id="reminderValue" name="reminderType" data-placeholder="Choose one">
                                                                                 @forelse ($reminder as $allreminder)
                                                                                     <option value="{{ $allreminder->id }}">
                                                                                         {{ $allreminder->reminderName }}
                                                                                     </option>
-
                                                                                 @empty
                                                                                 @endforelse
-
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -618,9 +551,7 @@
 
                                                                 <div class="col-lg-4">
                                                                     <div class="search_btn">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary srch_btn"
-                                                                            id="add_person_btn">+ Add Type</button>
+                                                                        <button type="submit" class="btn btn-primary srch_btn" id="add_person_btn">+ Add Type</button>
                                                                     </div>
                                                                 </div>
 
@@ -630,14 +561,11 @@
                                                     </div>
                                                     <div class="col-lg-12">
                                                         <div class="table-responsive">
-                                                            <table class="table table-bordered text-nowrap mb-0">
+                                                            <table id="reminderTable" class="table table-bordered text-nowrap mb-0">
                                                                 <thead class="border-top">
                                                                     <tr>
-
-                                                                        <th class="bg-transparent border-bottom-0">Email
-                                                                            Reminder Type</th>
-                                                                        <th class="bg-transparent border-bottom-0"
-                                                                            style="width: 5%;">Action</th>
+                                                                        <th class="bg-transparent border-bottom-0">Email Reminder Type</th>
+                                                                        <th class="bg-transparent border-bottom-0" style="width: 5%;">Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody id="saveRemindertR">
@@ -763,9 +691,7 @@
                                                                         <tr class="border-bottom">
                                                                             <td> {{ $i }}</td>
                                                                             <td> {{ $document->name }}</td>
-                                                                            {{-- <td><img src="{{ asset('assets/person-document/' . $document->document) }}"
-                                                                                    alt="Document Image" width="100px"></td> --}}
-                                                                            <td><a href="{{ asset('assets/person-document/' . $document->document) }}" target="_blank">View Doc</a></td>
+                                                                            <td><a href="{{ $document->document ?  asset(env('STORAGE_URL'). $document->document) : '' }}" target="_blank">View Doc</a></td>
                                                                             <td> {{ $document->status == '1' ? 'Active' : 'Inactive' }}
                                                                             </td>
 
@@ -1193,7 +1119,6 @@
                         $("#documentValidation").hide();
 
                         $("#documentBaseForm")[0].reset();
-                        // $(".dropify").change();
                         $(".dropify-clear").trigger("click");
                         swal({
                             type: 'success',
@@ -1204,16 +1129,19 @@
                         window.location.reload();
                         $('#basic-datatable tbody').empty();
                         if (Array.isArray(data.documents) && data.documents.length > 0) {
+                            let storage_url = "{{env('STORAGE_URL')}}";
+                            
                             var tableHtml = '<tbody>';
                             var sno = 1;
                             data.documents.forEach(doc => {
+                                var document_urls_dtaa = storage_url+doc.document;
                                 var rowHtml2 = `<tr>
-                                                                <td>${sno}</td>
-                                                                <td>${doc.name}</td>
-                                                                <td><img src="{{ asset('assets/person-document/') }}/${doc.document}" alt="Document Image" width="100px"></td>
-                                                                <td>${doc.status == '1' ? 'Active':'Inactive' }</td>
-                                                                <td><a onclick="removePersonDoc(this, ${doc.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
-                                                            </tr>`;
+                                                    <td>${sno}</td>
+                                                    <td>${doc.name}</td>
+                                                    <td><img src="{{ asset('${document_urls_dtaa}') }}" alt="Document Image" width="100px"></td>
+                                                    <td>${doc.status == '1' ? 'Active':'Inactive' }</td>
+                                                    <td><a onclick="removePersonDoc(this, ${doc.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a></td>
+                                                </tr>`;
                                 $("#basic-datatable tbody").append(rowHtml2);
                                 sno++;
                             });
@@ -1373,11 +1301,26 @@
 
     <!--  Add person reminder -->
     <script>
+
+    
+
         $('#saveReminder').on('submit', function(e) {
             e.preventDefault();
             var rowCount = $("#personAddress tr").length;
             var countData = rowCount + 1;
             var formData = new FormData(this);
+
+            var newValue = $("#reminderValue option:selected").text();
+            var isDuplicate = false;
+
+            $('#saveRemindertR tr').each(function(){
+                var firstTdText = $(this).find('td:first').text();
+                if (firstTdText.trim() === newValue.trim()) {
+                    isDuplicate = true;
+                    return false; // Exit the loop
+                }
+            });
+            if (!isDuplicate) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('person.edit', ['id' => 3]) }}",
@@ -1397,13 +1340,13 @@
                             timer: 1000
                         });
                         var rowHtml2 = `<tr>
-                                                            <td>${data.data.typeName}</td>
-                                                            <td>
-                                                                <div class="g-2">
-                                                                    <a onclick="removeReminder(this,${data.data.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>`;
+                                            <td>${data.data.typeName}</td>
+                                            <td>
+                                                <div class="g-2">
+                                                    <a onclick="removeReminder(this,${data.data.id})" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                </div>
+                                            </td>
+                                        </tr>`;
 
                         $("#saveRemindertR").append(rowHtml2);
                         $("#saveReminder")[0].reset();
@@ -1411,6 +1354,14 @@
 
                 },
             });
+        }else{
+            swal({
+                type: 'warning',
+                title: 'Already Added!',
+                text: 'This reminder is already added in list.',
+                timer: 3000
+            });
+        }
 
         })
 

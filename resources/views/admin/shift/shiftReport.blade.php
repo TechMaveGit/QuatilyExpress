@@ -6,6 +6,7 @@
     foreach ($D as $v) {
         $arr[] = $v['permission_id'];
     }
+    $driverRole = Auth::guard('adminLogin')->user()->role_id;
     ?>
     <style>
         .relative {
@@ -89,6 +90,9 @@
             padding-right: 35px;
             margin-left: 10px;
         }
+        .text-parcel{
+            color: #05c3fb !important;
+        }
     </style>
     <style>
         .table td {
@@ -125,14 +129,14 @@
                 {{-- <div class="modal-header"> --}}
                 <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                     <h2 style="margin-left: 9px; font-weight: bold; }">Select file</h2>
-                    {{-- <p class="text-muted mx-4 mb-0" style="font-size: 19px;">Editable fields: Status, Fuel Levy Payable, Fuel Levy Chargeable, Fuel Levy Chargeable250, Fuel Levy Chargeable400, Extra Payable, Extra Chargeable</p> --}}
+                    <p class="text-muted m-4 mb-0" style="font-size: 13px;">Editable fields: Status, Fuel Levy Payable, Fuel Levy Chargeable, Fuel Levy Chargeable250, Fuel Levy Chargeable400, Extra Payable, Extra Chargeable</p>
                 </div>
                 {{-- </div> --}}
                 <div class="import">
                     <div class="">
                         <form action="{{ route('admin.shift.import') }}" method="post" enctype="multipart/form-data"> @csrf
                             <div class="flex_div">
-                                <input class="form-control" type="file" name="excel_file" accept=".xls, .xlsx" required>
+                                <input class="form-control" type="file" name="shift_file" accept=".csv,.xls" required>
                                 <input class="btn btn-green import-button" type="submit" value="Import Excel" />
                             </div>
                         </form>
@@ -151,10 +155,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="approve_cnt">
-                                    {{-- <img src="{{ asset('assets/images/newimages/question-mark.png')}}" alt=""> --}}
                                     <h3>Do you want to approve ?</h3>
                                     <input type="hidden" name="shiftId" id="shiftId" />
-                                    {{-- <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Architecto, delectus?</p> --}}
+                                    <hr>
+                                    <textarea id="add_reason" class="form-control" placeholder="Enter reason here ..." rows="2" name="reason"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -352,7 +356,7 @@
                                                         Filter</a>
                                                     @if (in_array('54', $arr))
                                                         <a onclick="showImportForm()" class="btn btn-green "><i
-                                                                class="fa fa-file-excel-o"></i> Import Excel</a>
+                                                                class="fa fa-file-excel-o"></i> Import File</a>
                                                     @endif
                                                 </div>
                                             </div>
@@ -370,9 +374,11 @@
                     <div class="col-lg-12">
                         <div class="card brdcls">
                             <div class="card-header">
+                                <div class="flexMobile">
                                 <div class="top_section_title">
                                     <h5>All Driver Shift Report</h5>
                                 </div>
+                                <div class="ActionBtn scrollBtn">
                                 <div class="search_btn m-0">
                                     @if (in_array('48', $arr))
                                         <a href="{{ route('admin.shift.add') }}" class="btn btn-primary srch_btn">+ Add
@@ -385,15 +391,21 @@
                                             class="btn btn-primary srch_btn">+ Add New Missed Shift</a>
                                     @endif
                                 </div>
+                                 @if ($driverRole != 33)
                                 <button class="btn btn-green" style="color: white; margin: 4px;"
                                     onclick="window.location='{{ route('export.shifts', request()->input()) }}'">
-                                    <i class="fa fa-file-excel-o"></i> Download Excel
+                                    <i class="fa fa-file-excel-o"></i> Download Data
                                 </button>
+                                @endif
+                                </div>
+                                </div>
+                                
+                               
                             </div>
                             <div class="card-body">
                                 <div class="top_tb_dt">
                                     <div class="dropdown testingcls">
-                                        <button class="btn btn-primary dropdown-toggle" type="button"
+                                        <button class="btn btn-primary dropdown-toggle visibilityBtnhui" type="button"
                                             id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             Column Visiblity
                                         </button>
@@ -462,6 +474,7 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @if ($driverRole != 33)
                                             <li>
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
@@ -480,6 +493,7 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @endif
                                             <li>
                                                 <a class="dropdown-item" href="#">
                                                     <div class="form-check">
@@ -550,7 +564,7 @@
                                     </div>
                                     <div class="search_box">
                                         <!-- <label class="form-label" for="exampleInputEmail1">Search</label> -->
-                                        <div class="form-group">
+                                        <div class="form-group group100">
                                             <form id="searchForm" method="GET">
                                                 <input type="text" name="search"
                                                     value="{{ isset($_GET['search']) ? $_GET['search'] : '' }}"
@@ -590,8 +604,9 @@
                                         flex-direction: row-reverse;
                                     }
                                 </style>
+                                
                                 <br>
-                                <div class="" id="">
+                                <div class="table-responsive" id="">
                                     <table id="shiftTable" class="table  table-hover nowrap mb-0"
                                         style="margin: 0px !important;width: 100%;">
                                         {{-- <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;"> --}}
@@ -609,12 +624,10 @@
                                                 <th class="bg-transparent border-bottom-0 column-vehicleType">Vehicle Type
                                                 </th>
                                                 <th class="bg-transparent border-bottom-0 column-state">State</th>
-                                                @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
                                                     @if ($driverRole != 33)
                                                         <th style="display: none;" class="bg-transparent border-bottom-0 column-mobile_data_start">Mobile Date Start</th>
                                                         <th style="display: none;" class="bg-transparent border-bottom-0 column-mobile_data_finish">Mobile Date Finish</th>
                                                     @endif
-                                                @endif
                                                 <th class="bg-transparent border-bottom-0 column-start_Date">Date Start
                                                 </th>
                                                 <th hidden class="bg-transparent border-bottom-0">Time Start</th>
@@ -658,8 +671,7 @@
                                                 <th hidden class="bg-transparent border-bottom-0">Total Chargeable</th>
                                                 <th hidden class="bg-transparent border-bottom-0">Odometer Start</th>
                                                 <th hidden class="bg-transparent border-bottom-0">Odometer End</th>
-                                                <th class="bg-transparent border-bottom-0 column-totalPayable">Total
-                                                    Payable</th>
+                                                <th class="bg-transparent border-bottom-0 column-totalPayable">Total Payable</th>
                                                 <th class="bg-transparent border-bottom-0 column-traveledKm">Traveled KM
                                                 </th>
                                                 <th hidden class="bg-transparent border-bottom-0">Comment</th>
@@ -669,7 +681,9 @@
                                                 @endif
                                             </tr>
                                         </thead>
+                                        
                                         <tbody>
+                                            
                                             @foreach ($shift as $key => $allshift)
                                                 <tr class="border-bottom">
                                                     <td hidden>{{ $key + 1 }}</td>
@@ -690,6 +704,8 @@
                                                         $rego = DB::table('vehicals')
                                                             ->where('id', $allshift->rego)
                                                             ->first();
+
+                                                        $clientRates = DB::table('clientrates')->where(['clientId'=>$allshift->client,'type'=>$allshift->vehicleType])->first();
                                                     @endphp
                                                     <td class="td column-cost">{{ $clientcenters->name ?? 'N/A' }}</td>
                                                     <td class="td column-driver">
@@ -703,39 +719,41 @@
                                                     <td class="td column-state">
                                                         {{ $allshift->getStateName->name ?? 'N/A' }}
                                                     </td>
+                                                    
                                                     @php
-                                                        $finishshifts =
-                                                            DB::table('finishshifts')
+                                                        $finishshifts = DB::table('finishshifts')
                                                                 ->where('shiftId', $allshift->id)
                                                                 ->first() ?? '0';
                                                     @endphp
                                                     @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
                                                         @if ($driverRole != 33)
                                                             <td style="display: none;" class="td column-mobile_data_start">
-                                                                {{ date('Y/m/d H:i:s', strtotime($allshift->created_at)) }}
+                                                                {{ date('Y/m/d H:i', strtotime($allshift->createdDate)) }}
                                                             </td>
-                                                            @if ($finishshifts)
                                                             <td style="display: none;" class="td column-mobile_data_finish">
-                                                                {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
-                                                            </td>
-                                                        @else
-                                                            <td class="td column-date_finish">N/A</td>
-                                                        @endif
+                                                            @if ($finishshifts && $finishshifts->submitted_at)
+                                                                {{ date('Y/m/d H:i', strtotime($finishshifts->submitted_at)) }}
+                                                            @else
+                                                            N/A
+                                                            @endif
+
+                                                        </td>
                                                         @endif
                                                     @endif
                                                     
                                                     @if ($allshift['shiftStartDate'])
                                                         <td class="td column-start_Date">
-                                                            {{ date('Y/m/d H:i:s', strtotime($allshift['shiftStartDate'])) }}
+                                                            {{ date('Y/m/d H:i', strtotime($allshift['shiftStartDate'])) }}
                                                         </td>
                                                     @else
                                                         <td class="td column-start_Date">N/A</td>
                                                     @endif
+                                                    
                                                     <td hidden class="td">
                                                         {{ $allshift->getFinishShift->startTime ?? 'N/A' }}</td>
                                                     @if ($finishshifts)
                                                         <td class="td column-date_finish">
-                                                            {{ date('Y/m/d H:i:s', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
+                                                            {{ date('Y/m/d H:i', strtotime($finishshifts->endDate . ' ' . $finishshifts->endTime)) }}
                                                         </td>
                                                     @else
                                                         <td class="td column-date_finish">N/A</td>
@@ -761,7 +779,7 @@
                                                             <?php } ?>>Approved</span>
                                                         <?php  } elseif ($allshift->finishStatus=='4') { ?>
                                                         <span class="light status-ToBeApr">Rejected</span>
-                                                        <?php } elseif ($allshift->finishStatus=='5' || $allshift->finishStatus=='6')  { ?>
+                                                        <?php } elseif ($allshift->finishStatus=='5')  { ?>
                                                         <span class="light status-Paid">Paid</span>
                                                         <?php } else { ?>
                                                         <?php } ?>
@@ -771,17 +789,18 @@
                                                         $nightHours = 0;
                                                         $weekendHours = 0;
                                                     @endphp
-                                                    @if ($allshift->getFinishShift)
+                                                    @if ($finishshifts)
                                                         @php
-                                                            $daySum =  floatval($allshift->getFinishShift->dayHours) ?? 0;
-                                                            $nightHours =  floatval($allshift->getFinishShift->nightHours) ?? 0;
-                                                            $weekendHours = floatval($allshift->getFinishShift->weekendHours) ?? 0;
+                                                            $daySum =  floatval($finishshifts->dayHours) ?? 0;
+                                                            $nightHours =  floatval($finishshifts->nightHours) ?? 0;
+                                                            $weekendHours = floatval($finishshifts->weekendHours) ?? 0;
                                                         @endphp
                                                     @endif
                                                     @php
-                                                        $chargeDayShift = ($allshift->getClientReportCharge->hourlyRateChargeableDays ?? 0) * ($allshift->getFinishShifts->dayHours ?? 0);
-                                                        $chargeNight = ($allshift->getClientReportCharge->ourlyRateChargeableNight ?? 0) * ($allshift->getFinishShifts->nightHours ?? 0);
+                                                        $chargeDayShift = ($clientRates->hourlyRateChargeableDays ?? 0) * ($finishshifts->dayHours ?? 0);
+                                                        $chargeNight = ($clientRates->ourlyRateChargeableNight ?? 0) * ($finishshifts->nightHours ?? 0);
                                                     @endphp
+                                                    
                                                     <td hidden class="td sorting_1">
                                                         {{ $daySum + $nightHours + $weekendHours }}</td>
                                                     @if ($driverRole = Auth::guard('adminLogin')->user()->role_id)
@@ -807,7 +826,7 @@
                                                                 ->first();
                                                             $day = $priceCompare
                                                                 ? ($priceCompare->hourlyRatePayableDays ?? 0) *
-                                                                        optional($allshift->getFinishShifts)
+                                                                        optional($finishshifts)
                                                                             ->dayHours ??
                                                                     0
                                                                 : 0;
@@ -815,10 +834,10 @@
                                                         <td hidden class="td sorting_1">{{ $day }}</td>
                                                     @else
                                                         @php
-                                                            $clientCharge = $allshift->getClientCharge;
+                                                            $clientCharge = $clientRates;
                                                             $day = $clientCharge
                                                                 ? $clientCharge->hourlyRatePayableDay *
-                                                                        optional($allshift->getFinishShifts)
+                                                                        optional($finishshifts)
                                                                             ->dayHours ??
                                                                     0
                                                                 : 0;
@@ -835,18 +854,18 @@
                                                                 ($priceCompare
                                                                     ? $priceCompare->hourlyRatePayableNight
                                                                     : 0) *
-                                                                ($allshift->getFinishShifts
-                                                                    ? $allshift->getFinishShifts->nightHours ?? 0
+                                                                ($finishshifts
+                                                                    ? $finishshifts->nightHours ?? 0
                                                                     : 0);
                                                         @endphp
                                                         <td hidden class="td sorting_1">{{ $night }}</td>
                                                     @else
-                                                        @if ($allshift->getFinishShifts && $allshift->getFinishShifts->nightHours ?? 0 != '0')
+                                                        @if ($finishshifts && $finishshifts->nightHours ?? 0 != '0')
                                                             @php
                                                                 $night =
-                                                                    $allshift->getClientReportCharge
+                                                                    $clientRates
                                                                         ->hourlyRatePayableNight ??
-                                                                    (0 * $allshift->getFinishShifts->nightHours ?? 0);
+                                                                    (0 * $finishshifts->nightHours ?? 0);
                                                             @endphp
                                                         @else
                                                             @php
@@ -856,7 +875,7 @@
                                                         <td hidden class="td sorting_1">{{ $night }}</td>
                                                     @endif
                                                     <td hidden
-                                                        class="td sorting_1 {{ $allshift->getClientReportCharge->ourlyRateChargeableNight ?? 0 }}">
+                                                        class="td sorting_1 {{ $clientRates->ourlyRateChargeableNight ?? 0 }}">
                                                         {{ $chargeNight }}</td>
                                                     @if ($allshift->priceOverRideStatus == '1')
                                                         @php
@@ -866,14 +885,14 @@
                                                                 ->first();
                                                             $saturday = $priceCompare
                                                                 ? ($priceCompare->hourlyRatePayableSaturday ?? 0) *
-                                                                    ($allshift->getFinishShifts
-                                                                        ? $allshift->getFinishShifts->saturdayHours
+                                                                    ($finishshifts
+                                                                        ? $finishshifts->saturdayHours
                                                                         : 0)
                                                                 : 0;
                                                             $sunday = $priceCompare
                                                                 ? ($priceCompare->hourlyRatepayableSunday ?? 0) *
-                                                                    ($allshift->getFinishShifts
-                                                                        ? $allshift->getFinishShifts->sundayHours
+                                                                    ($finishshifts
+                                                                        ? $finishshifts->sundayHours
                                                                         : 0)
                                                                 : 0;
                                                         @endphp
@@ -883,54 +902,55 @@
                                                             $saturday = 0;
                                                             $sunday = 0;
                                                             if (
-                                                                $allshift->getFinishShifts &&
-                                                                $allshift->getFinishShifts->saturdayHours != '0'
+                                                                $finishshifts &&
+                                                                $finishshifts->saturdayHours != '0'
                                                             ) {
                                                                 $saturday =
-                                                                    $allshift->getClientReportCharge
+                                                                    $clientRates
                                                                         ->hourlyRatePayableSaturday ??
-                                                                    (0 * $allshift->getFinishShifts->saturdayHours ??
+                                                                    (0 * $finishshifts->saturdayHours ??
                                                                         0);
                                                             }
                                                             if (
-                                                                $allshift->getFinishShifts &&
-                                                                $allshift->getFinishShifts->sundayHours !== null &&
-                                                                $allshift->getFinishShifts->sundayHours != '0'
+                                                                $finishshifts &&
+                                                                $finishshifts->sundayHours !== null &&
+                                                                $finishshifts->sundayHours != '0'
                                                             ) {
                                                                 $sunday =
                                                                     floatval(
-                                                                        $allshift->getClientReportCharge
+                                                                        $clientRates
                                                                             ->hourlyRatePayableSunday,
                                                                     ) *
-                                                                    floatval($allshift->getFinishShifts->sundayHours);
+                                                                    floatval($finishshifts->sundayHours);
                                                             }
                                                         @endphp
                                                         <td hidden class="td sorting_1">{{ $saturday + $sunday }}</td>
                                                     @endif
-                                                    @if (!empty($allshift->getFinishShifts->saturdayHours))
+                                                    
+                                                    @if (!empty($finishshifts->saturdayHours))
                                                         @php
                                                             $saturday =
-                                                                $allshift->getClientReportCharge
+                                                                $clientRates
                                                                     ->hourlyRateChargeableSaturday ??
-                                                                (0 * $allshift->getFinishShifts->saturdayHours ?? 0);
+                                                                (0 * $finishshifts->saturdayHours ?? 0);
                                                         @endphp
                                                     @else
                                                         @php
                                                             $saturday = 0;
                                                         @endphp
                                                     @endif
-                                                    @if (!empty($allshift->getFinishShifts->sundayHours))
+                                                    @if (!empty($finishshifts->sundayHours))
                                                         @php
                                                             $sunday =
-                                                                $allshift->getClientReportCharge
-                                                                    ->hourlyRateChargeableSunday *
-                                                                $allshift->getFinishShifts->sundayHours;
+                                                                ($clientRates->hourlyRateChargeableSunday??0) *
+                                                                $finishshifts->sundayHours;
                                                         @endphp
                                                     @else
                                                         @php
                                                             $sunday = 0;
                                                         @endphp
                                                     @endif
+                                                    
                                                     <td hidden class="td sorting_1 saturday">{{ $saturday + $sunday }}
                                                     </td>
                                                     <td hidden class="td sorting_1">
@@ -958,26 +978,22 @@
                                                         {{ $allshift->getFinishShift->odometerStartReading ?? '0' }}</td>
                                                     <td hidden class="td sorting_1">
                                                         {{ $allshift->getFinishShift->odometerEndReading ?? '0' }}</td>
-                                                        @if ($allshift->finishStatus == '2')
+                                                        
                                                             @php
                                                                 $extra_rate_per_hour = $allshift->getDriverName->extra_rate_per_hour ??'0';
                                                             @endphp
-                                                        @else
+                                                        
                                                             @php
-                                                                    $extra_rate_per_hour = 0;
-                                                                @endphp
-                                                            @endif
-                                                        @php
                                                                 $dayammmm='0';
                                                             @endphp
                                                             @if($allshift->getFinishShift->dayHours ?? 0 !='0')
                                                                 @php
-                                                                    $dayammmm = ($allshift->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->dayHours ?? 0);
+                                                                    $dayammmm = (($clientRates->hourlyRatePayableDay??0) + $extra_rate_per_hour ?? 0) * ($finishshifts->dayHours ?? 0);
                                                                 @endphp
                                                             @endif
                                                             @if($allshift->getFinishShift->nightHours ?? 0 !='0')
                                                                 @php
-                                                                    $nightamm = ($allshift->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->nightHours ?? 0);
+                                                                    $nightamm = (($clientRates->hourlyRatePayableNight??0) + $extra_rate_per_hour ?? 0) * ($finishshifts->nightHours ?? 0);
                                                                 @endphp
                                                             @else
                                                                 @php
@@ -988,18 +1004,25 @@
                                                             $saturday = 0;
                                                             $sunday = 0;
                                                                 if ($allshift->getFinishShift && $allshift->getFinishShift->saturdayHours != '0') {
-                                                                    $saturday = ($allshift->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->saturdayHours ?? 0);
+                                                                    $saturday = (($clientRates->hourlyRatePayableSaturday??0) + $extra_rate_per_hour ?? 0) * ($finishshifts->saturdayHours ?? 0);
                                                                 }
                                                                 if ($allshift->getFinishShift && $allshift->getFinishShift->sundayHours != '0') {
-                                                                    $sunday = ($allshift->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($allshift->getFinishShifts->sundayHours ?? 0);
+                                                                    $sunday = (($clientRates->hourlyRatePayableSunday??0) + $extra_rate_per_hour ?? 0) * ($finishshifts->sundayHours ?? 0);
                                                                 }
                                                             $finalAmount=$saturday +  $sunday;
                                                             @endphp
                                                     @php
                                                         $payAmount = round($dayammmm,2) + round($nightamm,2) + round($finalAmount,2) ;
                                                         $updatedAmnt =  round($allshift->payAmount?? 0 , 2);
+                                                        $shiftMonetizeInformation = DB::table('shiftMonetizeInformation')->where('shiftId',$allshift->id)->first();
+                                                        $finalpayAmount = $payAmount + ($shiftMonetizeInformation->fuelLevyPayable??0)+($shiftMonetizeInformation->extraPayable??0);
                                                     @endphp
-                                                    @if ($payAmount < $updatedAmnt)
+                                                    
+                                                    @if($finalpayAmount)
+                                                    @php
+                                                         $finalpayamnnt = $finalpayAmount;
+                                                    @endphp
+                                                    @elseif ($payAmount < $updatedAmnt)
                                                         @php
                                                             $finalpayamnnt = $updatedAmnt;
                                                         @endphp
@@ -1008,63 +1031,66 @@
                                                             $finalpayamnnt = $payAmount;
                                                         @endphp
                                                     @endif
-                                                    @if ($allshift->finishStatus == '5' || $allshift->finishStatus == '2' || $allshift->finishStatus == '3')
+                                                    {{-- @if ($allshift->finishStatus == '5' || $allshift->finishStatus == '2' || $allshift->finishStatus == '3') --}}
                                                         {{-- <td class="td">{{ $allshift->getShiftMonetizeInformation->totalPayable??'0' + $payAmount??'0'}} </td> --}}
-                                                        <td class="td column-totalPayable">{{ round($finalpayamnnt, 2) }}
+                                                        <td class="td column-totalPayable">{{ $finalpayamnnt ? round($finalpayamnnt, 2) : 0 }}
                                                         </td>
-                                                    @else
+                                                    {{-- @else
                                                         <td class="td column-totalPayable">0</td>
-                                                    @endif
+                                                    @endif --}}
                                                     {{-- // Add pay --}}
                                                     @php
-                                                        $km = ($allshift->getFinishShift?->odometerEndReading ?? 0) - ($allshift->getFinishShift?->odometerStartReading ?? 0);
+                                                        $km = ((float)$allshift->getFinishShift?->odometerEndReading ?? 0) - ((float)$allshift->getFinishShift?->odometerStartReading ?? 0);
                                                     @endphp
+                                                    
                                                     <td class="td column-traveledKm"><span id="span_status_31240">{{ $km ??'0' }}</span>
                                                     </td>
                                                     <td hidden><span
                                                             id="span_status_31240">{{ $allshift->getFinishShift->comments ?? 'N/A' }}</span>
                                                     </td>
+                                                    
                                                     @if (in_array('50', $arr) || in_array('51', $arr) || in_array('52', $arr) || in_array('53', $arr))
                                                         <td class="column-action">
-                                                            <div class="d-flex">
-                                                                @if (in_array('50', $arr))
-                                                                    @if ($allshift->finishStatus == '2')
-                                                                        <a onclick="approveAndReject(`{{ $allshift->id }}`)"
-                                                                            class="btn text-green btn-sm btncls"
-                                                                            data-bs-toggle="modal"><span
-                                                                                class="ti-check-box fs-14"></span></a>
-                                                                    @else
-                                                                        <a class="btn text-green btn-sm btncls"
-                                                                            style="color:grey !important"
-                                                                            data-bs-toggle="modal"><span
-                                                                                class="ti-check-box fs-14"></span></a>
+                                                            <div class="dropdown">
+                                                                <a class="nav-link float-end text-muted pe-0 pt-0" href="javascript:void(0)" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fe fe-more-vertical"></i></a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                    @if (in_array('50', $arr))
+                                                                        @if ($allshift->finishStatus == '2')
+                                                                            <a onclick="approveAndReject(`{{ $allshift->id }}`)"
+                                                                                class="dropdown-item text-green"
+                                                                                data-bs-toggle="modal"><i class="ti-check-box fs-14"></i>Approve Shift</a>
+                                                                        @else
+                                                                            <a class="dropdown-item text-green"
+                                                                                style="color:grey !important"
+                                                                                data-bs-toggle="modal"><i class="ti-check-box fs-14"></i>Approve Shift</a>
+                                                                        @endif
                                                                     @endif
-                                                                @endif
-                                                                @if (in_array('51', $arr))
-                                                                    <a class="btn text-info btn-sm btncls"
-                                                                        href="{{ route('admin.shift.report.view', ['id' => $allshift->id]) }}"
-                                                                        data-bs-toggle="tooltip"
-                                                                        data-bs-original-title="View"><span
-                                                                            class="fe fe-eye fs-14"></span>
-                                                                    </a>
-                                                                @endif
-                                                                @if (in_array('52', $arr))
-                                                                    <a class="btn text-primary btn-sm btncls"
-                                                                        href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
-                                                                        data-bs-toggle="tooltip"
-                                                                        data-bs-original-title="Edit"><span
-                                                                            class="fe fe-edit fs-14"></span>
-                                                                    </a>
-                                                                @endif
-                                                                @if (in_array('53', $arr))
-                                                                    <a class="btn text-primary btn-sm btncls"
-                                                                        href="{{ route('admin.shift.parcels', ['id' => $allshift->id]) }}"
-                                                                        data-bs-toggle="tooltip"
-                                                                        data-bs-original-title="Parcel"><span
-                                                                            class="fe fe-box"></span>
-                                                                    </a>
-                                                                    {{-- <a href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i></a> --}}
-                                                                @endif
+                                                                    @if (in_array('51', $arr))
+                                                                        <a class="dropdown-item text-info"
+                                                                            href="{{ route('admin.shift.report.view', ['id' => $allshift->id]) }}"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-original-title="View"><i class="fe fe-eye fs-14"></i>View
+                                                                        </a>
+                                                                    @endif
+                                                                    @if ($driverRole != 33)
+                                                                    @if (in_array('52', $arr))
+                                                                        <a class="dropdown-item text-warning"
+                                                                            href="{{ route('admin.shift.report.edit', ['id' => $allshift->id]) }}"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-original-title="Edit"><i class="fe fe-edit fs-14"></i> Edit
+                                                                        </a>
+                                                                    @endif
+                                                                    @endif
+
+                                                                    @if (in_array('53', $arr))
+                                                                        <a class="dropdown-item text-parcel"
+                                                                            href="{{ route('admin.shift.parcels', ['id' => $allshift->id]) }}"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-original-title="Parcel"><i class="fe fe-box"></i> Parcel
+                                                                        </a>
+                                                                        {{-- <a href="{{ route('admin.shift.parcels'  , ['id' => $allshift->id] )}}" class="btn btn-parcel" ><i class="fe fe-box"></i></a> --}}
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </td>
                                                     @endif
@@ -1166,13 +1192,15 @@
         function approved() {
             $("#approveAndRejected").modal('hide');
             var shiftId = $("#AppendshiftId").val();
+            var reason = $("#add_reason").val();
             var label = "Shift";
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.shift.shiftapprove') }}",
                 data: {
                     "shiftId": shiftId,
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    "reason":reason
                 },
                 dataType: 'json',
                 success: function(result) {

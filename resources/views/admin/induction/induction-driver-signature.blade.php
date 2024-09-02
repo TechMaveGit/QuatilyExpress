@@ -29,7 +29,7 @@
                     </div>
                 </div>
                         <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="">
                         <table id="custom_table"  class="table table-bordered text-nowrap mb-0">
                             <thead class="border-top">
                                 <tr>
@@ -46,13 +46,13 @@
                             @foreach ($inductiondriver as $allinductiondriver)
                                 <tr class="border-bottom">
                                     <td class="td sorting_1">{{ $loop->iteration }}</td>
-                                    <td class="td sorting_1">{{ $allinductiondriver['getDriver']->userName??'' }} {{ $allinductiondriver['getDriver']->surname??'' }}</td>
+                                    <td class="td sorting_1">{{ $allinductiondriver['getDriver']->fullName??'' }} </td>
                                     <td class="td sorting_1">{{ $allinductiondriver['getDriver']->email??'' }}</td>
                                     <td class="td sorting_1">{{ $allinductiondriver['getDriver']->mobileNo??'' }}</td>
                                     <td class="td sorting_1">
-                                    <a href="{{ asset('assets/Induction/signatureImage/'.$allinductiondriver->signature.'')}}" target="_blank" title="Read PDF">View Signature</a>
+                                    <a href="{{asset(env('STORAGE_URL').$allinductiondriver->signature.'')}}" target="_blank" title="Read PDF">View Signature</a>
                                     </td>
-                                    <td class="td sorting_1">{{ date('Y-m-d', strtotime($allinductiondriver->created_at))}}</td>
+                                    <td class="td sorting_1">{{ date('Y-m-d h:i A', strtotime($allinductiondriver->created_at))}}</td>
                                 </tr>
                             @endforeach
 

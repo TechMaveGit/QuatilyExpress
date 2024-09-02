@@ -171,7 +171,7 @@
 
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive">  
 
 
                         <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;">

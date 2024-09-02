@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\ShiftReportsExport;
 use App\Helpers\DataTableHelper;
 use App\Helpers\DataTableShiftHelper;
+use App\Helpers\ShiftManageHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Clientbase;
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use App\Http\Controllers\ImageController;
+use App\Models\State;
 
 class ShiftManagement extends Controller
 {
@@ -34,7 +37,7 @@ class ShiftManagement extends Controller
 
     public function shift(Request $request)
     {
-        $query = Shift::select('id', 'rego', 'odometer', 'driverId', 'parcelsToken', 'client', 'costCenter', 'status', 'state', 'finishStatus', 'vehicleType', 'created_at', 'updated_at');
+        $query = Shift::select('id', 'rego', 'odometer', 'driverId', 'parcelsToken', 'client', 'costCenter', 'status', 'state', 'finishStatus', 'vehicleType', 'created_at','createdDate', 'updated_at');
         $data['status'] = $request->input('shiftStatus');
         if ($data['status']) {
             $query = $query->where('status', $data['status']);
@@ -164,108 +167,283 @@ class ShiftManagement extends Controller
         }
     }
 
+   
+    function parseDate($dateString, $timeString) {
+        // List of possible datetime formats
+        $formats = [
+            'd/m/Y H:i:s',
+            'd-m-Y H:i:s',
+            'd/m/y H:i:s',
+            'j/n/Y H:i:s',
+            'j/n/y H:i:s',
+            'm/d/Y H:i:s',
+            'm/d/y H:i:s',
+            'n/j/Y H:i:s',
+            'n/j/y H:i:s'
+        ];
+    
+        // Try to parse the datetime using the formats
+        foreach ($formats as $format) {
+            $dateTime = \DateTime::createFromFormat("$format", "$dateString $timeString");
+            if ($dateTime !== false) {
+                // Adjust for two-digit years if necessary
+                $year = $dateTime->format('Y');
+                if ($year < 100) {
+                    $year += 2000; // Assuming the year is in the 21st century
+                    $dateTime->setDate($year, $dateTime->format('m'), $dateTime->format('d'));
+                }
+                return $dateTime;
+            }
+        }
+    
+        return null; // Return null if no format matched
+    }
+    
+    public function sanitizeText($text) {
+        // Remove or replace invalid characters
+        $text = iconv('UTF-8', 'UTF-8//IGNORE', $text); // Remove invalid UTF-8 characters
+        $text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8'); // Encode special characters
+        return $text;
+    }
+    
+
     public function importShift(Request $request)
     {
-        $file = $request->file('excel_file');
+        set_time_limit(300);
+        try{
+        // Check if the file is present in the request
+        if (!$request->hasFile('shift_file')) {
+            return redirect()->back()->with('error', 'No file uploaded');
+        }
+    
+        $file = $request->file('shift_file');
+    
+        // Check if the file is valid
+        if (!$file->isValid()) {
+            return redirect()->back()->with('error', 'Uploaded file is not valid');
+        }
+    
         $filePath = $file->getRealPath();
-        $spreadsheet = IOFactory::load($filePath);
-        $worksheet = $spreadsheet->getActiveSheet();
+        $fileExtension = $file->getClientOriginalExtension();
+    
         $data = [];
-        $clientIds = [];
-        foreach ($worksheet->getRowIterator() as $row) {
-            $rowData = [];
-            foreach ($row->getCellIterator() as $kk => $cell) {
-                $rowData[] = $cell->getValue();
+    
+        if ($fileExtension == 'csv') {
+            // Read CSV file
+            if (($handle = fopen($filePath, 'r')) !== FALSE) {
+                while (($row = fgetcsv($handle, 1000, ',', '"')) !== FALSE) {
+                    $data[] = array_map([$this, 'sanitizeText'], $row);
+                }
+                fclose($handle);
             }
-            $data[] = $rowData;
+        } elseif (in_array($fileExtension, ['xls', 'xlsx'])) {
+            // Read XLS/XLSX file
+            $spreadsheet = IOFactory::load($filePath);
+            $worksheet = $spreadsheet->getActiveSheet();
+            foreach ($worksheet->getRowIterator() as $row) {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE);
+                $rowData = [];
+                foreach ($cellIterator as $cell) {
+                    $rowData[] = $this->sanitizeText($cell->getValue());
+                }
+                $data[] = $rowData;
+            }
+        } else {
+            return redirect()->back()->with('error', 'Unsupported file type');
         }
-        unset($data[0]);
-        // unset($data[1]);
-        foreach ($data as $kk => $rd) {
-            $clientIds[$kk] = [
-                'shiftId'         => $rd[0],
-                'parcel_taken'    => $rd[4],
-                'parcel_delivery' => $rd[5],
-                'state'           =>  $rd[8],
-                'created_at'      => $rd[9],
-                'date_start' => $rd[10],
-                'time_start' => $rd[11],
-                'date_finish' => $rd[12],
-                'time_finish' => $rd[13],
-                'total_hours'  => $rd['15'],
-                'amount_chargeable_day_shift' => $rd['16'],
-                'amount_payable_day_shift'  => $rd['17'],
-                'amount_payable_night_shift'  => $rd['18'],
-                'amount_chargeable_night_shift' => $rd['19'],
-                'amount_payable_weekend_shift' => $rd['20'],
-                'amount_chargeable_weekend_shift' => $rd['21'],
-                'fuel_levy_pay' => $rd['22'],
-                'fuel_levy_charge' => $rd['23'],
-                'fuel_levy_chargeable' => $rd['24'],
-                'fuel_levy_chargeable400' => $rd['25'],
-                'extra_payable' => $rd['26'],
-                'extra_chargeable' => $rd['27'],
-                'total_chargeable' => $rd['28'],
-                'odometer_start' => $rd['29'],
-                'odometer_end' => $rd['30'],
-                'total_payable' => $rd['31'],
-                'traveled_km' => $rd['32'],
-                'comment' => $rd['33'],
-            ];
-        }
-        // dd($clientIds);
-        foreach ($clientIds as $datas) {
-            // if ($datas['odometer_start'] && $datas['odometer_end'])
-            // {
-            //     return Redirect::back()->with('warning', 'Odometer Start  And Odometer End Can Not be Null ');
-            //  }
-            $phpDateTime = Date::excelToDateTimeObject($datas['date_finish']);
-            $created_at = $phpDateTime->format('Y/m/d H:s:i');
-            $shift = preg_replace('/[^0-9]/', '', $datas['shiftId']);
-            dd($datas['total_payable']);
-            Shift::where('shiftRandId', $shift)->update([
-                'payAmount' => $datas['total_payable'],
-                'created_at' => $created_at,
-            ]);
-            Finishshift::where('shiftId', $shift)->update([
-                //  'startTime' =>$datas['time_start'],
-                'totalHours' => $datas['total_hours'],
-                // 'endDate' =>$datas['date_finish'],
-                //  'dayHours' =>$datas['total_morning'],
-                //  'nightHours' =>$datas['total_night'],
-                // 'weekendHours' =>$datas['hours_weekend_shift'],
-                'amount_payable_day_shift' => $datas['amount_payable_day_shift'],
-                'amount_chargeable_day_shift' => $datas['amount_chargeable_day_shift'],
-                'amount_payable_night_shift' => $datas['amount_payable_night_shift'],
-                'amount_chargeable_night_shift' => $datas['amount_chargeable_night_shift'],
-                'amount_payable_weekend_shift' => $datas['amount_payable_weekend_shift'],
-                'amount_chargeable_weekend_shift' => $datas['amount_chargeable_weekend_shift'],
-                'odometerStartReading' => $datas['odometer_start'] ?? 0,
-                'odometerEndReading' => $datas['odometer_end'] ?? 0,
-            ]);
-            DB::table('y')->where('shiftId', $shift)->update([
-                'fuelLevyPayable' => $datas['fuel_levy_pay'],
-                'fuelLevyChargeable' => $datas['fuel_levy_charge'],
-                'fuelLevyChargeable250' => $datas['fuel_levy_chargeable'],
-                'fuelLevyChargeable400' => $datas['fuel_levy_chargeable400'],
-                'extraPayable' => $datas['extra_payable'],
-                'extraChargeable' => $datas['extra_chargeable'],
-                'totalChargeable' => $datas['total_chargeable'],
-            ]);
-        }
+    
+        // Rest of your existing code...
+        $clients = DB::table('clients')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
+        $clientbase = DB::table('clientbases')->select(DB::raw('LOWER(base) AS base'),'id')->get()->pluck('id','base')->toArray();
+        $clientcenters =DB::table('clientcenters')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
+        $drivers = DB::table('drivers')->select(DB::raw('LOWER(fullName) AS fullName'),'id')->get()->pluck('id','fullName')->toArray();
+        $vehicals = DB::table('vehicals')->select(DB::raw('LOWER(rego) AS rego'),'id')->get()->pluck('id','rego')->toArray();
+        $vehicals_type = DB::table('types')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
+        $states =DB::table('states')->where('status', '1')->select(DB::raw('LOWER(name) AS name'),'id')->get()->pluck('id','name')->toArray();
+    
+        unset($data[0]); // Remove the header row if present
+    
 
+        // dd($data);
+        foreach ($data as $kk => $rd) {
+            $clientIds = [];
+            $clientIds['shiftId'] = preg_replace('/[^0-9]/', '', $rd[0]);
+            $clientIds['client']= $clients[strtolower(trim($rd[1]))] ?? DB::table('clients')->insertGetId(['name' => trim($rd[1])]);
+            $clientIds['cost']= $clientcenters[strtolower(trim($rd[2]))] ?? DB::table('clientcenters')->insertGetId(['clientId'=>$clientIds['client'],'name' => trim($rd[2])]);
+            $clientIds['driver']= $drivers[strtolower(trim($rd[3]))] ?? DB::table('drivers')->insertGetId(['fullName' => trim($rd[3])]);
+            $clientIds['base']= $clientbase[strtolower(trim($rd[5]))] ?? DB::table('clientbases')->insertGetId(['base' => trim($rd[5]),'cost_center_name' => trim($rd[2])]);
+            $clientIds['vehicle']= $vehicals[strtolower(trim($rd[9]))] ?? DB::table('vehicals')->insertGetId(['rego' => trim($rd[9])]);
+            $clientIds['vehicle_type']= $vehicals_type[strtolower(trim($rd[10]))] ?? DB::table('types')->insertGetId(['name' => trim($rd[10])]);
+            $clientIds['state']= $states[strtolower(trim($rd[11]))] ?? null;
+
+
+            // Use the helper function to parse start and finish datetime
+            $startDateTime = $this->parseDate($rd[12], $rd[13]);
+            $finishDateTime = $this->parseDate($rd[14], $rd[15]);
+
+            $start_at = $startDateTime ? $startDateTime->format('Y-m-d H:i:s') : null;
+            $finish_at = $finishDateTime ? $finishDateTime->format('Y-m-d H:i:s') : null;
+
+            $start_date = $startDateTime ? $startDateTime->format('Y-m-d') : null;
+            $start_time = $startDateTime ? $startDateTime->format('H:i:s') : null;
+
+            $finish_date = $finishDateTime ? $finishDateTime->format('Y-m-d') : null;
+            $finish_time = $finishDateTime ? $finishDateTime->format('H:i:s') : null;
+
+
+            if($rd[16]=='APPROVED' || $rd[16]=='Approved'){
+                $status ='1';
+                $final_status = '3';
+            }elseif($rd[16]=='IN_PROGRESS' || $rd[16]=='In Progress'){
+                $status = '2';
+                $final_status = '1';
+            }
+            elseif($rd[16]=='PAID' || $rd[16]=='Paid'){
+                $status = '3';
+                $final_status = '5';
+            }
+            elseif($rd[16]=='REJECTED' || $rd[16]=='Rejected'){
+                $status = '4';
+                $final_status = '4';
+            }
+            elseif($rd[16]=='TO_APPROVE' || $rd[16]=='To Be Approved'){
+                $status = '5';
+                $final_status = '2';
+            }
+
+            
+
+            
+            
+            if(Shift::where('shiftRandId',preg_replace('/[^0-9]/', '', $rd[0]))->exists()){
+                $shidt =Shift::where(['shiftRandId' => preg_replace('/[^0-9]/', '', $rd[0])])->first();
+                $shiftId = $shidt->id;
+
+                DB::table('shifts')->where(['id' => $shiftId,'driverId' => $clientIds['driver']])->update(['shiftStatus'=> $status,'finishStatus'=>$final_status]);
+        
+
+                $dataShiftM = [
+                    'fuelLevyPayable' => is_numeric($rd[27]) ? $rd[27] : 0,
+                    'fuelLevyChargeable' => is_numeric($rd[28]) ? $rd[28] : 0,
+                    'fuelLevyChargeable250' => is_numeric($rd[29]) ? $rd[29] : 0,
+                    'fuelLevyChargeable400' => is_numeric($rd[30]) ? $rd[30] : 0,
+                    'extraPayable' => is_numeric($rd[31]) ? $rd[31] : 0,
+                    'extraChargeable' => is_numeric($rd[32]) ? $rd[32] : 0,
+                    'totalChargeable' => is_numeric($rd[34]) ? $rd[34] : 0,
+                ];
+
+                $smont = DB::table('shiftMonetizeInformation')->where(['shiftId' => $shiftId])->first();
+
+                $dataShiftM['totalPayable'] = ($smont->amountPayablePerService??0) + $dataShiftM['fuelLevyPayable']+$dataShiftM['extraPayable'];
+                DB::table('shiftMonetizeInformation')->where(['shiftId' => $shiftId])->update($dataShiftM);
+
+                DB::table('shifts')->where('id' ,$shiftId)->update(['payAmount'=>$dataShiftM['totalPayable'],'chageAmount'=>$dataShiftM['totalChargeable']]);
+
+            }else{
+
+                $shift_update_data = [
+                    'shiftRandId' => preg_replace('/[^0-9]/', '', $rd[0]),
+                    'driverId' => $clientIds['driver'],
+                    'state' => $clientIds['state'],
+                    'client' => $clientIds['client'],
+                    'costCenter' => $clientIds['cost'],
+                    'base' => trim($rd[5]),
+                    'vehicleType' => $clientIds['vehicle_type'],
+                    'rego' => trim($rd[9]),
+                    'odometer' => $rd[35],
+                    'scanner_id' => $rd[4],
+                    'parcelsToken' => $rd[6],
+                    'shiftStatus' => $status,
+                    'finishStatus' => $final_status,
+                    'comment' => $rd[38],
+                    'approval_reason' => $rd[39],
+                    'shiftStartDate' => $start_at,
+                    'finishDate' => $finish_at,
+                    'createdDate' => $start_at,
+                    'payAmount' => $rd[33],
+                    'chageAmount' => $rd[34]
+                ];
+                $shift_update_data['extra_rate_person'] = 0;
+                if(isset($rd[40])){
+                    $shift_update_data['extra_rate_person'] = $rd[40];
+                }
+                if(isset($rd[41])){
+                    $shift_update_data['createdDate'] = date('Y-m-d H:i:s',strtotime($rd[41]));
+                }
+                $shift_update_data['payAmount'] =is_numeric($rd[33]) ? $rd[33] : 0;
+                $shift_update_data['chageAmount'] = is_numeric($rd[34]) ? $rd[34] : 0;
+
+
+
+                $shiftId = DB::table('shifts')->insertGetId($shift_update_data);
+
+                $shift_finish_update_data = [
+                    'shiftId'=>$shiftId,
+                    'driverId'=>$clientIds['driver'],
+                    'odometerStartReading'=> $rd[35],
+                    'odometerEndReading'=> $rd[35],
+                    'startDate'=> date('Y-m-d',strtotime($rd[12])),
+                    'startTime'=> date('H:i:s',strtotime($rd[13])),
+                    'endDate'=> date('Y-m-d',strtotime($rd[14])),
+                    'endTime'=> date('H:i:s',strtotime($rd[15])),
+                    'dayHours'=> trim($rd[18]),
+                    'nightHours'=> trim($rd[19]),
+                    'totalHours'=> trim($rd[17]),
+                    'weekendHours'=> trim($rd[20]),
+                    'amount_payable_day_shift'=> trim($rd[21]),
+                    'amount_chargeable_day_shift'=>trim($rd[22]),
+                    'amount_payable_night_shift'=>trim($rd[23]),
+                    'amount_chargeable_night_shift'=>trim($rd[24]),
+                    'amount_payable_weekend_shift'=>trim($rd[25]),
+                    'amount_chargeable_weekend_shift'=>trim($rd[26]),
+                    'parcelsTaken'=>trim($rd[6]),
+                    'parcelsDelivered'=>trim($rd[7]),
+                ];
+
+                if(isset($rd[42])){
+                    $shift_finish_update_data['submitted_at'] = date('Y-m-d H:i:s',strtotime($rd[42]));
+                }
+
+                DB::table('finishshifts')->insert($shift_finish_update_data);
+
+                $shiftMonetizeInformation = [
+                    'shiftId'=>$shiftId,
+                    'fuelLevyPayable'=>is_numeric($rd[27]) ? $rd[27] : 0,
+                    'fuelLevyChargeable'=> is_numeric($rd[28]) ? $rd[28] : 0,
+                    'fuelLevyChargeable250' => is_numeric($rd[29]) ? $rd[29] : 0,
+                    'fuelLevyChargeable400' => is_numeric($rd[30]) ? $rd[30] : 0,
+                    'extraPayable' => is_numeric($rd[31]) ? $rd[31] : 0,
+                    'extraChargeable' => is_numeric($rd[32]) ? $rd[32] : 0,
+                    'totalPayable' => is_numeric($rd[33]) ? $rd[33] : 0,
+                    'totalChargeable' => is_numeric($rd[34]) ? $rd[34] : 0,
+                ];
+                DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
+
+            }
+        }
+        }catch (\Exception $e) {
+            return $e->getMessage();
+        }
+        // dd('--');
+    
         return redirect()->back()->with('message', 'Shift Import Updated Successfully!!');
     }
 
     public function shiftAdd(Request $request)
     {
+        if(auth()->user()->role_id == '33'){
+            $driverId = Driver::where('email', auth()->user()->email)->first()->id;
+            if (Shift::where(['driverId'=>$driverId,'finishStatus'=>'1'])->exists()) {
+                return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
+            }
+        }
         try {
             if (request()->isMethod('post')) {
                 $driverId = $request->driverId;
-                $shift = Shift::where('driverId', $driverId)->first()->id;
-                $checkExisted = Finishshift::where('shiftId', $shift)->first();
-                if ($checkExisted != '') {
-                    return redirect()->back()->with('error', 'Shift has started already, please finish your current shift');
+                $shift = Shift::where('driverId', $driverId)->first()->id??null;
+                if ($shift && Shift::where(['driverId'=>$driverId,'finishStatus'=>'1'])->exists()) {
+                    return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
                 } else {
                     $inputtypeRego1 = $request->input('inputtypeRego1');
                     $inputtypeRego2 = $request->input('inputtypeRego2');
@@ -280,12 +458,26 @@ class ShiftManagement extends Controller
                         $vehicle->save();
                         $regoId = $vehicle->id;
                     }
+
+                    $selectedClient = $request->client ?? null;
+                    $selectedvehicleType = $request->vehicleType ?? null;
+                    $selecteddriverId = $request->driverId ?? null;
+                    
+                    $clientRateData = null;
+                    $extra_rate_per_hour = null;
+
+                    if($selectedClient) $clientRateData = json_encode(Clientrate::where(['clientId'=>$selectedClient,'type'=>$selectedvehicleType])->first()->toArray());
+                    if($selecteddriverId) $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
+
                     $shiftAdd = $request->except(['_token', 'submit']);
                     $shiftAdd['shiftRandId'] = rand('9999', '0000');
                     $shiftAdd['finishStatus'] = '1';
-                    $shiftAdd['shiftStartDate'] = date('Y-m-d H:i');
+                    $shiftAdd['shiftStartDate'] = date('Y-m-d H:i:s');
+                    $shiftAdd['createdDate'] = date('Y-m-d H:i:s');
                     $shiftAdd['rego'] = $regoId;
-                    dd($shiftAdd);
+                    $shiftAdd['client_data_json'] = $clientRateData;
+                    $shiftAdd['extra_rate_person'] = $extra_rate_per_hour;
+                    // dd($shiftAdd);
                     $shift = Shift::create($shiftAdd);
 
                     return Redirect::route('admin.shift.report')->with('message', 'Shift Added Successfully!!');
@@ -303,46 +495,6 @@ class ShiftManagement extends Controller
         return view('admin.shift.shift-add', $data);
     }
 
-    public function calculateShiftHoursWithMinutes($startDate, $endDate)
-    {
-        $dayMinutes = 0;
-        $nightMinutes = 0;
-        $saturdayMinutes = 0;
-        $sundayMinutes = 0;
-        while ($startDate < $endDate) {
-            $currentHour = date('H', $startDate);
-            $currentMinute = date('i', $startDate);
-            if (date('N', $startDate) < 6 && ($currentHour >= 4 && $currentHour < 18)) {
-                $dayMinutes++;
-            } elseif (date('N', $startDate) < 6 && ($currentHour >= 18 || $currentHour < 4)) {
-                $nightMinutes++;
-            } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 6) { // Saturday
-                $saturdayMinutes++;
-            } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 7) { // Sunday
-                $sundayMinutes++;
-            }
-            $startDate = strtotime('+1 minute', $startDate);
-        }
-
-        return [
-            'dayHours' => floor($dayMinutes / 60),
-            'dayMinutes' => $dayMinutes % 60 < 10 ? '0' . ($dayMinutes % 60) : $dayMinutes % 60,
-            'dayMinutesNew' => round(floor($dayMinutes % 60) / 60, 2),
-            'dayTotal' => number_format(floor($dayMinutes / 60) + round(floor($dayMinutes % 60) / 60, 2), 2),
-            'nightHours' => floor($nightMinutes / 60),
-            'nightMinutes' => $nightMinutes % 60 < 10 ? '0' . ($nightMinutes % 60) : $nightMinutes % 60,
-            'nightMinutesNew' => round(floor($nightMinutes % 60) / 60, 2),
-            'nightTotal' => number_format(floor($nightMinutes / 60) + round(floor($nightMinutes % 60) / 60, 2), 2),
-            'saturdayHours' => floor($saturdayMinutes / 60),
-            'saturdaMinutes' => $saturdayMinutes % 60,
-            'saturdayMinutesNew' => round(floor($saturdayMinutes % 60) / 60, 2),
-            'totalSaturdayHours' => number_format(floor($saturdayMinutes / 60) + round(floor($saturdayMinutes % 60) / 60, 2), 2),
-            'sundayHours' => floor($sundayMinutes / 60),
-            'sundayMinutes' => $sundayMinutes % 60,
-            'sundayMinutesNew' => round(floor($sundayMinutes % 60) / 60, 2),
-            'totalSundayHours' => number_format(floor($sundayMinutes / 60) + round(floor($sundayMinutes % 60) / 60, 2), 2),
-        ];
-    }
 
     public function shiftMissedAdd(Request $request)
     {
@@ -351,6 +503,8 @@ class ShiftManagement extends Controller
         $data['odometer_start_reading'] = $request->odometer_start_reading;
         $data['odometer_finish_reading'] = $request->odometer_finish_reading;
         if (request()->isMethod('post')) {
+
+            
             //   return $request->start_date;
             $parcelsTaken = $request->parcelsToken;
             $parcel_delivered = $request->parcel_delivered;
@@ -373,19 +527,38 @@ class ShiftManagement extends Controller
                 $vehicle->save();
                 $regoId = $vehicle->id;
             }
+            // dd($request->all());
             $shiftAdd = $request->except(['_token', 'submit']);
             $shiftAdd['shiftRandId'] = rand('9999', '0000');
             $shiftAdd['is_missed_shift'] = 1;
             $odometerStart = $request->input('odometer_start_reading') ?? '0';
             $odometerFinish = $request->input('odometer_finish_reading') ?? '0';
-            $start_date = $request->input('start_date');
-            $end_date = $request->input('end_date');
+            
+            
+            $start_date =  Carbon::parse($request->input('start_date'))->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($request->input('end_date'))->format('Y-m-d H:i:s');
             if (is_numeric($odometerStart) && is_numeric($odometerFinish)) {
                 $shiftAdd['odometer'] = $odometerFinish - $odometerStart;
             }
+
+            $selectedClient = $request->client ?? null;
+            $selectedvehicleType = $request->vehicleType ?? null;
+            $selecteddriverId = $request->driverId ?? null;
+            
+            $clientRateData = null;
+            $extra_rate_per_hour = null;
+
+            if($selectedClient) $clientRateData = json_encode(Clientrate::where(['clientId'=>$selectedClient,'type'=>$selectedvehicleType])->first()->toArray());
+            if($selecteddriverId) $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
+
+
             $shiftAdd['rego'] = $regoId;
-            $shiftAdd['shiftStartDate'] = $start_date;
-            $shiftAdd['finishDate'] = $end_date;
+            $shiftAdd['shiftStartDate'] = date('Y-m-d H:i:s',strtotime($request->input('start_date')));
+            $shiftAdd['finishDate'] = date('Y-m-d H:i:s',strtotime($request->input('end_date')));
+            $shiftAdd['createdDate'] = date('Y-m-d H:i:s');
+            $shiftAdd['client_data_json'] = $clientRateData;
+            $shiftAdd['extra_rate_person'] = $extra_rate_per_hour;
+
             $shify = Shift::create($shiftAdd);
             $getClientID = Shift::whereId($shify->id)->first()->client;
             $query = Shift::where('id', $shify->id);
@@ -397,7 +570,7 @@ class ShiftManagement extends Controller
             $endDate = strtotime($request->end_date);
             $dayStartTime = Carbon::parse($startDate);
             $nightEndTime = Carbon::parse($endDate);
-            $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
+            $result = ShiftManageHelper::calculateShiftHoursWithMinutes($startDate, $endDate);
             $dayHr = $result['dayTotal'];
             $nightHr = $result['nightTotal'];
             $saturdayHrs = $result['totalSaturdayHours'];
@@ -413,6 +586,7 @@ class ShiftManagement extends Controller
             $sundayShiftCharge = '0';
             $priceOverRideStatus = '0';
             $totalChargeDay = '0';
+            
             if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
                 if (!empty($dayHr)) {
                     if (empty($priceCompare)) {
@@ -509,7 +683,11 @@ class ShiftManagement extends Controller
             Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
             $start_date = date('Y-m-d', strtotime($request->start_date));
             $end_date = date('Y-m-d', strtotime($request->end_date));
+            
+            
             Shift::whereId($shify->id)->update(['finishStatus' => '2']);
+            
+            
             $Parcel = new Finishshift();
             $Parcel->driverId = $request->input('driverId');
             $Parcel->shiftId = $shify->id;
@@ -521,10 +699,11 @@ class ShiftManagement extends Controller
             $Parcel->saturdayHours = $saturdayHrs;
             $Parcel->sundayHours = $sundayHrs;
             $Parcel->weekendHours = $weekend;
-            $Parcel->startDate = $start_date;
-            $Parcel->endDate = $end_date;
-            $Parcel->startTime = $dayStartTime->format('H:i:s');
-            $Parcel->endTime = $nightEndTime->format('H:i:s');
+            $Parcel->startDate = date('Y-m-d',strtotime($request->input('start_date')));
+            $Parcel->endDate = date('Y-m-d',strtotime($request->input('end_date')));
+            $Parcel->startTime = date('H:i:s',strtotime($request->input('start_date')));
+            $Parcel->endTime = date('H:i:s',strtotime($request->input('end_date')));
+            $Parcel->submitted_at = date('Y-m-d H:i:s');
             $Parcel->parcelsTaken = $parcelsTaken;
             $Parcel->parcelsDelivered = $parcel_delivered;
             $Parcel->save();
@@ -701,7 +880,7 @@ class ShiftManagement extends Controller
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
-            $states = DB::table('states')
+            $states = DB::table('states')->where('status', '1')
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
@@ -797,6 +976,7 @@ class ShiftManagement extends Controller
                 $query->where('endDate', '>=', $enddate);
             });
         }
+         $userId = Auth::guard('adminLogin')->user();
         if ($userId->role_id == '33') {
             $driverId = Driver::where('email', $userId->email)->first()->id;
             $query = $query->where('driverId', $driverId);
@@ -825,7 +1005,7 @@ class ShiftManagement extends Controller
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
-            $states = DB::table('states')
+            $states = DB::table('states')->where('status', '1')
                 ->where('name', 'like', "%$search%")
                 ->pluck('id')
                 ->toArray();
@@ -855,10 +1035,10 @@ class ShiftManagement extends Controller
             });
         }
         $shiftsExport = new ShiftReportsExport($query);
-        
+
         // Define the filename
         $filename = 'shift_report.csv';
-        
+
         // Get the CSV content
         $content = $shiftsExport->exportToCsv();
 
@@ -899,11 +1079,11 @@ class ShiftManagement extends Controller
                 $query->where('clientId', $getClientID);
             },
         ])->first();
-        if ($data['shiftView']->finishStatus == '2') {
+        // if ($data['shiftView']->finishStatus == '2') {
             $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
-        } else {
-            $data['extra_rate_per_hour'] = 0;
-        }
+        // } else {
+        //     $data['extra_rate_per_hour'] = 0;
+        // }
         // dd($data['extra_rate_per_hour']);
         // dd($data['shiftView']->getClientCharge);
         $data['weekendHour'] = '';
@@ -971,27 +1151,32 @@ class ShiftManagement extends Controller
         $data['types'] = Type::where(['status' => '1'])->get();
         $data['driverAdd'] = Driver::get();
 
+        // dd($data);
+
         return view('admin.shift.shift-report-view', $data, compact('finalAmount'));
     }
 
     public function shiftReportEdit(Request $request, $id)
     {
         $query = Shift::where('id', $id);
-        $getClientID = Shift::whereId($id)->first()->client;
+        $shiftData = Shift::whereId($id)->first();
+        $getClientID = $shiftData->client;
         $data['shiftView'] = $query->orderBy('id', 'DESC')->with([
             'getPersonRates', 'getDriverName', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getShiftMonetizeInformation', 'getClientVehicleRates',
             'getClientCharge' => function ($query) use ($getClientID) {
                 $query->where('clientId', $getClientID);
             },
         ])->first();
+        $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+       
         //    dd( $data['shiftView']);
         $data['allstate'] = States::where('status', '1')->get();
         $data['costCenter'] = DB::table('clientcenters')->select('id', 'name')->where(['status' => '1', 'clientId' => $getClientID])->get();
         $data['client'] = Client::where(['status' => '1'])->get();
         $data['types'] = Type::where(['status' => '1'])->get();
+        
         if (request()->isMethod('post')) {
-            $managementId = $request->input('hrManagerment');
-            if ($managementId == '1') {
+            if (in_array($shiftData->finishStatus, ['1', '2', '3']) || in_array($request->finishStatus, ['1', '2', '3'])) {
                 Shift::where('id', $id)->update([
                     'state'    => $request->input('state'),
                     'client'     => $request->input('client'),
@@ -1000,172 +1185,25 @@ class ShiftManagement extends Controller
                     'base'   => $request->input('base'),
                     'vehicleType'         => $request->input('vehicleType'),
                     'rego'       => $request->input('rego'),
-                    'createdDate'    => $request->input('createdDate'),
+                    'shiftStartDate'    => date('Y-m-d H:i:s',strtotime($request->input('shiftStartDate'))),
                     'scanner_id'  => $request->input('scannerName'),
-                    'parcelsToken'    => $request->input('parcelToken'),
+                    'parcelsToken'    => $request->input('parcelsToken'),
+                    'comment'=> $request->input('comments'),
+                    'approval_reason'=> $request->input('approvedReason'),
+                    'odometer' => $request->input('odometerStartReading'),
+                    'driverId'=> $request->input('driverId')??$shiftData->driverId
                 ]);
+            }else{
+                Shift::where('id', $id)->update(['finishStatus' => $request->input('finishStatus'),'comment'=> $request->input('comments'),'approval_reason'=> $request->input('approvedReason')]);
+            }
 
-                return Redirect::back()->with('message', 'Shift  Updated Successfully!');
-            }
-            if ($managementId == '2') {
-                $startDate = $request->startDate;
-                $endDate = $request->finishDate;
-                $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-                $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
-                $startDate = strtotime($start_date);
-                $endDate = strtotime($end_date);
-                $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
-                $dayHr = $result['dayTotal'];
-                $nightHr = $result['nightTotal'];
-                $saturdayHrs = $result['totalSaturdayHours'];
-                $sundayHrs = $result['totalSundayHours'];
-                $weekend = $saturdayHrs + $sundayHrs;
-                $dayShift = '0';
-                $nightShift = '0';
-                $sundayHr = '0';
-                $saturdayHr = '0';
-                $dayShiftCharge = '0';
-                $nightShiftCharge = '0';
-                $saturdayShiftCharge = '0';
-                $sundayShiftCharge = '0';
-                $priceOverRideStatus = '0';
-                $priceCompare = DB::table('personrates')
-                    ->where('type', $data['shiftView']->vehicleType)
-                    ->where('personId', $data['shiftView']->driverId)
-                    ->first();
-                if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
-                    if (!empty($dayHr)) {
-                        if (empty($priceCompare)) {
-                            $dayShift = $data['shiftView']->getClientCharge->hourlyRatePayableDay * $dayHr;
-                            $priceOverRideStatus = '0';
-                            $dayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableDays * $dayHr ?? 0;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $data['shiftView']->getClientCharge->hourlyRatePayableDay) {
-                                $dayShift = $data['shiftView']->getClientCharge->hourlyRatePayableDay * $dayHr ?? 0;
-                                $priceOverRideStatus = '0';
-                                $dayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableDays * $dayHr ?? 0;
-                            } else {
-                                $priceComparehourlyRatePayableDays = !empty($priceCompare->hourlyRatePayableDays) ? $priceCompare->hourlyRatePayableDays : 1;
-                                $dayShift = $priceComparehourlyRatePayableDays * $dayHr;
-                                $priceOverRideStatus = '1';
-                                $dayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableDays * $dayHr ?? 0;
-                            }
-                        }
-                    }
-                    if (!empty($nightHr)) {
-                        if (empty($priceCompare)) {
-                            $nightShift = $data['shiftView']->getClientCharge->hourlyRatePayableNight * $nightHr ?? 0;
-                            $priceOverRideStatus = '0';
-                            $nightShiftCharge = $data['shiftView']->getClientCharge->ourlyRateChargeableNight * $nightHr;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $data['shiftView']->getClientCharge->hourlyRatePayableNight) {
-                                $nightShift = $data['shiftView']->getClientCharge->hourlyRatePayableNight * $nightHr ?? 0;
-                                $priceOverRideStatus = '0';
-                                $nightShiftCharge = $data['shiftView']->getClientCharge->ourlyRateChargeableNight * $nightHr;
-                            } else {
-                                $priceComparehourlyRatePayableNight = !empty($priceCompare->hourlyRatePayableNight) ? $priceCompare->hourlyRatePayableNight : '1';
-                                $nightShift = $priceComparehourlyRatePayableNight * $nightHr;
-                                $priceOverRideStatus = '1';
-                                $nightShiftCharge = $data['shiftView']->getClientCharge->ourlyRateChargeableNight * $nightHr;
-                            }
-                        }
-                    }
-                    if (!empty($saturdayHrs)) {
-                        if (empty($priceCompare)) {
-                            $saturdayHr = $data['shiftView']->getClientCharge->hourlyRatePayableSaturday * $saturdayHrs ?? 0;
-                            $priceOverRideStatus = '0';
-                            $saturdayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableSaturday * $saturdayHrs;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $data['shiftView']->getClientCharge->hourlyRatePayableDay) {
-                                $saturdayHr = $data['shiftView']->getClientCharge->hourlyRatePayableSaturday * $saturdayHrs ?? 0;
-                                $priceOverRideStatus = '0';
-                                $saturdayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableSaturday * $saturdayHrs;
-                            } else {
-                                $saturdayHr = $priceCompare->hourlyRatePayableSaturday * $saturdayHrs;
-                                $priceOverRideStatus = '1';
-                                $saturdayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableSaturday * $saturdayHrs;
-                            }
-                        }
-                    }
-                    $floatValue = $sundayHrs;
-                    $intValue = (int) $floatValue;
-                    if (!empty($intValue)) {
-                        if (empty($priceCompare)) {
-                            $sundayHr = $data['shiftView']->getClientCharge->hourlyRatePayableSunday * $sundayHrs ?? 0;
-                            $priceOverRideStatus = '0';
-                            $sundayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableSunday * $sundayHrs;
-                        } else {
-                            if ($priceCompare->hourlyRatePayableDays < $data['shiftView']->getClientCharge->hourlyRatePayableDay) {
-                                $sundayHr = $data['shiftView']->getClientCharge->hourlyRatePayableSunday * $sundayHrs ?? 0;
-                                $priceOverRideStatus = '0';
-                                $sundayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableSunday * $sundayHrs;
-                            } else {
-                                $sundayHr = $priceCompare->hourlyRatepayableSunday * $sundayHrs;
-                                $priceOverRideStatus = '1';
-                                $sundayShiftCharge = $data['shiftView']->getClientCharge->hourlyRateChargeableSunday * $sundayHrs;
-                            }
-                        }
-                    }
-                }
-                $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
-                Shift::where('id', $id)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
-                $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
-                Shift::where('id', $id)->update(['chageAmount' => $totalChargeDay]);
-                $totalHr = $data = $dayHr + $nightHr;
-                $driverPay = Client::where('id', $getClientID)->first();
-                $driverIncome = $totalPayShiftAmount ?? '0' + $driverPay->driverPay ?? '0';
-                Client::where('id', $getClientID)->update(['driverPay' => $driverIncome]);
-                $adminCharge = Client::where('id', $getClientID)->first();
-                $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
-                Client::where('id', $getClientID)->update(['adminCharge' => $chargeAdmin]);
-                $existingFinishshiftId = $id;
-                if ($existingFinishshiftId) {
-                    // return Carbon::parse($endDate)->format('Y-m-d');
-                    $Parcel = Finishshift::where('shiftId', $existingFinishshiftId)->first();
-                    if ($Parcel) {
-                        $Parcel->dayHours = $dayHr;
-                        $Parcel->nightHours = $nightHr;
-                        $Parcel->totalHours = $totalHr;
-                        $Parcel->saturdayHours = $saturdayHrs;
-                        $Parcel->sundayHours = $sundayHrs;
-                        $Parcel->weekendHours = $weekend;
-                        $Parcel->startDate = Carbon::parse($startDate)->format('Y-m-d');
-                        $Parcel->endDate = Carbon::parse($endDate)->format('Y-m-d');
-                        $Parcel->startTime = Carbon::parse($startDate)->format('H:i');
-                        $Parcel->endTime = Carbon::parse($endDate)->format('H:i');
-                        $Parcel->save();
-                    }
-                } else {
-                    return Redirect::back()->with('error', ' Shift Id Not Exist!');
-                }
-
-                return Redirect::back()->with('message', ' Shift Hr. Management Updated Successfully!');
-            }
-            if ($managementId == '3') {
-                $shiftMonetizeInformation = $request->except(['_token', 'hrManagerment']);
-                $shiftMonetize = DB::table('shiftMonetizeInformation')->where('shiftId', $id)->first();
-                if ($shiftMonetize) {
-                    $shiftMonetizeInformation['shiftId'] = $id;
-                    DB::table('shiftMonetizeInformation')->where('shiftId', $id)->update($shiftMonetizeInformation);
-                } else {
-                    $shiftMonetizeInformation['shiftId'] = $id;
-                    DB::table('shiftMonetizeInformation')->insert($shiftMonetizeInformation);
-                }
-                DB::table('shifts')->where('id', $id)->update(['payAmount' => $request->input('totalPayable')]);
-                DB::table('shifts')->where('id', $id)->update(['chageAmount' => $request->input('totalChargeable')]);
-            }
+            ShiftManageHelper::calculateShiftAmount($request,$data['shiftView'],$extra_rate_per_hour);
 
             return Redirect::back()->with('message', 'Shift Updated Successfully!');
         }
         $data['driverAdd'] = Driver::get();
-        if ($data['shiftView']->finishStatus == '2') {
-            $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
-        } else {
-            $data['extra_rate_per_hour'] = 0;
-        }
-
-        // dd($data);
-        // $data['extra_rate_per_hour'] = + $shiftView->getDriverName->extra_rate_per_hour
+        $data['extra_rate_per_hour'] = $extra_rate_per_hour ?? '0';
+       
         return view('admin.shift.shift-report-edit', $data);
     }
 
@@ -1188,7 +1226,7 @@ class ShiftManagement extends Controller
 
     public function shiftparcels($id)
     {
-        $data['parcelsDetail'] = Parcels::where('shiftId', $id)->with('ParcelImage')->get();
+        $data['parcelsDetail'] = Parcels::where('shiftId', $id)->with('ParcelImage')->orderByRaw('IFNULL(sorting, id) ASC')->get();
         $data['shiftLocation'] = Shift::whereId($id)->first();
 
         // dd($data['parcelsDetail']);
@@ -1198,7 +1236,8 @@ class ShiftManagement extends Controller
     public function shiftapr(Request $request)
     {
         $id = $request->input('shiftId');
-        $data['parcelsDetail'] = Shift::whereId($id)->update(['finishStatus' => '3']);
+        $reason = $request->reason ?? null;
+        $data['parcelsDetail'] = Shift::whereId($id)->update(['finishStatus' => '3', 'approval_reason' => $reason]);
 
         return response()->json([
             'status' => 200,
@@ -1238,19 +1277,21 @@ class ShiftManagement extends Controller
 
     public function packageDeliver(Request $request)
     {
-        $files = $request->file('addPhoto');
-        $destinationPath = 'public/assets/driver/parcel/finishParcel';
-        $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-        $files->move($destinationPath, $file_name);
-        $items = $file_name;
+        if ($request->hasFile('addPhoto')) {
+            $image = $request->file('addPhoto');
+            $dateFolder = 'driver/parcel/finishParcel';
+            $items = ImageController::upload($image, $dateFolder);
+        }
+
         $Parcel = new Finishshift();
         $Parcel->driverId = $request->driverId;
         $Parcel->shiftId = $request->shiftId;
         $Parcel->parcelsTaken = $request->startDate;
         $Parcel->endDate = $request->endDate;
         $Parcel->startTime = $request->startTime;
-        $Parcel->addPhoto = $items;
+        $Parcel->addPhoto = $items ?? null;
         $Parcel->save();
+
         if ($Parcel) {
             return response()->json([
                 'status' => 200,
@@ -1402,6 +1443,11 @@ class ShiftManagement extends Controller
 
     public function exportShiftReport(Request $request)
     {
+        $driverRole = Auth::guard('adminLogin')->user()->role_id;
+        if ($driverRole == '33') {
+            return abort(404);
+        }
+
         // dd($request->input('status'));
         $query = Shift::orderBy('id', 'DESC');
         // Apply default status filter if no filter input is found
@@ -1435,25 +1481,23 @@ class ShiftManagement extends Controller
                 $query->where('endDate', '>=', $request->input('finish'));
             });
         }
+
+        $userId = Auth::guard('adminLogin')->user();
+        if ($userId->role_id == '33') {
+            $driverId = Driver::where('email', $userId->email)->first()->id;
+            $query = $query->where('driverId', $driverId);
+            $query = $query->whereNotIn('finishStatus', [0, 1]);
+        }
         // Fetch data
         $shifts = $query->orderBy('id', 'DESC')
-            ->with(['getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
+            ->with(['getbase','getDriverName', 'getRego', 'getPersonRates', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name', 'getFinishShifts', 'getClientVehicleRates', 'getClientReportCharge'])
             ->get();
-            
 
-            $shiftsExport = new ShiftReportsExport($shifts);
-        
-            // Define the filename
-            $filename = 'shift_report.csv';
-            
-            // Get the CSV content
-            $content = $shiftsExport->exportToCsv();
-    
-            // Serve the file as a download response
-            return response($content)
-                ->header('Content-Type', 'text/csv')
-                ->header('Content-Disposition', 'attachment; filename=' . $filename)
-                ->header('Pragma', 'no-cache')
-                ->header('Expires', '0');
+
+
+        $export = new ShiftReportsExport($shifts);
+        $tempFile = $export->exportToXls();
+
+        return response()->download($tempFile, 'shift_report.xls')->deleteFileAfterSend(true);
     }
 }

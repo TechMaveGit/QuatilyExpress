@@ -7,9 +7,16 @@ foreach($D as $v)
 {
   $arr[] = $v['permission_id'];
 }
+
+$readonlybtn = null;
+if(in_array($shiftView->finishStatus,["4","5","6"])){
+    $readonlybtn = 'disabled';
+}
+
 //  echo "<pre>";
 //  print_r($arr);
 ?>
+
 <!--app-content open-->
 <div class="main-content app-content mt-0">
     <!-- PAGE-HEADER -->
@@ -44,13 +51,12 @@ foreach($D as $v)
                                         <span><i class="ti-light-bulb"></i></span>
                                         <span> Show Shift</span>
                                     </h2>
-                                     <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
-                                     <input type="hidden" name="hrManagerment" value="1"/>
+                                     <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" id="shiftEditForm" method="post">@csrf
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Id </label>
-                                                    <input type="text" class="form-control" name="dateFinish" value="QE{{ $shiftView->shiftRandId??'' }}"  readonly>
+                                                    <input type="text" class="form-control" name="shiftId" value="QE{{ $shiftView->shiftRandId??'' }}"  readonly>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
@@ -58,13 +64,13 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">State  <span class="red">*</span></label>
                                                     <div class="form-group">
                                                     @if($shiftView->finishStatus =='5')
-                                                       <select class="form-control select2 form-select" name="state" >
+                                                       <select class="form-control select2 form-select" name="state" {{$readonlybtn}}>
                                                            @foreach ($allstate as $allstate)
-                                                                <option value="{{ $allstate->id }}">{{ $allstate->name }} </option>
+                                                                <option  @if($allstate->id ==$shiftView->state) selected @else @endif value="{{ $allstate->id }}">{{ $allstate->name }} </option>
                                                             @endforeach
                                                         </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" onchange="getdata(this)" name="state" data-placeholder="Choose one">
+                                                         <select class="form-control select2 form-select"  @if(!$readonlybtn) onchange="getdata(this)"   name="state" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($allstate as $allstate)
                                                               <option value="{{ $allstate->id }}" @if($allstate->id ==$shiftView->state) selected @else @endif>{{ $allstate->name }} </option>
@@ -79,7 +85,7 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">Client <span class="red">*</span></label>
                                                     <div class="form-group">
                                                         @if($shiftView->finishStatus =='5')
-                                                         <select class="form-control select2 form-select" name="client" id="appendClient" data-placeholder="Choose one" disable>
+                                                         <select class="form-control select2 form-select" name="client" id="appendClient" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                         @foreach ($client as $allclient)
                                                         <option value="{{ $allclient->id }}" @if($allclient->id ==$shiftView->client) selected @else @endif >{{ $allclient->name }}
@@ -87,7 +93,7 @@ foreach($D as $v)
                                                       @endforeach
                                                         </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" id="appendClient"  onchange="getCostCenter(this)" name="client" data-placeholder="Choose one" disable>
+                                                         <select class="form-control select2 form-select" id="appendClient"  @if(!$readonlybtn) onchange="getCostCenter(this)" name="client" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                         @foreach ($client as $allclient)
                                                         <option value="{{ $allclient->id }}" @if($allclient->id == $shiftView->client) selected @else @endif >{{ $allclient->name }}
@@ -103,15 +109,15 @@ foreach($D as $v)
                                                     <label class="form-label" for="exampleInputEmail1">Cost Centre <span class="red">*</span></label>
                                                     <div class="form-group">
                                                       @if($shiftView->finishStatus =='5')
-                                                        <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                 @foreach ($costCenter as $allcostCenter)
-                                                                <option value="{{ $allcostCenter->id }}">{{ $allcostCenter->name }}
+                                                                <option @if($allcostCenter->id ==$shiftView->costCenter) selected @else @endif value="{{ $allcostCenter->id }}">{{ $allcostCenter->name }}
                                                                </option>
                                                               @endforeach
                                                         </select>
                                                         @else
-                                                           <select class="form-control select2 form-select" id="appendCostCenter" name="costCenter" data-placeholder="Choose one">
+                                                           <select class="form-control select2 form-select" id="appendCostCenter" @if(!$readonlybtn) name="costCenter" @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($costCenter as $allcostCenter)
                                                                 <option value="{{ $allcostCenter->id }}" @if($allcostCenter->id ==$shiftView->costCenter) selected @else @endif >{{ $allcostCenter->name }}
@@ -130,24 +136,17 @@ foreach($D as $v)
                                                             <label class="form-label" for="exampleInputEmail1">Status <span class="red">*</span></label>
                                                             <div class="form-group">
                                                             @if($shiftView->finishStatus =='5')
-                                                            <select class="form-control select2 form-select" name="finishStatus">
-                                                                <option value="0" @if($shiftView->finishStatus =='0') selected @else @endif >Created</option>
-                                                                <option value="1" @if($shiftView->finishStatus =='1') selected @else @endif >In Progress</option>
-                                                                <option value="2" @if($shiftView->finishStatus =='2') selected @else @endif >To Be Approved</option>
-                                                                <option value="3" @if($shiftView->finishStatus =='3') selected @else @endif >Approved</option>
-                                                                <option value="4" @if($shiftView->finishStatus =='4') selected @else @endif >Rejected</option>
+                                                            <select class="form-control select2 form-select"  name="finishStatus">
                                                                 <option value="5" @if($shiftView->finishStatus =='5') selected @else @endif >Paid</option>
-                                                                <option value="6" @if($shiftView->finishStatus =='6') selected @else @endif >Already Paid</option>
                                                             </select>
                                                             @else
-                                                            <select class="form-control select2 form-select" name="finishStatus">
+                                                            <select class="form-control select2 form-select" name="finishStatus" id="finishStatusDone">
                                                                 <option value="0" @if($shiftView->finishStatus =='0') selected @else @endif >Created</option>
                                                                 <option value="1" @if($shiftView->finishStatus =='1') selected @else @endif >In Progress</option>
                                                                 <option value="2" @if($shiftView->finishStatus =='2') selected @else @endif >To Be Approved</option>
                                                                 <option value="3" @if($shiftView->finishStatus =='3') selected @else @endif >Approved</option>
                                                                 <option value="4" @if($shiftView->finishStatus =='4') selected @else @endif >Rejected</option>
                                                                 <option value="5" @if($shiftView->finishStatus =='5') selected @else @endif >Paid</option>
-                                                                <option value="6" @if($shiftView->finishStatus =='6') selected @else @endif >Already Paid</option>
                                                             </select>
                                                             @endif
                                                         </div>
@@ -161,7 +160,7 @@ foreach($D as $v)
                                                          $clientbases= DB::table('clientbases')->where('id',$shiftView->base)->get();
                                                         @endphp
                                                          @if($shiftView->finishStatus =='5')
-                                                           <select class="form-control select2 form-select" id="appendBase" name="base">
+                                                           <select class="form-control select2 form-select" id="appendBase" name="base" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                @foreach ($clientbases as $allClientBase)
                                                                 <option value="{{ $allClientBase->id }}" @if($allClientBase->id == $shiftView->base) selected @else @endif >{{ $allClientBase->base }}
@@ -169,7 +168,7 @@ foreach($D as $v)
                                                               @endforeach
                                                            </select>
                                                         @else
-                                                         <select class="form-control select2 form-select" id="appendBase" name="base"  data-placeholder="Choose one">
+                                                         <select class="form-control select2 form-select" id="appendBase" @if(!$readonlybtn) name="base"  @endif data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                               @foreach ($clientbases as $allClientBase)
                                                                 <option value="{{ $allClientBase->id }}" @if($allClientBase->id == $shiftView->base) selected @else @endif >{{ $allClientBase->base }}
@@ -195,7 +194,7 @@ foreach($D as $v)
                                                 <div class="check_box">
                                                     <label class="form-label" for="exampleInputEmail1">Driver </label>
                                                     <div class="form-group">
-                                                        <select class="form-control select2 form-select" name="driverId" id="appendDriverResponiable" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" @if(!$readonlybtn) name="driverId" @endif id="appendDriverResponiable" data-placeholder="Choose one" {{$readonlybtn}}>
                                                                 <option value="">Select Any One</option>
                                                                     @forelse ($driverAdd as $AdddriverAdd)
                                                                     <option value="{{ $AdddriverAdd->id }}" @if($AdddriverAdd->id == $shiftView->driverId) selected @else @endif>{{ $AdddriverAdd->userName??'' }} {{ $AdddriverAdd->surname??'' }} ({{ $AdddriverAdd->email??'' }})</option>
@@ -213,7 +212,7 @@ foreach($D as $v)
                                                             <label class="form-label" for="exampleInputEmail1">Vehicle Type <span class="red">*</span></label>
                                                             <div class="form-group">
                                                          @if($shiftView->finishStatus =='5')
-                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)"  name="vehicleType" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)"  name="vehicleType" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($types as $alltypes)
                                                                <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
@@ -221,7 +220,7 @@ foreach($D as $v)
                                                           @endforeach
                                                             </select>
                                                         @else
-                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)" name="vehicleType" data-placeholder="Choose one">
+                                                        <select class="form-control select2 form-select" id="appendVehicleType"  onchange="getDriverResponiable(this)" name="vehicleType" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                             @foreach ($types as $alltypes)
                                                                <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
@@ -236,19 +235,21 @@ foreach($D as $v)
                                                   <div class="check_box">
                                                     <label class="form-label" for="exampleInputEmail1">Rego <span class="red">*</span></label>
                                                     <div class="form-group">
+                                                        @php
+                                                        $rego = DB::table('vehicals')->get();
+                                                        // dd($rego);
+                                                        @endphp
                                                          @if($shiftView->finishStatus =='5')
-                                                           <select class="form-control select2 form-select" id="regoId"  onchange="getDriverResponiable(this)"  name="rego" data-placeholder="Choose one">
+                                                           <select class="form-control select2 form-select"   name="rego" data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
-                                                            @foreach ($types as $alltypes)
-                                                               <option value="{{ $alltypes->id }}" @if($alltypes->id ==$shiftView->vehicleType) selected @else @endif >{{ $alltypes->name }}
+                                                            @foreach ($rego as $allrego)
+                                                               <option value="{{ $allrego->id }}" @if($allrego->id ==$shiftView->rego) selected @else @endif >{{ $allrego->rego }}
                                                                </option>
                                                           @endforeach
                                                             </select>
                                                         @else
-                                                        @php
-                                                        $rego = DB::table('vehicals')->get();
-                                                        @endphp
-                                                           <select class="form-control select2 form-select" name="rego" data-placeholder="Choose one">
+                                                        
+                                                           <select class="form-control select2 form-select" name="rego"  data-placeholder="Choose one" {{$readonlybtn}}>
                                                             <option value="">Select any one</option>
                                                                @foreach ($rego as $allrego)
                                                                 <option value="{{ $allrego->id }}" @if($allrego->id == $shiftView->rego) selected @else @endif >{{ $allrego->rego }}
@@ -262,29 +263,31 @@ foreach($D as $v)
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1"> Scanner ID <span class="red">*</span></label>
-                                                    <input type="text" min="0" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control" name="scannerName" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}"  @if($shiftView->finishStatus =='5') disabled @else @endif aria-describedby="emailHelp" placeholder="">
+                                                    <input type="text" min="0"  class="form-control" name="scannerName" id="exampleInputEmail1" value="{{ $shiftView->scanner_id }}"  @if($shiftView->finishStatus =='5') $readonlybtn @else @endif aria-describedby="emailHelp" placeholder="">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3">
+                                            {{-- <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Parcels Taken  <span class="red">*</span></label>
                                                     <input type="num" min="0" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control" name="parcelToken" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}"  @if($shiftView->finishStatus =='5') disabled @else @endif aria-describedby="emailHelp" placeholder="">
                                                 </div>
-                                            </div>
+                                            </div> --}}
+                                            @if ($driverRole->role_id != 33)
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Start</label>
-                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->shiftStartDate??'N/A' }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    <input type="text" class="form-control" id="#basicDate" value="{{ $shiftView->createdDate ? date('Y-m-d H:i', strtotime($shiftView->createdDate)):'N/A' }}" aria-describedby="emailHelp" placeholder="" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Mobile Date Finish</label>
                                                     <input type="text" class="form-control "
-                                                    value="{{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endDate ??'')->format('Y-m-d') }} {{ \Carbon\Carbon::parse($shiftView->getFinishShifts->endTime ??'')->format('H:i') }}"
-                                                    aria-describedby="emailHelp" placeholder="" readonly>
+                                                    value="{{ (isset($shiftView->getFinishShifts->submitted_at) && $shiftView->getFinishShifts->submitted_at) ? \Carbon\Carbon::parse($shiftView->getFinishShifts->submitted_at ??'')->format('Y-m-d H:i') : '' }} "
+                                                    aria-describedby="emailHelp" placeholder="" disabled>
                                                                                              </div>
                                             </div>
+                                            @endif
                                             <div class="col-lg-3">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Driver Rate</label>
@@ -297,32 +300,26 @@ foreach($D as $v)
                                             <div class="col-lg-3">
                                                 <div class="mb-3" style="width: 116px;">
                                                     <label class="form-label" for="exampleInputEmail1">Shift Image</label>
-                                                    <a href="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" target="_blank">
-                                                        <img src="{{ asset('assets/driver/parcel/finishParcel/' . $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
+                                                    <a href="{{ asset(env('STORAGE_URL'). $finishshifts->addPhoto) }}" target="_blank">
+                                                        <img src="{{ asset(env('STORAGE_URL'). $finishshifts->addPhoto) }}" alt="Image" style="max-width: 53%;" />
                                                     </a>
-                                                                                                                </div>
+                                                </div>
+                                            </div>
+                                            @else
+                                            <div class="col-lg-3">
+                                                <div class="mb-3" style="width: 116px;">
+                                                    <label class="form-label" for="exampleInputEmail1">Shift Image</label>
+                                                    <img src="{{ asset('assets/images/newimages/logo-qe.png')}}" alt="Image" style="max-width: 53%;" />
+                                                </div>
                                             </div>
                                         @endif
                                          </div>
-                                        <div class="bottom_footer_dt">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <div class="action_btns text-end">
-                                                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
-                                                         <a href="{{ route('admin.shift.report') }}" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                     </form>
                                      <hr>
                                      <hr>
                                      <h2>
                                         <span><i class="ti-agenda"></i></span>
                                         <span> Shift Hr. Management</span>
                                     </h2>
-                                    <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
-                                        <input type="hidden" name="hrManagerment" value="2"/>
                                         <div class="row">
                                               <div class="col-lg-3">
                                                    <div class="mb-3">
@@ -362,7 +359,7 @@ foreach($D as $v)
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Day Shift</label>
                                                        @if($shiftView->getFinishShifts->dayHours ?? 0 !='0')
                                                         @php
-                                                            $day = ($shiftView->getClientCharge->hourlyRatePayableDay + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
+                                                            $day = (($shiftView->getClientCharge->hourlyRatePayableDay??0) + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->dayHours ?? 0);
                                                         @endphp
                                                         @else
                                                         @php
@@ -377,7 +374,7 @@ foreach($D as $v)
                                                        <label class="form-label" for="exampleInputEmail1">Amount Payable Night Shift</label>
                                                        @if($shiftView->getFinishShifts->nightHours ?? 0 !='0')
                                                         @php
-                                                             $night = ($shiftView->getClientCharge->hourlyRatePayableNight + $extra_rate_per_hour  ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
+                                                             $night = (($shiftView->getClientCharge->hourlyRatePayableNight??0) + $extra_rate_per_hour  ?? 0) * ($shiftView->getFinishShifts->nightHours ?? 0);
                                                         @endphp
                                                         @else
                                                         @php
@@ -394,10 +391,10 @@ foreach($D as $v)
                                                            $saturday = 0;
                                                            $sunday = 0;
                                                            if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->saturdayHours != '0') {
-                                                               $saturday = ($shiftView->getClientCharge->hourlyRatePayableSaturday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
+                                                               $saturday = (($shiftView->getClientCharge->hourlyRatePayableSaturday??0) + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->saturdayHours ?? 0);
                                                            }
                                                            if ($shiftView->getFinishShifts && $shiftView->getFinishShifts->sundayHours != '0') {
-                                                               $sunday = ($shiftView->getClientCharge->hourlyRatePayableSunday + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
+                                                               $sunday = (($shiftView->getClientCharge->hourlyRatePayableSunday??0) + $extra_rate_per_hour ?? 0) * ($shiftView->getFinishShifts->sundayHours ?? 0);
                                                            }
                                                            $finalAmount=$saturday +  $sunday;
                                                        @endphp
@@ -422,7 +419,7 @@ foreach($D as $v)
                                                   </div>
                                                   @if(!empty($shiftView->getFinishShifts->saturdayHours))
                                                    @php
-                                                       $saturday = $shiftView->getClientCharge->hourlyRateChargeableSaturday * $shiftView->getFinishShifts->saturdayHours;
+                                                       $saturday = ($shiftView->getClientCharge->hourlyRateChargeableSaturday??0) * $shiftView->getFinishShifts->saturdayHours;
                                                    @endphp
                                                    @else
                                                    @php
@@ -431,7 +428,7 @@ foreach($D as $v)
                                                    @endif
                                                    @if(!empty($shiftView->getFinishShifts->sundayHours))
                                                    @php
-                                                   $sunday = $shiftView->getClientCharge->hourlyRateChargeableSunday * $shiftView->getFinishShifts->sundayHours ;
+                                                   $sunday = ($shiftView->getClientCharge->hourlyRateChargeableSunday??0) * $shiftView->getFinishShifts->sundayHours ;
                                                    @endphp
                                                    @else
                                                    @php
@@ -453,48 +450,54 @@ foreach($D as $v)
                                                   @endif
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
-                                                       <label class="form-label" for="exampleInputEmail1">Parcel Taken</label>
-                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <label class="form-label" for="parcelsToken">Parcel Taken</label>
+                                                       <input type="text" class="form-control" name="parcelsToken" id="parcelsToken" value="{{ $shiftView->parcelsToken }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
-                                                       <label class="form-label" for="exampleInputEmail1">Parcel Delivered</label>
-                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->parcelsDelivered?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <label class="form-label" for="parcelsDelivered">Parcel Delivered</label>
+                                                       <input type="text" class="form-control" name="parcelsDelivered" id="parcelsDelivered" value="{{ $shiftView->getFinishShifts->parcelsDelivered?? 0 }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
+                                                   </div>
+                                                  </div>
+                                                  <div class="col-lg-3">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="exampleInputEmail1">Parcel Outstanding</label>
+                                                        <input type="text" class="form-control" disabled id="parcelsOutstanding" value="{{ ($shiftView->parcelsToken??0)-($shiftView->getFinishShifts->parcelsDelivered??0) }}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                    </div>
+                                                   </div>
+                                                  <div class="col-lg-3">
+                                                   <div class="mb-3">
+                                                       <label class="form-label" for="odometerStartReading">Odometer Start</label>
+                                                       <input type="text" class="form-control" id="odometerStartReading" name="odometerStartReading" value="{{ $shiftView->odometer?? 0 }}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
-                                                       <label class="form-label" for="exampleInputEmail1">Odometer Start</label>
-                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerStartReading?? 0 }}" aria-describedby="emailHelp" placeholder="" readonly>
-                                                   </div>
-                                                  </div>
-                                                  <div class="col-lg-3">
-                                                   <div class="mb-3">
-                                                       <label class="form-label" for="exampleInputEmail1">Odometer Finish</label>
-                                                       <input type="text" class="form-control" id="exampleInputEmail1" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <label class="form-label" for="odometerEndReading">Odometer Finish</label>
+                                                       <input type="text" class="form-control" id="odometerEndReading" name="odometerEndReading" value="{{ $shiftView->getFinishShifts->odometerEndReading?? 0}}" aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                    </div>
                                                    @php
-                                                   $km = ($shiftView->getFinishShift->odometerEndReading  ?? 0) - ($shiftView->getFinishShift->odometerStartReading ?? 0);
+                                                   $km = (isset($shiftView->getFinishShift->odometerEndReading) && $shiftView->getFinishShift->odometerEndReading != 0 && $shiftView->getFinishShift->odometerEndReading != '' && isset($shiftView->odometer)) ?  ((float)$shiftView->getFinishShift->odometerEndReading -  (float)$shiftView->odometer) : '';
                                                    @endphp
                                                   </div>
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Traveled KM</label>
-                                                       <input type="text" value="{{ $km }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
+                                                       <input type="text" value="{{ $km }}" class="form-control" id="traveledKM" aria-describedby="emailHelp" placeholder="" readonly>
                                                    </div>
                                                   </div>
                                                   <div class="col-lg-3">
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Start </label>
                                                        @if ($shiftView->shiftStartDate)
-                                                       <input type="text" class="form-control datetime_picker" name="startDate"
-                                                       value="{{ $shiftView->shiftStartDate }}"
-                                                       aria-describedby="emailHelp" placeholder="">
+                                                       <input type="text" class="form-control datetime_picker" name="shiftStartDate"
+                                                       value="{{ date('Y/m/d H:i', strtotime($shiftView->shiftStartDate)) }}"
+                                                       aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                        @else
                                                        <input type="text"  class="form-control" name="startDate"
                                                        value=""
-                                                       aria-describedby="emailHelp" placeholder="">
+                                                       aria-describedby="emailHelp" placeholder="" {{$readonlybtn}}>
                                                        @endif
                                                    </div>
                                                </div>
@@ -502,9 +505,9 @@ foreach($D as $v)
                                                    <div class="mb-3">
                                                        <label class="form-label" for="exampleInputEmail1">Date Finish</label>
                                                        @if ($finishshifts)
-                                                       <input type="text" name="finishDate" class="form-control datetime_picker" id="#basicDate1" value="{{ $finishshifts->endDate??'N/A' }} {{ $finishshifts->endTime??'N/A' }}" aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker shiftDateFinish" id="#basicDate1" {{$readonlybtn}} value="{{ date('Y/m/d', strtotime($finishshifts->endDate))??'N/A' }} {{  date('H:i', strtotime($finishshifts->endTime))??'N/A' }}" aria-describedby="emailHelp">
                                                        @else
-                                                       <input type="text"  class="form-control datetime_picker" id="#basicDate2" value="" aria-describedby="emailHelp">
+                                                       <input type="text" name="finishDate" class="form-control datetime_picker shiftDateFinish" id="#basicDate2" value="" {{$readonlybtn}} aria-describedby="emailHelp">
                                                        @endif
                                                    </div>
                                                </div>
@@ -515,26 +518,15 @@ foreach($D as $v)
                                                const currentDate = new Date().toISOString().slice(0, 16);
                                                document.getElementById('dateFinish').value = currentDate;
                                            </script>
-                                       <div class="bottom_footer_dt">
-                                           <div class="row">
-                                               <div class="col-lg-12">
-                                                   <div class="action_btns text-end">
-                                                       <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
-                                                       <!-- <a href="client.php" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a> -->
-                                                   </div>
-                                               </div>
-                                           </div>
-                                       </div>
-                                    </form>
+                                       
                                     <hr>
                                     <hr>
+                                    @if ($driverRole->role_id!='33')
                                     <h2>
                                         <span><i class="ti-clipboard"></i></span>
                                         <span>Monetize Information</span>
                                     </h2>
-                                    @if ($driverRole->role_id!='33')
-                                <form action="{{ route('admin.shift.report.edit', ['id'=>$shiftView->id]) }}" method="post">@csrf
-                                    <input type="hidden" name="hrManagerment" value="3"/>
+                                    
                                     <div class="top_dt_sec">
                                         <div class="row">
                                             @php
@@ -584,7 +576,7 @@ foreach($D as $v)
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="exampleInputEmail1">Total Payable </label>
-                                                        <input type="text" step="0.1" value="{{ $finalpayamnnt }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="">
+                                                        <input type="text" step="0.1" value="{{ round($day,2) + round($night,2) + round($finalAmount,2) + ($shiftView->getShiftMonetizeInformation->fuelLevyPayable??0)+($shiftView->getShiftMonetizeInformation->extraPayable??0) }}" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"  class="form-control secondcls" name="totalPayable" @if($shiftView->finishStatus =='5') disabled @else @endif  id="subtotal" aria-describedby="emailHelp" placeholder="" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -625,7 +617,7 @@ foreach($D as $v)
                                                 <div class="col-lg-12">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="exampleInputEmail1">Total Chargeable</label>
-                                                    <input type="text" step="0.1"  id="charge6" onInput="edValueKeyChargePrs('a')"  class="form-control thirdcls" name="totalChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($shiftView->chageAmount??'',2 )}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="">
+                                                    <input type="text" step="0.1"  id="charge6" onInput="edValueKeyChargePrs('a')"  class="form-control thirdcls" name="totalChargeable" @if($shiftView->finishStatus =='5') disabled @else @endif value="{{ round($shiftView->chageAmount??'',2 )}}" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="" readonly>
                                                 </div>
                                                 </div>
                                         </div>
@@ -635,31 +627,34 @@ foreach($D as $v)
                                                 <div class="col-lg-6">
                                                 <div class="mb-3">
                                                 <label class="form-label" for="exampleInputEmail1">Comments</label>
-                                                <textarea class="form-control mb-4" name="comments" @if($shiftView->finishStatus =='5') disabled @else @endif placeholder="Please Enter Your Comment " rows="4">{{ $shiftView->getShiftMonetizeInformation->comments	??'' }}</textarea>
+                                                <textarea class="form-control mb-4" name="comments" @if($shiftView->finishStatus =='5')  @else @endif placeholder="Please Enter Your Comment " rows="4">{{ $shiftView->getShiftMonetizeInformation->comments	??'' }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                <label class="form-label" for="exampleInputEmail1">Approved Reason</label>
-                                                <textarea class="form-control mb-4" name="approvedReason" @if($shiftView->finishStatus =='5') disabled @else @endif placeholder="Please Enter Your Comment" rows="4">{{ $shiftView->getShiftMonetizeInformation->approvedReason	??'' }}</textarea>
+                                                <label class="form-label" for="exampleInputEmail1">Approved/Reject Reason</label>
+                                                <textarea class="form-control mb-4" name="approvedReason" @if($shiftView->finishStatus =='5')  @else @endif placeholder="Please Enter Your Comment" rows="4">{{ $shiftView->approval_reason	??'' }}</textarea>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="bottom_footer_dt">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="action_btns text-end">
-                                                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
-                                                <!-- <a href="client.php" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a> -->
-                                            </div>
+                                
+                                <!-- main_bx_dt -->
+                            </div>
+                            
+                            <div class="bottom_footer_dt">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="action_btns text-end">
+                                            <button type="submit" id="checkDataStatus" class="btn btn-primary"><i class="bi bi-save"></i> Save</button>
+                                             <a href="{{ route('admin.shift.report') }}" class="theme_btn btn-primary btn"><i class="uil-list-ul"></i> List</a>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- main_bx_dt -->
                             </div>
+                            
                                 </form>
                                 @endif
                                     </div>
@@ -824,7 +819,7 @@ foreach($D as $v)
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
                 });
-     $.ajax({
+            $.ajax({
                 type:'POST',
                 url:"{{ route('admin.getDriver.Responiable') }}",
                 data:{vehicleTye:clientId},
@@ -938,5 +933,99 @@ foreach($D as $v)
                 });
             }
     }
+
+
+    $("#parcelsToken, #parcelsDelivered").change(function() {
+        var parcelsTokenValue = parseInt($("#parcelsToken").val());
+        var parcelsDeliveredValue = parseInt($("#parcelsDelivered").val());
+
+        if (parcelsDeliveredValue > parcelsTokenValue) {
+            alert("Parcels delivered cannot be greater than parcels taken.");
+            $("#parcelsDelivered").val(parcelsTokenValue);
+        }
+    });
+
+
+    $("#odometerStartReading, #odometerEndReading").change(function() {
+        var odometerStartReadingValue = parseInt($("#odometerStartReading").val());
+        var odometerEndReadingValue = parseInt($("#odometerEndReading").val());
+
+        if (odometerEndReadingValue < odometerStartReadingValue) {
+            alert("Odometer finish cannot be less than odometer start.");
+            $("#odometerEndReading").val(odometerStartReadingValue);
+        }
+    });
+
+</script>
+
+<script>
+    let finalStatus = "{{$shiftView->finishStatus}}";
+    $("#checkDataStatus").click(function(e){
+        e.preventDefault();
+
+        let finishStatusDone = $("#finishStatusDone").val()||0;
+
+        if(finalStatus == "1" && finishStatusDone != "1"){
+
+            let parcelsToken = parseInt($("#parcelsToken").val())||0;
+            let parcelsDelivered = parseInt($("#parcelsDelivered").val()) || 0;
+
+            let odometerStartReading = parseInt($("#odometerStartReading").val())||0;
+            let odometerEndReading = parseInt($("#odometerEndReading").val())||0;
+
+            let shiftDateFinish = $(".shiftDateFinish").val();
+
+            let isValid = true;
+
+            $("#parcelsToken, #parcelsDelivered, #odometerStartReading, #odometerEndReading, .shiftDateFinish").removeClass("is-invalid");
+            $(".custom_error").remove();
+
+            if(parcelsToken <= 0){
+                $("#parcelsToken").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+
+            if(parcelsDelivered <= 0){
+                $("#parcelsDelivered").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+
+            if(parcelsDelivered>parcelsToken){
+                $("#parcelsDelivered").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">The parcel delivered must be less than or equal to parcel taken.</span>').focus();
+                isValid = false;
+            }else{
+                $("#parcelsOutstanding").val(parseInt(parcelsToken)-parseInt(parcelsDelivered));
+            }
+
+            if(odometerStartReading <= 0){
+                $("#odometerStartReading").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+            if(odometerEndReading <= 0){
+                $("#odometerEndReading").addClass('is-invalid').after('<span class="custom_error text-danger">This field is required.</span>').focus();
+                isValid = false;
+            }
+
+            if(odometerEndReading<odometerStartReading){
+                $("#odometerEndReading").addClass('is-invalid').after('<span class="custom_error text-danger">The odometer finish must be greater than or equal to odometer start.</span>').focus();
+                isValid = false;
+            }else{
+                $("#traveledKM").val(parseInt(odometerEndReading)-parseInt(odometerStartReading));
+            }
+
+            if(shiftDateFinish == '' || shiftDateFinish == undefined){
+                $(".shiftDateFinish").addClass('is-invalid').attr('required',true).after('<span class="custom_error text-danger">This field is required.</span>');
+                isValid = false;
+            }
+
+           
+          
+            if(isValid){
+                $("#shiftEditForm").submit();
+            }
+        }else{
+            $("#shiftEditForm").submit();
+        }
+    })
 </script>
 @endsection

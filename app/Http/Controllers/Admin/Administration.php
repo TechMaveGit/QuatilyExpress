@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Driver;
 use App\Models\Roles;
+use App\Models\Setting;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
@@ -232,8 +233,49 @@ class Administration extends Controller
         return redirect('admin/administration/role')->with('message', 'Role Permission Updated successfully!');
     }
 
-    public function systemConfiguration()
+    public function systemConfiguration(Request $request)
     {
-        return view('admin.role.system-configuration');
+        if($request->isMethod('POST')){
+
+            $reminder_configuration = [
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_passport_expire','meta_value'=>$request->days_before_passport_expire],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_police_certificate_expire','meta_value'=>$request->days_before_police_certificate_expire],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_visa_expire','meta_value'=>$request->days_before_visa_expire],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_driver_license_expire','meta_value'=>$request->days_before_driver_license_expire],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_induction_expire','meta_value'=>$request->days_before_induction_expire],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_rego_due_date','meta_value'=>$request->days_before_rego_due_date],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_service_due_date','meta_value'=>$request->days_before_service_due_date],
+                ['main_keyword'=>'reminder','meta_key'=>'days_before_insepction_due_date','meta_value'=>$request->days_before_insepction_due_date]
+            ];
+    
+            foreach ($reminder_configuration as $entry) {
+                Setting::updateOrCreate(['main_keyword' => $entry['main_keyword'],'meta_key'=>$entry['meta_key']],['meta_value' => $entry['meta_value']]);
+            }
+
+            $reminder_docs = [
+                ['main_keyword'=>'reminder_docs','meta_key'=>'expirec_docs','meta_value'=>$request->expirec_docs],
+                ['main_keyword'=>'reminder_docs','meta_key'=>'expirec_rego','meta_value'=>$request->expirec_rego],
+                ['main_keyword'=>'reminder_docs','meta_key'=>'expirec_service','meta_value'=>$request->expirec_service],
+                ['main_keyword'=>'reminder_docs','meta_key'=>'expirec_inspection','meta_value'=>$request->expirec_inspection]
+            ];
+    
+            foreach ($reminder_docs as $entry) {
+                Setting::updateOrCreate(['main_keyword' => $entry['main_keyword'],'meta_key'=>$entry['meta_key']],['meta_value' => $entry['meta_value']]);
+            }
+
+            $user_mail = [
+                ['main_keyword'=>'user_mail','meta_key'=>'lost_password','meta_value'=>$request->lost_password],
+                ['main_keyword'=>'user_mail','meta_key'=>'new_user','meta_value'=>$request->new_user]
+            ];
+    
+            foreach ($user_mail as $entry) {
+                Setting::updateOrCreate(['main_keyword' => $entry['main_keyword'],'meta_key'=>$entry['meta_key']],['meta_value' => $entry['meta_value']]);
+            }
+
+            return redirect()->route('administration.system-configuration')->with('message', 'System Configuration Updated Successfully!');
+        }
+
+        $settings_data = Setting::get()->pluck('meta_value','meta_key');
+        return view('admin.role.system-configuration',compact('settings_data'));
     }
 }

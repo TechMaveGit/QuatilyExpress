@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Client;
 use App\Models\Clientcenter;
 use App\Models\Clientrate;
@@ -65,6 +66,15 @@ class CommonApiController extends Controller
 
             $vehicleRego = DB::table('vehicals')->select('id', 'rego')->get();
 
+            $insepctiopnRego = DB::table('vehicals')
+            ->select('id', 'rego')
+            ->where('controlVehicle', '1')
+            ->where('driverResponsible', $this->driverId)
+            ->get();
+            if (count($insepctiopnRego) <= 0) {
+                $insepctiopnRego = $vehicleRego;
+            }
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Common Api',
@@ -124,14 +134,16 @@ class CommonApiController extends Controller
             $shify->client = $request->client;
             $shify->costCenter = $request->costCentre;
             $shify->base = $request->base;
-            $shify->shiftStartDate = $request->start_date . ' ' . $request->start_time;
+            $shify->shiftStartDate = date('Y-m-d',strtotime($request->start_date)) . ' ' . date('H:i:s',strtotime($request->start_time));
             $shify->vehicleType = $request->vehicleType;
             $shify->rego = $rego;
             $shify->odometer = $request->odometer_start_reading;
             $shify->scanner_id = $request->scanner_id;
             $shify->parcelsToken = $request->parcelsToken;
             $shify->comment = $request->comment;
+            $shify->createdDate = $request->createdDate ? date('Y-m-d H:i:s',strtotime($request->createdDate)):date('Y-m-d H:i:s');
             $shify->finishStatus = '2';
+            $shify->is_missed_shift = '1';
             $shify->save();
 
             $getClientID = Shift::whereId($shify->id)->first()->client;
@@ -142,8 +154,8 @@ class CommonApiController extends Controller
 
             $startDate = $request->start_date . ' ' . $request->start_time;
             $endDate = $request->end_date . ' ' . $request->input('end_time');
-            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
             $startDate = strtotime($start_date);
             $endDate = strtotime($end_date);
             $dayStartTime = Carbon::parse($start_date);
@@ -218,13 +230,11 @@ class CommonApiController extends Controller
             Shift::whereId($shify->id)->update(['finishStatus' => '2']);
 
             if ($request->file('missedImage') != '') {
-                $files = $request->file('missedImage');
-                $destinationPath = 'public/assets/driver/parcel/finishParcel';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $request->file('missedImage');
+                $dateFolder = 'driver/parcel/finishParcel';
+                $items = ImageController::upload($image, $dateFolder);
             } else {
-                $items = '';
+                $items = null;
             }
 
             $Parcel = new Finishshift();
@@ -240,8 +250,9 @@ class CommonApiController extends Controller
             $Parcel->totalHours = $totalHr ?? 0;
             $Parcel->startDate = $request->start_date;
             $Parcel->endDate = $request->end_date;
-            $Parcel->startTime = $dayStartTime->format('H:i');
-            $Parcel->endTime = $nightEndTime->format('H:i');
+            $Parcel->startTime = $dayStartTime->format('H:i:s');
+            $Parcel->endTime = $nightEndTime->format('H:i:s');
+            $Parcel->submitted_at = $request->createdDate ? date('Y-m-d H:i:s',strtotime($request->createdDate)):date('Y-m-d H:i:s');
             $Parcel->parcelsTaken = $request->parcelsTaken;
             $Parcel->parcelsDelivered = $request->parcel_delivered;
             $Parcel->addPhoto = $items;
@@ -261,8 +272,8 @@ class CommonApiController extends Controller
             }])->first();
             $startDate = $request->start_date . ' ' . $request->start_time;
             $endDate = $request->end_date . ' ' . $request->end_time;
-            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+            $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+            $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
             $startDate = strtotime($start_date);
             $endDate = strtotime($end_date);
             $dayStartTime = Carbon::parse($start_date);
@@ -348,18 +359,16 @@ class CommonApiController extends Controller
                     $chargeAdmin = $totalChargeDay ?? '' + $adminCharge->adminCharge ?? '0';
                     Client::where('id', $data['shiftView']->client)->update(['adminCharge' => $chargeAdmin]);
 
-                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2',]);
                     if ($request->file('missedImage') != '') {
-                        $files = $request->file('missedImage');
-                        $destinationPath = 'public/assets/driver/parcel/finishParcel';
-                        $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                        $files->move($destinationPath, $file_name);
-                        $items = $file_name;
+                        $image = $request->file('missedImage');
+                        $dateFolder = 'driver/parcel/finishParcel';
+                        $items = ImageController::upload($image, $dateFolder);
                     } else {
-                        $items = '';
+                        $items = null;
                     }
 
-                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                    Shift::whereId($request->shiftId)->update(['finishStatus' => '2', 'shiftStartDate' => date('Y-m-d',strtotime($request->start_date)) . ' ' . date('H:i:s',strtotime($request->start_time))]);
 
                     $Parcel = new Finishshift();
                     $Parcel->driverId = $this->driverId;
@@ -374,8 +383,9 @@ class CommonApiController extends Controller
                     $Parcel->totalHours = $totalHr ?? 0;
                     $Parcel->startDate = $request->start_date;
                     $Parcel->endDate = $request->end_date;
-                    $Parcel->startTime = $dayStartTime->format('H:i');
-                    $Parcel->endTime = $nightEndTime->format('H:i');
+                    $Parcel->startTime = $dayStartTime->format('H:i:s');
+                    $Parcel->endTime = $nightEndTime->format('H:i:s');
+                    $Parcel->submitted_at = $request->finishAt ? date('Y-m-d H:i:s',strtotime($request->finishAt)):date('Y-m-d H:i:s');
                     $Parcel->parcelsTaken = $request->parcelsTaken;
                     $Parcel->parcelsDelivered = $request->parcel_delivered;
                     $Parcel->addPhoto = $items;

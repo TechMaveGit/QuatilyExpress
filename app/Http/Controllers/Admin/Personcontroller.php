@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PersonExport;
+use App\Helpers\DataTableHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
+use App\Mail\WebSiteMail;
 use App\Models\Admin;
 use App\Models\DialCode;
 use App\Models\Driver;
@@ -15,6 +19,7 @@ use App\Models\Roles;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class Personcontroller extends Controller
 {
@@ -23,7 +28,16 @@ class Personcontroller extends Controller
         $data['status'] = $request->input('selectStatus') ?? null;
         $data['name'] = $request->input('name') ?? null;
         $data['email'] = $request->input('email') ?? null;
-        $query = Driver::with('roleName')->select('*')->orderBy('id', 'DESC');
+
+        return view('admin.person.person', $data);
+    }
+
+    public function personAjaxTable(Request $request)
+    {
+        $data['status'] = $request->input('form.selectStatus') ?? null;
+        $data['name'] = $request->input('form.name') ?? null;
+        $data['email'] = $request->input('form.email') ?? null;
+        $query = Driver::with('roleName');
         if ($data['name']) {
             $query = $query->where('userName', 'like', '%' . $data['name'] . '%');
         }
@@ -35,9 +49,20 @@ class Personcontroller extends Controller
         } else {
             $query = $query->where('status', '1');
         }
-        $data['person'] = $query->get();
+        $data['person'] = $query->select('*')->orderBy('id', 'DESC');
 
-        return view('admin.person.person', $data);
+        $columnMapping = [
+            'Id' => 'id',
+            'Name' => 'userName',
+            'Surname' => 'surname',
+            'Email' => 'email',
+            'Role' => 'roleName.name',
+            'Status' => 'status',
+            'Action' => 'id',
+        ];
+        $pageStr = 'person_table';
+
+        return DataTableHelper::getData($request, $query, $columnMapping, $pageStr);
     }
 
     public function personAdd(Request $request)
@@ -65,7 +90,7 @@ class Personcontroller extends Controller
                 'surname'               => $shortName,
                 'email'                 => $email,
                 'dob'                   => $dob,
-                'phonePrincipal'        => $phoneprinciple??'N/A',
+                'phonePrincipal'        => $phoneprinciple ?? 'N/A',
                 'phoneAux'              => $phoneaux,
                 'tfn'                   => $tfn,
                 'abn'                   => $abn,
@@ -87,6 +112,8 @@ class Personcontroller extends Controller
                 $user = Admin::create($input);
             }
 
+            $sendmail = Mail::to($email)->send(new WebSiteMail('new_user',"Welcome $name | Quality Express",['NAME'=>$name,'NEW_PASSWORD'=>$password,'http://LINK_BOOMERANG'=>env('APP_URL')]));
+            
             return redirect()->route('person')->with('message', 'Persion Basic Information Added Successfully!!');
         }
         $roles = Roles::where('name', '!=', 'my permission')->where('status', '1')->orderBy('id', 'DESC')->get();
@@ -111,165 +138,179 @@ class Personcontroller extends Controller
     public function personedit(Request $request, $id)
     {
         $data['person'] = $id;
+
+        $personData = Driver::where('id', $id)->first();
         $personValue1 = $request->input('personValue1');
         $roles = $request->input('roles');
         $role_data = Roles::where('id', $roles)->first()->id ?? '1000';
-        if ($personValue1) {
-            //    return $request->all();
-            $name = $request->input('name');
-            $shortName = $request->input('surname');
-            $email = $request->input('email');
-            $dob = $request->input('dob');
-            $phoneprinciple = $request->input('phoneprinciple');
-            $phoneaux = $request->input('phoneaux');
-            $tfn = $request->input('tfn');
-            $abn = $request->input('abn');
-            $selectPersion = $request->input('selectPersion');
-            $password = $request->input('password');
-            $extra_rate = $request->input('extra_rate_per_hour');
-            if ($password) {
-                $password = Hash::make($password);
-            } else {
-                $password = Driver::where('email', $email)->first()->password;
-            }
-            $data = [
-                'fullName'              => $name . ' ' . $shortName,
-                'userName'              => $name,
-                'surname'               => $shortName,
-                'email'                 => $email,
-                'dob'                   => $dob,
-                'phonePrincipal'        => $phoneprinciple,
-                'phoneAux'              => $phoneaux,
-                'tfn'                   => $tfn,
-                'abn'                   => $abn,
-                'role_id'               => $role_data,
-                'password'              => $password,
-                'selectPersonType'      => $selectPersion,
-                'extra_rate_per_hour'   => $extra_rate,
-                'mobileNo'              => $request->mobile_number,
-                'dialCode'              => ltrim($request->country_code, '+'),
-            ];
-            Driver::whereId($id)->update($data);
-            if ($role_data) {
-                $adminGmail = Admin::where('email', $email)->first();
-                if ($adminGmail) {
-                    $data = [
-                        'email' => $email,
-                        'name' => $name,
-                        'role_id' => $role_data,
-                        'password' => $password,
-                    ];
-                    Admin::where('email', $email)->update($data);
+        if ($request->isMethod('POST')) {
+            if ($personValue1 == '1') {
+                $request->validate([
+                    'name' => 'required',
+                    'email' => 'required:rfc|email|unique:drivers,email,' . $id,
+                ]);
+                //    return $request->all();
+                $name = $request->input('name');
+                $shortName = $request->input('surname');
+                $email = $request->input('email');
+                $dob = $request->input('dob');
+                $phoneprinciple = $request->input('phoneprinciple');
+                $phoneaux = $request->input('phoneaux');
+                $tfn = $request->input('tfn');
+                $abn = $request->input('abn');
+                $selectPersion = $request->input('selectPersion');
+                $password = $request->input('password');
+                $extra_rate = $request->input('extra_rate_per_hour');
+
+
+                if ($email != $personData->email && Driver::where('email', $email)->exists()) {
+                    return redirect()->back()->with('error', 'Person Email Already Exists.');
                 } else {
+                    if ($password) {
+                        $password = Hash::make($password);
+                    } else {
+                        $password = $personData->password;
+                    }
                     $data = [
-                        'email' => $email,
-                        'name' => $name,
-                        'role_id' => $role_data,
-                        'password' => $password,
+                        'fullName'              => $name . ' ' . $shortName,
+                        'userName'              => $name,
+                        'surname'               => $shortName,
+                        'email'                 => $email,
+                        'dob'                   => $dob,
+                        'phonePrincipal'        => $phoneprinciple,
+                        'phoneAux'              => $phoneaux,
+                        'tfn'                   => $tfn,
+                        'abn'                   => $abn,
+                        'role_id'               => $role_data,
+                        'password'              => $password,
+                        'selectPersonType'      => $selectPersion,
+                        'extra_rate_per_hour'   => $extra_rate,
+                        'mobileNo'              => $request->mobile_number,
+                        'dialCode'              => ltrim($request->country_code, '+'),
                     ];
-                    Admin::where('email', $email)->insert($data);
+                    Driver::whereId($id)->update($data);
+                    if ($role_data) {
+                        $adminGmail = Admin::where('email', $email)->first();
+                        if ($adminGmail) {
+                            $data = [
+                                'email' => $email,
+                                'name' => $name,
+                                'role_id' => $role_data,
+                                'password' => $password,
+                            ];
+                            Admin::where('email', $email)->update($data);
+                        } else {
+                            $data = [
+                                'email' => $email,
+                                'name' => $name,
+                                'role_id' => $role_data,
+                                'password' => $password,
+                            ];
+                            Admin::where('email', $email)->insert($data);
+                        }
+                    }
                 }
+                return redirect()->back()->with('message', 'Person Basic Information Updated Successfully!');
             }
 
-            return redirect()->back()->with('message', 'Person Basic Information Updated Successfully!');
-        }
-        $personValue2 = $request->input('personValue2');
-        if ($personValue2 == '2') {
-            $Personaddress = Personaddress::insertGetId([
-                'personId'      => $request->input('personId'),
-                'zipCode'       => $request->input('zipCode') ?? '0',
-                'unit'          => $request->input('unit') ?? '0',
-                'addressNumber' => $request->input('addressNumber') ?? '0',
-                'streetAddress' => $request->input('streetAddress') ?? '0',
-                'suburb'        => $request->input('suburb') ?? '0',
-                'city'          => $request->input('city') ?? '0',
-                'state'         => $request->input('state') ?? '0',
-            ]);
-            $Personaddress = Personaddress::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
-
-            return response()->json([
-                'success' => '200',
-                'message' => 'Personaddress saved successfully.',
-                'data'   => $Personaddress,
-            ]);
-        }
-        $personValue3 = $request->input('personValue3');
-        if ($personValue3 == '3') {
-            $Personaddress = Personreminder::updateOrCreate(
-                [
-                    'personId' => $request->input('personId'),
-                    'reminderType' => $request->input('reminderType'),
-                ],
-                [
-                    // Additional fields to update or create
-                    // For example:
-                    'status' => 1,
-                ]
-            );
-            // Fetch the updated or newly created record
-            $Personaddress = Personreminder::find($Personaddress->id);
-            $Personaddress->typeName = Reminders::select('reminderName')->whereId($Personaddress->reminderType)->first()->reminderName;
-
-            return response()->json([
-                'success' => '200',
-                'message' => 'Personaddress reminder successfully.',
-                'data' => $Personaddress,
-            ]);
-        }
-        $personValue4 = $request->input('personValue4');
-        if ($personValue4 == '4') {
-            $checkPersonrates = Personrates::where('personId', $request->input('personId'))->where('type', $request->input('type'))->first();
-            if ($checkPersonrates) {
-                $Personaddress = Personrates::where('personId', $request->input('personId'))->where('type', $request->input('type'))->update([
-                    'personId'  => $request->input('personId'),
-                    'type'      => $request->input('type'),
-                    'hourlyRatePayableDays'          => $request->input('hourlyRatePayableDay') ?? $checkPersonrates->hourlyRatePayableDays,
-                    'hourlyRatePayableNight'      => $request->input('hourlyRatePayableNight') ?? $checkPersonrates->hourlyRatePayableNight,
-                    'hourlyRatePayableSaturday'      => $request->input('hourlyRatePayableSaturday') ?? $checkPersonrates->hourlyRatePayableSaturday,
-                    'hourlyRatepayableSunday'      => $request->input('hourlyRatePayableSunday') ?? $checkPersonrates->hourlyRatepayableSunday,
-                    'extraHourlyRate'      => $request->input('extraHourlyRate') ?? $checkPersonrates->extraHourlyRate,
+            $personValue2 = $request->input('personValue2');
+            if ($personValue2 == '2') {
+                $Personaddress = Personaddress::insertGetId([
+                    'personId'      => $request->input('personId'),
+                    'zipCode'       => $request->input('zipCode') ?? '0',
+                    'unit'          => $request->input('unit') ?? '0',
+                    'addressNumber' => $request->input('addressNumber') ?? '0',
+                    'streetAddress' => $request->input('streetAddress') ?? '0',
+                    'suburb'        => $request->input('suburb') ?? '0',
+                    'city'          => $request->input('city') ?? '0',
+                    'state'         => $request->input('state') ?? '0',
                 ]);
-                $Personaddress = $checkPersonrates->id;
-                $Personaddress = Personrates::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
-                $Personaddress->dropdowntype = Type::orderBy('id', 'DESC')->where('id', $Personaddress->type)->first()->name ?? 'N/A';
-
-                return response()->json([
-                    'success' => '300',
-                    'message' => 'Person rate updated successfully.',
-                    'data'   => $Personaddress,
-                ]);
-            } else {
-                $Personaddress = Personrates::insertGetId([
-                    'personId'  => $request->input('personId'),
-                    'type'      => $request->input('type'),
-                    'hourlyRatePayableDays'          => $request->input('hourlyRatePayableDay') ?? '0',
-                    'hourlyRatePayableNight'      => $request->input('hourlyRatePayableNight') ?? '0',
-                    'hourlyRatePayableSaturday'      => $request->input('hourlyRatePayableSaturday') ?? '0',
-                    'hourlyRatepayableSunday'      => $request->input('hourlyRatePayableSunday') ?? '0',
-                    'extraHourlyRate'      => $request->input('extraHourlyRate') ?? '0',
-                ]);
-                $Personaddress = Personrates::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
-                $Personaddress->dropdowntype = Type::orderBy('id', 'DESC')->where('id', $Personaddress->type)->first()->name;
+                $Personaddress = Personaddress::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
 
                 return response()->json([
                     'success' => '200',
-                    'message' => 'Person rate created successfully.',
+                    'message' => 'Personaddress saved successfully.',
                     'data'   => $Personaddress,
                 ]);
+            }
+            $personValue3 = $request->input('personValue3');
+            if ($personValue3 == '3') {
+                $Personaddress = Personreminder::updateOrCreate(
+                    [
+                        'personId' => $request->input('personId'),
+                        'reminderType' => $request->input('reminderType'),
+                    ],
+                    [
+                        // Additional fields to update or create
+                        // For example:
+                        'status' => 1,
+                    ]
+                );
+                // Fetch the updated or newly created record
+                $Personaddress = Personreminder::find($Personaddress->id);
+                $Personaddress->typeName = Reminders::select('reminderName')->whereId($Personaddress->reminderType)->first()->reminderName;
+
+                return response()->json([
+                    'success' => '200',
+                    'message' => 'Personaddress reminder successfully.',
+                    'data' => $Personaddress,
+                ]);
+            }
+            $personValue4 = $request->input('personValue4');
+            if ($personValue4 == '4') {
+                $checkPersonrates = Personrates::where('personId', $request->input('personId'))->where('type', $request->input('type'))->first();
+                if ($checkPersonrates) {
+                    $Personaddress = Personrates::where('personId', $request->input('personId'))->where('type', $request->input('type'))->update([
+                        'personId'  => $request->input('personId'),
+                        'type'      => $request->input('type'),
+                        'hourlyRatePayableDays'          => $request->input('hourlyRatePayableDay') ?? $checkPersonrates->hourlyRatePayableDays,
+                        'hourlyRatePayableNight'      => $request->input('hourlyRatePayableNight') ?? $checkPersonrates->hourlyRatePayableNight,
+                        'hourlyRatePayableSaturday'      => $request->input('hourlyRatePayableSaturday') ?? $checkPersonrates->hourlyRatePayableSaturday,
+                        'hourlyRatepayableSunday'      => $request->input('hourlyRatePayableSunday') ?? $checkPersonrates->hourlyRatepayableSunday,
+                        'extraHourlyRate'      => $request->input('extraHourlyRate') ?? $checkPersonrates->extraHourlyRate,
+                    ]);
+                    $Personaddress = $checkPersonrates->id;
+                    $Personaddress = Personrates::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
+                    $Personaddress->dropdowntype = Type::orderBy('id', 'DESC')->where('id', $Personaddress->type)->first()->name ?? 'N/A';
+
+                    return response()->json([
+                        'success' => '300',
+                        'message' => 'Person rate updated successfully.',
+                        'data'   => $Personaddress,
+                    ]);
+                } else {
+                    $Personaddress = Personrates::insertGetId([
+                        'personId'  => $request->input('personId'),
+                        'type'      => $request->input('type'),
+                        'hourlyRatePayableDays'          => $request->input('hourlyRatePayableDay') ?? '0',
+                        'hourlyRatePayableNight'      => $request->input('hourlyRatePayableNight') ?? '0',
+                        'hourlyRatePayableSaturday'      => $request->input('hourlyRatePayableSaturday') ?? '0',
+                        'hourlyRatepayableSunday'      => $request->input('hourlyRatePayableSunday') ?? '0',
+                        'extraHourlyRate'      => $request->input('extraHourlyRate') ?? '0',
+                    ]);
+                    $Personaddress = Personrates::orderBy('id', 'DESC')->where('id', $Personaddress)->first();
+                    $Personaddress->dropdowntype = Type::orderBy('id', 'DESC')->where('id', $Personaddress->type)->first()->name;
+
+                    return response()->json([
+                        'success' => '200',
+                        'message' => 'Person rate created successfully.',
+                        'data'   => $Personaddress,
+                    ]);
+                }
             }
         }
         $personValue5 = $request->input('personValue5');
         if ($personValue5 == '5') {
             if ($request->file('document_file') != '') {
                 $image = $request->file('document_file');
-                $new_name = rand() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('public/assets/person-document'), $new_name);
+                $dateFolder = 'person-document';
+                $imageupload = ImageController::upload($image, $dateFolder);
             }
             $documentData = [
                 'personId' => $request->input('person_id'),
                 'name' => $request->input('document_name'),
                 'status' => $request->input('document_status'),
-                'document' => $new_name ?? null,
+                'document' => $imageupload ?? null,
             ];
             Persondocument::insert($documentData);
             $documents = Persondocument::orderBy('id', 'DESC')->where('personId', $request->input('person_id'))->get();
@@ -374,5 +415,34 @@ class Personcontroller extends Controller
                 'message' => 'Done.',
             ]);
         }
+    }
+
+    public function exportPersons(Request $request)
+    {
+        // dd("Asdasd");
+        // $query = Driver::query();
+        // Check if any filter input is provided
+        $data['status'] = $request->input('form.selectStatus') ?? null;
+        $data['name'] = $request->input('form.name') ?? null;
+        $data['email'] = $request->input('form.email') ?? null;
+        $query = Driver::with('roleName');
+        if ($data['name']) {
+            $query = $query->where('userName', 'like', '%' . $data['name'] . '%');
+        }
+        if ($data['email']) {
+            $query = $query->where('email', $data['email']);
+        }
+        if ($data['status']) {
+            $query = $query->where('status', $data['status']);
+        } else {
+            $query = $query->where('status', '1');
+        }
+        $persons = $query->select('*')->orderBy('id', 'DESC')->limit(10)->get();
+        // dd($persons);
+
+        $export = new PersonExport($persons);
+        $tempFile = $export->exportToXls();
+    
+        return response()->download($tempFile, 'persons.xls')->deleteFileAfterSend(true);
     }
 }

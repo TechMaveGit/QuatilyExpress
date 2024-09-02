@@ -16,11 +16,11 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
+        php-version: '8.1'
         tools: composer, php-cs-fixer
 
     - name: Install dependencies
-      run: composer install --no-dev --prefer-dist --optimize-autoloader
+      run: composer update --no-dev --prefer-dist --optimize-autoloader
 
     - name: Prepare environment
       run: |
@@ -43,7 +43,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
+        php-version: '8.1'
         
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
@@ -58,8 +58,7 @@ jobs:
           git reset --hard
           git clean -fd
           git pull origin production
-          /usr/bin/php8.0 $(which composer) install --no-dev --prefer-dist --optimize-autoloader
-          /usr/bin/php8.0 $(which composer) require phpoffice/phpspreadsheet:^2.1 --with-all-dependencies
-          /usr/bin/php8.0 artisan optimize
-          /usr/bin/php8.0 artisan optimize:clear
-          /usr/bin/php8.0 artisan storage:link
+          /usr/bin/php8.1 $(which composer) update --no-dev --prefer-dist --optimize-autoloader
+          /usr/bin/php8.1 artisan optimize
+          /usr/bin/php8.1 artisan optimize:clear
+          /usr/bin/php8.1 artisan storage:link

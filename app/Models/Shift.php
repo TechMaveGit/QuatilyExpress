@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Shift extends Model
 {
     use HasFactory;
-    protected $fillable = ['driverId', 'shiftRandId', 'shiftStartDate', 'state', 'client', 'weekendHours', 'costCenter', 'base', 'vehicleType', 'rego', 'scanner_id', 'odometer', 'parcelsToken', 'finishStatus','is_missed_shift'];
+    protected $fillable = [
+        'driverId','shiftRandId','state','client','costCenter','base','vehicleType','rego','odometer','scanner_id','parcelsToken','status','chageAmount','payAmount','shiftStatus','finishStatus','optShift','comment','approval_reason','shiftStartDate','finishDate','createdDate','startlatitude','startlongitude','endlatitude','endlongitude','startaddress','endaddress','priceOverRideStatus','is_missed_shift','client_data_json','extra_rate_person'
+    ];
 
     public function getClientName()
     {
@@ -55,6 +57,11 @@ class Shift extends Model
         return $this->hasOne(Clientrate::class, 'type', 'vehicleType');
     }
 
+    public function getClientCharges()
+    {
+        return $this->hasMany(Clientrate::class, 'type', 'vehicleType');
+    }
+
     public function getClientReportCharge()
     {
         return $this->hasOne(Clientrate::class, 'clientId', 'client');
@@ -82,12 +89,17 @@ class Shift extends Model
 
     public function getClientBase()
     {
-        return $this->hasMany(ClientBase::class, 'clientId', 'id');
+        return $this->hasMany(Clientbase::class, 'clientId', 'id');
     }
 
     public function getClientNm()
     {
         return $this->hasOne(Client::class, 'id', 'client')->select('id', 'name', 'adminCharge', 'driverPay');
+    }
+
+    public function getbase()
+    {
+        return $this->hasOne(Clientbase::class, 'id', 'base');
     }
 
     public function getShiftMonetizeInformation()

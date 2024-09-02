@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Induction;
 use App\Models\Inductiondriver;
 use App\Models\Inspection;
@@ -22,7 +23,7 @@ class InductionController extends Controller
     public function allInspection()
     {
         $all = Induction::where('status', '1')->get();
-        $url = url('public/assets/induction/image/');
+        $url = asset(env('STORAGE_URL'));
 
         return response()->json([
             'status' => 200,
@@ -45,8 +46,8 @@ class InductionController extends Controller
             return $response;
         }
         $id = $request->inspection_id;
-        $url = url('public/assets/induction/image/');
-        $signatureImage = url('public/assets/induction/signatureImage');
+        $url = asset(env('STORAGE_URL'));
+        $signatureImage = asset(env('STORAGE_URL'));;
         $inductions = Induction::select('id', 'title', 'description', 'uploadFile', 'status')->where('id', $id)->first();
         $InductionSignature = DB::table('inductiondrivers')->select('id', 'induction_id', 'driverId', 'signature')->where('induction_id', $id)->where('driverId', $this->driverId)->first();
 
@@ -66,7 +67,7 @@ class InductionController extends Controller
             $query->select('id', 'rego');
         }])
             ->get();
-        $destinationPath = url('public/assets/inspection/carimage');
+        $destinationPath = asset(env('STORAGE_URL'));
 
         return response()->json([
             'status' => 200,
@@ -92,11 +93,11 @@ class InductionController extends Controller
 
         $id = $request->inspection_id;
         $files = $request->file('signature');
+        $p_image = null;
         if ($files) {
-            $destinationPath = 'public/assets/induction/signatureImage';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $p_image = $file_name;
+            $image = $request->file('signature');
+            $dateFolder = 'induction/signatureImage';
+            $p_image = ImageController::upload($image, $dateFolder);
         }
 
         $Inductiondriver = Inductiondriver::where('induction_id', $id)->where('driverId', $this->driverId)->first();
@@ -116,7 +117,7 @@ class InductionController extends Controller
 
         return response()->json([
             'status' => 200,
-            'destinationPath' => env('SIGNATURE_IMAGE'),
+            'destinationPath' => asset(env('STORAGE_URL')),
             'message' => 'Signature Updated Successfully',
         ]);
     }

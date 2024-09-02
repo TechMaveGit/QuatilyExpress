@@ -10,6 +10,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Driver extends Authenticatable implements JWTSubject
 {
     use HasFactory ,Notifiable;
+    
+    protected $fillable = ['fullName','userName','surname','mobileNo','dialCode','email','dob','phonePrincipal','phoneAux','tfn','abn','selectPersonType','documentType','selectDocument','password','profile_image','driving_license','visa','role_id','traffic_history','police_chceck','driving_license_issue_date','driving_date_expiry_date','visa_issue_date','visa_expiry_date','traffic_history_issue_date','traffic_history_expiry_date','police_chceck_issue_date','police_chceck_expiry_date','driverInspections','status','otp','rego','extra_rate_per_hour'];
+
 
     public function getJWTIdentifier()
     {
@@ -24,6 +27,11 @@ class Driver extends Authenticatable implements JWTSubject
     public function getaddress()
     {
         return $this->hasMany(Personaddress::class, 'personId', 'id');
+    }
+
+    public function allshift()
+    {
+        return $this->hasMany(Shift::class, 'driverId', 'id');
     }
 
     public function getreminder()

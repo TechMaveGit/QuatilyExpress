@@ -8,7 +8,7 @@
     <h1 class="page-title">Induction View</h1>
     <div>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Home</a></li>
             <li class="breadcrumb-item " aria-current="page">Induction</li>
             <li class="breadcrumb-item active" aria-current="page">Induction Edit</li>
 
@@ -61,15 +61,13 @@
                                                         {{-- <label class="form-label" for="exampleInputEmail1">View Upload File</label> --}}
                                                         <div class="form-group">
 
-                                                            <a href="{{ asset('assets/Induction/image/'.$inductionDetail->uploadFile.'')}}" target="_blank">View Document
+                                                            <a href="{{asset(env('STORAGE_URL').$inductionDetail->uploadFile.'')}}" target="_blank">View Document
                                                             </a>
 
                                                         </div>
                                                     </div>
 
                                                     </div>
-
-
                                     </div>
                                 </div>
 

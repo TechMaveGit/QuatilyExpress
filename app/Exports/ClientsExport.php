@@ -2,6 +2,9 @@
 
 namespace App\Exports;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+
 class ClientsExport
 {
     protected $clients;
@@ -20,6 +23,29 @@ class ClientsExport
         return $content;
     }
 
+    public function exportToXls()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Add headers
+        $headers = $this->generateHeaders();
+        $sheet->fromArray($headers, NULL, 'A1');
+
+        // Add data
+        $data = $this->collection();
+        $sheet->fromArray($data, NULL, 'A2');
+
+        // Create the XLS writer
+        $writer = new Xls($spreadsheet);
+
+        // Save to a temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'client_report');
+        $writer->save($tempFile);
+
+        return $tempFile;
+    }
+
     protected function generateCsvHeaders()
     {
         return implode(',', [
@@ -31,6 +57,19 @@ class ClientsExport
             'State',
             'Status',
         ]);
+    }
+
+    protected function generateHeaders()
+    {
+        return [
+            'ID',
+            'Name',
+            'Short Name',
+            'Abn',
+            'Phone Principal',
+            'State',
+            'Status',
+        ];
     }
 
     protected function generateCsvRow($index, $row)

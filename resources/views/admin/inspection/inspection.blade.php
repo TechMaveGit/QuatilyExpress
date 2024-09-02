@@ -10,6 +10,7 @@
    {
      $arr[] = $v['permission_id'];
    }
+   $driverRole=  Auth::guard('adminLogin')->user()->role_id;
    ?>
 
 
@@ -42,22 +43,29 @@
     <div class="main-container container-fluid">
     <div class="row">
 
-                <div class="col-lg-12">
+                <div class="col-lg-12 p-0">
                     <div class="card">
                     <div class="card-header">
+                    <div class="flexMobile">
                     <div class="top_section_title">
                        <h5>All Inspections</h5>
-
-                       @if(in_array("29", $arr))
+                    </div>
+                    <div class="ActionBtn scrollBtn">
+                    @if(in_array("29", $arr))
                        <a href="{{ route('inspection.add') }}" style="margin: 3px;" class="btn btn-primary">+ Add New Inspection</a>
                        @endif
-                    </div>
+                       @if ($driverRole != 33)
                     <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                    @endif
+                     </div>
+                    </div>
+                   
+                  
 
                 </div>
                         <div class="card-body">
-                        <div class="table-responsive">
-                        <table id="example"  class="table table-bordered text-nowrap mb-0"  style="margin: 0px !important;width: 100%;">
+                        <div class="">
+                        <table id="custom_table"  class="table table-bordered text-nowrap mb-0"  style="margin: 0px !important;width: 100%;">
                             <thead class="border-top">
                                 <tr>
                                     <th class="bg-transparent border-bottom-0">Item Id</th>
@@ -66,8 +74,8 @@
                                     <th class="bg-transparent border-bottom-0">Comments</th>
                                     <th class="bg-transparent border-bottom-0">Date Inspection</th>
                                     <?php
-                                            $driverRole=  Auth::guard('adminLogin')->user();
-                                             if($driverRole->role_id!='33')
+                                           
+                                             if($driverRole!='33')
                                              { ?>
                                     <th class="bg-transparent border-bottom-0">Inspection Done By</th>
                                     <?php }?>
@@ -91,8 +99,7 @@
 
 
                                            <?php
-                                            $driverRole=  Auth::guard('adminLogin')->user();
-                                             if($driverRole->role_id!='33')
+                                             if($driverRole!='33')
                                              { ?>
                                                     @if ($allinspection->driverInspections=='1')
                                                     <td>

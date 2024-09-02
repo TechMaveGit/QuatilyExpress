@@ -21,6 +21,9 @@
     background: transparent;
     border: none;
 }
+#basic-datatable_person_wrapper .dropdown.colum_visibility_ak:nth-child(odd){
+    display: none !important;
+}
 </style>
 <!-- delete Modal -->
 <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1" aria-hidden="true">
@@ -31,10 +34,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('person.deletePerson')}}" method="post" />@csrf
+            <form action="{{route('person.deletePerson')}}" method="post">
+                @csrf
             <div class="modal-body">
                 <div class="mt-2 text-center">
-                    {{-- <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon> --}}
                     <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                         <p class="text-muted mx-4 mb-0">Are you Sure You want to Remove this Record ?</p>
                     </div>
@@ -57,6 +60,7 @@
    {
      $arr[] = $v['permission_id'];
    }
+   $driverRole = Auth::guard('adminLogin')->user()->role_id;
    ?>
 <style>
     .dt-buttons{
@@ -90,7 +94,7 @@
                                 </div>
                             </div>
                         <div class="card-body">
-                            <form action="{{route('person')}}" method="post">@csrf
+                            <form action="{{route('person')}}" id="filterFormData" method="post">@csrf
                             <div class="row align-items-center">
                                 <div class="col-lg-4">
                                     <div class="mb-3">
@@ -135,15 +139,18 @@
                        <a href="{{ route('person.add') }}" class="btn btn-primary" style="margin: 3px ">+ Add New Person</a>
                        @endif
                     </div>
-                    <a class="btn btn-green" style="color: white;" id="personexportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
-                    {{-- <a  class="btn btn-green srch_btn ms-3" id="exportBtn" style="color: white;"> <i class="fa fa-file-excel-o"></i> Download Excel</a> --}}
+                    @if ($driverRole != 33)
+                    <button class="btn btn-green" style="color: white; margin: 4px;"
+                    onclick="window.location='{{ route('export.person', request()->input()) }}'"><i
+                        class="fa fa-file-excel-o"></i>Download Excel</button>
+                    @endif
+                    
                 </div>
                         <div class="card-body">
                         <div class="table-responsive">
-                            <table id="custom_table" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;">
+                            <table id="basic-datatable_person" class="table table-hover mb-0" style="margin: 0px !important;width: 100%;">
                             <thead class="border-top">
                                 <tr>
-                                    <th hidden></th>
                                     <th class="bg-transparent border-bottom-0">Id</th>
                                     <th class="bg-transparent border-bottom-0">Name</th>
                                     <th class="bg-transparent border-bottom-0">Surname</th>
@@ -154,43 +161,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($person as $allperson)
-                                    <tr class="border-bottom">
-                                        <td hidden></td>
-                                        <td>{{ $allperson->id}}</td>
-                                        <td>{{ $allperson->userName	 }} {{ $allperson->surname	 }}</td>
-                                        <td>{{ $allperson->surname }}</td>
-                                        <td>{{ $allperson->email }}</td>
-                                        <td>{{ $allperson->roleName->name ?? '' }}</td>
-                                        <td>
-                                            <div class="form-group">
-                                                    <select class="form-control select2 form-select" onchange="changeStatus('{{$allperson->id}}',this)" data-placeholder="Choose one">
-                                                            <option value="1" {{ $allperson->status == 1 ? 'selected="selected"' : '' }}>Active</option>
-                                                            <option value="2" {{ $allperson->status == 2 ? 'selected="selected"' : '' }}>Inactive</option>
-                                                    </select>
-                                                    <p id="message{{ $allperson->id	 }}" class="message"></p>
-                                                </div>
-                                        </td>
-                                        <td>
-                                                <div class="g-2">
-                                                    @if(in_array("10", $arr))
-                                                <a class="btn text-info btn-sm" href="{{ route('person.view', ['id' => $allperson->id]) }}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-original-title="View"><span
-                                                            class="fe fe-eye fs-14"></span></a>  @endif
-                                                            @if(in_array("11", $arr))
-                                                    <a class="btn text-primary btn-sm" href="{{ route('person.edit', ['id' => $allperson->id]) }}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-original-title="Edit"><span
-                                                            class="fe fe-edit fs-14"></span></a> @endif
-                                                            @if(in_array("12", $arr))
-                                                                <a class="btn text-danger btn-sm" onclick="remove_vehicle({{ $allperson->id}})" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
-                                                            @endif
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                    @endforelse
+                                
                             </tbody>
                         </table>
                     </div>
@@ -211,17 +182,84 @@
 </script>
 <!-- Include DataTables CSS and JS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css"></script>
+
 <!-- Include DataTables Buttons CSS and JS -->
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/jquery-3.7.0.js">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js">
+</script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js">
+</script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <script>
+    var table;
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+        var formData = new FormData($('#filterFormData')[0]);
+        table = $('#basic-datatable_person').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{{ route('person.ajax.table') }}",
+                "dataType": "json",
+                "type": "POST",
+                "data": function(d) {
+                    d.form = {};
+                    for (var pair of formData.entries()) {
+                        d.form[pair[0]] = pair[1];
+                    }
+                }
+            },
+            "columns": [{
+                    "data": "Id"
+                },
+                {
+                    "data": "Name"
+                },
+                {
+                    "data": "Surname"
+                },
+                {
+                    "data": "Email"
+                },
+                {
+                    "data": "Role"
+                },
+                {
+                    "data": "Status"
+                },
+                {
+                    "data": "Action"
+                }
+            ]
+        });
+
+        var columns = table.columns().header().toArray();
+    var columnVisibilityDropdown = '<div class="dropdown colum_visibility_ak" style="display:inline-block;">' +
+      '<button class="btn btn-warning dropdown-toggle" type="button" id="columnVisibilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">Column Visibility</button>' +
+      '<div class="dropdown-menu custom_dp_menu" aria-labelledby="columnVisibilityDropdown">';
+    columns.forEach(function(column, index) {
+      columnVisibilityDropdown += '<div class="form-check"><input class="form-check-input column-toggle" type="checkbox" value="' + $(column).text() + '" id="Checkme' + index + '" checked><label class="form-check-label" for="Checkme' + index + '">' + $(column).text() + '</label></div>';
+    });
+    columnVisibilityDropdown += '</div></div>';
+    $('.dataTables_length').parent().append(columnVisibilityDropdown);
+    table.buttons().container().appendTo($('.dataTables_length').parent());
+    $('.column-toggle').on('change', function() {
+      var columnIndex = $(this).parent().index();
+      table.column(columnIndex).visible(this.checked);
+    });
+    });
+</script>
+<script>
+    
     document.getElementById('personexportBtn').addEventListener('click', function () {
         // Call function to export table data to Excel
         exportToExcel('custom_table');
@@ -263,5 +301,7 @@
         }
     }
 </script>
+
+ 
 @endif
 @endsection

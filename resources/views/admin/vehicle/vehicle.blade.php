@@ -25,16 +25,28 @@
     background: transparent;
     border: none;
 }
-.colum_visibility_ak
-{
-    display: none!important;
-}
+
 </style>
 
 
 
+<style>
+    .dropdown.colum_visibility_ak:nth-child(odd){
+ display: none !important;
+}
 
+.dropdown.colum_visibility_ak {
+top: 23px;
+margin-left: 20px;
+}
+     /* .colum_visibility_ak {
+         display: none !important;
+     } */
+ </style>
 <!-- delete Modal -->
+@php
+    $driverRole =  Auth::guard('adminLogin')->user()->role_id;
+@endphp
 
 <div class="modal fade zoomIn" id="deleteRecordModal" tabindex="-1" aria-hidden="true">
 
@@ -49,7 +61,7 @@
                 </button>
             </div>
 
-            <form action="{{route('vehicle.delete')}}" method="post" />@csrf
+            <form action="{{route('vehicle.delete')}}" method="post" >@csrf
 
             <div class="modal-body">
 
@@ -219,13 +231,13 @@
 
                                 <h5>All Vehicles</h5>
                                 <?php
-                          $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
-                          $arr = [];
-                          foreach($D as $v)
-                          {
-                            $arr[] = $v['permission_id'];
-                          }
-                          ?>
+                                    $D = json_decode(json_encode(Auth::guard('adminLogin')->user()->get_role()),true);
+                                    $arr = [];
+                                    foreach($D as $v)
+                                    {
+                                        $arr[] = $v['permission_id'];
+                                    }
+                                ?>
 
                                 @if(in_array("25", $arr))
                                 <a href="{{ route('vehicle.add') }}" class="btn btn-primary">+ Add New Vehicle</a>
@@ -234,8 +246,9 @@
 
 
                             </div>
+                            @if($driverRole!=33)
                             <a class="btn btn-green" style="color: white; margin: 3px;"  id="exportBtn" > <i class="fa fa-file-excel-o"></i> Download Excel</a>
-
+@endif
 
 
 
@@ -258,11 +271,7 @@
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
-
                                 </thead>
-
-
-
 
                                 </table>
 
@@ -333,6 +342,20 @@ $(document).ready( function ()
                         ],
 
             });
+            var columns = table.columns().header().toArray();
+    var columnVisibilityDropdown = '<div class="dropdown colum_visibility_ak" style="display:inline-block;">' +
+      '<button class="btn btn-warning dropdown-toggle" type="button" id="columnVisibilityDropdown" data-bs-toggle="dropdown" aria-expanded="false">Column Visibility</button>' +
+      '<div class="dropdown-menu custom_dp_menu" aria-labelledby="columnVisibilityDropdown">';
+    columns.forEach(function(column, index) {
+      columnVisibilityDropdown += '<div class="form-check"><input class="form-check-input column-toggle" type="checkbox" value="' + $(column).text() + '" id="Checkme' + index + '" checked><label class="form-check-label" for="Checkme' + index + '">' + $(column).text() + '</label></div>';
+    });
+    columnVisibilityDropdown += '</div></div>';
+    $('.dataTables_length').parent().append(columnVisibilityDropdown);
+    table.buttons().container().appendTo($('.dataTables_length').parent());
+    $('.column-toggle').on('change', function() {
+      var columnIndex = $(this).parent().index();
+      table.column(columnIndex).visible(this.checked);
+    });
 });
 </script>
 

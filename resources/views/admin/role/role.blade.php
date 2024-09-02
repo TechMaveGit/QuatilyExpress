@@ -10,6 +10,8 @@
    {
      $arr[] = $v['permission_id'];
    }
+
+   $driverRole = Auth::guard('adminLogin')->user()->role_id;
    ?>
 
 
@@ -93,7 +95,9 @@
                        <a href="{{ route('administration.role.add') }}" class="btn btn-primary" style="margin: 3px">+ Add New Role</a>
                        @endif
                     </div>
+                    @if ($driverRole != 33)
                     <a class="btn btn-green" style="color: white;" id="exportBtn"> <i class="fa fa-file-excel-o"></i> Download Excel</a>
+                    @endif
 
 
                 </div>
@@ -119,7 +123,7 @@
                                 @forelse ($roles as $role)
                                 @php
                                      $dateTime = new DateTime($role->created_at);
-                                     $created_at = $dateTime->format('Y/m/d H:i:s');
+                                     $created_at = $dateTime->format('Y/m/d H:i');
                                 @endphp
 
                                 <tr>
@@ -157,31 +161,10 @@
 
 
                                                             @if(in_array("4", $arr))
-                                            {{-- <a onclick="remove_user_role({{$role->id}})" class="btn text-danger btn-sm"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-original-title="Delete"><span
-                                                    class="fe fe-trash-2 fs-14"></span></a> --}}
                                                     @endif
 
                                         </div>
                                     </td>
-
-                                          {{-- <td>
-                                                 <div class="dropdown d-inline-block">
-                                                     <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                         <i class="ri-more-fill align-middle"></i>
-                                                     </button>
-                                                     <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                         <li><a class="dropdown-item edit-item-btn" href="{{url('admin/edit-role')}}/{{ $role->id}}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
-                                                         <li><a class="dropdown-item edit-item-btn" href="{{url('admin/view-role-permission')}}/{{ $role->id}}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i>View</a></li>
-                                                         <li>
-                                                             <a  onclick="remove_user_role({{$role->id}})" class="dropdown-item remove-item-btn">
-                                                                 <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                                                             </a>
-                                                         </li>
-                                                     </ul>
-                                                 </div>
-                                             </td> --}}
                                      </tr>
                                 @empty
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ImageController;
 use App\Models\Client;
 use App\Models\Finishshift;
 use App\Models\Parcels;
@@ -64,11 +65,9 @@ class ParcelController extends Controller
         for ($i = 0; $i < $hgcount; $i++) {
             $items = '';
             if ($request->hasFile('parcelIamge')) {
-                $files = $request->file('parcelIamge')[$i];
-                $destinationPath = 'public/assets/driver/parcel/';
-                $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                $files->move($destinationPath, $file_name);
-                $items = $file_name;
+                $image = $request->file('parcelIamge')[$i];
+                $dateFolder = 'driver/parcel';
+                $items = ImageController::upload($image, $dateFolder);
             }
             $packageItem = [
                 'parcelId'    => $Parcel->id,
@@ -146,7 +145,7 @@ class ParcelController extends Controller
             return response()->json([
                 'status' => $this->successStatus,
                 'message' => 'Success',
-                'parcelImage' => env('PAREL_IMAGE'),
+                'parcelImage' => asset(env('STORAGE_URL')),
                 'data' => $Parcels,
             ]);
         } else {
@@ -180,18 +179,16 @@ class ParcelController extends Controller
         $delivered_latitude = $request->input('deliver_lat');
         $delivered_longitude = $request->input('deliver_lng');
         if ($request->file('parcelIamge') != '') {
-            $files = $request->file('parcelIamge');
-            $destinationPath = 'public/assets/driver/parcel/';
-            $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $file_name);
-            $photo = $file_name;
+            $image = $request->file('parcelIamge');
+            $dateFolder = 'driver/parcel';
+            $photo = ImageController::upload($image, $dateFolder);
         } else {
-            $photo = '';
+            $photo = null;
         }
 
         $checkParcel = Parcels::whereId($parcelId)->where('status', '2')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d'), 'status' => '2']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => $request->input('deliver_address'), 'parcelphoto' => $photo, 'deliveredTo' => $deliveredTo, 'delivered_latitude' => $delivered_latitude, 'delivered_longitude' => $delivered_longitude, 'parcelDeliverdDate' => date('Y-m-d H:i:s'), 'status' => '2']);
             if ($Parcels) {
                 return response()->json([
                     'status' => $this->successStatus,
@@ -225,7 +222,8 @@ class ParcelController extends Controller
         $parcelId = $request->input('parcelId');
         $checkParcel = Parcels::whereId($parcelId)->where('status', '1')->first();
         if (empty($checkParcel)) {
-            $Parcels = Parcels::where(['id' => $parcelId])->update(['status' => '1']);
+            $Parcels = Parcels::where(['id' => $parcelId])->update(['deliver_address' => null, 'parcelphoto' => null, 'deliveredTo' => null, 'delivered_latitude' => null, 'delivered_longitude' => null, 'parcelDeliverdDate' => null,'status' => '1']);
+            
             if ($Parcels) {
                 return response()->json([
                     'status' => $this->successStatus,
@@ -265,7 +263,7 @@ class ParcelController extends Controller
             return response()->json([
                 'status' => $this->successStatus,
                 'message' => 'Success',
-                'parcelImage' => env('PAREL_IMAGE'),
+                'parcelImage' => asset(env('STORAGE_URL')),
                 'data' => $Parcels,
                 'location' => $shipDetail,
             ]);
@@ -314,13 +312,11 @@ class ParcelController extends Controller
             DB::table('addparcelimages')->where('parcelId', $parcelId)->delete();
 
             for ($i = 0; $i < $hgcount; $i++) {
-                $items = '';
+                $items = null;
                 if ($request->hasFile('parcelIamge')) {
-                    $files = $request->file('parcelIamge')[$i];
-                    $destinationPath = 'public/assets/driver/parcel/';
-                    $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                    $files->move($destinationPath, $file_name);
-                    $items = $file_name;
+                    $image = $request->file('parcelIamge')[$i];
+                    $dateFolder = 'driver/parcel';
+                    $items = ImageController::upload($image, $dateFolder);
                 }
                 $packageItem = [
                     'parcelId'    => $parcelId,
@@ -403,69 +399,13 @@ class ParcelController extends Controller
 
     public function calculateShiftHoursWithMinutes($startDate, $endDate)
     {
-
         $dayMinutes = 0;
         $nightMinutes = 0;
         $saturdayMinutes = 0;
         $sundayMinutes = 0;
-
-        // while ($startDate < $endDate) {
-        //     $currentHour = date('H', $startDate);
-        //     $currentMinute = date('i', $startDate);
-
-        //     if (date('N', $startDate) < 6 && ($currentHour >= 4 && $currentHour <= 17)) {
-        //         if($currentHour == 17)
-        //         {
-        //           if($currentMinute < 59){
-        //               $dayMinutes++;
-        //           }
-        //         } else {
-        //             $dayMinutes++;
-        //         }
-        //     } elseif (date('N', $startDate) < 6 && ($currentHour >= 18 || $currentHour <= 3)) {
-        //         if ($currentHour == 3) {
-        //             if ($currentMinute < 59) {
-        //                 $nightMinutes++;
-        //             }
-        //         }
-
-        //         else if($currentHour == 23){
-        //             $nextDay = strtotime('+1 minute', $startDate);
-        //             if (date('N', $nextDay) == 6 &&  $currentMinute < 59) {
-        //                 $nightMinutes++;
-        //             } else if (date('N', $nextDay) <= 5) {
-        //                 $nightMinutes++;
-        //             }
-        //         }
-
-        //          else {
-        //             $nightMinutes++;
-        //         }
-        //     } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 6) { // Saturday
-        //         if ($currentHour == 23) {
-        //             if ($currentMinute < 59) {
-        //                 $saturdayMinutes++;
-        //             }
-        //         }  else {
-        //             $saturdayMinutes++;
-        //         }
-        //     } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 7) { // Sunday
-        //         if ($currentHour == 23) {
-        //             if ($currentMinute < 59) {
-        //                 $sundayMinutes++;
-        //             }
-        //         }  else {
-        //             $sundayMinutes++;
-        //         }
-        //     }
-
-        //     $startDate = strtotime('+1 minute', $startDate);
-        // }
-
         while ($startDate < $endDate) {
             $currentHour = date('H', $startDate);
             $currentMinute = date('i', $startDate);
-
             if (date('N', $startDate) < 6 && ($currentHour >= 4 && $currentHour < 18)) {
                 $dayMinutes++;
             } elseif (date('N', $startDate) < 6 && ($currentHour >= 18 || $currentHour < 4)) {
@@ -475,7 +415,6 @@ class ParcelController extends Controller
             } elseif ($currentHour >= 0 && $currentHour <= 23 && date('N', $startDate) == 7) { // Sunday
                 $sundayMinutes++;
             }
-
             $startDate = strtotime('+1 minute', $startDate);
         }
 
@@ -484,22 +423,18 @@ class ParcelController extends Controller
             'dayMinutes' => $dayMinutes % 60 < 10 ? '0' . ($dayMinutes % 60) : $dayMinutes % 60,
             'dayMinutesNew' => round(floor($dayMinutes % 60) / 60, 2),
             'dayTotal' => number_format(floor($dayMinutes / 60) + round(floor($dayMinutes % 60) / 60, 2), 2),
-
             'nightHours' => floor($nightMinutes / 60),
             'nightMinutes' => $nightMinutes % 60 < 10 ? '0' . ($nightMinutes % 60) : $nightMinutes % 60,
             'nightMinutesNew' => round(floor($nightMinutes % 60) / 60, 2),
             'nightTotal' => number_format(floor($nightMinutes / 60) + round(floor($nightMinutes % 60) / 60, 2), 2),
-
             'saturdayHours' => floor($saturdayMinutes / 60),
             'saturdaMinutes' => $saturdayMinutes % 60,
             'saturdayMinutesNew' => round(floor($saturdayMinutes % 60) / 60, 2),
             'totalSaturdayHours' => number_format(floor($saturdayMinutes / 60) + round(floor($saturdayMinutes % 60) / 60, 2), 2),
-
             'sundayHours' => floor($sundayMinutes / 60),
             'sundayMinutes' => $sundayMinutes % 60,
             'sundayMinutesNew' => round(floor($sundayMinutes % 60) / 60, 2),
             'totalSundayHours' => number_format(floor($sundayMinutes / 60) + round(floor($sundayMinutes % 60) / 60, 2), 2),
-
         ];
     }
 
@@ -515,7 +450,6 @@ class ParcelController extends Controller
             'endTime' => 'required',
             'parcelsTaken' => 'required',
             'parcelsDelivered' => 'required',
-            // "addPhoto" => "required"
         ]);
 
         if ($validator->fails()) {
@@ -536,8 +470,8 @@ class ParcelController extends Controller
 
         $startDate = $request->startDate . ' ' . $request->startTime;
         $endDate = $request->endDate . ' ' . $request->input('endTime');
-        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i');
-        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i');
+        $start_date = Carbon::parse($startDate)->format('Y-m-d H:i:s');
+        $end_date = Carbon::parse($endDate)->format('Y-m-d H:i:s');
         $startDate = strtotime($start_date);
         $endDate = strtotime($end_date);
         $dayStartTime = Carbon::parse($start_date);
@@ -554,12 +488,12 @@ class ParcelController extends Controller
 
         if ($data['shiftView']) {
             $finishshift = Finishshift::where('shiftId', $request->shiftId)->first();
-            if ($finishshift) {
-                return response()->json([
-                    'status' => $this->successStatus,
-                    'message' => 'This Shift is already finished',
-                ]);
-            } else {
+            // if ($finishshift) {
+            //     return response()->json([
+            //         'status' => $this->successStatus,
+            //         'message' => 'This Shift is already finished',
+            //     ]);
+            // } else {
 
                 $dayShift = $nightShift = $sundayHr = $saturdayHr = $dayShiftCharge = $nightShiftCharge = $saturdayShiftCharge = $sundayShiftCharge = $priceOverRideStatus = '0';
 
@@ -599,7 +533,8 @@ class ParcelController extends Controller
                     $totalPayShiftAmount = $dayShift + $nightShift + $saturdayHr + $sundayHr;
 
                     $totalChargeDay = $dayShiftCharge + $nightShiftCharge + $saturdayShiftCharge + $sundayShiftCharge;
-                    Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus]);
+                    // return $request->startDate . ' ' . $request->startTime;
+                    Shift::where('id', $request->shiftId)->update(['payAmount' => $totalPayShiftAmount, 'priceOverRideStatus' => $priceOverRideStatus,'shiftStartDate'=>date('Y-m-d',strtotime($request->startDate)) . ' ' . date('H:i:s',strtotime($request->startTime))]);
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalPayShiftAmount, 'status' => '0']);  // O is pay to Driver
                     DB::table('clientcharge')->insert(['shiftId' => $request->shiftId, 'amount' => $totalChargeDay, 'status' => '1']); // 1 is charge to admin
                     // is Driver Payable
@@ -624,16 +559,14 @@ class ParcelController extends Controller
                 Shift::whereId($request->shiftId)->update(['finishStatus' => '2', 'parcelsToken' => $request->parcelsTaken]);
 
                 if ($request->file('addPhoto') != '') {
-                    $files = $request->file('addPhoto');
-                    $destinationPath = 'public/assets/driver/parcel/finishParcel';
-                    $file_name = md5(uniqid()) . '.' . $files->getClientOriginalExtension();
-                    $files->move($destinationPath, $file_name);
-                    $items = $file_name;
+                    $image = $request->file('addPhoto');
+                    $dateFolder = 'driver/parcel/finishParcel';
+                    $items = ImageController::upload($image, $dateFolder);
                 } else {
-                    $items = '';
+                    $items = null;
                 }
 
-                Shift::whereId($request->shiftId)->update(['finishStatus' => '2']);
+                Shift::whereId($request->shiftId)->update(['finishStatus' => '2','odometer'=>$request->odometerStartReading]);
 
                 $Parcel = new Finishshift();
                 $Parcel->driverId = $this->driverId;
@@ -646,22 +579,24 @@ class ParcelController extends Controller
                 $Parcel->sundayHours = $sundayHrs;
                 $Parcel->weekendHours = $weekendHours ?? 0;
                 $Parcel->totalHours = $totalHr ?? 0;
-                $Parcel->startDate = $request->startDate;
-                $Parcel->endDate = $request->endDate;
-                $Parcel->startTime = $dayStartTime->format('H:i');
-                $Parcel->endTime = $nightEndTime->format('H:i');
-                $Parcel->parcelsTaken = $request->parcelsTaken;
+                $Parcel->startDate = date('Y-m-d',strtotime($request->startDate));
+                $Parcel->endDate =  date('Y-m-d',strtotime($request->endDate));
+                $Parcel->startTime = date('H:i:s',strtotime($request->startTime)); 
+                $Parcel->endTime =  date('H:i:s',strtotime($request->endTime)); 
+                $Parcel->submitted_at =  $request->finishAt ? date('Y-m-d H:i:s',strtotime($request->finishAt)):date('Y-m-d H:i:s');
+                $Parcel->parcelsTaken = $request->parcelsTaken??0;
                 $Parcel->parcelsDelivered = $request->parcelsDelivered;
                 $Parcel->addPhoto = $items;
                 $Parcel->save();
 
                 if ($Parcel) {
+                    DB::table('shiftMonetizeInformation')->insert(['shiftId'=>$request->shiftId,'amountPayablePerService'=>$totalPayShiftAmount,'totalPayable'=>$totalPayShiftAmount,'amountChargeablePerService'=>$totalChargeDay,'totalChargeable'=>$totalChargeDay]);
                     return response()->json([
                         'status' => $this->successStatus,
                         'message' => 'Shift Finished Successfully',
                     ]);
                 }
-            }
+            // }
         } else {
             return response()->json([
                 'status' => $this->notfound,

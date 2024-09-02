@@ -86,7 +86,7 @@
                                                         class="red">*</span></label>
 
 
-                                                <input type="date" name="start_date" class="form-control" id="start-date"
+                                                <input type="date" name="start_date" class="form-control datetime_picker" 
                                                     aria-describedby="emailHelp" data-input required>
 
                                                 {{-- <input type="text" id="start-date" data-input> --}}
@@ -104,7 +104,7 @@
                                                         class="red">*</span></label>
                                                 {{-- <input type="datetime-local" id="end-date" disabled> --}}
 
-                                                <input type="date" name="end_date" class="form-control" id="end-date"
+                                                <input type="date" name="end_date" class="form-control datetime_picker" 
                                                     aria-describedby="emailHelp" data-input readonly required>
 
                                                 {{-- <input type="text" id="end-date" data-input readonly> --}}
@@ -335,16 +335,16 @@
 
                                             @php
                                                 $driverUser = Auth::guard('adminLogin')->user();
+                                                $driverId = DB::table('drivers')->where('email', $driverUser->email)->first()->id??null;
                                                 $driverRole = $driverUser->role_id;
                                             @endphp
 
                                             @if ($driverRole == '33')
-                                                <input type="hidden" name="driverId" value="{{ $driverUser->id }}" />
+                                                <input type="hidden" name="driverId" value="{{ $driverId }}" />
                                             @else
                                                 <div class="col-lg-3">
                                                     <div class="check_box">
-                                                        <label class="form-label" for="exampleInputEmail1">Driver <span
-                                                                class="red">*</span></label>
+                                                        <label class="form-label" for="exampleInputEmail1">Driver <span class="red">*</span></label>
                                                         <div class="form-group">
                                                             <select class="form-control select2 form-select"
                                                                 name="driverId" data-placeholder="Choose one" required>
@@ -401,7 +401,7 @@
                                                     <span class="red">*</span></label>
 
                                                 <input type="number" name="odometer_start_reading"
-                                                    id="odometer_start_reading" oninput="checkRego()" min="0"
+                                                    id="odometer_start_reading" oninput="checkRego()" step="any" min="0"
                                                     class="form-control" aria-describedby="emailHelp" placeholder=""
                                                     fdprocessedid="enssm" required>
 
@@ -418,7 +418,7 @@
 
 
                                                 <input type="number" min="0" class="form-control"
-                                                    name="odometer_finish_reading" value="{{ $odometer_finish_reading }}"
+                                                    name="odometer_finish_reading" step="any" value="{{ $odometer_finish_reading }}"
                                                     id="odometer_finish_reading" aria-describedby="emailHelp"
                                                     placeholder="" onkeypress="checkOdometerReading(event)" required>
 
@@ -1283,39 +1283,6 @@
 
         }
     </script>
-
-
-    {{-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        const startDatePicker = flatpickr("#start-date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            defaultDate: "today",
-            onChange: function(selectedDates, dateStr, instance) {
-                // Calculate the end date 24 hours after the selected start date
-                const endDate = new Date(selectedDates[0].getTime() + 4448 * 60 * 60 * 1000);
-
-                // Set the end date picker options
-                const endOfDaySTD = new Date();
-                endDatePicker.set('minDate', selectedDates[0]);
-                endDatePicker.set('maxDate', endOfDaySTD);
-
-                // Clear the end date input
-                endDatePicker.clear();
-            }
-        });
-
-        const endDatePicker = flatpickr("#end-date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            disable: [
-                function(date) {
-                    // Disable dates greater than 24 hours from the selected start date
-                    return date > new Date(startDatePicker.selectedDates[0].getTime() + 4448 * 60 * 60 * 1000);
-                }
-            ]
-        });
-    </script> --}}
 
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

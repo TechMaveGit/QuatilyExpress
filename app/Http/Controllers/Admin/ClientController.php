@@ -13,6 +13,7 @@ use App\Models\Clientrate;
 use App\Models\States;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
@@ -64,6 +65,10 @@ class ClientController extends Controller
 
     public function exportClients(Request $request)
     {
+        $driverRole = Auth::guard('adminLogin')->user()->role_id;
+        if ($driverRole == '33') {
+            return abort(404);
+        }
         $query = Client::query();
         // Check if any filter input is provided
         if ($request->filled('clientStatus') || $request->filled('name') || $request->filled('mobileNo') || $request->filled('state')) {
@@ -86,21 +91,10 @@ class ClientController extends Controller
         // Fetch clients based on applied filters or default condition
         $clients = $query->get();
 
-        // Assuming $clients is a collection of client data
-        $clientsExport = new ClientsExport($clients);
-
-        // Define the filename
-        $filename = 'clients.csv';
-        
-        // Get the CSV content
-        $content = $clientsExport->exportToCsv();
-
-        // Serve the file as a download response
-        return response($content)
-            ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', 'attachment; filename=' . $filename)
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0');
+        $export = new ClientsExport($clients);
+        $tempFile = $export->exportToXls();
+    
+        return response()->download($tempFile, 'clients.xls')->deleteFileAfterSend(true);
     }
 
     public function clientAddfirst(Request $request)
@@ -383,7 +377,7 @@ class ClientController extends Controller
         $data['clientId'] = $id;
         $data['types'] = Type::get();
         $data['selectClient'] = Client::get();
-        $data['getStates'] = States::get();
+        $data['getStates'] = States::where('status', '1')->get();
 
         return view('admin.client.client-edit', $data);
     }

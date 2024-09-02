@@ -27,7 +27,10 @@
 }
 </style>
 
-
+@php
+    
+    $driverRole =  Auth::guard('adminLogin')->user()->role_id;
+@endphp
 
 
 <!-- delete Modal -->
@@ -230,9 +233,11 @@
 
 
                             </div>
+                            @if($driverRole!=33)
                             <a class="btn btn-green" style="color: white; margin: 3px;"  id="exportBtn" > <i class="fa fa-file-excel-o"></i> Download Excel</a>
 
 
+                            @endif
 
 
                         </div>

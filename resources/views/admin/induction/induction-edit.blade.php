@@ -8,7 +8,7 @@
     <h1 class="page-title">Induction Edit</h1>
     <div>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('home_page') }}">Home</a></li>
             <li class="breadcrumb-item " aria-current="page">Induction</li>
             <li class="breadcrumb-item active" aria-current="page">Induction Edit</li>
 
@@ -61,7 +61,7 @@
                                                     <div class="check_box">
                                                         <label class="form-label" for="exampleInputEmail1">Upload File</label>
                                                         <div class="form-group">
-                                                          <input name="uploadFile" type="file" data-default-file="{{ asset('assets/Induction/image/'.$inductionDetail->uploadFile.'')}}" class="dropify" data-height="100" />
+                                                          <input name="uploadFile" type="file" data-default-file="{{asset(env('STORAGE_URL').$inductionDetail->uploadFile.'')}}" class="dropify" data-height="100" />
                                                         </div>
                                                     </div>
 

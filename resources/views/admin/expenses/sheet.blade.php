@@ -6,6 +6,7 @@
     foreach ($D as $v) {
         $arr[] = $v['permission_id'];
     }
+    $driverRole = Auth::guard('adminLogin')->user()->role_id;
     ?>
 
 
@@ -221,8 +222,7 @@
 
                                                         <div class="col-lg-4">
                                                             <div class="check_box">
-                                                                <label class="form-label" for="exampleInputEmail1">Select
-                                                                    Type</label>
+                                                                <label class="form-label" for="exampleInputEmail1">Select Type <span class="text-danger">*</span></label>
                                                                 <div class="form-group">
 
                                                                     <input type="hidden" name="firstSection"
@@ -305,7 +305,7 @@
 
                                                                             <select
                                                                                 class="form-control select2 form-select"
-                                                                                name="driverResponsible" required>
+                                                                                name="person_approve" required>
                                                                                 <option value=""> Select Any One
                                                                                 </option>
                                                                                 @forelse ($dr as $alldr)
@@ -321,10 +321,9 @@
                                                                 <div class="col-lg-4">
                                                                     <div class="mb-3">
                                                                         <label class="form-label"
-                                                                            for="exampleInputEmail1">Cost</label>
+                                                                            for="exampleInputEmail1">Cost <span class="text-danger">*</span></label>
                                                                         <input type="number" name="cost"
-                                                                            min="0"
-                                                                            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                                                            min="0" step="any" required
                                                                             class="form-control fc-datepicker"
                                                                             id="first5" aria-describedby="emailHelp"
                                                                             placeholder="">
@@ -375,10 +374,11 @@
                                                             <div class="search_btn import_btn_box text-end">
                                                                 <button type="submit" class="btn btn-primary srch_btn">+
                                                                     Add Expense </button>
-
+                                                                    @if ($driverRole != 33)
                                                                 <a class="btn btn-green srch_btn ms-3" id="exportBtn1"
                                                                     style="color: white;"> <i
                                                                         class="fa fa-file-excel-o"></i> Download Excel</a>
+                                                                        @endif
                                                             </div>
                                                         </div>
                                                     </form>
@@ -398,8 +398,8 @@
                                                                         </th>
                                                                         <th class="bg-transparent border-bottom-0">Date
                                                                         </th>
-                                                                        {{-- <th class="bg-transparent border-bottom-0">Person Name</th> --}}
-                                                                        <!--<th class="bg-transparent border-bottom-0">Person Approve </th>-->
+                                                                        <th class="bg-transparent border-bottom-0">Person Name</th>
+                                                                        <th class="bg-transparent border-bottom-0">Person Approve </th>
                                                                         <th class="bg-transparent border-bottom-0">Cost
                                                                         </th>
                                                                         <th class="bg-transparent border-bottom-0">
@@ -415,22 +415,12 @@
 
                                                                     @forelse ($expense as $key=>$allexpense)
                                                                         @php
-                                                                            $vehical_type =
-                                                                                DB::table('generalexpensestypes')
-                                                                                    ->where(
-                                                                                        'id',
-                                                                                        $allexpense->vehical_type,
-                                                                                    )
-                                                                                    ->first()->name ?? 'N/A'
-
-
+                                                                            $vehical_type =DB::table('generalexpensestypes')->where('id',$allexpense->vehical_type)->first()->name ?? 'N/A'
                                                                         @endphp
                                                                         @if ($allexpense->date != null)
-                                                                        @php
-
-                                                                        $dateTime = date('Y-m-d',strtotime($allexpense->date));
-
-                                                                        @endphp
+                                                                            @php 
+                                                                                $dateTime = date('Y-m-d',strtotime($allexpense->date));
+                                                                            @endphp
                                                                         @else
                                                                         @php
                                                                             $dateTime = '--';
@@ -441,31 +431,20 @@
                                                                             <td>{{ $key + 1 }}</td>
                                                                             <td>{{ $vehical_type }}</td>
                                                                             <td>{{ $dateTime }}</td>
-                                                                            {{-- <td>{{ $userName }}</td> --}}
-                                                                            <!--<td>{{ $allexpense->person_approve }}</td>-->
+                                                                            <td>{{ $allexpense->personName->fullName??'' }}</td>
+                                                                            <td>{{ $allexpense->personApprove->fullName??'' }}</td>
                                                                             <td>{{ $allexpense->cost }}</td>
                                                                             <td>{{ $allexpense->description }}</td>
                                                                             @php
-                                                                                $regoId =
-                                                                                    DB::table('vehicals')
-                                                                                        ->where('id', $allexpense->rego)
-                                                                                        ->first()->rego ?? '';
+                                                                                $regoId = DB::table('vehicals')->where('id', $allexpense->rego)->first()->rego ?? '';
                                                                             @endphp
                                                                             <td>{{ $regoId }}</td>
-
-
                                                                             @if (in_array('38', $arr))
                                                                                 <td>
                                                                                     <div class="g-2">
-                                                                                        {{-- <a class="btn text-primary btn-sm"  data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a> --}}
-
-
-
-                                                                                        <a onclick="removeGeneralExpenses(this,'{{ $allexpense->id }}')"
-                                                                                            class="btn text-danger btn-sm"
-                                                                                            data-bs-toggle="tooltip"
-                                                                                            data-bs-original-title="Delete"><span
-                                                                                                class="fe fe-trash-2 fs-14"></span></a>
+                                                                                        <a onclick="removeGeneralExpenses(this,'{{ $allexpense->id }}')" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete">
+                                                                                            <span class="fe fe-trash-2 fs-14"></span>
+                                                                                        </a>
                                                                                     </div>
                                                                                 </td>
                                                                             @endif
@@ -496,13 +475,12 @@
                                                         <div class="col-lg-3">
 
                                                             <div class="mb-3">
-                                                                <label class="form-label" for="exampleInputEmail1">Start
-                                                                    Date <span class="red">*</span></label>
+                                                                <label class="form-label" for="exampleInputEmail1">Start Date <span class="red">*</span></label>
 
                                                                 <input type="text" name="start_date"
                                                                     min="1000-01-01" max="9999-12-31"
                                                                     class="form-control onlydatenew"
-                                                                    aria-describedby="emailHelp" placeholder="" />
+                                                                    aria-describedby="emailHelp" placeholder="" required/>
 
                                                                 <input type="hidden" name="firstSection"
                                                                     value="2" />
@@ -519,7 +497,7 @@
                                                                 <input type="text" name="end_date"
                                                                     min="1000-01-01" max="9999-12-31"
                                                                     class="form-control onlydatenew"
-                                                                    aria-describedby="emailHelp" placeholder="" />
+                                                                    aria-describedby="emailHelp" placeholder="" required/>
 
 
 
@@ -613,8 +591,8 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="exampleInputEmail1">Cost
                                                                     <span class="red">*</span></label>
-                                                                <input type="text" name="trip_cost"
-                                                                    class="form-control" id="first17"
+                                                                <input type="number" name="trip_cost"
+                                                                    class="form-control" id="first17" min="0" step="any"
                                                                     aria-describedby="emailHelp" placeholder="$" required>
                                                                 <p class="first" id="firstcls17" style="display: none">
                                                                     Please Add Trip Cost</p>
@@ -634,9 +612,11 @@
                                                             <div class="search_btn import_btn_box text-end">
                                                                 <button type="submit" class="btn btn-primary srch_btn">+
                                                                     Add Expense </button>
+                                                                    @if ($driverRole != 33)
                                                                 <a class="btn btn-green srch_btn ms-3" id="exportBtn3"
                                                                     style="color: white;"> <i
                                                                         class="fa fa-file-excel-o"></i> Download Excel</a>
+                                                                        @endif
                                                             </div>
                                                         </div>
                                                 </form>
@@ -674,7 +654,7 @@
                                                                         $start_date = new DateTime(
                                                                             $alltollexpense->start_date,
                                                                         );
-                                                                        $startDt = $start_date->format('Y/m/d H:i:s');
+                                                                        $startDt = $start_date->format('Y/m/d');
                                                                     @endphp
 
 
@@ -731,8 +711,7 @@
                                                 <form id="saveOperactionExpenses">
                                                     <div class="col-lg-4">
                                                         <div class="check_box">
-                                                            <label class="form-label" for="exampleInputEmail1">Select
-                                                                Type</label>
+                                                            <label class="form-label" for="exampleInputEmail1">Select Type <span class="text-danger">*</span></label>
                                                             <div class="form-group">
 
                                                                 <input type="hidden" name="firstSection"
@@ -809,9 +788,9 @@
                                                             <div class="col-lg-4">
                                                                 <div class="mb-3">
                                                                     <label class="form-label"
-                                                                        for="exampleInputEmail1">Cost</label>
-                                                                    <input type="text"
-                                                                        class="form-control fc-datepicker" name="cost"
+                                                                        for="exampleInputEmail1">Cost <span class="text-danger">*</span></label>
+                                                                    <input type="number" min="0" step="any" required
+                                                                        class="form-control fc-datepicker"  name="cost"
                                                                         id="" aria-describedby="emailHelp"
                                                                         placeholder="">
                                                                 </div>
@@ -923,13 +902,6 @@
                                                                                     $alloperactionexp->vehical_type,
                                                                                 )
                                                                                 ->first()->name ?? 'N/A';
-                                                                        $userName =
-                                                                            DB::table('drivers')
-                                                                                ->where(
-                                                                                    'id',
-                                                                                    $alloperactionexp->person_name,
-                                                                                )
-                                                                                ->first()->userName ?? 'N/A';
                                                                     @endphp
 
                                                                     <tr class="border-bottom">
@@ -947,8 +919,7 @@
 
 
                                                                         <td>{{ $alloperactionexps }}</td>
-                                                                        {{-- <td>{{ $userName }}</td> --}}
-                                                                        <td>{{ $alloperactionexp->person_approve }}</td>
+                                                                        <td>{{ $alloperactionexp->personApprove->fullName??"" }}</td>
                                                                         <td>{{ $alloperactionexp->cost }}</td>
                                                                         <td>{{ $alloperactionexp->description }}</td>
                                                                         <!--<td>{{ $alloperactionexp->rego }}</td>-->

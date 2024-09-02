@@ -94,9 +94,7 @@
                                         <span class="btn btn-primary-light status_">Rejected</span>
                                     <?php } elseif ($allshifts->finishStatus=='5')  { ?>
                                         <span class="btn btn-primary-light status_" onclick="shiftPaid(`{{ $allshifts->id }}`)" >Paid</span>
-                                    <?php } elseif ($allshifts->finishStatus=='6')  { ?>
-                                        <span class="btn btn-primary-light status_">Already Paid</span>
-                                        <?php } else { ?>
+                                    <?php } else { ?>
                                             <?php } ?>
                                  </td>
                                  <td>
