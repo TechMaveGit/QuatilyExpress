@@ -300,7 +300,14 @@ class Homecontroller extends Controller
                 $data['client'] = Client::where(['status' => '1'])->get();
                 $data['types'] = Type::where(['status' => '1'])->get();
             $clientRates = DB::table('clientrates')->where(['clientId'=>$data['shiftView']->client,'type'=>$data['shiftView']->vehicleType])->first();
-            $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+
+            if($shiftData->finishStatus == '5'){
+                $extra_rate_per_hour = $shiftData->extra_rate_person ;
+            }else{
+                $extra_rate_per_hour =  $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+            }
+            
+            //$extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
 
             $result = $this->calculateShiftHoursWithMinutes($startDate, $endDate);
            

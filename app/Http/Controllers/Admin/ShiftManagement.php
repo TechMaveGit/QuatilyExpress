@@ -467,7 +467,13 @@ class ShiftManagement extends Controller
                     $extra_rate_per_hour = null;
 
                     if($selectedClient) $clientRateData = json_encode(Clientrate::where(['clientId'=>$selectedClient,'type'=>$selectedvehicleType])->first()->toArray());
-                    if($selecteddriverId) $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
+                    
+                    if($shift->finishStatus == '5'){
+                        $extra_rate_per_hour = $shift->extra_rate_person ;
+                    }else if($selecteddriverId){
+                        $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
+                    }
+                     
 
                     $shiftAdd = $request->except(['_token', 'submit']);
                     $shiftAdd['shiftRandId'] = rand('9999', '0000');
@@ -1080,7 +1086,14 @@ class ShiftManagement extends Controller
             },
         ])->first();
         // if ($data['shiftView']->finishStatus == '2') {
+
+        if($data['shiftView']->finishStatus == '5'){
+            $data['extra_rate_per_hour'] = $data['shiftView']->extra_rate_person ;
+        }else {
             $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
+        }
+
+            
         // } else {
         //     $data['extra_rate_per_hour'] = 0;
         // }
@@ -1167,7 +1180,12 @@ class ShiftManagement extends Controller
                 $query->where('clientId', $getClientID);
             },
         ])->first();
-        $extra_rate_per_hour = $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+        
+        if($shiftData->finishStatus == '5'){
+            $extra_rate_per_hour = $shiftData->extra_rate_person ;
+        }else{
+            $extra_rate_per_hour =  $request->input('driverId') ? Driver::whereId($request->input('driverId'))->first()->extra_rate_per_hour : Driver::whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour;
+        }
        
         //    dd( $data['shiftView']);
         $data['allstate'] = States::where('status', '1')->get();

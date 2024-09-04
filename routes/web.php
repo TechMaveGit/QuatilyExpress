@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LiveTrackingController;
 use App\Http\Controllers\Admin\Personcontroller;
 use App\Http\Controllers\Admin\ShiftManagement;
 use App\Http\Controllers\Admin\VehicleController;
+use App\Http\Controllers\PageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -214,3 +215,7 @@ Route::get('/geocode', function (Request $request) {
 
     return $response->json();
 })->name('googlemap')->middleware('auth:adminLogin');
+
+
+Route::match(['get', 'post'], '/contact-us', [PageController ::class, 'coutactUs'])->name('page.coutactUs');
+Route::get('/privacy-policy', [PageController ::class, 'privacyPolicy'])->name('page.privacyPolicy');
