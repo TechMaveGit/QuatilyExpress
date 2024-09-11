@@ -979,9 +979,14 @@
                                                     <td hidden class="td sorting_1">
                                                         {{ $allshift->getFinishShift->odometerEndReading ?? '0' }}</td>
                                                         
-                                                            @php
-                                                                $extra_rate_per_hour = $allshift->getDriverName->extra_rate_per_hour ??'0';
-                                                            @endphp
+                                                        @php
+                                                            if($allshift->finishStatus == '5'){
+                                                                $extra_rate_per_hour = $allshift->extra_rate_person ;
+                                                            }else{
+                                                                $extra_per_hour_rate = $allshift->getDriverName->extra_rate_per_hour ?? 0;
+                                                            }
+                                                        @endphp
+                                                            
                                                         
                                                             @php
                                                                 $dayammmm='0';

@@ -316,7 +316,14 @@ class ShiftController extends Controller
                 },
             ])->first();
 
-            $extra_rate_per_hour = Driver::whereId($shift->driverId)->first()->extra_rate_per_hour??0;
+
+            if($data['shiftView']->finishStatus == '5'){
+                $extra_rate_per_hour = $data['shiftView']->extra_rate_person ;
+            }else {
+                $extra_rate_per_hour = Driver::whereId($shift->driverId)->first()->extra_rate_per_hour??0;
+            }
+
+            
 
             if (!empty($dayHr) || !empty($nightHr) || !empty($saturdayHrs) || !empty($sundayHrs)) {
 
@@ -742,7 +749,7 @@ class ShiftController extends Controller
 
         $driverId = auth('driver')->user()->id;
 
-        $shift = Shift::select('id', 'rego', 'odometer', 'base', 'payAmount', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'optShift', 'state', 'createdDate', 'shiftStartDate', 'vehicleType', 'payAmount', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress', 'scanner_id', 'created_at', 'updated_at')->whereId($request->shift_id)->where('driverId', $driverId)->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime,odometerStartReading,odometerEndReading,parcelsDelivered', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name')->first();
+        $shift = Shift::select('id', 'rego', 'odometer', 'base', 'payAmount', 'parcelsToken', 'client', 'costCenter', 'finishStatus', 'optShift', 'state', 'createdDate', 'shiftStartDate', 'vehicleType', 'payAmount', 'startlatitude', 'startlongitude', 'endlatitude', 'endlongitude', 'startaddress', 'endaddress', 'scanner_id','extra_rate_person', 'created_at', 'updated_at')->whereId($request->shift_id)->where('driverId', $driverId)->with('getFinishShifts:shiftId,startDate,endDate,startTime,endtime,odometerStartReading,odometerEndReading,parcelsDelivered', 'getStateName:id,name', 'getClientName:id,name,shortName', 'getCostCenter:id,name', 'getVehicleType:id,name')->first();
 
         $reportDetail = Finishshift::select('dayHours', 'nightHours', 'saturdayHours','sundayHours','weekendHours', 'odometerStartReading', 'odometerEndReading','submitted_at')
         ->where('shiftId', $request->shift_id ?? '')
@@ -756,7 +763,13 @@ class ShiftController extends Controller
         //     $extra_rate_per_hour = 0;
         // }
 
-        $extra_rate_per_hour = Driver::whereId($driverId)->first()->extra_rate_per_hour??0;
+        if($shift->finishStatus == '5'){
+            $extra_rate_per_hour = $shift->extra_rate_person ;
+        }else {
+            $extra_rate_per_hour = Driver::whereId($driverId)->first()->extra_rate_per_hour??0;
+        }
+
+        
         $clientRates = DB::table('clientrates')->where(['clientId'=>$shift->client,'type'=>$shift->vehicleType])->first();
 
         if (($shift->ReportDetail->dayHours ?? 0) != '0') {

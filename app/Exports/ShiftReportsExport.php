@@ -237,7 +237,13 @@ class ShiftReportsExport
                 $totalHours = $daySum + $nightHours + $weekendHours;
             }
         
-            $extra_per_hour_rate = $shift->getDriverName->extra_rate_per_hour ?? 0;
+            
+
+            if($shift->finishStatus == '5'){
+                $extra_rate_per_hour = $shift->extra_rate_person ;
+            }else{
+                $extra_per_hour_rate = $shift->getDriverName->extra_rate_per_hour ?? 0;
+            }
               
 
             $clientRate = Clientrate::where('type', $shift->vehicleType)->where('clientId', $shift->client)->first();
