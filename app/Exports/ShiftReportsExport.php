@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Clientrate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
@@ -240,9 +241,9 @@ class ShiftReportsExport
             
 
             if($shift->finishStatus == '5'){
-                $extra_rate_per_hour = $shift->extra_rate_person ;
+                $extra_per_hour_rate = $shift->extra_rate_person ;
             }else{
-                $extra_per_hour_rate = $shift->getDriverName->extra_rate_per_hour ?? 0;
+                $extra_per_hour_rate = $shift->driverId ? DB::table('drivers')->whereId($shift->driverId)->first()->extra_rate_per_hour : 1;
             }
               
 

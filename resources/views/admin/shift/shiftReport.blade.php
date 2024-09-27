@@ -983,7 +983,7 @@
                                                             if($allshift->finishStatus == '5'){
                                                                 $extra_rate_per_hour = $allshift->extra_rate_person ;
                                                             }else{
-                                                                $extra_per_hour_rate = $allshift->getDriverName->extra_rate_per_hour ?? 0;
+                                                                $extra_rate_per_hour =  $allshift->driverId ? DB::table('drivers')->whereId($allshift->driverId)->first()->extra_rate_per_hour : 1;
                                                             }
                                                         @endphp
                                                             
