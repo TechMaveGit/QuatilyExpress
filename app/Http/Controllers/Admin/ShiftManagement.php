@@ -441,7 +441,7 @@ class ShiftManagement extends Controller
         try {
             if (request()->isMethod('post')) {
                 $driverId = $request->driverId;
-                $shift = Shift::where('driverId', $driverId)->first()->id??null;
+                $shift = Shift::where('driverId', $driverId)->first()??null;
                 if ($shift && Shift::where(['driverId'=>$driverId,'finishStatus'=>'1'])->exists()) {
                     return redirect()->back()->with('error', 'There is a shift in progress for the driver (you can only create a missed shift)');
                 } else {
@@ -468,7 +468,7 @@ class ShiftManagement extends Controller
 
                     if($selectedClient) $clientRateData = json_encode(Clientrate::where(['clientId'=>$selectedClient,'type'=>$selectedvehicleType])->first()->toArray());
                     
-                    if($shift->finishStatus == '5'){
+                    if(isset($shift->finishStatus) && $shift->finishStatus && $shift->finishStatus == '5'){
                         $extra_rate_per_hour = $shift->extra_rate_person ;
                     }else if($selecteddriverId){
                         $extra_rate_per_hour = Driver::whereId($selecteddriverId)->first()->extra_rate_per_hour;
@@ -1090,7 +1090,7 @@ class ShiftManagement extends Controller
         if($data['shiftView']->finishStatus == '5'){
             $data['extra_rate_per_hour'] = $data['shiftView']->extra_rate_person ;
         }else {
-            $data['extra_rate_per_hour'] = $data['shiftView']->getDriverName->extra_rate_per_hour ?? '0';
+            $data['extra_rate_per_hour'] = $data['shiftView']->driverId  ? DB::table('drivers')->whereId($data['shiftView']->driverId)->first()->extra_rate_per_hour : 1;
         }
 
             
